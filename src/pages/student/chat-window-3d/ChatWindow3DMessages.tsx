@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import ReadingPassageCard from "@/components/ui/ReadingPassageCard";
+import ReadingPassageCard, { type ReadingPassagePresentation } from "@/components/ui/ReadingPassageCard";
 import { formatTime } from "./chat3d.shared";
 import type { Message } from "./chat3d.shared";
 
@@ -21,6 +21,7 @@ interface ContentPayload {
   content: string;
   audioUrl?: string;
   narrationVideoUrl?: string;
+  readingPresentation?: ReadingPassagePresentation;
 }
 
 interface ChatWindow3DMessagesProps {
@@ -108,6 +109,7 @@ export default function ChatWindow3DMessages({
           <ReadingPassageCard
             content={contentPayload.content}
             audioUrl={contentPayload.audioUrl}
+            readingPresentation={contentPayload.readingPresentation}
             isPlaying={
               playingAudioId === "content-payload-audio" && isCurrentlyPlaying
             }

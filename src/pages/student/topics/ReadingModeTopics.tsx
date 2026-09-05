@@ -407,6 +407,7 @@ export default function ReadingModeTopics() {
               <ReadingPassageCard 
                 content={contentPayload.passage || contentPayload.content || (contentPayload.sentences ? contentPayload.sentences.join('\n\n') : '')}
                 audioUrl={contentPayload.contentAudioUrl || contentPayload.narrationAudioUrl || contentPayload.attachmentUrl}
+                readingPresentation={contentPayload.readingPresentation}
                 isPlaying={playingAudioId === 'reading-passage' && isCurrentlyPlaying}
                 onToggleAudio={() =>
                   toggleAudio(
