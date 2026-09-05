@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CheckCircle2, ChevronLeft, CircleAlert, Eye, RotateCcw } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { 
+import {
   getLessonModes, 
   startLessonMode, 
   completeLessonMode,
@@ -50,6 +50,19 @@ import {
   UnavailableComponent,
   WritingTableComponent,
 } from '@/components/learning/modes';
+
+// Only these activities ask the learner to change and re-submit an answer.
+// Review/view activities (such as flashcards) complete through their own
+// interaction and must never be presented as an answer retry.
+const RETRYABLE_COMPONENT_TYPES = new Set([
+  'mcq',
+  'dropdown',
+  'true_false',
+  'fill_in_the_blank',
+  'match_column',
+  'open_input',
+  'writing_table',
+]);
 
 export default function ComponentModePlay() {
   const { courseId, unitId, lessonId, modeId } = useParams<{
@@ -573,8 +586,12 @@ export default function ComponentModePlay() {
       typeof currentWritingReview?.modelAnswer === 'string' &&
       !isComponentComplete(currentComp),
   );
+  const currentComponentSupportsRetry = Boolean(
+    currentComp && RETRYABLE_COMPONENT_TYPES.has(currentComp.componentType),
+  );
   const needsFreshRetryResponse = Boolean(
     currentComp &&
+      currentComponentSupportsRetry &&
       currentComp.attempt?.status === 'submitted' &&
       !isComponentComplete(currentComp) &&
       !canRevealCurrentWritingModelAnswer &&
@@ -829,6 +846,15 @@ export default function ComponentModePlay() {
                 }
                 
                 if (!canAdvanceFromCurrent && currentComp) {
+                  // Flashcards submit their completion automatically once all
+                  // cards have been revealed. They are review activities, not
+                  // answer attempts, so a generic retry action is both
+                  // misleading and unable to do anything useful.
+                  if (currentComp.componentType === 'flashcards') {
+                    toast.info('Reveal every flashcard to continue.');
+                    return;
+                  }
+
                   if (currentComp.completionRule === 'on_view') {
                     setIsSubmittingMode(true);
                     try {
