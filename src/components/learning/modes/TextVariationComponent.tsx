@@ -47,6 +47,10 @@ export default function TextVariationComponent({ component, groupedComponents }:
     const instruction = typeof content.instruction === 'string' ? content.instruction : '';
     const monitor = content.monitor as any;
     const narration = content.narration as Record<string, unknown> | undefined;
+    const writingPrompt =
+      narration && typeof narration.writingPrompt === 'string'
+        ? narration.writingPrompt
+        : '';
     const vocabulary = Array.isArray(content.vocabulary) ? content.vocabulary : [];
 
     return (
@@ -57,16 +61,14 @@ export default function TextVariationComponent({ component, groupedComponents }:
         </div>
         
         <div className="flex flex-col gap-5">
-          {narration && (
-            <div className="flex flex-col gap-4 rounded-[14px] border border-[#E2E8F0] bg-[#F8FAFC] p-5">
-              <h3 className="text-[16px] font-bold text-[#0F172A]">{typeof narration.heading === 'string' ? narration.heading : 'Narration'}</h3>
-              {typeof narration.closeReadDirection === 'string' && <div><p className="text-[14px] font-bold text-[#334155]">Close Read Direction</p><p className="mt-1 text-[14px] leading-relaxed text-[#475569]">{narration.closeReadDirection}</p></div>}
-              {typeof narration.writingPrompt === 'string' && <div><p className="text-[14px] font-bold text-[#334155]">Writing Prompt</p><p className="mt-1 text-[14px] leading-relaxed text-[#475569]">{narration.writingPrompt}</p></div>}
-              {typeof narration.fullTextReviewNote === 'string' && <div><p className="text-[14px] font-bold text-[#334155]">Optional Full Text Review</p><p className="mt-1 text-[14px] leading-relaxed text-[#475569]">{narration.fullTextReviewNote}</p></div>}
+          {writingPrompt && (
+            <div className="rounded-[14px] border border-[#E2E8F0] bg-[#F8FAFC] p-5">
+              <p className="text-[14px] font-bold text-[#334155]">Writing Prompt</p>
+              <p className="mt-1 text-[14px] leading-relaxed text-[#475569]">{writingPrompt}</p>
             </div>
           )}
 
-          {!narration && scenario && (
+          {!writingPrompt && scenario && (
             <div className="rounded-[14px] bg-[#F8FAFC] border border-[#E2E8F0] p-5">
               <p className="text-[14px] leading-relaxed text-[#475569]">{scenario}</p>
             </div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Sparkles, CheckCircle2, Copy, Star, Eye, FileText, Pen, Link, Target, Terminal } from 'lucide-react';
+import { Sparkles, CheckCircle2, Copy, Star, FileText, Pen, Link, Target, Terminal } from 'lucide-react';
 import { LearningComponent } from '@/services/learningService';
 
 interface SemanticReviewComponentProps {
@@ -11,7 +11,6 @@ interface SemanticReviewComponentProps {
   defaultText?: string;
   reviewFeedback?: Record<string, unknown> | null;
   showModelAnswer?: boolean;
-  onViewModelAnswer?: () => Promise<void> | void;
 }
 
 export default function SemanticReviewComponent({
@@ -23,7 +22,6 @@ export default function SemanticReviewComponent({
   defaultText = '',
   reviewFeedback = null,
   showModelAnswer = false,
-  onViewModelAnswer,
 }: SemanticReviewComponentProps) {
   const prompt =
     component.content?.prompt ||
@@ -49,7 +47,6 @@ export default function SemanticReviewComponent({
   });
 
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [isRevealingModelAnswer, setIsRevealingModelAnswer] = useState(false);
   const [feedback, setFeedback] = useState<any>(() => {
     if (reviewFeedback) {
       return reviewFeedback;
@@ -102,25 +99,6 @@ export default function SemanticReviewComponent({
       console.error('Semantic review error:', err);
     } finally {
       setIsAnalyzing(false);
-    }
-  };
-
-  const handleViewModelAnswer = async () => {
-    if (isRevealingModelAnswer) return;
-    if (!onViewModelAnswer) {
-      setViewState('model_answer');
-      return;
-    }
-
-    setIsRevealingModelAnswer(true);
-    try {
-      await onViewModelAnswer();
-    } catch (error) {
-      // The page-level handler presents the learner-safe API error. Catching
-      // here prevents repeated clicks from producing unhandled promises.
-      console.error('Unable to reveal writing model answer:', error);
-    } finally {
-      setIsRevealingModelAnswer(false);
     }
   };
 
@@ -304,17 +282,6 @@ export default function SemanticReviewComponent({
               )}
             </div>
 
-            {/* View System Model Answer Button */}
-            {typeof modelAnswerText === 'string' && modelAnswerText.trim() && (
-              <button
-                type="button"
-                onClick={() => void handleViewModelAnswer()}
-                disabled={isRevealingModelAnswer}
-                className="mt-2 w-full bg-[#4F8DFB] hover:bg-[#3B82F6] active:scale-[0.99] text-white font-bold text-[14px] py-4 rounded-full flex items-center justify-center gap-2 transition-all shadow-sm disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                <Eye className="w-4 h-4" /> {isRevealingModelAnswer ? 'Opening Model Answer...' : 'View System Model Answer'}
-              </button>
-            )}
           </div>
         ) : (
           <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
