@@ -46,6 +46,8 @@ export default function TextVariationComponent({ component, groupedComponents }:
     const scenario = typeof content.scenario === 'string' ? content.scenario : '';
     const instruction = typeof content.instruction === 'string' ? content.instruction : '';
     const monitor = content.monitor as any;
+    const narration = content.narration as Record<string, unknown> | undefined;
+    const vocabulary = Array.isArray(content.vocabulary) ? content.vocabulary : [];
 
     return (
       <section className="rounded-[18px] border border-[#E2E8F0] bg-white p-6 md:p-8 shadow-sm font-['Outfit',sans-serif]">
@@ -55,7 +57,16 @@ export default function TextVariationComponent({ component, groupedComponents }:
         </div>
         
         <div className="flex flex-col gap-5">
-          {scenario && (
+          {narration && (
+            <div className="flex flex-col gap-4 rounded-[14px] border border-[#E2E8F0] bg-[#F8FAFC] p-5">
+              <h3 className="text-[16px] font-bold text-[#0F172A]">{typeof narration.heading === 'string' ? narration.heading : 'Narration'}</h3>
+              {typeof narration.closeReadDirection === 'string' && <div><p className="text-[14px] font-bold text-[#334155]">Close Read Direction</p><p className="mt-1 text-[14px] leading-relaxed text-[#475569]">{narration.closeReadDirection}</p></div>}
+              {typeof narration.writingPrompt === 'string' && <div><p className="text-[14px] font-bold text-[#334155]">Writing Prompt</p><p className="mt-1 text-[14px] leading-relaxed text-[#475569]">{narration.writingPrompt}</p></div>}
+              {typeof narration.fullTextReviewNote === 'string' && <div><p className="text-[14px] font-bold text-[#334155]">Optional Full Text Review</p><p className="mt-1 text-[14px] leading-relaxed text-[#475569]">{narration.fullTextReviewNote}</p></div>}
+            </div>
+          )}
+
+          {!narration && scenario && (
             <div className="rounded-[14px] bg-[#F8FAFC] border border-[#E2E8F0] p-5">
               <p className="text-[14px] leading-relaxed text-[#475569]">{scenario}</p>
             </div>
@@ -63,6 +74,19 @@ export default function TextVariationComponent({ component, groupedComponents }:
           
           {instruction && (
             <p className="text-[15px] font-medium text-[#334155]">{instruction}</p>
+          )}
+
+          {vocabulary.length > 0 && (
+            <div className="rounded-[14px] border border-[#DBEAFE] bg-[#EFF6FF] p-5">
+              <h3 className="mb-3 text-[15px] font-bold text-[#1D4ED8]">Words You Can Use</h3>
+              <ul className="flex flex-col gap-2.5">
+                {vocabulary.map((entry: any, index: number) => (
+                  <li key={`${entry?.term || 'word'}-${index}`} className="text-[13px] leading-relaxed text-[#1E3A8A]">
+                    <strong className="font-bold">{entry?.term}:</strong> {entry?.definition}
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
 
           {monitor && (

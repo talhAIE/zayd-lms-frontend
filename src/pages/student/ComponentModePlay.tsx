@@ -583,8 +583,7 @@ export default function ComponentModePlay() {
       currentComp.componentType === 'open_input' &&
       currentComp.content?.presentation === 'compiled_paragraph' &&
       typeof currentWritingReview?.submissionId === 'string' &&
-      typeof currentWritingReview?.modelAnswer === 'string' &&
-      !isComponentComplete(currentComp),
+      typeof currentWritingReview?.modelAnswer === 'string',
   );
   const currentComponentSupportsRetry = Boolean(
     currentComp && RETRYABLE_COMPONENT_TYPES.has(currentComp.componentType),
@@ -745,7 +744,11 @@ export default function ComponentModePlay() {
                     }
                     reviewFeedback={writingReviewFeedback[comp.id]}
                     showModelAnswer={modelAnswerComponentId === comp.id}
-                    onViewModelAnswer={() => handleWritingModelAnswerReveal(comp)}
+                    onViewModelAnswer={
+                      canRevealCurrentWritingModelAnswer
+                        ? () => handleWritingModelAnswerReveal(comp)
+                        : undefined
+                    }
                     isSubmitted={
                       isWritingParagraph
                         ? isTerminal || Boolean(writingReviewFeedback[comp.id])
