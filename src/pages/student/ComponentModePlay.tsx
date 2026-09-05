@@ -584,7 +584,7 @@ export default function ComponentModePlay() {
       currentComp.content?.presentation === 'compiled_paragraph' &&
       typeof currentWritingReview?.submissionId === 'string' &&
       typeof currentWritingReview?.modelAnswer === 'string' &&
-      !isComponentComplete(currentComp),
+      modelAnswerComponentId !== currentComp.id,
   );
   const currentComponentSupportsRetry = Boolean(
     currentComp && RETRYABLE_COMPONENT_TYPES.has(currentComp.componentType),
@@ -745,7 +745,6 @@ export default function ComponentModePlay() {
                     }
                     reviewFeedback={writingReviewFeedback[comp.id]}
                     showModelAnswer={modelAnswerComponentId === comp.id}
-                    onViewModelAnswer={() => handleWritingModelAnswerReveal(comp)}
                     isSubmitted={
                       isWritingParagraph
                         ? isTerminal || Boolean(writingReviewFeedback[comp.id])
@@ -964,15 +963,17 @@ export default function ComponentModePlay() {
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : null}
               <span>
-                {!canAdvanceFromCurrent
+                {canRevealCurrentWritingModelAnswer
+                  ? isSubmittingMode
+                    ? 'Opening Model Answer...'
+                    : 'View System Model Answer'
+                  : !canAdvanceFromCurrent
                   ? isSubmittingMode
                     ? 'Submitting...'
                     : needsFreshRetryResponse
                     ? currentComp?.componentType === 'match_column'
                       ? 'Build New Matches'
                       : 'Choose Another Answer'
-                    : canRevealCurrentWritingModelAnswer
-                    ? 'View System Model Answer'
                     : currentComp?.componentType === 'match_column'
                     ? 'Submit Matches'
                     : (currentComp && !['mcq', 'dropdown', 'open_input', 'true_false', 'fill_in_the_blank', 'writing_table', 'reflection'].includes(currentComp.componentType) ? 'Continue' : 'Check Answer')

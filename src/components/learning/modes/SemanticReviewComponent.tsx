@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Sparkles, CheckCircle2, Copy, Star, Eye, FileText, Pen, Link, Target, Terminal } from 'lucide-react';
+import { Sparkles, CheckCircle2, Copy, Star, FileText, Pen, Link, Target, Terminal } from 'lucide-react';
 import { LearningComponent } from '@/services/learningService';
 
 interface SemanticReviewComponentProps {
@@ -11,7 +11,6 @@ interface SemanticReviewComponentProps {
   defaultText?: string;
   reviewFeedback?: Record<string, unknown> | null;
   showModelAnswer?: boolean;
-  onViewModelAnswer?: () => Promise<void> | void;
 }
 
 export default function SemanticReviewComponent({
@@ -23,7 +22,6 @@ export default function SemanticReviewComponent({
   defaultText = '',
   reviewFeedback = null,
   showModelAnswer = false,
-  onViewModelAnswer,
 }: SemanticReviewComponentProps) {
   const prompt =
     component.content?.prompt ||
@@ -115,6 +113,9 @@ export default function SemanticReviewComponent({
   if (presentation === 'compiled_paragraph') {
     const buildHeading = component.content?.buildHeading || 'Build My Paragraph';
     const buildButtonLabel = component.content?.buildButtonLabel || 'Confirm and Build My Paragraph';
+    const outputHeading = component.content?.outputHeading || 'Your Compiled Paragraph';
+    const writingAnalysisHeading = component.content?.feedback?.heading || 'Zayd AI Evaluation';
+    const modelAnswerHeading = component.content?.modelAnswer?.sectionHeading || 'Ideal Model Answer';
     const modelAnswerText =
       typeof feedback === 'object' && feedback !== null
         ? feedback.modelAnswer || feedback.correctAnswer
@@ -197,7 +198,7 @@ export default function SemanticReviewComponent({
           <div className="flex items-center justify-between px-5 py-4 border-b border-[#E2E8F0]">
             <div className="flex items-center gap-2 font-bold text-[#0F172A] text-[15px]">
                <FileText className="w-4 h-4 text-[#94A3B8]" />
-               Your Compiled Paragraph
+               {outputHeading}
             </div>
             <button className="flex items-center gap-1.5 text-[12px] font-medium text-[#64748B] hover:text-[#0F172A] transition-colors border border-[#E2E8F0] rounded-md px-2.5 py-1">
               <Copy className="w-3 h-3" /> Copy
@@ -217,7 +218,7 @@ export default function SemanticReviewComponent({
                     <Sparkles className="w-6 h-6 text-[#D97706] fill-[#D97706]" />
                  </div>
                  <div className="flex flex-col gap-1.5">
-                   <h3 className="text-[18px] font-bold text-[#0F172A]">Zayd AI Evaluation</h3>
+                   <h3 className="text-[18px] font-bold text-[#0F172A]">{writingAnalysisHeading}</h3>
                    <span className="text-[10px] font-bold text-[#059669] bg-[#D1FAE5] px-2 py-0.5 rounded-full uppercase tracking-wider w-fit">Comprehensive Scan Complete</span>
                  </div>
                </div>
@@ -281,16 +282,6 @@ export default function SemanticReviewComponent({
               )}
             </div>
 
-            {/* View System Model Answer Button */}
-            {typeof modelAnswerText === 'string' && modelAnswerText.trim() && !onViewModelAnswer && (
-              <button
-                type="button"
-                onClick={() => setViewState('model_answer')}
-                className="mt-2 w-full bg-[#4F8DFB] hover:bg-[#3B82F6] active:scale-[0.99] text-white font-bold text-[14px] py-4 rounded-full flex items-center justify-center gap-2 transition-all shadow-sm"
-              >
-                <Eye className="w-4 h-4" /> View System Model Answer
-              </button>
-            )}
           </div>
         ) : (
           <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -300,7 +291,7 @@ export default function SemanticReviewComponent({
                 <div className="w-6 h-6 rounded-md bg-[#F59E0B] flex items-center justify-center">
                   <Star className="w-3.5 h-3.5 text-white fill-white" />
                 </div>
-                <h3 className="text-[16px] font-bold text-[#0F172A]">Ideal Model Answer</h3>
+                <h3 className="text-[16px] font-bold text-[#0F172A]">{modelAnswerHeading}</h3>
               </div>
               <p className="text-[14px] text-[#0F172A] leading-relaxed">
                 {modelAnswerText}
