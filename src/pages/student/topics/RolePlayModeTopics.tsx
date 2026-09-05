@@ -310,6 +310,7 @@ export default function RolePlayModeTopics() {
                 title="Roleplay Scenario"
                 content={contentPayload.passage || contentPayload.content || contentPayload.scenario || ''}
                 audioUrl={contentPayload.contentAudioUrl || contentPayload.narrationAudioUrl || contentPayload.attachmentUrl}
+                readingPresentation={contentPayload.readingPresentation}
                 isPlaying={playingAudioId === 'roleplay-scenario' && isCurrentlyPlaying}
                 onToggleAudio={() =>
                   toggleAudio(

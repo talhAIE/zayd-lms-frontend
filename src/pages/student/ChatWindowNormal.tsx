@@ -34,7 +34,7 @@ import {
 import QuestionnaireModal from "@/components/ui/QuestionaireModal";
 import { Progress } from "@/components/ui/progress";
 import AudioPlayer from "./AudioPlayer";
-import ReadingPassageCard from "@/components/ui/ReadingPassageCard";
+import ReadingPassageCard, { type ReadingPassagePresentation } from "@/components/ui/ReadingPassageCard";
 
 interface McqAnswer {
   questionId: string;
@@ -152,6 +152,7 @@ interface ServerToClientEvents {
     contentPayload: {
       content: string;
       contentAudioUrl: string;
+      readingPresentation?: ReadingPassagePresentation;
     };
   }) => void;
   [ChatEvents.ACCOUNT_BLOCKED]: (payload: {
@@ -379,6 +380,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   const [contentPayload, setContentPayload] = useState<{
     content: string;
     audioUrl: string;
+    readingPresentation?: ReadingPassagePresentation;
   } | null>(null);
   const [isContentExpanded, setIsContentExpanded] = useState(false);
   const [shouldShowExpandButton, setShouldShowExpandButton] = useState(false);
@@ -857,7 +859,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       logger.receiving(ChatEvents.CONTENT_PAYLOAD, payload);
       const { contentPayload: data } = payload;
       if (data) {
-        const { content, contentAudioUrl } = data;
+        const { content, contentAudioUrl, readingPresentation } = data;
         if (
           (mode === "reading-mode" ||
             mode === "roleplay-mode" ||
@@ -865,7 +867,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
           content &&
           contentAudioUrl
         ) {
-          setContentPayload({ content, audioUrl: contentAudioUrl });
+          setContentPayload({ content, audioUrl: contentAudioUrl, readingPresentation });
         }
       }
     });
@@ -2013,6 +2015,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               <ReadingPassageCard
                 content={contentPayload.content}
                 audioUrl={contentPayload.audioUrl}
+                readingPresentation={contentPayload.readingPresentation}
                 isPlaying={
                   playingAudioId === "content-payload-audio" &&
                   isCurrentlyPlaying
