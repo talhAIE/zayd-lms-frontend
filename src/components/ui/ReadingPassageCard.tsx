@@ -25,27 +25,8 @@ interface ReadingPassageCardProps {
   title?: string;
   collapsibleMode?: 'see-more' | 'accordion';
   readingPresentation?: ReadingPassagePresentation;
+  showAudioControl?: boolean;
 }
-
-const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-const renderHighlightedText = (text: string, vocabularyTerms: string[]) => {
-  const terms = [...new Set(vocabularyTerms.map((term) => term.trim()).filter(Boolean))]
-    .sort((a, b) => b.length - a.length);
-
-  if (terms.length === 0) return text;
-
-  const expression = new RegExp(`(${terms.map(escapeRegExp).join('|')})`, 'gi');
-  return text.split(expression).map((part, index) =>
-    terms.some((term) => part.toLocaleLowerCase() === term.toLocaleLowerCase()) ? (
-      <mark key={index} className="bg-yellow-300 px-0.5 font-semibold text-inherit">
-        {part}
-      </mark>
-    ) : (
-      <React.Fragment key={index}>{part}</React.Fragment>
-    ),
-  );
-};
 
 const inferConversationBlocks = (content: string): ReadingPassageBlock[] | null => {
   const lines = content.split(/\n+/).map((line) => line.trim()).filter(Boolean);
@@ -69,6 +50,7 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
   title = 'Reading Passage',
   collapsibleMode = 'see-more',
   readingPresentation,
+  showAudioControl = Boolean(audioUrl),
 }) => {
   const [isExpanded, setIsExpanded] = React.useState(collapsibleMode === 'accordion' ? false : false);
   const [shouldShowExpandButton, setShouldShowExpandButton] = React.useState(false);
@@ -100,7 +82,6 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
     }
   };
 
-  const vocabularyTerms = readingPresentation?.vocabularyTerms ?? [];
   const suppliedBlocks = readingPresentation?.blocks?.filter((block) => block.text?.trim()) ?? [];
   const inferredConversation = suppliedBlocks.length === 0
     ? inferConversationBlocks(content)
@@ -150,7 +131,7 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
           </div>
         )}
 
-        {audioUrl && onToggleAudio && (
+        {showAudioControl && onToggleAudio && (
           <button
             type="button"
             onClick={() => {
@@ -178,9 +159,6 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
               (collapsibleMode === 'see-more' && !isExpanded && !forceExpanded) ? 'line-clamp-3' : 'line-clamp-none'
             }`}
           >
-            {readingPresentation?.heading && (
-              <p className="mb-1 font-semibold">{readingPresentation.heading}</p>
-            )}
             {readingPresentation?.title && (
               <h3 className="mb-0.5 text-[16px] font-bold leading-6">{readingPresentation.title}</h3>
             )}
@@ -192,14 +170,14 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
                 {blocks.map((block, index) => (
                   <p key={`${block.speaker ?? 'line'}-${index}`}>
                     {block.speaker && <strong>{block.speaker}: </strong>}
-                    {renderHighlightedText(block.text ?? '', vocabularyTerms)}
+                    {block.text}
                   </p>
                 ))}
               </div>
             ) : (
               <div className="space-y-4">
                 {paragraphContent.map((paragraph, index) => (
-                  <p key={index}>{renderHighlightedText(paragraph, vocabularyTerms)}</p>
+                  <p key={index}>{paragraph}</p>
                 ))}
               </div>
             )}
