@@ -212,6 +212,36 @@ export default function ReadingModeTopics() {
     : `${getProgressPercentage()}% Complete`;
 
   const isChatActive = !step1Active && (!mcqList || mcqList.length === 0);
+  const readingPassageText = (() => {
+    const blocks = contentPayload?.readingPresentation?.blocks;
+    if (Array.isArray(blocks) && blocks.length > 0) {
+      return blocks
+        .map((block: { speaker?: string; text?: string }) =>
+          block.text ? `${block.speaker ? `${block.speaker}: ` : ''}${block.text}` : '',
+        )
+        .filter(Boolean)
+        .join('\n');
+    }
+
+    if (typeof contentPayload?.passage === 'string') return contentPayload.passage;
+    if (typeof contentPayload?.content === 'string') return contentPayload.content;
+    if (Array.isArray(contentPayload?.sentences)) return contentPayload.sentences.join('\n');
+    return '';
+  })();
+
+  const togglePassageAudio = () => {
+    const audioUrl = contentPayload?.contentAudioUrl || contentPayload?.narrationAudioUrl || contentPayload?.attachmentUrl;
+    if (audioUrl) {
+      if (fallbackSpeechMessageId === 'reading-passage-fallback') {
+        window.speechSynthesis.cancel();
+        setFallbackSpeechMessageId(null);
+      }
+      toggleAudio('reading-passage', audioUrl);
+      return;
+    }
+
+    toggleInitialReadingPromptSpeech('reading-passage-fallback', readingPassageText);
+  };
 
   return (
     <div className="w-full max-w-[1207px] mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)] border border-gray-100 shadow-sm relative">
@@ -408,13 +438,9 @@ export default function ReadingModeTopics() {
                 content={contentPayload.passage || contentPayload.content || (contentPayload.sentences ? contentPayload.sentences.join('\n\n') : '')}
                 audioUrl={contentPayload.contentAudioUrl || contentPayload.narrationAudioUrl || contentPayload.attachmentUrl}
                 readingPresentation={contentPayload.readingPresentation}
-                isPlaying={playingAudioId === 'reading-passage' && isCurrentlyPlaying}
-                onToggleAudio={() =>
-                  toggleAudio(
-                    'reading-passage',
-                    contentPayload.contentAudioUrl || contentPayload.narrationAudioUrl || contentPayload.attachmentUrl,
-                  )
-                }
+                showAudioControl={Boolean(readingPassageText)}
+                isPlaying={(playingAudioId === 'reading-passage' && isCurrentlyPlaying) || fallbackSpeechMessageId === 'reading-passage-fallback'}
+                onToggleAudio={togglePassageAudio}
                 onExpand={() => setIsPassageExpanded(true)}
                 forceExpanded={step1Active}
                 collapsibleMode="accordion"
