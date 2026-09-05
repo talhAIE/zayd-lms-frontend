@@ -19,7 +19,21 @@ export default function FlashcardsComponent({ component, onSubmit, isSubmitted =
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [viewedCards, setViewedCards] = useState<Set<string>>(new Set());
+  // Preserve a previously submitted review set. This lets a learner continue
+  // correctly when older content is repaired server-side, instead of forcing
+  // them to flip every card again just to re-submit the same review.
+  const [viewedCards, setViewedCards] = useState<Set<string>>(() => {
+    const previouslyViewed = component.attempt?.response?.viewedCardIds;
+    if (!Array.isArray(previouslyViewed)) return new Set();
+
+    const validCardIds = new Set(cards.map((card) => card.id));
+    return new Set(
+      previouslyViewed.filter(
+        (cardId): cardId is string =>
+          typeof cardId === 'string' && validCardIds.has(cardId),
+      ),
+    );
+  });
   const hasSubmittedCompletionRef = useRef(false);
   const currentCard = cards[currentIndex] || cards[0];
 
