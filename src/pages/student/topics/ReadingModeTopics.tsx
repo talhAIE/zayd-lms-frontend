@@ -243,6 +243,14 @@ export default function ReadingModeTopics() {
     toggleInitialReadingPromptSpeech('reading-passage-fallback', readingPassageText);
   };
 
+  const initialReadingSentence =
+    !step1Active &&
+    chatHistory.length === 0 &&
+    readingProgress?.phase === 'reading' &&
+    Array.isArray(contentPayload?.sentences)
+      ? contentPayload.sentences[readingProgress.currentSentenceIndex] ?? null
+      : null;
+
   return (
     <div className="w-full max-w-[1207px] mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)] border border-gray-100 shadow-sm relative">
       
@@ -474,6 +482,30 @@ export default function ReadingModeTopics() {
                   Read each sentence from the passage aloud using the microphone.
                 </div>
               </div>
+              {initialReadingSentence && (
+                <div className="flex flex-col items-start gap-2 w-full mt-2">
+                  <div className="px-4 py-3 max-w-[85%] text-left bg-white border border-[#E5E7EB] shadow-sm rounded-tr-xl rounded-br-xl rounded-bl-xl rounded-tl-sm">
+                    <div className="text-[13px] leading-[18px] text-[#0F1450] whitespace-pre-wrap break-words">
+                      <p>Please read the following sentence aloud:</p>
+                      <p className="mt-2">&quot;{initialReadingSentence}&quot;</p>
+                    </div>
+                    <div className="mt-3 flex items-center gap-4 border-t border-[#E5E7EB] pt-2.5">
+                      <button
+                        type="button"
+                        onClick={() => toggleInitialReadingPromptSpeech('reading-initial-prompt', initialReadingSentence)}
+                        className="flex items-center text-[#0F1450] hover:text-[#5C9DFF] transition-colors"
+                        aria-label={fallbackSpeechMessageId === 'reading-initial-prompt' ? 'Pause initial reading prompt' : 'Play initial reading prompt'}
+                      >
+                        {fallbackSpeechMessageId === 'reading-initial-prompt' ? (
+                          <Pause className="w-5 h-5" />
+                        ) : (
+                          <Play className="w-5 h-5" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
               {chatHistory.map((msg, index) => (
                 (() => {
                   const hasInitialReadingFallback =
