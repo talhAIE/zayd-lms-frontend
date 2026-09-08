@@ -16,6 +16,14 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
   user,
 }) => {
   const certificateRef = useRef<HTMLDivElement>(null);
+  const studentName = [user?.firstName, user?.lastName]
+    .filter((name): name is string => typeof name === 'string' && name.trim().length > 0)
+    .join(' ')
+    || user?.name
+    || user?.username
+    || 'Student Name';
+  const certificateFilePart = (value: string) =>
+    value.trim().replace(/[^a-z0-9]+/gi, '_').replace(/^_+|_+$/g, '');
 
   if (!isOpen || !course) return null;
 
@@ -25,7 +33,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
       await document.fonts.ready;
       const canvas = await html2canvas(certificateRef.current, { scale: 2 });
       const link = document.createElement("a");
-      link.download = `${course.title.replace(/\s+/g, "_")}_Certificate.png`;
+      link.download = `${certificateFilePart(studentName)}_${certificateFilePart(course.title || 'Course')}_${certificateFilePart(course.code || 'Course')}_Certificate.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
     } catch (err) {
@@ -143,14 +151,14 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             <div className="flex flex-col items-center mb-6 w-full px-4">
               {/* BLUE NAME */}
               <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-[800] text-[#2563EB] mb-2 leading-tight break-words max-w-full">
-                {user?.name || user?.username || "Student Name"}
+                {studentName}
               </h2>
             </div>
 
             <p className="text-[#555555] text-sm sm:text-base md:text-[17px] font-medium max-w-2xl mx-auto mb-6 leading-relaxed px-4">
               for consistently showing outstanding effort, curiosity, and
               dedication at Zayd AI Learning. We applaud{" "}
-              {user?.name || user?.username || "them"} for being a shining role
+              {studentName} for being a shining role
               model in the virtual classroom and beyond.
             </p>
 

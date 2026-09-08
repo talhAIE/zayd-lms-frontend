@@ -25,6 +25,7 @@ export interface Mcq {
 }
 
 export interface ReadingProgress {
+  hasListenedToPassage: boolean;
   phase: 'reading' | 'quiz' | 'completed';
   currentSentenceIndex: number;
   totalSentences: number;
@@ -425,6 +426,13 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     socket.emit('next_listening_stage', { modeSessionId: modeSessionIdRef.current });
   }, [socket, isAccountBlocked]);
 
+  const markReadingPassageListened = useCallback(() => {
+    if (!socket || !modeSessionIdRef.current || isAccountBlocked) return;
+    socket.emit('reading_passage_listened', {
+      modeSessionId: modeSessionIdRef.current,
+    });
+  }, [socket, isAccountBlocked]);
+
   const restartSession = useCallback(() => {
     if (!socket || !lessonModeId || isAccountBlocked) return;
     setChatHistory([]);
@@ -465,6 +473,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     submitMcqs,
     startListening,
     nextListeningStage,
+    markReadingPassageListened,
     restartSession
   };
 }

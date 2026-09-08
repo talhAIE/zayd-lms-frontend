@@ -2,6 +2,25 @@ import { useEffect, useRef, useState } from 'react';
 import { Check, X } from 'lucide-react';
 import { LearningComponent } from '@/services/learningService';
 
+function emphasizedText(value: string, terms: unknown) {
+  const normalizedTerms = Array.isArray(terms)
+    ? [...new Set(terms.filter((term): term is string => typeof term === 'string' && term.trim().length > 0).map((term) => term.trim()))]
+    : [];
+  if (!normalizedTerms.length) return value;
+
+  const pattern = normalizedTerms
+    .sort((left, right) => right.length - left.length)
+    .map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('|');
+  if (!pattern) return value;
+
+  return value.split(new RegExp(`(${pattern})`, 'gi')).map((part, index) =>
+    normalizedTerms.some((term) => term.toLocaleLowerCase() === part.toLocaleLowerCase())
+      ? <strong key={`${part}-${index}`} className="font-bold text-[#0F172A]">{part}</strong>
+      : part,
+  );
+}
+
 interface MCQComponentProps {
   component: LearningComponent;
   onAnswerChange?: (selectedOptionValue: string) => void;
@@ -9,6 +28,14 @@ interface MCQComponentProps {
   isSubmitted?: boolean;
   disabled?: boolean;
 }
+
+const CONCRETE_NOUN_PROMPT = 'Which bold noun is a concrete noun?';
+const CONCRETE_NOUN_OPTION_EMPHASIS = [
+  ['flowers'],
+  ['caring'],
+  ['anger'],
+  ['friendship'],
+];
 
 export default function MCQComponent({
   component,
@@ -20,6 +47,15 @@ export default function MCQComponent({
   const prompt = component.content?.prompt || component.title || component.description || '';
   
   const rawOptions = component.options || component.content?.options || [];
+  // Older published American Grade 7 content predates option-level emphasis
+  // metadata. Retain this narrowly-scoped fallback until its safe content
+  // migration has been applied, while letting all future authored content use
+  // the backend-provided optionEmphasisTerms contract.
+  const optionEmphasisTerms = Array.isArray(component.content?.optionEmphasisTerms)
+    ? component.content.optionEmphasisTerms
+    : component.content?.prompt === CONCRETE_NOUN_PROMPT
+      ? CONCRETE_NOUN_OPTION_EMPHASIS
+      : [];
 
   const options = rawOptions.map((opt: any, index: number) => {
     const label = typeof opt === 'string' ? opt : opt.label || opt.text || '';
@@ -34,6 +70,7 @@ export default function MCQComponent({
       label: cleanedLabel,
       value: id,
       id,
+      emphasisTerms: optionEmphasisTerms[index],
     };
   });
 
@@ -95,7 +132,7 @@ export default function MCQComponent({
 
       {/* Options List */}
       <div className="flex flex-col gap-3.5">
-        {options.map((opt: { prefix: string; label: string; value: string; id: string }) => {
+        {options.map((opt: { prefix: string; label: string; value: string; id: string; emphasisTerms: unknown }) => {
           const isSelected = selectedValue === opt.value;
           
           let containerStyle = 'border-[#E2E8F0] bg-white text-[#64748B] hover:border-[#94A3B8] hover:bg-[#F8FAFC]';
@@ -129,7 +166,7 @@ export default function MCQComponent({
             >
               <div className="flex items-center gap-3">
                 <span className={`text-[15px] md:text-[16px] ${textStyle}`}>
-                  <span className="font-bold mr-1.5">{opt.prefix}.</span> {opt.label}
+                  <span className="font-bold mr-1.5">{opt.prefix}.</span> {emphasizedText(opt.label, opt.emphasisTerms)}
                 </span>
               </div>
 

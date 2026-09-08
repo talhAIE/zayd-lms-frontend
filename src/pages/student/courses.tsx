@@ -11,6 +11,12 @@ export default function StudentCourses() {
   const { courses, loading, error } = useSelector((state: RootState) => state.learning);
   const { user } = useSelector((state: RootState) => state.auth);
   const [selectedCertificateCourse, setSelectedCertificateCourse] = useState<any>(null);
+  const studentName = [user?.firstName, user?.lastName]
+    .filter((name): name is string => typeof name === 'string' && name.trim().length > 0)
+    .join(' ')
+    || user?.name
+    || user?.username
+    || 'Student';
 
   const inProgressCount = courses.filter(c => c.progressStatus === 'in_progress').length;
 
@@ -23,7 +29,7 @@ export default function StudentCourses() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-[28px] font-bold text-[#282828] leading-[35px] tracking-[-0.5px]">
-            Hi {user?.name || 'Student'} 👋
+            Hi {studentName} 👋
           </h1>
           <p className="text-[15px] text-[#949494] leading-[19px]">
             Select a course to resume your learning. {inProgressCount} course{inProgressCount !== 1 && 's'} in progress.

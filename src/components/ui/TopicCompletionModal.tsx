@@ -33,33 +33,29 @@ export const TopicCompletionModal: React.FC<TopicCompletionModalProps> = ({
             Topic Completed!
           </h3>
           <p className="text-[14px] leading-[20px] text-[#6E748F] px-2">
-            {isJustCompleted 
-              ? "You have successfully completed this topic. Great job!" 
-              : "You have already finished this topic. Would you like to reset your lesson and start over?"}
+            {isJustCompleted
+              ? "You have successfully completed this activity. You can finish now or reset it to practise again."
+              : "You have already completed this activity. You can finish now or reset it to practise again."}
           </p>
         </div>
 
         {/* Actions */}
         <div className="w-full pt-1 flex flex-col gap-3">
-          {isJustCompleted ? (
+          {onFinish && (
             <button
               onClick={onFinish}
               className="w-full py-3 px-4 bg-[#5C9DFF] text-white rounded-full font-semibold text-[14px] hover:bg-[#4A8BEB] transition-colors flex items-center justify-center gap-2 shadow-sm"
             >
               <span>Finish</span>
             </button>
-          ) : (
-            <>
-
-              <button
-                onClick={onRetake}
-                className="w-full py-3 px-4 bg-[#5C9DFF] text-white rounded-full font-semibold text-[14px] hover:bg-[#4A8BEB] transition-colors flex items-center justify-center gap-2 shadow-sm"
-              >
-                <RotateCcw className="w-4 h-4 text-white" />
-                <span>Reset Lesson</span>
-              </button>
-            </>
           )}
+          <button
+            onClick={onRetake}
+            className="w-full py-3 px-4 border border-[#5C9DFF] bg-white text-[#4A8BEB] rounded-full font-semibold text-[14px] hover:bg-[#EFF6FF] transition-colors flex items-center justify-center gap-2 shadow-sm"
+          >
+            <RotateCcw className="w-4 h-4" />
+            <span>Reset Lesson</span>
+          </button>
         </div>
       </div>
     </div>
