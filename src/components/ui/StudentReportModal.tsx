@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -130,9 +131,9 @@ export default function StudentReportModal({
           <DialogTitle className="text-lg sm:text-2xl font-bold text-center mb-2">
             Student Report
           </DialogTitle>
-          <p className="text-center text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">
+          <DialogDescription className="text-center text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">
             A Clear View of Academic Growth
-          </p>
+          </DialogDescription>
         </DialogHeader>
 
         <div

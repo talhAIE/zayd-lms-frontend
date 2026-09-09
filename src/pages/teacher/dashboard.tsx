@@ -1050,12 +1050,12 @@ export default function TeacherDashboard() {
                       </p>
                     )}
                     {visibleColumns.cefrLevel && (
-                      <p>
+                      <div className="flex items-center gap-1">
                         <strong>CEFR Level:</strong>{" "}
-                        <Badge variant="outline" className="ml-1">
+                        <Badge variant="outline">
                           {student.cefrLevel}
                         </Badge>
-                      </p>
+                      </div>
                     )}
                     {visibleColumns.streak && (
                       <p>
