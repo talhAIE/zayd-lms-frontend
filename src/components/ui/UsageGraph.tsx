@@ -68,9 +68,10 @@ interface RevenueGraphProps {
     date: string;
     duration: number;
   }>;
+  periodLabel?: string;
 }
 
-export function RevenueGraph({ usageData }: RevenueGraphProps) {
+export function RevenueGraph({ usageData, periodLabel = "This Month" }: RevenueGraphProps) {
   const maxUsage = usageData ? getCurrentMonthMaxUsage(usageData) : 60;
 
   const chartData =
@@ -87,7 +88,7 @@ export function RevenueGraph({ usageData }: RevenueGraphProps) {
     <Card className="w-full bg-white shadow-sm">
       <CardHeader className="pb-4">
         <CardTitle className="text-lg font-semibold text-gray-800">
-          Usage Graph: {totalMinutes}min Total (This Month)
+          Usage Graph: {totalMinutes}min Total ({periodLabel})
         </CardTitle>
       </CardHeader>
       <CardContent className="p-4">

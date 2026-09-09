@@ -44,11 +44,11 @@ export default function StudentReportModal({
       .join(" ");
   };
 
-  const modelsData = Object.entries(data.topicsByMode).map(
+  const modesData = Object.entries(data.lessonModesByKey).map(
     ([modeKey, modeData]) => ({
       name: formatModeName(modeKey),
-      completeTopics: `${modeData.completed} topics`,
-      incompleteTopics: `${modeData.incomplete} topics`,
+      completedModes: `${modeData.completed} modes`,
+      incompleteModes: `${modeData.incomplete} modes`,
     })
   );
 
@@ -84,19 +84,8 @@ export default function StudentReportModal({
 
     setIsDownloading(true);
     try {
-      // Get teacher ID from localStorage
-      const myUser = localStorage.getItem("AiTutorUser");
-      const parsedUser = JSON.parse(myUser || "{}");
-      const teacherId = parsedUser?.id;
-
-      if (!teacherId) {
-        throw new Error("Teacher ID not found");
-      }
-
-      const result = await generateIndividualStudentPdf(
-        teacherId,
-        studentData.id
-      );
+      // The LMS derives the teacher and assignment scope from the JWT.
+      const result = await generateIndividualStudentPdf(studentData.id);
 
       // Download the PDF file
       const link = document.createElement("a");
@@ -230,7 +219,7 @@ export default function StudentReportModal({
             </Card>
           </div>
 
-          {/* Modes and Topic Completion */}
+          {/* Lesson mode completion */}
           <Card>
             <CardContent className="p-3 sm:p-6">
               <div className="overflow-x-auto -mx-3 sm:mx-0">
@@ -241,23 +230,23 @@ export default function StudentReportModal({
                         MODES
                       </th>
                       <th className="text-center py-3 px-4 font-semibold text-blue-600">
-                        COMPLETE TOPICS
+                        COMPLETED MODES
                       </th>
                       <th className="text-center py-3 px-4 font-semibold text-blue-600">
-                        INCOMPLETE TOPICS
+                        INCOMPLETE MODES
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {modelsData?.map((model, index) => (
+                    {modesData?.map((model, index) => (
                       <tr key={index} className="border-b">
                         <td className="py-3 px-4 font-medium">{model.name}</td>
                         <td className="py-3 px-4 text-center">
-                          {model.completeTopics}
+                          {model.completedModes}
                         </td>
                         <td className="py-3 px-4 text-center">
                           <span className="font-semibold text-blue-600">
-                            {model.incompleteTopics}
+                            {model.incompleteModes}
                           </span>
                         </td>
                       </tr>

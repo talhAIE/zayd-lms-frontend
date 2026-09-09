@@ -9,8 +9,9 @@ interface TeacherDashboardProfileProps {
     cefrLevel: string;
     totalPoints: number;
     currentStreak: number;
-    longestStreak: number;
-    totalLoginDays: number;
+    progressPct: number;
+    completedLessons: number;
+    totalLessons: number;
   } | null;
 }
 
@@ -98,7 +99,7 @@ const TeacherDashboardProfile = ({
                 <div className="flex items-center space-x-1 xs:space-x-2 sm:space-x-4">
                   <div className="text-center min-w-0 flex-1">
                     <div className="text-xs font-medium text-gray-700 mb-1">
-                      Current
+                      Current streak
                     </div>
                     <div className="text-sm xs:text-lg sm:text-2xl font-bold text-blue-600">
                       {studentData?.currentStreak || 0}
@@ -109,10 +110,10 @@ const TeacherDashboardProfile = ({
 
                   <div className="text-center min-w-0 flex-1">
                     <div className="text-xs font-medium text-gray-700 mb-1">
-                      Longest
+                      LMS progress
                     </div>
                     <div className="text-sm xs:text-lg sm:text-2xl font-bold text-blue-600">
-                      {studentData?.longestStreak || 0}
+                      {studentData?.progressPct ?? 0}%
                     </div>
                   </div>
 
@@ -120,10 +121,10 @@ const TeacherDashboardProfile = ({
 
                   <div className="text-center min-w-0 flex-1">
                     <div className="text-xs font-medium text-gray-700 mb-1">
-                      Total
+                      Lessons
                     </div>
                     <div className="text-sm xs:text-lg sm:text-2xl font-bold text-blue-600">
-                      {studentData?.totalLoginDays || 0}
+                      {studentData?.completedLessons ?? 0}/{studentData?.totalLessons ?? 0}
                     </div>
                   </div>
                 </div>

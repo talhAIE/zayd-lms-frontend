@@ -3,17 +3,17 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
-interface TopicsByMode {
+interface LessonModeProgress {
   completed: number;
   incomplete: number;
   total: number;
 }
 
 interface RoleplayModeCardsProps {
-  topicsData?: Record<string, TopicsByMode>;
+  modesData?: Record<string, LessonModeProgress>;
 }
 
-export function RoleplayModeCards({ topicsData }: RoleplayModeCardsProps) {
+export function RoleplayModeCards({ modesData }: RoleplayModeCardsProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -27,8 +27,8 @@ export function RoleplayModeCards({ topicsData }: RoleplayModeCardsProps) {
     );
   };
 
-  const learningModes = topicsData
-    ? Object.entries(topicsData).map(([modeKey, modeData]) => ({
+  const learningModes = modesData
+    ? Object.entries(modesData).map(([modeKey, modeData]) => ({
         name: formatModeName(modeKey),
         key: modeKey,
         color: "#2DE000",

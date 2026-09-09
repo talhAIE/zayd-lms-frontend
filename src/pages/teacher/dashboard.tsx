@@ -89,12 +89,10 @@ export default function TeacherDashboard() {
   // Local state for form inputs
   // const [searchTerm, setSearchTerm] = useState("");
   const [classFilter, setClassFilter] = useState("all");
-  const [topicStatusFilter, setTopicStatusFilter] = useState("all");
+  const [completionStatusFilter, setCompletionStatusFilter] = useState("all");
   const [timeFilter, setTimeFilter] = useState("all");
   const [sortBy, setSortBy] = useState("points");
   const [sortOrder, setSortOrder] = useState("desc");
-  const [minCompletedTopics, setMinCompletedTopics] = useState("");
-  const [maxCompletedTopics, setMaxCompletedTopics] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = pagination?.limit || 10;
 
@@ -108,7 +106,7 @@ export default function TeacherDashboard() {
     streak: true,
     usage: true,
     totalPoints: true,
-    completedTopics: true,
+    completedLessons: true,
   });
 
   const [selectedStudents, setSelectedStudents] = useState<Set<string>>(
@@ -126,7 +124,7 @@ export default function TeacherDashboard() {
     { key: "streak", label: "Streak" },
     { key: "usage", label: "Usage" },
     { key: "totalPoints", label: "Total Points" },
-    { key: "completedTopics", label: "Completed Topics" },
+    { key: "completedLessons", label: "Completed Lessons" },
   ];
 
   const toggleColumn = (columnKey: string) => {
@@ -229,31 +227,14 @@ export default function TeacherDashboard() {
       limit: pageSize,
     };
 
-    if (classFilter !== "all") {
-      const numericClass = classFilter.replace("Class ", "");
-      filters.class = numericClass;
-    }
+    if (classFilter !== "all") filters.class = classFilter;
 
-    if (topicStatusFilter !== "all") {
-      filters.topicStatus = topicStatusFilter as any;
+    if (completionStatusFilter !== "all") {
+      filters.completionStatus = completionStatusFilter as "completed" | "in_progress" | "not_started";
     }
 
     if (timeFilter !== "all") {
       filters.timeFilter = timeFilter as any;
-    }
-
-    if (minCompletedTopics) {
-      const min = parseInt(minCompletedTopics);
-      if (!isNaN(min)) {
-        filters.minCompletedTopics = min;
-      }
-    }
-
-    if (maxCompletedTopics) {
-      const max = parseInt(maxCompletedTopics);
-      if (!isNaN(max)) {
-        filters.maxCompletedTopics = max;
-      }
     }
 
     // Add search term to filters if it exists
@@ -284,12 +265,10 @@ export default function TeacherDashboard() {
     }
   }, [
     classFilter,
-    topicStatusFilter,
+    completionStatusFilter,
     timeFilter,
     sortBy,
     sortOrder,
-    minCompletedTopics,
-    maxCompletedTopics,
     currentPage,
     // debouncedSearchTerm,
   ]);
@@ -312,8 +291,8 @@ export default function TeacherDashboard() {
             streak: student.currentStreak,
             usage: student.usage,
             totalPoints: student.totalPoints,
-            completedTopics: student.completedTopics,
-            totalTopics: student.totalTopics,
+            completedLessons: student.completedLessons,
+            totalLessons: student.totalLessons,
           }));
           setAllStudents(transformedAllStudents);
         } catch (error) {
@@ -325,12 +304,10 @@ export default function TeacherDashboard() {
     fetchAllStudents();
   }, [
     classFilter,
-    topicStatusFilter,
+    completionStatusFilter,
     timeFilter,
     sortBy,
     sortOrder,
-    minCompletedTopics,
-    maxCompletedTopics,
     // debouncedSearchTerm,
   ]);
 
@@ -343,8 +320,8 @@ export default function TeacherDashboard() {
       streak: student.currentStreak,
       usage: student.usage,
       totalPoints: student.totalPoints,
-      completedTopics: student.completedTopics,
-      totalTopics: student.totalTopics,
+      completedLessons: student.completedLessons,
+      totalLessons: student.totalLessons,
     }));
   }, [students]);
 
@@ -357,12 +334,10 @@ export default function TeacherDashboard() {
     setSelectedStudents(new Set());
   }, [
     classFilter,
-    topicStatusFilter,
+    completionStatusFilter,
     timeFilter,
     sortBy,
     sortOrder,
-    minCompletedTopics,
-    maxCompletedTopics,
   ]);
 
   const handleViewProfile = (studentId: string) => {
@@ -372,12 +347,10 @@ export default function TeacherDashboard() {
   const handleClearFilters = () => {
     // setSearchTerm("");
     setClassFilter("all");
-    setTopicStatusFilter("all");
+    setCompletionStatusFilter("all");
     setTimeFilter("all");
     setSortBy("points");
     setSortOrder("desc");
-    setMinCompletedTopics("");
-    setMaxCompletedTopics("");
     setCurrentPage(1);
     setSelectedStudents(new Set());
   };
@@ -386,18 +359,14 @@ export default function TeacherDashboard() {
     return (
       // searchTerm ||
       classFilter !== "all" ||
-      topicStatusFilter !== "all" ||
-      timeFilter !== "all" ||
-      minCompletedTopics ||
-      maxCompletedTopics
+      completionStatusFilter !== "all" ||
+      timeFilter !== "all"
     );
   }, [
     // searchTerm,
     classFilter,
-    topicStatusFilter,
+    completionStatusFilter,
     timeFilter,
-    minCompletedTopics,
-    maxCompletedTopics,
   ]);
 
   if (isLoading) {
@@ -437,7 +406,7 @@ export default function TeacherDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">
-                  Total Users
+                  Assigned Learners
                 </p>
                 <p className="text-sm font-bold text-gray-900 sm:text-2xl">
                   {summary?.totalStudentCount ?? 0}
@@ -475,7 +444,7 @@ export default function TeacherDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">
-                  Logged in
+                  Active This Week
                 </p>
                 <p className="text-sm font-bold text-gray-900 sm:text-2xl">
                   {summary?.activeStudentsCount ?? 0}
@@ -493,7 +462,7 @@ export default function TeacherDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">
-                  Yet to Log-in
+                  No Activity This Week
                 </p>
                 <p className="text-sm font-bold text-gray-900 sm:text-2xl">
                   {summary?.inactiveStudentsCount ?? 0}
@@ -511,10 +480,10 @@ export default function TeacherDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">
-                  Total Topics
+                  Visible Lessons
                 </p>
                 <p className="text-sm font-bold text-gray-900 sm:text-2xl">
-                  {summary?.totalTopics ?? 0}
+                  {summary?.totalLessons ?? 0}
                 </p>
               </div>
               <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-indigo-100 flex items-center justify-center">
@@ -529,10 +498,10 @@ export default function TeacherDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">
-                  Completed Topics
+                  Completed Lessons
                 </p>
                 <p className="text-sm font-bold text-gray-900 sm:text-2xl">
-                  {summary?.completedTopics ?? 0}
+                  {summary?.completedLessons ?? 0}
                 </p>
               </div>
               <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-teal-100 flex items-center justify-center">
@@ -547,7 +516,7 @@ export default function TeacherDashboard() {
             <div className="flex items-center justify-between">
               <div className="flex-1 min-w-0 pr-2">
                 <p className="text-sm font-medium text-gray-600 mb-1">
-                  Most Used Mode
+                  Most Active Mode
                 </p>
                 <p className="text-sm font-bold text-gray-900 sm:text-lg break-words">
                   {summary?.mostUsedMode ?? "N/A"}
@@ -565,7 +534,7 @@ export default function TeacherDashboard() {
             <div className="flex items-center justify-between">
               <div className="flex-1 min-w-0 pr-2">
                 <p className="text-sm font-medium text-gray-600 mb-1">
-                  Least Used Mode
+                  Least Active Mode
                 </p>
                 <p className="text-sm font-bold text-gray-900 sm:text-lg break-words">
                   {summary?.leastUsedMode ?? "N/A"}
@@ -626,31 +595,24 @@ export default function TeacherDashboard() {
             </Select>
 
             <Select
-              value={topicStatusFilter}
-              onValueChange={setTopicStatusFilter}
+              value={completionStatusFilter}
+              onValueChange={setCompletionStatusFilter}
               disabled={filterValuesLoading}
             >
               <SelectTrigger className="flex-1 min-w-[120px] sm:min-w-[140px]">
                 <SelectValue
                   placeholder={
-                    filterValuesLoading ? "Loading..." : "Topic Status"
+                    filterValuesLoading ? "Loading..." : "Lesson Status"
                   }
                 />
               </SelectTrigger>
               <SelectContent>
-                {filterValues?.topicStatusOptions?.length ? (
-                  filterValues.topicStatusOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <>
-                    <SelectItem value="all">All Topics</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
-                    <SelectItem value="incomplete">Incomplete</SelectItem>
-                  </>
-                )}
+                <SelectItem value="all">All Lessons</SelectItem>
+                {(filterValues?.completionStatuses ?? ["completed", "in_progress", "not_started"]).map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {status.replace("_", " ")}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 
@@ -711,23 +673,11 @@ export default function TeacherDashboard() {
                 />
               </SelectTrigger>
               <SelectContent>
-                {filterValues?.sortByOptions?.length ? (
-                  filterValues.sortByOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <>
-                    <SelectItem value="name">Name</SelectItem>
-                    <SelectItem value="points">Total Points</SelectItem>
-                    <SelectItem value="streak">Streak</SelectItem>
-                    <SelectItem value="usage">Usage</SelectItem>
-                    <SelectItem value="completedTopics">
-                      Completed Topics
-                    </SelectItem>
-                  </>
-                )}
+                <SelectItem value="name">Name</SelectItem>
+                <SelectItem value="points">Total Points</SelectItem>
+                <SelectItem value="usage">Usage</SelectItem>
+                <SelectItem value="lessons">Completed Lessons</SelectItem>
+                <SelectItem value="progress">Progress</SelectItem>
               </SelectContent>
             </Select>
 
@@ -742,18 +692,8 @@ export default function TeacherDashboard() {
                 />
               </SelectTrigger>
               <SelectContent>
-                {filterValues?.sortOrderOptions?.length ? (
-                  filterValues.sortOrderOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <>
-                    <SelectItem value="asc">Ascending</SelectItem>
-                    <SelectItem value="desc">Descending</SelectItem>
-                  </>
-                )}
+                <SelectItem value="asc">Ascending</SelectItem>
+                <SelectItem value="desc">Descending</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -783,23 +723,11 @@ export default function TeacherDashboard() {
                   />
                 </SelectTrigger>
                 <SelectContent>
-                  {filterValues?.sortByOptions?.length ? (
-                    filterValues.sortByOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <>
-                      <SelectItem value="name">Name</SelectItem>
-                      <SelectItem value="points">Total Points</SelectItem>
-                      <SelectItem value="streak">Streak</SelectItem>
-                      <SelectItem value="usage">Usage</SelectItem>
-                      <SelectItem value="completedTopics">
-                        Completed Topics
-                      </SelectItem>
-                    </>
-                  )}
+                  <SelectItem value="name">Name</SelectItem>
+                  <SelectItem value="points">Total Points</SelectItem>
+                  <SelectItem value="usage">Usage</SelectItem>
+                  <SelectItem value="lessons">Completed Lessons</SelectItem>
+                  <SelectItem value="progress">Progress</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -816,18 +744,8 @@ export default function TeacherDashboard() {
                   />
                 </SelectTrigger>
                 <SelectContent>
-                  {filterValues?.sortOrderOptions?.length ? (
-                    filterValues.sortOrderOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <>
-                      <SelectItem value="asc">Ascending</SelectItem>
-                      <SelectItem value="desc">Descending</SelectItem>
-                    </>
-                  )}
+                  <SelectItem value="asc">Ascending</SelectItem>
+                  <SelectItem value="desc">Descending</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -953,9 +871,9 @@ export default function TeacherDashboard() {
                       Total Points
                     </TableHead>
                   )}
-                  {visibleColumns.completedTopics && (
+                  {visibleColumns.completedLessons && (
                     <TableHead className="text-center px-6 py-4">
-                      Completed Topics
+                      Completed Lessons
                     </TableHead>
                   )}
                   <TableHead className="text-center px-6 py-4">
@@ -1039,14 +957,14 @@ export default function TeacherDashboard() {
                           </div>
                         </TableCell>
                       )}
-                      {visibleColumns.completedTopics && (
+                      {visibleColumns.completedLessons && (
                         <TableCell className="text-center px-6 py-4">
                           <div className="flex items-center justify-center">
                             <span className="font-bold text-green-600">
-                              {student.completedTopics}/{student.totalTopics}
+                              {student.completedLessons}/{student.totalLessons}
                             </span>
                             <span className="text-xs text-gray-500 ml-1">
-                              topics
+                              lessons
                             </span>
                           </div>
                         </TableCell>
@@ -1161,11 +1079,11 @@ export default function TeacherDashboard() {
                         </span>
                       </p>
                     )}
-                    {visibleColumns.completedTopics && (
+                    {visibleColumns.completedLessons && (
                       <p>
-                        <strong>Completed Topics:</strong>{" "}
+                        <strong>Completed Lessons:</strong>{" "}
                         <span className="font-bold text-green-600">
-                          {student.completedTopics}/{student.totalTopics} topics
+                          {student.completedLessons}/{student.totalLessons} lessons
                         </span>
                       </p>
                     )}
