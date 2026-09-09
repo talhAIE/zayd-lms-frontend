@@ -139,13 +139,16 @@ export default function StudentProfile() {
               </>
             ) : (
               <>
-                <RoleplayModeCards topicsData={data?.topicsByMode} />
+                <RoleplayModeCards modesData={data?.lessonModesByKey} />
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
                   <div className="lg:col-span-2">
                     <div className="max-h-[430px] overflow-y-auto space-y-4 pr-2 snap-y snap-mandatory">
                       <div className="snap-start min-h-[400px]">
-                        <RevenueGraph usageData={data?.usageGraphData} />
+                        <RevenueGraph
+                          usageData={data?.usageGraphData}
+                          periodLabel={timeFilter === "weekly" ? "This Week" : "This Month"}
+                        />
                       </div>
                       <div className="snap-start min-h-[400px]">
                         <PerformanceGraph
