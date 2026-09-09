@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-// import { useAppSelector } from '@/redux/hooks';
+import { useAppSelector } from "@/redux/hooks";
 
 // Layouts
 import { StudentLayout } from "@/components/layouts/student-layout";
@@ -39,7 +39,21 @@ import Rewards from "@/pages/student/Rewards";
 import Support from "@/pages/student/support";
 
 const AppRoutes = () => {
-  // const { user } = useAppSelector((state) => state.auth);
+  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
+
+  const HomeRedirect = () => {
+    if (!isAuthenticated) return <Navigate to="/login" replace />;
+    return (
+      <Navigate
+        to={
+          String(user?.role).toLowerCase() === "teacher"
+            ? "/teacher/dashboard"
+            : "/student/dashboard"
+        }
+        replace
+      />
+    );
+  };
 
   // Protected route component for students
   const StudentRoute = ({ children }: { children: JSX.Element }) => {
@@ -57,7 +71,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/" element={<Navigate to="/student/dashboard" replace />} />
+      <Route path="/" element={<HomeRedirect />} />
       <Route path="/chinese" element={<MainChinese />} />
       <Route path="/contact-us" element={<ContactUs />} />
       <Route path="/chinese/contact-us" element={<ChineseContactUs />} />
