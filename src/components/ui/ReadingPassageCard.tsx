@@ -3,6 +3,7 @@ import { Play, Pause, ChevronDown, BookOpen } from 'lucide-react';
 import type { ReadingVocabularyCard } from './ReadingVocabularyFlashcardModal';
 
 type ReadingPassageBlock = {
+  heading?: string;
   text?: string;
   speaker?: string;
 };
@@ -12,6 +13,9 @@ export type ReadingPassagePresentation = {
   heading?: string;
   title?: string;
   author?: string;
+  narration?: string;
+  narrationLabel?: string;
+  textLabel?: string;
   blocks?: ReadingPassageBlock[];
   vocabularyTerms?: string[];
   vocabularyCards?: ReadingVocabularyCard[];
@@ -211,6 +215,19 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
             {readingPresentation?.author && (
               <p className="mb-3 italic">{readingPresentation.author}</p>
             )}
+            {readingPresentation?.narration && (
+              <div className="mb-4">
+                {readingPresentation.narrationLabel && (
+                  <p className="mb-1 font-semibold text-[#8B0000]">{readingPresentation.narrationLabel}</p>
+                )}
+                <p className="italic">
+                  <HighlightedReadingText text={readingPresentation.narration} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={onVocabularyClick} />
+                </p>
+              </div>
+            )}
+            {readingPresentation?.textLabel && (
+              <p className="mb-1 font-semibold text-[#8B0000]">{readingPresentation.textLabel}</p>
+            )}
             {isConversation ? (
               <div className="space-y-1">
                 {blocks.map((block, index) => (
@@ -222,11 +239,22 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
               </div>
             ) : (
               <div className="space-y-4">
-                {paragraphContent.map((paragraph, index) => (
-                  <p key={index}>
-                    <HighlightedReadingText text={paragraph} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={onVocabularyClick} />
-                  </p>
-                ))}
+                {suppliedBlocks.length > 0
+                  ? suppliedBlocks.map((block, index) => (
+                    <div key={`${block.heading ?? 'paragraph'}-${index}`}>
+                      {block.heading && (
+                        <h4 className="mb-1 font-semibold text-[#8B0000]">{block.heading}</h4>
+                      )}
+                      <p>
+                        <HighlightedReadingText text={block.text ?? ''} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={onVocabularyClick} />
+                      </p>
+                    </div>
+                  ))
+                  : paragraphContent.map((paragraph, index) => (
+                    <p key={index}>
+                      <HighlightedReadingText text={paragraph} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={onVocabularyClick} />
+                    </p>
+                  ))}
               </div>
             )}
           </div>
