@@ -556,7 +556,12 @@ export default function ReadingModeTopics() {
         <div className={`flex flex-col flex-1 gap-4 min-h-0 pr-1 ${(isChatActive || step1Active) ? '' : 'overflow-y-auto'}`}>
           
           {/* Reading Passage Card */}
-          {contentPayload && (contentPayload.passage || contentPayload.content || (contentPayload.sentences && contentPayload.sentences.length > 0)) && (
+          {contentPayload && (
+            contentPayload.passage ||
+            contentPayload.content ||
+            (contentPayload.sentences && contentPayload.sentences.length > 0) ||
+            (contentPayload.readingPresentation?.blocks?.length > 0)
+          ) && (
             <div className={`flex flex-col gap-4 min-h-0 ${step1Active ? 'flex-1' : 'flex-shrink-0'}`}>
               <ReadingPassageCard 
                 content={contentPayload.passage || contentPayload.content || (contentPayload.sentences ? contentPayload.sentences.join('\n\n') : '')}
