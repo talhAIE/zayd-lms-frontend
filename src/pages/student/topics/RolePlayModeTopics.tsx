@@ -115,38 +115,6 @@ export default function RolePlayModeTopics() {
     return Math.min(99, Math.round((roleplayProgress.completedTurns / roleplayProgress.requiredTurns) * 100));
   };
 
-  const roleplayPlan = Array.isArray(contentPayload?.conversationPlan)
-    ? contentPayload.conversationPlan.filter((step: unknown) => step && typeof step === 'object')
-    : [];
-  const learnerRole = typeof contentPayload?.learnerRole === 'string'
-    ? contentPayload.learnerRole
-    : typeof contentPayload?.studentRole === 'string'
-      ? contentPayload.studentRole
-      : null;
-  const aiRole = typeof contentPayload?.aiRole === 'string' ? contentPayload.aiRole : null;
-  const suppliedScenario = contentPayload?.passage || contentPayload?.content || contentPayload?.scenario;
-  const roleplayScenarioText = typeof suppliedScenario === 'string' && suppliedScenario.trim()
-    ? suppliedScenario
-    : learnerRole || aiRole
-      ? `You are ${learnerRole || 'the learner'}. You will speak with ${aiRole || 'your conversation partner'}.`
-      : '';
-  const roleplayPresentation = roleplayPlan.length > 0
-    ? {
-      format: 'paragraph' as const,
-      blocks: roleplayPlan.map((step: Record<string, unknown>, index: number) => ({
-        heading: typeof step.title === 'string' && step.title.trim() ? step.title : `Conversation step ${index + 1}`,
-        text: typeof step.learnerHint === 'string' && step.learnerHint.trim()
-          ? step.learnerHint
-          : typeof step.prompt === 'string' && step.prompt.trim()
-            ? step.prompt
-            : typeof step.aiLine === 'string' && step.aiLine.trim()
-              ? step.aiLine
-              : '',
-      })),
-    }
-    : contentPayload?.readingPresentation;
-  const hasRoleplayScenario = Boolean(roleplayScenarioText || roleplayPlan.length > 0);
-
   return (
     <div className="w-full max-w-[1207px] mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)] border border-gray-100 shadow-sm relative">
       
@@ -336,13 +304,13 @@ export default function RolePlayModeTopics() {
         <div className="flex flex-col flex-1 gap-4 min-h-0 overflow-y-auto pr-1">
           
           {/* Scenario Card */}
-          {contentPayload && hasRoleplayScenario && (
+          {contentPayload && (contentPayload.passage || contentPayload.content || contentPayload.scenario) && (
             <div className="flex-shrink-0 flex flex-col gap-4 pl-2 mt-2">
               <ReadingPassageCard 
                 title="Roleplay Scenario"
-                content={roleplayScenarioText}
+                content={contentPayload.passage || contentPayload.content || contentPayload.scenario || ''}
                 audioUrl={contentPayload.contentAudioUrl || contentPayload.narrationAudioUrl || contentPayload.attachmentUrl}
-                readingPresentation={roleplayPresentation}
+                readingPresentation={contentPayload.readingPresentation}
                 isPlaying={playingAudioId === 'roleplay-scenario' && isCurrentlyPlaying}
                 onToggleAudio={() =>
                   toggleAudio(
