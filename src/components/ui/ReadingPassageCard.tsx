@@ -13,9 +13,6 @@ export type ReadingPassagePresentation = {
   heading?: string;
   title?: string;
   author?: string;
-  narration?: string;
-  narrationLabel?: string;
-  textLabel?: string;
   blocks?: ReadingPassageBlock[];
   vocabularyTerms?: string[];
   vocabularyCards?: ReadingVocabularyCard[];
@@ -214,19 +211,6 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
             )}
             {readingPresentation?.author && (
               <p className="mb-3 italic">{readingPresentation.author}</p>
-            )}
-            {readingPresentation?.narration && (
-              <div className="mb-4">
-                {readingPresentation.narrationLabel && (
-                  <p className="mb-1 font-semibold text-[#8B0000]">{readingPresentation.narrationLabel}</p>
-                )}
-                <p className="italic">
-                  <HighlightedReadingText text={readingPresentation.narration} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={onVocabularyClick} />
-                </p>
-              </div>
-            )}
-            {readingPresentation?.textLabel && (
-              <p className="mb-1 font-semibold text-[#8B0000]">{readingPresentation.textLabel}</p>
             )}
             {isConversation ? (
               <div className="space-y-1">

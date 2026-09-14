@@ -71,12 +71,6 @@ export default function ListeningModeTopics() {
     pauseAudio: pauseTopic
   } = useAudioPlayback();
 
-  const { 
-    isCurrentlyPlaying: isNarratorPlaying, 
-    toggleAudio: toggleNarrator,
-    pauseAudio: pauseNarrator
-  } = useAudioPlayback();
-  
   const [currentMcqIndex, setCurrentMcqIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number | string>>({});
   const [isStepsExpanded, setIsStepsExpanded] = useState(false);
@@ -84,6 +78,8 @@ export default function ListeningModeTopics() {
   const [hasListenedToAudio, setHasListenedToAudio] = useState(false);
   const [hasStartedAudio, setHasStartedAudio] = useState(false);
   const [isJustCompleted, setIsJustCompleted] = useState(false);
+  const [isNarratorTextPlaying, setIsNarratorTextPlaying] = useState(false);
+  const narratorSpeechRef = useRef<SpeechSynthesisUtterance | null>(null);
   
   const {
     modeSessionId,
@@ -128,6 +124,11 @@ export default function ListeningModeTopics() {
     // A full topic-audio play is required at both listening stages. Entering
     // the question stage deliberately resets this so the learner completes a
     // second listen before the quiz can be unlocked.
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      narratorSpeechRef.current = null;
+      setIsNarratorTextPlaying(false);
+    }
     if (
       listeningPayload?.stage === 'initial' ||
       listeningPayload?.stage === 'question'
@@ -160,6 +161,12 @@ export default function ListeningModeTopics() {
     }
   }, [modeSessionId]);
 
+  useEffect(() => () => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+  }, []);
+
 
 
   const getProgressPercentage = () => {
@@ -177,14 +184,9 @@ export default function ListeningModeTopics() {
   const isQuestionStage = listeningPayload?.stage === 'question';
   const isTranscriptStage = listeningPayload?.stage === 'transcript';
   const topicAudioUrl = listeningPayload?.kbAudioUrl;
-  const narratorAudioUrl = isTranscriptStage
-    ? listeningPayload?.transcriptAudioUrl
-    : isQuestionStage ? listeningPayload?.questionAudioUrl : listeningPayload?.narrationAudioUrl;
   const narratorText = isTranscriptStage
     ? listeningPayload?.transcript
     : isQuestionStage ? listeningPayload?.questionText : listeningPayload?.narrationText;
-  const narratorAudioId = `listening_narrator_audio_${listeningPayload?.stage ?? 'initial'}`;
-  const isNarratorAudioPlaying = isNarratorPlaying;
   const isRequiredListeningStage =
     listeningPayload?.stage === 'initial' || isQuestionStage;
   const nextStageUnlocked = isTranscriptStage || hasListenedToAudio;
@@ -194,6 +196,47 @@ export default function ListeningModeTopics() {
     : listeningPayload?.stage === 'initial'
       ? 'First Listen (1 of 2)'
       : 'Topic Audio';
+
+  const toggleNarratorTextSpeech = () => {
+    if (!narratorText) return;
+
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+      toast.error('Narrator text playback is not available in this browser.');
+      return;
+    }
+
+    if (isNarratorTextPlaying) {
+      window.speechSynthesis.cancel();
+      narratorSpeechRef.current = null;
+      setIsNarratorTextPlaying(false);
+      return;
+    }
+
+    pauseTopic();
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(narratorText);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.9;
+    utterance.onend = () => {
+      narratorSpeechRef.current = null;
+      setIsNarratorTextPlaying(false);
+    };
+    utterance.onerror = () => {
+      narratorSpeechRef.current = null;
+      setIsNarratorTextPlaying(false);
+    };
+    narratorSpeechRef.current = utterance;
+    setIsNarratorTextPlaying(true);
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const stopNarratorTextSpeech = () => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    narratorSpeechRef.current = null;
+    setIsNarratorTextPlaying(false);
+  };
 
   return (
     <div className="w-full max-w-[1207px] mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)] border border-gray-100 shadow-sm relative">
@@ -382,7 +425,10 @@ export default function ListeningModeTopics() {
                 isLoading={!!topicLoadingId}
                 progress={topicProgress}
                 duration={topicDuration}
-                onTogglePlay={() => toggleTopic('listening_topic_audio', topicAudioUrl, () => setHasListenedToAudio(true), () => pauseNarrator())}
+                onTogglePlay={() => {
+                  stopNarratorTextSpeech();
+                  toggleTopic('listening_topic_audio', topicAudioUrl, () => setHasListenedToAudio(true));
+                }}
                 variant="gradient"
                 className="max-w-full"
                 showTotal={true}
@@ -409,16 +455,14 @@ export default function ListeningModeTopics() {
                 <p className="font-normal text-[14px] leading-[22px] text-[#0F1450]">
                   {narratorText}
                 </p>
-                {narratorAudioUrl && (
-                  <button
-                    type="button"
-                    onClick={() => toggleNarrator(narratorAudioId, narratorAudioUrl, undefined, () => pauseTopic())}
-                    aria-label={isNarratorAudioPlaying ? 'Pause quiz audio' : 'Play quiz audio'}
-                    className="mt-3 flex items-center text-[#0F1450] transition-colors hover:text-[#2563EB]"
-                  >
-                    {isNarratorAudioPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={toggleNarratorTextSpeech}
+                  aria-label={isNarratorTextPlaying ? 'Pause narrator text' : 'Play narrator text'}
+                  className="mt-3 flex items-center text-[#0F1450] transition-colors hover:text-[#2563EB]"
+                >
+                  {isNarratorTextPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+                </button>
             </div>
               </div>
           )}
