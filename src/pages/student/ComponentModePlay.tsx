@@ -298,8 +298,7 @@ export default function ComponentModePlay() {
           setCurrentIndex(0);
         }
 
-        const isAllComponentsCompleted = sorted.length > 0 && firstIncomplete === -1;
-        if (mode?.status === 'completed' && isAllComponentsCompleted) {
+        if (mode?.status === 'completed') {
           setShowCompletionModal(true);
         }
       } catch (err: any) {
