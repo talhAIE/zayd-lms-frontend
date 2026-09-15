@@ -16,51 +16,6 @@ import { getNextLessonPath } from '@/utils/learning-navigation';
 import SpeechAssessmentModal, { isSpeechAssessment, SpeechAssessment } from '@/components/ui/SpeechAssessmentModal';
 import ReactMarkdown from 'react-markdown';
 
-function isOptionCorrect(mcq: any, answer: number | string | undefined) {
-  if (answer === undefined || answer === null || answer === -1) {
-    return false;
-  }
-
-  if (typeof mcq.correct === 'number') {
-    return Number(answer) === mcq.correct;
-  }
-
-  if (typeof mcq.correct === 'string') {
-    if (String(answer) === mcq.correct) {
-      return true;
-    }
-    const index = Number(answer);
-    if (!isNaN(index) && Array.isArray(mcq.options) && typeof mcq.options[index] === 'string') {
-      return mcq.options[index] === mcq.correct;
-    }
-    if (!isNaN(index) && Array.isArray(mcq.options) && typeof mcq.options[index] === 'object') {
-      return (
-        mcq.options[index]?.text === mcq.correct ||
-        mcq.options[index]?.label === mcq.correct ||
-        mcq.options[index]?.id === mcq.correct
-      );
-    }
-    return false;
-  }
-
-  if (mcq.correctOptionId) {
-    return String(answer) === String(mcq.correctOptionId);
-  }
-
-  if (Array.isArray(mcq.options)) {
-    const index = Number(answer);
-    if (!isNaN(index) && mcq.options[index]?.isCorrect !== undefined) {
-      return Boolean(mcq.options[index].isCorrect);
-    }
-    const found = mcq.options.find((o: any) => o.id === answer || o.value === answer);
-    if (found?.isCorrect !== undefined) {
-      return Boolean(found.isCorrect);
-    }
-  }
-
-  return true;
-}
-
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const GRADE7_READING_VOCABULARY: Record<string, Omit<ReadingVocabularyCard, 'word'>> = {
@@ -881,11 +836,6 @@ export default function ReadingModeTopics() {
                         <button
                           type="button"
                           onClick={() => {
-                            const isCorrect = isOptionCorrect(mcq, currentAnswer);
-                            if (!isCorrect) {
-                              toast.error('Incorrect answer. Please try again.');
-                              return;
-                            }
                             setCurrentMcqIndex(prev => prev + 1);
                           }}
                           disabled={currentAnswer === undefined || isAccountBlocked}
@@ -897,11 +847,6 @@ export default function ReadingModeTopics() {
                         <button
                           type="button"
                           onClick={() => {
-                            const isCorrect = isOptionCorrect(mcq, currentAnswer);
-                            if (!isCorrect) {
-                              toast.error('Incorrect answer. Please try again.');
-                              return;
-                            }
                             const answers = mcqList.map((_, idx) => selectedAnswers[idx] ?? -1);
                             submitMcqs(answers);
                           }}

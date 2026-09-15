@@ -169,7 +169,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       console.error('[Socket] Reconnect error:', error);
     });
 
-    newSocket.on('mode_session_started', (session) => {
+    newSocket.on('mode_session_started', (session: { lessonModeId: string; modeSessionId: string; chatHistory?: HistoryItem[]; contentPayload?: any; mcqs?: Mcq[]; readingProgress?: ReadingProgress; roleplayProgress?: RoleplayProgress; isCompleted?: boolean }) => {
       console.log('[Socket] Mode session started:', session);
       if (session.lessonModeId !== lessonModeId) {
         console.warn('[Socket] Ignoring a session for a different lesson mode.');
@@ -185,6 +185,10 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       }
       if (session.contentPayload) {
         setContentPayload(session.contentPayload);
+      }
+      if (session.mcqs) {
+        setMcqList(session.mcqs);
+        setMcqResult(null);
       }
       if (session.readingProgress) {
         setReadingProgress(session.readingProgress);
