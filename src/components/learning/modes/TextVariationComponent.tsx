@@ -51,6 +51,8 @@ export default function TextVariationComponent({ component, groupedComponents }:
       narration && typeof narration.writingPrompt === 'string'
         ? narration.writingPrompt
         : '';
+    const narrationHeading =
+      narration && typeof narration.heading === 'string' ? narration.heading : 'Writing Prompt';
     const vocabulary = Array.isArray(content.vocabulary) ? content.vocabulary : [];
 
     return (
@@ -63,7 +65,7 @@ export default function TextVariationComponent({ component, groupedComponents }:
         <div className="flex flex-col gap-5">
           {writingPrompt && (
             <div className="rounded-[14px] border border-[#E2E8F0] bg-[#F8FAFC] p-5">
-              <p className="text-[14px] font-bold text-[#334155]">Writing Prompt</p>
+              <p className="text-[14px] font-bold text-[#334155]">{narrationHeading}</p>
               <p className="mt-1 text-[14px] leading-relaxed text-[#475569]">{writingPrompt}</p>
             </div>
           )}
