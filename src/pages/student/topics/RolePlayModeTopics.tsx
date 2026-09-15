@@ -38,6 +38,7 @@ export default function RolePlayModeTopics() {
   const [activeFeedback, setActiveFeedback] = useState<string | null>(null);
   const [activeAssessment, setActiveAssessment] = useState<SpeechAssessment | null>(null);
   const [hintOpenForMessageId, setHintOpenForMessageId] = useState<string | null>(null);
+  const [isActiveHintOpen, setIsActiveHintOpen] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -174,6 +175,11 @@ export default function RolePlayModeTopics() {
     if (!roleplayProgress || roleplayProgress.requiredTurns <= 0) return 0;
     return Math.min(99, Math.round((roleplayProgress.completedTurns / roleplayProgress.requiredTurns) * 100));
   };
+
+  const activeRoleplayHint = [...chatHistory]
+    .reverse()
+    .find((message) => message.role === 'assistant' && message.hint?.trim())
+    ?.hint;
 
   return (
     <div className="w-full max-w-[1207px] mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)] border border-gray-100 shadow-sm relative">
@@ -397,6 +403,25 @@ export default function RolePlayModeTopics() {
           {/* Chat History Area */}
           {!step1Active && (
           <div className="flex flex-col flex-1 border border-[#E5E7EB] bg-white rounded-xl min-h-0 overflow-hidden mb-2 ml-2">
+            {activeRoleplayHint && (
+              <div className="border-b border-[#CCFBF1] bg-[#F0FDFA] px-5 py-3">
+                <button
+                  type="button"
+                  onClick={() => setIsActiveHintOpen((open) => !open)}
+                  className="flex items-center gap-1.5 text-[12px] font-semibold text-[#0F766E] hover:text-[#0D9488]"
+                  aria-expanded={isActiveHintOpen}
+                >
+                  <Lightbulb className="h-3.5 w-3.5" />
+                  {isActiveHintOpen ? 'Hide current hint' : 'Show current hint'}
+                </button>
+                {isActiveHintOpen && (
+                  <p className="mt-2 text-[12px] leading-[17px] text-[#115E59]">
+                    <span className="font-semibold">What to say: </span>
+                    {activeRoleplayHint}
+                  </p>
+                )}
+              </div>
+            )}
             <div 
               ref={chatContainerRef}
               className="flex flex-col p-5 px-6 gap-3 flex-1 min-h-0 bg-[#F8F9FA] overflow-y-auto"
