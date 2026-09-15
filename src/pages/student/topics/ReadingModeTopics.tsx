@@ -11,6 +11,8 @@ import FeedbackModal from '@/components/ui/FeedbackModal';
 import { ContentPolicyWarningModal } from '@/components/ui/ContentPolicyWarningModal';
 import { useLearningProgressRefresh } from '@/hooks/useLearningProgressRefresh';
 import { useAudioPlayback } from '@/hooks/useAudioPlayback';
+import { fetchUnitLessons } from '@/services/learningService';
+import { getNextLessonPath } from '@/utils/learning-navigation';
 import SpeechAssessmentModal, { isSpeechAssessment, SpeechAssessment } from '@/components/ui/SpeechAssessmentModal';
 import ReactMarkdown from 'react-markdown';
 
@@ -147,6 +149,9 @@ export default function ReadingModeTopics() {
   const courseId = searchParams.get('courseId') || undefined;
   const unitId = searchParams.get('unitId') || undefined;
   const refreshLearningProgress = useLearningProgressRefresh();
+  const allLessonsPath = courseId && unitId
+    ? '/student/courses/' + courseId + '/units/' + unitId
+    : '/student/courses';
   
   const { playingAudioId, isCurrentlyPlaying, loadingAudioId, toggleAudio, stopAudio } = useAudioPlayback();
   const [currentMcqIndex, setCurrentMcqIndex] = useState(0);
@@ -368,6 +373,20 @@ export default function ReadingModeTopics() {
     toggleAudio(messageId, audioUrl, onEnd);
   };
 
+  const finishMode = async () => {
+    setShowCompletionModal(false);
+    if (courseId && unitId && lessonId) {
+      try {
+        const lessons = await fetchUnitLessons(unitId);
+        navigate(getNextLessonPath({ courseId, unitId, lessonId }, lessons), { replace: true });
+        return;
+      } catch {
+        // The learner can still safely return to the refreshed lesson list.
+      }
+    }
+    navigate(allLessonsPath, { replace: true });
+  };
+
   const initialReadingSentence =
     !step1Active &&
     chatHistory.length === 0 &&
@@ -397,10 +416,7 @@ export default function ReadingModeTopics() {
       <TopicCompletionModal 
         isOpen={showCompletionModal}
         isJustCompleted={isJustCompleted}
-        onFinish={() => {
-          setShowCompletionModal(false);
-          navigate(-1);
-        }}
+        onFinish={() => { void finishMode(); }}
         onRetake={() => {
           setShowCompletionModal(false);
           setCurrentMcqIndex(0);
@@ -440,7 +456,7 @@ export default function ReadingModeTopics() {
           
           <div className="flex-1 flex justify-start">
             <button 
-              onClick={() => navigate(-1)}
+              onClick={() => navigate(allLessonsPath, { replace: true })}
               className="flex justify-center items-center w-10 h-10 bg-white border border-[#E5E7EB] shadow-[0px_1px_4px_rgba(0,0,0,0.06)] rounded-full hover:bg-gray-50 transition-colors"
             >
               <ChevronLeft className="w-5 h-5 text-[#282828]" />

@@ -23,6 +23,7 @@ import {
   submitWriting,
   revealWritingModelAnswer,
   fetchLatestWritingSubmission,
+  fetchUnitLessons,
   LearningResource,
   ResourceInteractionType,
   LearningComponent,
@@ -30,7 +31,7 @@ import {
 } from '@/services/learningService';
 import { AppDispatch, RootState } from '@/redux/store';
 import { toast } from 'sonner';
-import { getLearningModePath } from '@/utils/learning-navigation';
+import { getLearningModePath, getNextLessonPath } from '@/utils/learning-navigation';
 import { useLearningProgressRefresh } from '@/hooks/useLearningProgressRefresh';
 import TopicCompletionModal from '@/components/ui/TopicCompletionModal';
 
@@ -500,7 +501,7 @@ export default function ComponentModePlay() {
     toast.success('Model answer revealed. You can now finish this activity.');
   };
 
-  const handleCompleteNavigation = (updatedModesList?: any[]) => {
+  const handleCompleteNavigation = async (updatedModesList?: any[]) => {
     const activeModes = updatedModesList ?? modes;
     const currentModeIndex = activeModes.findIndex((m: any) => m.id === modeId);
     const nextMode = currentModeIndex !== -1 && currentModeIndex < activeModes.length - 1 
@@ -508,9 +509,18 @@ export default function ComponentModePlay() {
       : null;
 
     if (nextMode && !nextMode.isLocked && courseId && unitId && lessonId) {
-      navigate(getLearningModePath({ courseId, unitId, lessonId }, nextMode));
+      navigate(getLearningModePath({ courseId, unitId, lessonId }, nextMode), { replace: true });
     } else if (courseId && unitId) {
-      navigate(`/student/courses/${courseId}/units/${unitId}`);
+      if (lessonId) {
+        try {
+          const refreshedLessons = await fetchUnitLessons(unitId);
+          navigate(getNextLessonPath({ courseId, unitId, lessonId }, refreshedLessons), { replace: true });
+          return;
+        } catch {
+          // Falling back to the lesson list remains safe if refresh fails.
+        }
+      }
+      navigate(`/student/courses/${courseId}/units/${unitId}`, { replace: true });
     } else {
       handleBack();
     }
@@ -993,7 +1003,7 @@ export default function ComponentModePlay() {
         isJustCompleted={isJustCompleted}
         onFinish={() => {
           setShowCompletionModal(false);
-          handleCompleteNavigation();
+          void handleCompleteNavigation();
         }}
         onRetake={() => {
           setShowCompletionModal(false);

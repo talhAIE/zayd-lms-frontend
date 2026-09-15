@@ -1,4 +1,4 @@
-import { DirectLaunchMode, LearningLessonMode } from '@/services/learningService';
+import { DirectLaunchMode, LearningLesson, LearningLessonMode } from '@/services/learningService';
 
 export interface LearningRouteContext {
   courseId: string;
@@ -48,3 +48,23 @@ export const getLearningModePath = (
 
 export const isLockedLearningItem = (item: { isLocked: boolean; status: string }): boolean =>
   item.isLocked || item.status === 'locked';
+
+export const getNextLessonPath = (
+  { courseId, unitId, lessonId }: LearningRouteContext,
+  lessons: LearningLesson[],
+): string => {
+  const currentIndex = lessons.findIndex((lesson) => lesson.id === lessonId);
+  const nextLesson = lessons
+    .slice(currentIndex + 1)
+    .find((lesson) => !isLockedLearningItem(lesson) && lesson.status !== 'completed');
+
+  if (nextLesson?.directLaunchMode) {
+    return getLearningModePath(
+      { courseId, unitId, lessonId: nextLesson.id },
+      nextLesson.directLaunchMode,
+    );
+  }
+
+  const unitLessonsPath = '/student/courses/' + courseId + '/units/' + unitId;
+  return nextLesson ? unitLessonsPath + '/lessons/' + nextLesson.id : unitLessonsPath;
+};
