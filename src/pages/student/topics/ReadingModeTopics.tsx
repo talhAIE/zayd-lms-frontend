@@ -11,53 +11,10 @@ import FeedbackModal from '@/components/ui/FeedbackModal';
 import { ContentPolicyWarningModal } from '@/components/ui/ContentPolicyWarningModal';
 import { useLearningProgressRefresh } from '@/hooks/useLearningProgressRefresh';
 import { useAudioPlayback } from '@/hooks/useAudioPlayback';
+import { fetchUnitLessons } from '@/services/learningService';
+import { getNextLessonPath } from '@/utils/learning-navigation';
 import SpeechAssessmentModal, { isSpeechAssessment, SpeechAssessment } from '@/components/ui/SpeechAssessmentModal';
 import ReactMarkdown from 'react-markdown';
-
-function isOptionCorrect(mcq: any, answer: number | string | undefined) {
-  if (answer === undefined || answer === null || answer === -1) {
-    return false;
-  }
-
-  if (typeof mcq.correct === 'number') {
-    return Number(answer) === mcq.correct;
-  }
-
-  if (typeof mcq.correct === 'string') {
-    if (String(answer) === mcq.correct) {
-      return true;
-    }
-    const index = Number(answer);
-    if (!isNaN(index) && Array.isArray(mcq.options) && typeof mcq.options[index] === 'string') {
-      return mcq.options[index] === mcq.correct;
-    }
-    if (!isNaN(index) && Array.isArray(mcq.options) && typeof mcq.options[index] === 'object') {
-      return (
-        mcq.options[index]?.text === mcq.correct ||
-        mcq.options[index]?.label === mcq.correct ||
-        mcq.options[index]?.id === mcq.correct
-      );
-    }
-    return false;
-  }
-
-  if (mcq.correctOptionId) {
-    return String(answer) === String(mcq.correctOptionId);
-  }
-
-  if (Array.isArray(mcq.options)) {
-    const index = Number(answer);
-    if (!isNaN(index) && mcq.options[index]?.isCorrect !== undefined) {
-      return Boolean(mcq.options[index].isCorrect);
-    }
-    const found = mcq.options.find((o: any) => o.id === answer || o.value === answer);
-    if (found?.isCorrect !== undefined) {
-      return Boolean(found.isCorrect);
-    }
-  }
-
-  return true;
-}
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -147,6 +104,9 @@ export default function ReadingModeTopics() {
   const courseId = searchParams.get('courseId') || undefined;
   const unitId = searchParams.get('unitId') || undefined;
   const refreshLearningProgress = useLearningProgressRefresh();
+  const allLessonsPath = courseId && unitId
+    ? '/student/courses/' + courseId + '/units/' + unitId
+    : '/student/courses';
   
   const { playingAudioId, isCurrentlyPlaying, loadingAudioId, toggleAudio, stopAudio } = useAudioPlayback();
   const [currentMcqIndex, setCurrentMcqIndex] = useState(0);
@@ -159,6 +119,7 @@ export default function ReadingModeTopics() {
   const [hasStartedShadowReading, setHasStartedShadowReading] = useState(false);
   const [isStepsExpanded, setIsStepsExpanded] = useState(false);
   const [fallbackSpeechMessageId, setFallbackSpeechMessageId] = useState<string | null>(null);
+  const [isFallbackSpeechPaused, setIsFallbackSpeechPaused] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const fallbackSpeechRef = useRef<SpeechSynthesisUtterance | null>(null);
   const {
@@ -246,22 +207,38 @@ export default function ReadingModeTopics() {
     }
 
     if (fallbackSpeechMessageId === messageId) {
-      window.speechSynthesis.cancel();
-      setFallbackSpeechMessageId(null);
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+        setIsFallbackSpeechPaused(false);
+      } else {
+        window.speechSynthesis.pause();
+        setIsFallbackSpeechPaused(true);
+      }
       return;
     }
 
     stopAudio();
     window.speechSynthesis.cancel();
+    setIsFallbackSpeechPaused(false);
 
     // Read the sentence itself, rather than the surrounding instruction.
     const sentence = content.match(/"([^"\n]+)"/)?.[1] || content;
     const utterance = new SpeechSynthesisUtterance(sentence);
     utterance.onend = () => {
-      setFallbackSpeechMessageId(null);
-      onComplete?.();
+      if (fallbackSpeechRef.current === utterance) {
+        fallbackSpeechRef.current = null;
+        setFallbackSpeechMessageId(null);
+        setIsFallbackSpeechPaused(false);
+        onComplete?.();
+      }
     };
-    utterance.onerror = () => setFallbackSpeechMessageId(null);
+    utterance.onerror = () => {
+      if (fallbackSpeechRef.current === utterance) {
+        fallbackSpeechRef.current = null;
+        setFallbackSpeechMessageId(null);
+        setIsFallbackSpeechPaused(false);
+      }
+    };
     fallbackSpeechRef.current = utterance;
     setFallbackSpeechMessageId(messageId);
     window.speechSynthesis.speak(utterance);
@@ -325,9 +302,10 @@ export default function ReadingModeTopics() {
   const togglePassageAudio = () => {
     const audioUrl = contentPayload?.contentAudioUrl || contentPayload?.narrationAudioUrl || contentPayload?.attachmentUrl;
     if (audioUrl) {
-      if (fallbackSpeechMessageId === 'reading-passage-fallback') {
+      if (fallbackSpeechMessageId) {
         window.speechSynthesis.cancel();
         setFallbackSpeechMessageId(null);
+        setIsFallbackSpeechPaused(false);
       }
       toggleAudio('reading-passage', audioUrl, markReadingPassageListened);
       return;
@@ -338,6 +316,30 @@ export default function ReadingModeTopics() {
       readingPassageText,
       markReadingPassageListened,
     );
+  };
+
+  const toggleStoredAudio = (messageId: string, audioUrl: string, onEnd?: () => void) => {
+    if (fallbackSpeechMessageId) {
+      window.speechSynthesis.cancel();
+      fallbackSpeechRef.current = null;
+      setFallbackSpeechMessageId(null);
+      setIsFallbackSpeechPaused(false);
+    }
+    toggleAudio(messageId, audioUrl, onEnd);
+  };
+
+  const finishMode = async () => {
+    setShowCompletionModal(false);
+    if (courseId && unitId && lessonId) {
+      try {
+        const lessons = await fetchUnitLessons(unitId);
+        navigate(getNextLessonPath({ courseId, unitId, lessonId }, lessons), { replace: true });
+        return;
+      } catch {
+        // The learner can still safely return to the refreshed lesson list.
+      }
+    }
+    navigate(allLessonsPath, { replace: true });
   };
 
   const initialReadingSentence =
@@ -369,10 +371,7 @@ export default function ReadingModeTopics() {
       <TopicCompletionModal 
         isOpen={showCompletionModal}
         isJustCompleted={isJustCompleted}
-        onFinish={() => {
-          setShowCompletionModal(false);
-          navigate(-1);
-        }}
+        onFinish={() => { void finishMode(); }}
         onRetake={() => {
           setShowCompletionModal(false);
           setCurrentMcqIndex(0);
@@ -412,7 +411,7 @@ export default function ReadingModeTopics() {
           
           <div className="flex-1 flex justify-start">
             <button 
-              onClick={() => navigate(-1)}
+              onClick={() => navigate(allLessonsPath, { replace: true })}
               className="flex justify-center items-center w-10 h-10 bg-white border border-[#E5E7EB] shadow-[0px_1px_4px_rgba(0,0,0,0.06)] rounded-full hover:bg-gray-50 transition-colors"
             >
               <ChevronLeft className="w-5 h-5 text-[#282828]" />
@@ -569,7 +568,7 @@ export default function ReadingModeTopics() {
                 readingPresentation={readingPresentation}
                 onVocabularyClick={setActiveVocabularyCard}
                 showAudioControl={Boolean(readingPassageText)}
-                isPlaying={(playingAudioId === 'reading-passage' && isCurrentlyPlaying) || fallbackSpeechMessageId === 'reading-passage-fallback'}
+                isPlaying={(playingAudioId === 'reading-passage' && isCurrentlyPlaying) || (fallbackSpeechMessageId === 'reading-passage-fallback' && !isFallbackSpeechPaused)}
                 onToggleAudio={togglePassageAudio}
                 forceExpanded={step1Active}
                 collapsibleMode="accordion"
@@ -613,9 +612,9 @@ export default function ReadingModeTopics() {
                         type="button"
                         onClick={() => toggleInitialReadingPromptSpeech('reading-initial-prompt', initialReadingSentence)}
                         className="flex items-center text-[#0F1450] hover:text-[#5C9DFF] transition-colors"
-                        aria-label={fallbackSpeechMessageId === 'reading-initial-prompt' ? 'Pause initial reading prompt' : 'Play initial reading prompt'}
+                        aria-label={fallbackSpeechMessageId === 'reading-initial-prompt' && !isFallbackSpeechPaused ? 'Pause initial reading prompt' : 'Play initial reading prompt'}
                       >
-                        {fallbackSpeechMessageId === 'reading-initial-prompt' ? (
+                        {fallbackSpeechMessageId === 'reading-initial-prompt' && !isFallbackSpeechPaused ? (
                           <Pause className="w-5 h-5" />
                         ) : (
                           <Play className="w-5 h-5" />
@@ -627,11 +626,8 @@ export default function ReadingModeTopics() {
               )}
               {chatHistory.map((msg, index) => (
                 (() => {
-                  const hasInitialReadingFallback =
-                    msg.role === 'assistant' &&
-                    !msg.audioUrl &&
-                    index === 0 &&
-                    msg.content.startsWith('Please read the following sentence aloud:');
+                  const hasSpeechFallback =
+                    msg.role === 'assistant' && !msg.audioUrl && Boolean(msg.content.trim());
                   const isFallbackSpeechPlaying = fallbackSpeechMessageId === msg.id;
 
                   return (
@@ -664,7 +660,7 @@ export default function ReadingModeTopics() {
                     <div className="mt-3 flex items-center justify-end gap-4 border-t border-[#BFDBFE] pt-2.5">
                       <button
                         type="button"
-                        onClick={() => toggleAudio(msg.id, msg.audioUrl || undefined)}
+                        onClick={() => toggleStoredAudio(msg.id, msg.audioUrl!)}
                         className="flex items-center text-[#0F1450] hover:text-[#2563EB] transition-colors"
                         aria-label={playingAudioId === msg.id && isCurrentlyPlaying ? 'Pause your recording' : 'Play your recording'}
                       >
@@ -688,24 +684,24 @@ export default function ReadingModeTopics() {
                       )}
                     </div>
                   )}
-                  {msg.role === 'assistant' && (msg.audioUrl || msg.feedback || hasInitialReadingFallback) && (
+                  {msg.role === 'assistant' && (msg.audioUrl || msg.feedback || hasSpeechFallback) && (
                     <div className="mt-3 flex items-center gap-4 border-t border-[#E5E7EB] pt-2.5">
-                      {(msg.audioUrl || hasInitialReadingFallback) && (
+                      {(msg.audioUrl || hasSpeechFallback) && (
                         <button
                           type="button"
                           onClick={() => msg.audioUrl
-                            ? toggleAudio(msg.id, msg.audioUrl)
+                            ? toggleStoredAudio(msg.id, msg.audioUrl)
                             : toggleInitialReadingPromptSpeech(msg.id, msg.content)}
                           className="flex items-center text-[#0F1450] hover:text-[#5C9DFF] transition-colors"
                           aria-label={
-                            (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || isFallbackSpeechPlaying
+                            (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || (isFallbackSpeechPlaying && !isFallbackSpeechPaused)
                               ? 'Pause AI response'
                               : 'Play AI response'
                           }
                         >
                           {loadingAudioId === msg.id ? (
                             <LoaderCircle className="w-5 h-5 animate-spin" />
-                          ) : (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || isFallbackSpeechPlaying ? (
+                          ) : (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || (isFallbackSpeechPlaying && !isFallbackSpeechPaused) ? (
                             <Pause className="w-5 h-5" />
                           ) : (
                             <Play className="w-5 h-5" />
@@ -840,11 +836,6 @@ export default function ReadingModeTopics() {
                         <button
                           type="button"
                           onClick={() => {
-                            const isCorrect = isOptionCorrect(mcq, currentAnswer);
-                            if (!isCorrect) {
-                              toast.error('Incorrect answer. Please try again.');
-                              return;
-                            }
                             setCurrentMcqIndex(prev => prev + 1);
                           }}
                           disabled={currentAnswer === undefined || isAccountBlocked}
@@ -856,11 +847,6 @@ export default function ReadingModeTopics() {
                         <button
                           type="button"
                           onClick={() => {
-                            const isCorrect = isOptionCorrect(mcq, currentAnswer);
-                            if (!isCorrect) {
-                              toast.error('Incorrect answer. Please try again.');
-                              return;
-                            }
                             const answers = mcqList.map((_, idx) => selectedAnswers[idx] ?? -1);
                             submitMcqs(answers);
                           }}

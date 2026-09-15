@@ -11,6 +11,9 @@ import { useLearningProgressRefresh } from '@/hooks/useLearningProgressRefresh';
 import ReactMarkdown from 'react-markdown';
 import { useAudioPlayback } from '@/hooks/useAudioPlayback';
 import SpeechAssessmentModal, { isSpeechAssessment, SpeechAssessment } from '@/components/ui/SpeechAssessmentModal';
+import { toast } from 'sonner';
+import { fetchUnitLessons } from '@/services/learningService';
+import { getNextLessonPath } from '@/utils/learning-navigation';
 
 export default function RolePlayModeTopics() {
   const navigate = useNavigate();
@@ -20,7 +23,12 @@ export default function RolePlayModeTopics() {
   const courseId = searchParams.get('courseId') || undefined;
   const unitId = searchParams.get('unitId') || undefined;
   const refreshLearningProgress = useLearningProgressRefresh();
+  const allLessonsPath = courseId && unitId
+    ? '/student/courses/' + courseId + '/units/' + unitId
+    : '/student/courses';
   const { playingAudioId, isCurrentlyPlaying, loadingAudioId, toggleAudio, stopAudio } = useAudioPlayback();
+  const [fallbackSpeechMessageId, setFallbackSpeechMessageId] = useState<string | null>(null);
+  const fallbackSpeechRef = useRef<SpeechSynthesisUtterance | null>(null);
   
   const [inputValue, setInputValue] = useState('');
   const [isScenarioExpanded, setIsScenarioExpanded] = useState(false);
@@ -30,6 +38,7 @@ export default function RolePlayModeTopics() {
   const [activeFeedback, setActiveFeedback] = useState<string | null>(null);
   const [activeAssessment, setActiveAssessment] = useState<SpeechAssessment | null>(null);
   const [hintOpenForMessageId, setHintOpenForMessageId] = useState<string | null>(null);
+  const [isActiveHintOpen, setIsActiveHintOpen] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -68,6 +77,58 @@ export default function RolePlayModeTopics() {
       setShowCompletionModal(true);
     }
   }, [isCompleted, isJustCompleted]);
+
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis?.cancel();
+    };
+  }, []);
+
+  const toggleMessageSpeech = (messageId: string, content: string) => {
+    if (!('speechSynthesis' in window)) {
+      toast.error('Speech playback is not supported by this browser.');
+      return;
+    }
+
+    if (fallbackSpeechMessageId === messageId) {
+      window.speechSynthesis.cancel();
+      fallbackSpeechRef.current = null;
+      setFallbackSpeechMessageId(null);
+      return;
+    }
+
+    stopAudio();
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(content);
+    utterance.rate = 0.9;
+    utterance.onend = () => {
+      fallbackSpeechRef.current = null;
+      setFallbackSpeechMessageId((current) => (current === messageId ? null : current));
+    };
+    utterance.onerror = () => {
+      fallbackSpeechRef.current = null;
+      setFallbackSpeechMessageId((current) => (current === messageId ? null : current));
+    };
+
+    fallbackSpeechRef.current = utterance;
+    setFallbackSpeechMessageId(messageId);
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const finishMode = async () => {
+    setShowCompletionModal(false);
+    if (courseId && unitId && lessonId) {
+      try {
+        const lessons = await fetchUnitLessons(unitId);
+        navigate(getNextLessonPath({ courseId, unitId, lessonId }, lessons), { replace: true });
+        return;
+      } catch {
+        // The learner can still safely return to the refreshed lesson list.
+      }
+    }
+    navigate(allLessonsPath, { replace: true });
+  };
 
   const step1Completed = isScenarioExpanded || (chatHistory && chatHistory.some(m => m.role === 'user'));
   const step1Active = !step1Completed;
@@ -115,16 +176,18 @@ export default function RolePlayModeTopics() {
     return Math.min(99, Math.round((roleplayProgress.completedTurns / roleplayProgress.requiredTurns) * 100));
   };
 
+  const activeRoleplayHint = [...chatHistory]
+    .reverse()
+    .find((message) => message.role === 'assistant' && message.hint?.trim())
+    ?.hint;
+
   return (
     <div className="w-full max-w-[1207px] mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)] border border-gray-100 shadow-sm relative">
       
       <TopicCompletionModal 
         isOpen={showCompletionModal}
         isJustCompleted={isJustCompleted}
-        onFinish={() => {
-          setShowCompletionModal(false);
-          navigate(-1);
-        }}
+        onFinish={() => { void finishMode(); }}
         onRetake={() => {
           setShowCompletionModal(false);
           setIsScenarioExpanded(false);
@@ -158,7 +221,7 @@ export default function RolePlayModeTopics() {
           
           <div className="flex-1 flex justify-start">
             <button 
-              onClick={() => navigate(-1)}
+              onClick={() => navigate(allLessonsPath, { replace: true })}
               className="flex justify-center items-center w-10 h-10 bg-white border border-[#E5E7EB] shadow-[0px_1px_4px_rgba(0,0,0,0.06)] rounded-full hover:bg-gray-50 transition-colors"
             >
               <ChevronLeft className="w-5 h-5 text-[#282828]" />
@@ -340,6 +403,25 @@ export default function RolePlayModeTopics() {
           {/* Chat History Area */}
           {!step1Active && (
           <div className="flex flex-col flex-1 border border-[#E5E7EB] bg-white rounded-xl min-h-0 overflow-hidden mb-2 ml-2">
+            {activeRoleplayHint && (
+              <div className="border-b border-[#CCFBF1] bg-[#F0FDFA] px-5 py-3">
+                <button
+                  type="button"
+                  onClick={() => setIsActiveHintOpen((open) => !open)}
+                  className="flex items-center gap-1.5 text-[12px] font-semibold text-[#0F766E] hover:text-[#0D9488]"
+                  aria-expanded={isActiveHintOpen}
+                >
+                  <Lightbulb className="h-3.5 w-3.5" />
+                  {isActiveHintOpen ? 'Hide current hint' : 'Show current hint'}
+                </button>
+                {isActiveHintOpen && (
+                  <p className="mt-2 text-[12px] leading-[17px] text-[#115E59]">
+                    <span className="font-semibold">What to say: </span>
+                    {activeRoleplayHint}
+                  </p>
+                )}
+              </div>
+            )}
             <div 
               ref={chatContainerRef}
               className="flex flex-col p-5 px-6 gap-3 flex-1 min-h-0 bg-[#F8F9FA] overflow-y-auto"
@@ -398,18 +480,20 @@ export default function RolePlayModeTopics() {
                       )}
                     </div>
                   )}
-                  {msg.role === 'assistant' && (msg.audioUrl || msg.feedback || msg.hint) && (
+                  {msg.role === 'assistant' && (msg.audioUrl || msg.feedback || msg.hint || msg.content.trim()) && (
                     <div className="mt-3 flex items-center gap-4 border-t border-[#E5E7EB] pt-2.5">
-                      {msg.audioUrl && (
+                      {(msg.audioUrl || msg.content.trim()) && (
                         <button
                           type="button"
-                          onClick={() => toggleAudio(msg.id, msg.audioUrl || undefined)}
+                          onClick={() => msg.audioUrl
+                            ? toggleAudio(msg.id, msg.audioUrl)
+                            : toggleMessageSpeech(msg.id, msg.content)}
                           className="flex items-center text-[#0F1450] hover:text-[#5C9DFF] transition-colors"
-                          aria-label={playingAudioId === msg.id && isCurrentlyPlaying ? 'Pause AI response' : 'Play AI response'}
+                          aria-label={(msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || fallbackSpeechMessageId === msg.id ? 'Stop AI response' : 'Play AI response'}
                         >
                           {loadingAudioId === msg.id ? (
                             <LoaderCircle className="w-5 h-5 animate-spin" />
-                          ) : playingAudioId === msg.id && isCurrentlyPlaying ? (
+                          ) : (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || fallbackSpeechMessageId === msg.id ? (
                             <Pause className="w-5 h-5" />
                           ) : (
                             <Play className="w-5 h-5" />

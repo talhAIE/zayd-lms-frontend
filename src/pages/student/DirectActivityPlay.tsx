@@ -23,7 +23,7 @@ import {
 import { useAppDispatch } from '@/redux/hooks';
 import { getLessonModes } from '@/redux/slices/learningSlice';
 import { useLearningProgressRefresh } from '@/hooks/useLearningProgressRefresh';
-import { getLearningModePath } from '@/utils/learning-navigation';
+import { getLearningModePath, getNextLessonPath } from '@/utils/learning-navigation';
 import {
   DropdownComponent,
   FillInTheBlankComponent,
@@ -239,7 +239,7 @@ export default function DirectActivityPlay() {
 
   const handleBack = () => {
     if (courseId && unitId) {
-      navigate(`/student/courses/${courseId}/units/${unitId}`);
+      navigate(`/student/courses/${courseId}/units/${unitId}`, { replace: true });
     } else {
       navigate(-1);
     }
@@ -247,16 +247,21 @@ export default function DirectActivityPlay() {
 
   const continueFromCompletedMode = async () => {
     if (!lessonId || !modeId) return;
+    if (!courseId || !unitId) {
+      handleBack();
+      return;
+    }
     try {
       const modes = await refreshAllProgress();
       const nextMode = modes.find((mode) => !mode.isLocked && mode.status !== 'completed' && mode.id !== modeId);
       if (nextMode && courseId && unitId) {
-        navigate(getLearningModePath({ courseId, unitId, lessonId }, nextMode));
+        navigate(getLearningModePath({ courseId, unitId, lessonId }, nextMode), { replace: true });
         return;
       }
-      navigate(`/student/courses/${courseId}/units/${unitId}`);
+      const lessons = await fetchUnitLessons(unitId);
+      navigate(getNextLessonPath({ courseId, unitId, lessonId }, lessons), { replace: true });
     } catch {
-      navigate(`/student/courses/${courseId}/units/${unitId}`);
+      navigate(`/student/courses/${courseId}/units/${unitId}`, { replace: true });
     }
   };
 
