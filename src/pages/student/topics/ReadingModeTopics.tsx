@@ -159,6 +159,7 @@ export default function ReadingModeTopics() {
   const [hasStartedShadowReading, setHasStartedShadowReading] = useState(false);
   const [isStepsExpanded, setIsStepsExpanded] = useState(false);
   const [fallbackSpeechMessageId, setFallbackSpeechMessageId] = useState<string | null>(null);
+  const [isFallbackSpeechPaused, setIsFallbackSpeechPaused] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const fallbackSpeechRef = useRef<SpeechSynthesisUtterance | null>(null);
   const {
@@ -246,22 +247,38 @@ export default function ReadingModeTopics() {
     }
 
     if (fallbackSpeechMessageId === messageId) {
-      window.speechSynthesis.cancel();
-      setFallbackSpeechMessageId(null);
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+        setIsFallbackSpeechPaused(false);
+      } else {
+        window.speechSynthesis.pause();
+        setIsFallbackSpeechPaused(true);
+      }
       return;
     }
 
     stopAudio();
     window.speechSynthesis.cancel();
+    setIsFallbackSpeechPaused(false);
 
     // Read the sentence itself, rather than the surrounding instruction.
     const sentence = content.match(/"([^"\n]+)"/)?.[1] || content;
     const utterance = new SpeechSynthesisUtterance(sentence);
     utterance.onend = () => {
-      setFallbackSpeechMessageId(null);
-      onComplete?.();
+      if (fallbackSpeechRef.current === utterance) {
+        fallbackSpeechRef.current = null;
+        setFallbackSpeechMessageId(null);
+        setIsFallbackSpeechPaused(false);
+        onComplete?.();
+      }
     };
-    utterance.onerror = () => setFallbackSpeechMessageId(null);
+    utterance.onerror = () => {
+      if (fallbackSpeechRef.current === utterance) {
+        fallbackSpeechRef.current = null;
+        setFallbackSpeechMessageId(null);
+        setIsFallbackSpeechPaused(false);
+      }
+    };
     fallbackSpeechRef.current = utterance;
     setFallbackSpeechMessageId(messageId);
     window.speechSynthesis.speak(utterance);
@@ -325,9 +342,10 @@ export default function ReadingModeTopics() {
   const togglePassageAudio = () => {
     const audioUrl = contentPayload?.contentAudioUrl || contentPayload?.narrationAudioUrl || contentPayload?.attachmentUrl;
     if (audioUrl) {
-      if (fallbackSpeechMessageId === 'reading-passage-fallback') {
+      if (fallbackSpeechMessageId) {
         window.speechSynthesis.cancel();
         setFallbackSpeechMessageId(null);
+        setIsFallbackSpeechPaused(false);
       }
       toggleAudio('reading-passage', audioUrl, markReadingPassageListened);
       return;
@@ -338,6 +356,16 @@ export default function ReadingModeTopics() {
       readingPassageText,
       markReadingPassageListened,
     );
+  };
+
+  const toggleStoredAudio = (messageId: string, audioUrl: string, onEnd?: () => void) => {
+    if (fallbackSpeechMessageId) {
+      window.speechSynthesis.cancel();
+      fallbackSpeechRef.current = null;
+      setFallbackSpeechMessageId(null);
+      setIsFallbackSpeechPaused(false);
+    }
+    toggleAudio(messageId, audioUrl, onEnd);
   };
 
   const initialReadingSentence =
@@ -569,7 +597,7 @@ export default function ReadingModeTopics() {
                 readingPresentation={readingPresentation}
                 onVocabularyClick={setActiveVocabularyCard}
                 showAudioControl={Boolean(readingPassageText)}
-                isPlaying={(playingAudioId === 'reading-passage' && isCurrentlyPlaying) || fallbackSpeechMessageId === 'reading-passage-fallback'}
+                isPlaying={(playingAudioId === 'reading-passage' && isCurrentlyPlaying) || (fallbackSpeechMessageId === 'reading-passage-fallback' && !isFallbackSpeechPaused)}
                 onToggleAudio={togglePassageAudio}
                 forceExpanded={step1Active}
                 collapsibleMode="accordion"
@@ -613,9 +641,9 @@ export default function ReadingModeTopics() {
                         type="button"
                         onClick={() => toggleInitialReadingPromptSpeech('reading-initial-prompt', initialReadingSentence)}
                         className="flex items-center text-[#0F1450] hover:text-[#5C9DFF] transition-colors"
-                        aria-label={fallbackSpeechMessageId === 'reading-initial-prompt' ? 'Pause initial reading prompt' : 'Play initial reading prompt'}
+                        aria-label={fallbackSpeechMessageId === 'reading-initial-prompt' && !isFallbackSpeechPaused ? 'Pause initial reading prompt' : 'Play initial reading prompt'}
                       >
-                        {fallbackSpeechMessageId === 'reading-initial-prompt' ? (
+                        {fallbackSpeechMessageId === 'reading-initial-prompt' && !isFallbackSpeechPaused ? (
                           <Pause className="w-5 h-5" />
                         ) : (
                           <Play className="w-5 h-5" />
@@ -661,7 +689,7 @@ export default function ReadingModeTopics() {
                     <div className="mt-3 flex items-center justify-end gap-4 border-t border-[#BFDBFE] pt-2.5">
                       <button
                         type="button"
-                        onClick={() => toggleAudio(msg.id, msg.audioUrl || undefined)}
+                        onClick={() => toggleStoredAudio(msg.id, msg.audioUrl!)}
                         className="flex items-center text-[#0F1450] hover:text-[#2563EB] transition-colors"
                         aria-label={playingAudioId === msg.id && isCurrentlyPlaying ? 'Pause your recording' : 'Play your recording'}
                       >
@@ -691,18 +719,18 @@ export default function ReadingModeTopics() {
                         <button
                           type="button"
                           onClick={() => msg.audioUrl
-                            ? toggleAudio(msg.id, msg.audioUrl)
+                            ? toggleStoredAudio(msg.id, msg.audioUrl)
                             : toggleInitialReadingPromptSpeech(msg.id, msg.content)}
                           className="flex items-center text-[#0F1450] hover:text-[#5C9DFF] transition-colors"
                           aria-label={
-                            (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || isFallbackSpeechPlaying
+                            (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || (isFallbackSpeechPlaying && !isFallbackSpeechPaused)
                               ? 'Pause AI response'
                               : 'Play AI response'
                           }
                         >
                           {loadingAudioId === msg.id ? (
                             <LoaderCircle className="w-5 h-5 animate-spin" />
-                          ) : (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || isFallbackSpeechPlaying ? (
+                          ) : (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || (isFallbackSpeechPlaying && !isFallbackSpeechPaused) ? (
                             <Pause className="w-5 h-5" />
                           ) : (
                             <Play className="w-5 h-5" />

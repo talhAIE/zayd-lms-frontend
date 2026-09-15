@@ -67,7 +67,7 @@ export function useAudioPlayback() {
 
       if (
         soundRef.current &&
-        playingAudioId === id
+        currentPlayingIdRef.current === id
       ) {
         const isPlayingNow = playbackIdRef.current 
           ? soundRef.current.playing(playbackIdRef.current)
@@ -108,6 +108,7 @@ export function useAudioPlayback() {
         playbackIdRef.current = null;
       }
 
+      currentPlayingIdRef.current = id;
       setPlayingAudioId(id);
       setIsCurrentlyPlaying(false);
       setLoadingAudioId(id);
@@ -133,6 +134,7 @@ export function useAudioPlayback() {
         ...(format ? { format: [format] } : {}),
         onplay: (playbackId) => {
           playbackIdRef.current = playbackId;
+          currentPlayingIdRef.current = id;
           setPlayingAudioId(id);
           setIsCurrentlyPlaying(true);
           setLoadingAudioId(null);
@@ -210,6 +212,7 @@ export function useAudioPlayback() {
     loadedAudioUrlRef.current = null;
     playbackIdRef.current = null;
     pausedPositionRef.current = 0;
+    currentPlayingIdRef.current = null;
     setPlayingAudioId(null);
     setIsCurrentlyPlaying(false);
     setLoadingAudioId(null);
