@@ -627,11 +627,8 @@ export default function ReadingModeTopics() {
               )}
               {chatHistory.map((msg, index) => (
                 (() => {
-                  const hasInitialReadingFallback =
-                    msg.role === 'assistant' &&
-                    !msg.audioUrl &&
-                    index === 0 &&
-                    msg.content.startsWith('Please read the following sentence aloud:');
+                  const hasSpeechFallback =
+                    msg.role === 'assistant' && !msg.audioUrl && Boolean(msg.content.trim());
                   const isFallbackSpeechPlaying = fallbackSpeechMessageId === msg.id;
 
                   return (
@@ -688,9 +685,9 @@ export default function ReadingModeTopics() {
                       )}
                     </div>
                   )}
-                  {msg.role === 'assistant' && (msg.audioUrl || msg.feedback || hasInitialReadingFallback) && (
+                  {msg.role === 'assistant' && (msg.audioUrl || msg.feedback || hasSpeechFallback) && (
                     <div className="mt-3 flex items-center gap-4 border-t border-[#E5E7EB] pt-2.5">
-                      {(msg.audioUrl || hasInitialReadingFallback) && (
+                      {(msg.audioUrl || hasSpeechFallback) && (
                         <button
                           type="button"
                           onClick={() => msg.audioUrl

@@ -11,6 +11,7 @@ import { useLearningProgressRefresh } from '@/hooks/useLearningProgressRefresh';
 import ReactMarkdown from 'react-markdown';
 import { useAudioPlayback } from '@/hooks/useAudioPlayback';
 import SpeechAssessmentModal, { isSpeechAssessment, SpeechAssessment } from '@/components/ui/SpeechAssessmentModal';
+import { toast } from 'sonner';
 
 export default function RolePlayModeTopics() {
   const navigate = useNavigate();
@@ -21,6 +22,8 @@ export default function RolePlayModeTopics() {
   const unitId = searchParams.get('unitId') || undefined;
   const refreshLearningProgress = useLearningProgressRefresh();
   const { playingAudioId, isCurrentlyPlaying, loadingAudioId, toggleAudio, stopAudio } = useAudioPlayback();
+  const [fallbackSpeechMessageId, setFallbackSpeechMessageId] = useState<string | null>(null);
+  const fallbackSpeechRef = useRef<SpeechSynthesisUtterance | null>(null);
   
   const [inputValue, setInputValue] = useState('');
   const [isScenarioExpanded, setIsScenarioExpanded] = useState(false);
@@ -68,6 +71,44 @@ export default function RolePlayModeTopics() {
       setShowCompletionModal(true);
     }
   }, [isCompleted, isJustCompleted]);
+
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis?.cancel();
+    };
+  }, []);
+
+  const toggleMessageSpeech = (messageId: string, content: string) => {
+    if (!('speechSynthesis' in window)) {
+      toast.error('Speech playback is not supported by this browser.');
+      return;
+    }
+
+    if (fallbackSpeechMessageId === messageId) {
+      window.speechSynthesis.cancel();
+      fallbackSpeechRef.current = null;
+      setFallbackSpeechMessageId(null);
+      return;
+    }
+
+    stopAudio();
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(content);
+    utterance.rate = 0.9;
+    utterance.onend = () => {
+      fallbackSpeechRef.current = null;
+      setFallbackSpeechMessageId((current) => (current === messageId ? null : current));
+    };
+    utterance.onerror = () => {
+      fallbackSpeechRef.current = null;
+      setFallbackSpeechMessageId((current) => (current === messageId ? null : current));
+    };
+
+    fallbackSpeechRef.current = utterance;
+    setFallbackSpeechMessageId(messageId);
+    window.speechSynthesis.speak(utterance);
+  };
 
   const step1Completed = isScenarioExpanded || (chatHistory && chatHistory.some(m => m.role === 'user'));
   const step1Active = !step1Completed;
@@ -398,18 +439,20 @@ export default function RolePlayModeTopics() {
                       )}
                     </div>
                   )}
-                  {msg.role === 'assistant' && (msg.audioUrl || msg.feedback || msg.hint) && (
+                  {msg.role === 'assistant' && (msg.audioUrl || msg.feedback || msg.hint || msg.content.trim()) && (
                     <div className="mt-3 flex items-center gap-4 border-t border-[#E5E7EB] pt-2.5">
-                      {msg.audioUrl && (
+                      {(msg.audioUrl || msg.content.trim()) && (
                         <button
                           type="button"
-                          onClick={() => toggleAudio(msg.id, msg.audioUrl || undefined)}
+                          onClick={() => msg.audioUrl
+                            ? toggleAudio(msg.id, msg.audioUrl)
+                            : toggleMessageSpeech(msg.id, msg.content)}
                           className="flex items-center text-[#0F1450] hover:text-[#5C9DFF] transition-colors"
-                          aria-label={playingAudioId === msg.id && isCurrentlyPlaying ? 'Pause AI response' : 'Play AI response'}
+                          aria-label={(msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || fallbackSpeechMessageId === msg.id ? 'Stop AI response' : 'Play AI response'}
                         >
                           {loadingAudioId === msg.id ? (
                             <LoaderCircle className="w-5 h-5 animate-spin" />
-                          ) : playingAudioId === msg.id && isCurrentlyPlaying ? (
+                          ) : (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || fallbackSpeechMessageId === msg.id ? (
                             <Pause className="w-5 h-5" />
                           ) : (
                             <Play className="w-5 h-5" />
