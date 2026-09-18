@@ -134,6 +134,7 @@ export default function ReadingModeTopics() {
     chatHistory,
     contentPayload,
     mcqList,
+    mcqAnswerFeedback,
     readingProgress,
     isTyping,
     isCompleted,
@@ -144,6 +145,8 @@ export default function ReadingModeTopics() {
     contentFilterWarningData,
     sendAudio,
     submitMcqs,
+    checkMcqAnswer,
+    clearMcqAnswerFeedback,
     markReadingPassageListened,
     restartSession
   } = useModeSession({ 
@@ -164,6 +167,11 @@ export default function ReadingModeTopics() {
   useEffect(() => {
     setHasStartedShadowReading(false);
   }, [lessonModeId]);
+
+  useEffect(() => {
+    setCurrentMcqIndex(0);
+    setSelectedAnswers({});
+  }, [mcqList]);
 
 
   const [cooldown, setCooldown] = useState(false);
@@ -791,6 +799,12 @@ export default function ReadingModeTopics() {
               {(() => {
                 const mcq = mcqList[currentMcqIndex] || mcqList[0];
                 const currentAnswer = selectedAnswers[currentMcqIndex];
+                const answerFeedback = mcqAnswerFeedback[mcq.id];
+                const hasCorrectAnswer = answerFeedback?.isCorrect === true;
+                const hasCheckedAnswer = Boolean(answerFeedback);
+                const allAnswersCheckedCorrectly = mcqList.every(
+                  (question) => mcqAnswerFeedback[question.id]?.isCorrect === true,
+                );
 
                 return (
                   <div className="flex flex-col gap-4 w-full">
@@ -805,29 +819,55 @@ export default function ReadingModeTopics() {
                         const optVal = typeof opt === 'string' ? oIdx : opt.id;
                         const isSelected = currentAnswer === optVal;
                         const optLabel = typeof opt === 'string' ? opt : opt.text;
+                        const isCorrectSelection = isSelected && answerFeedback?.isCorrect === true;
+                        const isIncorrectSelection = isSelected && answerFeedback?.isCorrect === false;
 
                         return (
                           <div
                             key={oIdx}
-                            onClick={() => setSelectedAnswers(prev => ({ ...prev, [currentMcqIndex]: optVal }))}
+                            onClick={() => {
+                              if (hasCorrectAnswer) return;
+                              clearMcqAnswerFeedback(mcq.id);
+                              setSelectedAnswers(prev => ({ ...prev, [currentMcqIndex]: optVal }));
+                            }}
                             className={`w-full p-[14px_16px] rounded-[10px] flex flex-row items-center gap-3 cursor-pointer transition-all ${
-                              isSelected
+                              isCorrectSelection
+                                ? 'bg-[#ECFDF3] border border-[#22C55E] text-[#166534] shadow-sm'
+                                : isIncorrectSelection
+                                  ? 'bg-[#FEF2F2] border border-[#EF4444] text-[#991B1B] shadow-sm'
+                                  : isSelected
                                 ? 'bg-[#3B82F6] border border-[#3B82F6] text-white shadow-sm'
                                 : 'bg-white border border-[#E5E7EB] text-[#0F1450] hover:border-[#3B82F6]/40'
                             }`}
                           >
                             <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
-                              isSelected ? 'bg-white' : 'border-[1.5px] border-[#9CA3AF]'
+                              isCorrectSelection || isIncorrectSelection || isSelected ? 'bg-white' : 'border-[1.5px] border-[#9CA3AF]'
                             }`}>
-                              {isSelected && <Check className="w-2.5 h-2.5 text-[#3B82F6] stroke-[3]" />}
+                              {isCorrectSelection ? <Check className="w-2.5 h-2.5 text-[#16A34A] stroke-[3]" /> :
+                                isIncorrectSelection ? <span className="text-[13px] font-bold text-[#DC2626]">×</span> :
+                                  isSelected && <Check className="w-2.5 h-2.5 text-[#3B82F6] stroke-[3]" />}
                             </div>
-                            <span className={`text-[14px] leading-[18px] flex-1 ${isSelected ? 'font-bold text-white' : 'font-normal text-[#0F1450]'}`}>
+                            <span className={`text-[14px] leading-[18px] flex-1 ${
+                              isCorrectSelection ? 'font-bold text-[#166534]' :
+                                isIncorrectSelection ? 'font-bold text-[#991B1B]' :
+                                  isSelected ? 'font-bold text-white' : 'font-normal text-[#0F1450]'
+                            }`}>
                               {optLabel}
                             </span>
                           </div>
                         );
                       })}
                     </div>
+
+                    {hasCheckedAnswer && (
+                      <div className={`rounded-[10px] px-4 py-3 text-[13px] font-semibold ${
+                        hasCorrectAnswer
+                          ? 'border border-[#86EFAC] bg-[#F0FDF4] text-[#166534]'
+                          : 'border border-[#FECACA] bg-[#FEF2F2] text-[#991B1B]'
+                      }`} role="status">
+                        {answerFeedback.message}
+                      </div>
+                    )}
 
                     {/* Action Button */}
                     <div className="flex justify-between items-center pt-2">
@@ -850,24 +890,46 @@ export default function ReadingModeTopics() {
                         <button
                           type="button"
                           onClick={() => {
-                            setCurrentMcqIndex(prev => prev + 1);
+                            if (hasCorrectAnswer) {
+                              setCurrentMcqIndex(prev => prev + 1);
+                              return;
+                            }
+                            if (hasCheckedAnswer) {
+                              clearMcqAnswerFeedback(mcq.id);
+                              return;
+                            }
+                            if (currentAnswer !== undefined) {
+                              checkMcqAnswer(mcq.id, currentAnswer);
+                            }
                           }}
                           disabled={currentAnswer === undefined || isAccountBlocked}
                           className="px-6 py-2.5 bg-[#3B82F6] text-white rounded-full font-['Outfit'] font-semibold text-[14px] hover:bg-[#2563EB] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         >
-                          Next Question
+                          {hasCorrectAnswer ? 'Next Question' : hasCheckedAnswer ? 'Choose Another Answer' : 'Check Answer'}
                         </button>
                       ) : (
                         <button
                           type="button"
                           onClick={() => {
+                            if (!hasCorrectAnswer) {
+                              if (hasCheckedAnswer) {
+                                clearMcqAnswerFeedback(mcq.id);
+                                return;
+                              }
+                              if (currentAnswer !== undefined) {
+                                checkMcqAnswer(mcq.id, currentAnswer);
+                              }
+                              return;
+                            }
                             const answers = mcqList.map((_, idx) => selectedAnswers[idx] ?? -1);
                             submitMcqs(answers);
                           }}
-                          disabled={Object.keys(selectedAnswers).length < mcqList.length || isAccountBlocked}
+                          disabled={currentAnswer === undefined || isAccountBlocked || (hasCorrectAnswer && !allAnswersCheckedCorrectly)}
                           className="px-6 py-2.5 bg-[#3B82F6] text-white rounded-full font-['Outfit'] font-semibold text-[14px] hover:bg-[#2563EB] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         >
-                          Submit Answers
+                          {hasCorrectAnswer && allAnswersCheckedCorrectly
+                            ? 'Submit Answers'
+                            : hasCheckedAnswer ? 'Choose Another Answer' : 'Check Answer'}
                         </button>
                       )}
                     </div>

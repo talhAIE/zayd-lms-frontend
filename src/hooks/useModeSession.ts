@@ -44,6 +44,13 @@ export interface McqResult {
   message: string;
 }
 
+export interface McqAnswerFeedback {
+  modeSessionId: string;
+  questionId: string;
+  isCorrect: boolean;
+  message: string;
+}
+
 export interface RoleplayProgress {
   requiredTurns: number;
   completedTurns: number;
@@ -83,6 +90,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
   const [contentPayload, setContentPayload] = useState<any>(null);
   const [mcqList, setMcqList] = useState<Mcq[]>([]);
   const [mcqResult, setMcqResult] = useState<McqResult | null>(null);
+  const [mcqAnswerFeedback, setMcqAnswerFeedback] = useState<Record<string, McqAnswerFeedback>>({});
   const [listeningPayload, setListeningPayload] = useState<ListeningPayload | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -120,6 +128,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     setContentPayload(null);
     setMcqList([]);
     setMcqResult(null);
+    setMcqAnswerFeedback({});
     setListeningPayload(null);
     setReadingProgress(null);
     setRoleplayProgress(null);
@@ -189,6 +198,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       if (session.mcqs) {
         setMcqList(session.mcqs);
         setMcqResult(null);
+        setMcqAnswerFeedback({});
       }
       if (session.readingProgress) {
         setReadingProgress(session.readingProgress);
@@ -248,6 +258,14 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     newSocket.on('mcq_list', (payload: { modeSessionId: string, questions: Mcq[] }) => {
       setMcqList(payload.questions);
       setMcqResult(null);
+      setMcqAnswerFeedback({});
+    });
+
+    newSocket.on('mcq_answer_result', (payload: McqAnswerFeedback) => {
+      setMcqAnswerFeedback((current) => ({
+        ...current,
+        [payload.questionId]: payload,
+      }));
     });
 
     newSocket.on('mcq_result', (payload: McqResult) => {
@@ -430,6 +448,23 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     socket.emit('next_listening_stage', { modeSessionId: modeSessionIdRef.current });
   }, [socket, isAccountBlocked]);
 
+  const checkMcqAnswer = useCallback((questionId: string, answer: number | string) => {
+    if (!socket || !modeSessionIdRef.current || isAccountBlocked) return;
+    socket.emit('check_mcq_answer', {
+      modeSessionId: modeSessionIdRef.current,
+      questionId,
+      answer,
+    });
+  }, [socket, isAccountBlocked]);
+
+  const clearMcqAnswerFeedback = useCallback((questionId: string) => {
+    setMcqAnswerFeedback((current) => {
+      if (!(questionId in current)) return current;
+      const { [questionId]: _discarded, ...remaining } = current;
+      return remaining;
+    });
+  }, []);
+
   const markReadingPassageListened = useCallback(() => {
     if (!socket || !modeSessionIdRef.current || isAccountBlocked) return;
     socket.emit('reading_passage_listened', {
@@ -460,6 +495,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     contentPayload,
     mcqList,
     mcqResult,
+    mcqAnswerFeedback,
     listeningPayload,
     readingProgress,
     roleplayProgress,
@@ -475,6 +511,8 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     sendMessage,
     sendAudio,
     submitMcqs,
+    checkMcqAnswer,
+    clearMcqAnswerFeedback,
     startListening,
     nextListeningStage,
     markReadingPassageListened,
