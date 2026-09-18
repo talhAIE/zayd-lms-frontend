@@ -160,10 +160,18 @@ export default function ReadingModeTopics() {
   });
 
   useEffect(() => {
-    if (isCompleted && !isJustCompleted) {
+    // A generic completed flag alone is not enough to show the revisit
+    // decision: an interrupted Reading session must resume its saved page.
+    // The backend marks `phase: completed` only after Reading itself has
+    // actually finished (and normalizes older completed sessions on resume).
+    if (
+      isCompleted &&
+      !isJustCompleted &&
+      readingProgress?.phase === 'completed'
+    ) {
       setShowCompletionModal(true);
     }
-  }, [isCompleted, isJustCompleted]);
+  }, [isCompleted, isJustCompleted, readingProgress?.phase]);
 
   useEffect(() => {
     setHasStartedShadowReading(false);
