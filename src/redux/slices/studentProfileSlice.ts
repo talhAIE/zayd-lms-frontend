@@ -16,7 +16,7 @@ const initialState: StudentProfileState = {
 export const fetchStudentProfileData = createAsyncThunk(
   'studentProfile/fetchStudentProfileData',
   async (
-    { teacherId, studentId, timeFilter = 'weekly' }: { teacherId: string; studentId: string; timeFilter?: 'weekly' | 'monthly' },
+    { teacherId, studentId, timeFilter = 'all' }: { teacherId: string; studentId: string; timeFilter?: 'weekly' | 'monthly' | 'all' },
     { rejectWithValue }
   ) => {
     try {

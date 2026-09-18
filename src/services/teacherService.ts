@@ -371,7 +371,7 @@ const toLessonModesProgress = (modes: Record<string, LmsModeSummary>): LessonMod
 export const fetchStudentProfile = async (
   _teacherId: string,
   studentId: string,
-  timeFilter: 'weekly' | 'monthly' = 'weekly',
+  timeFilter: 'weekly' | 'monthly' | 'all' = 'all',
 ): Promise<StudentProfileData> => {
   try {
     const usageDays = timeFilter === 'weekly' ? 7 : 30;

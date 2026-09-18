@@ -21,8 +21,8 @@ import { useState } from "react";
 
 interface PerformanceGraphProps {
   assessmentGraphData?: AssessmentGraphData[];
-  timeFilter: "weekly" | "monthly";
-  onTimeFilterChange: (value: "weekly" | "monthly") => void;
+  timeFilter: "weekly" | "monthly" | "all";
+  onTimeFilterChange: (value: "weekly" | "monthly" | "all") => void;
   isLoading?: boolean;
   title?: string; // Optional title for Teacher UI
 }
@@ -127,13 +127,14 @@ export default function PerformanceGraph({
             <Select
               value={timeFilter}
               onValueChange={(value) =>
-                onTimeFilterChange(value as "weekly" | "monthly")
+                onTimeFilterChange(value as "weekly" | "monthly" | "all")
               }
             >
               <SelectTrigger className="w-24">
                 <SelectValue placeholder="Weekly" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="all">All time</SelectItem>
                 <SelectItem value="weekly">Weekly</SelectItem>
                 <SelectItem value="monthly">Monthly</SelectItem>
               </SelectContent>

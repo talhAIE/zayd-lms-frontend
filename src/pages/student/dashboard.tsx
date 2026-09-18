@@ -99,7 +99,10 @@ export default function LanguageLearningDashboard() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { data, isLoading, error } = useAppSelector((state) => state.dashboard);
-  const [timeFilter, setTimeFilter] = useState<"weekly" | "monthly">("weekly");
+  // Start with the learner's complete performance history. Restricting the
+  // initial request to the current week made established Saudi learners look
+  // like they had no assessment data at all.
+  const [timeFilter, setTimeFilter] = useState<"weekly" | "monthly" | "all">("all");
   const [selectedCourseId, setSelectedCourseId] = useState<string>("");
   const [searchParams, setSearchParams] = useSearchParams();
   const [tourActive, setTourActive] = useState(searchParams.get("tour") === "true");
