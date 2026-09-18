@@ -134,6 +134,8 @@ export default function ReadingModeTopics() {
     chatHistory,
     contentPayload,
     mcqList,
+    mcqAnswerFeedback,
+    isCheckingMcqAnswer,
     readingProgress,
     isTyping,
     isCompleted,
@@ -144,6 +146,8 @@ export default function ReadingModeTopics() {
     contentFilterWarningData,
     sendAudio,
     submitMcqs,
+    checkMcqAnswer,
+    clearMcqAnswerFeedback,
     markReadingPassageListened,
     restartSession
   } = useModeSession({ 
@@ -156,14 +160,27 @@ export default function ReadingModeTopics() {
   });
 
   useEffect(() => {
-    if (isCompleted && !isJustCompleted) {
+    // A generic completed flag alone is not enough to show the revisit
+    // decision: an interrupted Reading session must resume its saved page.
+    // The backend marks `phase: completed` only after Reading itself has
+    // actually finished (and normalizes older completed sessions on resume).
+    if (
+      isCompleted &&
+      !isJustCompleted &&
+      readingProgress?.phase === 'completed'
+    ) {
       setShowCompletionModal(true);
     }
-  }, [isCompleted, isJustCompleted]);
+  }, [isCompleted, isJustCompleted, readingProgress?.phase]);
 
   useEffect(() => {
     setHasStartedShadowReading(false);
   }, [lessonModeId]);
+
+  useEffect(() => {
+    setCurrentMcqIndex(0);
+    setSelectedAnswers({});
+  }, [mcqList]);
 
 
   const [cooldown, setCooldown] = useState(false);
@@ -629,6 +646,12 @@ export default function ReadingModeTopics() {
                   const hasSpeechFallback =
                     msg.role === 'assistant' && !msg.audioUrl && Boolean(msg.content.trim());
                   const isFallbackSpeechPlaying = fallbackSpeechMessageId === msg.id;
+                  const hasSavedSpeechAssessment = isSpeechAssessment(msg.assessments);
+                  // Browser object URLs are available only for the live
+                  // attempt. On resume, use the stored recording when it is
+                  // available and retain a transcript-to-speech fallback when
+                  // only the persisted pronunciation assessment is available.
+                  const canReplayLearnerSpeech = Boolean(msg.audioUrl) || hasSavedSpeechAssessment;
 
                   return (
                 <div 
@@ -656,23 +679,31 @@ export default function ReadingModeTopics() {
                         {msg.content}
                       </ReactMarkdown>
                     </div>
-                  {msg.role === 'user' && msg.audioUrl && (
+                  {msg.role === 'user' && canReplayLearnerSpeech && (
                     <div className="mt-3 flex items-center justify-end gap-4 border-t border-[#BFDBFE] pt-2.5">
                       <button
                         type="button"
-                        onClick={() => toggleStoredAudio(msg.id, msg.audioUrl!)}
+                        onClick={() => msg.audioUrl
+                          ? toggleStoredAudio(msg.id, msg.audioUrl)
+                          : toggleInitialReadingPromptSpeech(msg.id, msg.content)}
                         className="flex items-center text-[#0F1450] hover:text-[#2563EB] transition-colors"
-                        aria-label={playingAudioId === msg.id && isCurrentlyPlaying ? 'Pause your recording' : 'Play your recording'}
+                        aria-label={
+                          (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) ||
+                          (isFallbackSpeechPlaying && !isFallbackSpeechPaused)
+                            ? 'Pause your spoken response'
+                            : 'Play your spoken response'
+                        }
                       >
                         {loadingAudioId === msg.id ? (
                           <LoaderCircle className="w-5 h-5 animate-spin" />
-                        ) : playingAudioId === msg.id && isCurrentlyPlaying ? (
+                        ) : (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) ||
+                          (isFallbackSpeechPlaying && !isFallbackSpeechPaused) ? (
                           <Pause className="w-5 h-5" />
                         ) : (
                           <Play className="w-5 h-5" />
                         )}
                       </button>
-                      {isSpeechAssessment(msg.assessments) && (
+                      {hasSavedSpeechAssessment && (
                         <button
                           type="button"
                           onClick={() => setActiveAssessment(msg.assessments)}
@@ -777,6 +808,12 @@ export default function ReadingModeTopics() {
               {(() => {
                 const mcq = mcqList[currentMcqIndex] || mcqList[0];
                 const currentAnswer = selectedAnswers[currentMcqIndex];
+                const answerFeedback = mcqAnswerFeedback[mcq.id];
+                const hasCorrectAnswer = answerFeedback?.isCorrect === true;
+                const hasCheckedAnswer = Boolean(answerFeedback);
+                const allAnswersCheckedCorrectly = mcqList.every(
+                  (question) => mcqAnswerFeedback[question.id]?.isCorrect === true,
+                );
 
                 return (
                   <div className="flex flex-col gap-4 w-full">
@@ -791,29 +828,56 @@ export default function ReadingModeTopics() {
                         const optVal = typeof opt === 'string' ? oIdx : opt.id;
                         const isSelected = currentAnswer === optVal;
                         const optLabel = typeof opt === 'string' ? opt : opt.text;
+                        const isCorrectSelection = isSelected && answerFeedback?.isCorrect === true;
+                        const isIncorrectSelection = isSelected && answerFeedback?.isCorrect === false;
 
                         return (
-                          <div
+                          <button
                             key={oIdx}
-                            onClick={() => setSelectedAnswers(prev => ({ ...prev, [currentMcqIndex]: optVal }))}
-                            className={`w-full p-[14px_16px] rounded-[10px] flex flex-row items-center gap-3 cursor-pointer transition-all ${
-                              isSelected
+                            type="button"
+                            onClick={() => {
+                              if (hasCorrectAnswer) return;
+                              clearMcqAnswerFeedback(mcq.id);
+                              setSelectedAnswers(prev => ({ ...prev, [currentMcqIndex]: optVal }));
+                            }}
+                            className={`w-full p-[14px_16px] rounded-[10px] flex flex-row items-center gap-3 cursor-pointer text-left transition-all ${
+                              isCorrectSelection
+                                ? 'bg-[#ECFDF3] border border-[#22C55E] text-[#166534] shadow-sm'
+                                : isIncorrectSelection
+                                  ? 'bg-[#FEF2F2] border border-[#EF4444] text-[#991B1B] shadow-sm'
+                                  : isSelected
                                 ? 'bg-[#3B82F6] border border-[#3B82F6] text-white shadow-sm'
                                 : 'bg-white border border-[#E5E7EB] text-[#0F1450] hover:border-[#3B82F6]/40'
                             }`}
                           >
                             <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
-                              isSelected ? 'bg-white' : 'border-[1.5px] border-[#9CA3AF]'
+                              isCorrectSelection || isIncorrectSelection || isSelected ? 'bg-white' : 'border-[1.5px] border-[#9CA3AF]'
                             }`}>
-                              {isSelected && <Check className="w-2.5 h-2.5 text-[#3B82F6] stroke-[3]" />}
+                              {isCorrectSelection ? <Check className="w-2.5 h-2.5 text-[#16A34A] stroke-[3]" /> :
+                                isIncorrectSelection ? <span className="text-[13px] font-bold text-[#DC2626]">×</span> :
+                                  isSelected && <Check className="w-2.5 h-2.5 text-[#3B82F6] stroke-[3]" />}
                             </div>
-                            <span className={`text-[14px] leading-[18px] flex-1 ${isSelected ? 'font-bold text-white' : 'font-normal text-[#0F1450]'}`}>
+                            <span className={`text-[14px] leading-[18px] flex-1 ${
+                              isCorrectSelection ? 'font-bold text-[#166534]' :
+                                isIncorrectSelection ? 'font-bold text-[#991B1B]' :
+                                  isSelected ? 'font-bold text-white' : 'font-normal text-[#0F1450]'
+                            }`}>
                               {optLabel}
                             </span>
-                          </div>
+                          </button>
                         );
                       })}
                     </div>
+
+                    {hasCheckedAnswer && (
+                      <div className={`rounded-[10px] px-4 py-3 text-[13px] font-semibold ${
+                        hasCorrectAnswer
+                          ? 'border border-[#86EFAC] bg-[#F0FDF4] text-[#166534]'
+                          : 'border border-[#FECACA] bg-[#FEF2F2] text-[#991B1B]'
+                      }`} role="status">
+                        {answerFeedback.message}
+                      </div>
+                    )}
 
                     {/* Action Button */}
                     <div className="flex justify-between items-center pt-2">
@@ -836,24 +900,46 @@ export default function ReadingModeTopics() {
                         <button
                           type="button"
                           onClick={() => {
-                            setCurrentMcqIndex(prev => prev + 1);
+                            if (hasCorrectAnswer) {
+                              setCurrentMcqIndex(prev => prev + 1);
+                              return;
+                            }
+                            if (hasCheckedAnswer) {
+                              clearMcqAnswerFeedback(mcq.id);
+                              return;
+                            }
+                            if (currentAnswer !== undefined) {
+                              checkMcqAnswer(mcq.id, currentAnswer);
+                            }
                           }}
-                          disabled={currentAnswer === undefined || isAccountBlocked}
+                          disabled={currentAnswer === undefined || isAccountBlocked || isCheckingMcqAnswer}
                           className="px-6 py-2.5 bg-[#3B82F6] text-white rounded-full font-['Outfit'] font-semibold text-[14px] hover:bg-[#2563EB] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         >
-                          Next Question
+                          {hasCorrectAnswer ? 'Next Question' : isCheckingMcqAnswer ? 'Checking…' : hasCheckedAnswer ? 'Choose Another Answer' : 'Check Answer'}
                         </button>
                       ) : (
                         <button
                           type="button"
                           onClick={() => {
+                            if (!hasCorrectAnswer) {
+                              if (hasCheckedAnswer) {
+                                clearMcqAnswerFeedback(mcq.id);
+                                return;
+                              }
+                              if (currentAnswer !== undefined) {
+                                checkMcqAnswer(mcq.id, currentAnswer);
+                              }
+                              return;
+                            }
                             const answers = mcqList.map((_, idx) => selectedAnswers[idx] ?? -1);
                             submitMcqs(answers);
                           }}
-                          disabled={Object.keys(selectedAnswers).length < mcqList.length || isAccountBlocked}
+                          disabled={currentAnswer === undefined || isAccountBlocked || isCheckingMcqAnswer || (hasCorrectAnswer && !allAnswersCheckedCorrectly)}
                           className="px-6 py-2.5 bg-[#3B82F6] text-white rounded-full font-['Outfit'] font-semibold text-[14px] hover:bg-[#2563EB] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         >
-                          Submit Answers
+                          {hasCorrectAnswer && allAnswersCheckedCorrectly
+                            ? 'Submit Answers'
+                            : isCheckingMcqAnswer ? 'Checking…' : hasCheckedAnswer ? 'Choose Another Answer' : 'Check Answer'}
                         </button>
                       )}
                     </div>

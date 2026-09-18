@@ -20,7 +20,7 @@ export default function StudentProfile() {
     (state) => state.studentProfile
   );
 
-  const [timeFilter, setTimeFilter] = useState<"weekly" | "monthly">("weekly");
+  const [timeFilter, setTimeFilter] = useState<"weekly" | "monthly" | "all">("all");
 
   useEffect(() => {
     if (teacherId && studentId) {
@@ -147,7 +147,13 @@ export default function StudentProfile() {
                       <div className="snap-start min-h-[400px]">
                         <RevenueGraph
                           usageData={data?.usageGraphData}
-                          periodLabel={timeFilter === "weekly" ? "This Week" : "This Month"}
+                          periodLabel={
+                            timeFilter === "weekly"
+                              ? "This Week"
+                              : timeFilter === "monthly"
+                                ? "This Month"
+                                : "All Time"
+                          }
                         />
                       </div>
                       <div className="snap-start min-h-[400px]">

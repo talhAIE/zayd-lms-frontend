@@ -99,7 +99,10 @@ export default function LanguageLearningDashboard() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { data, isLoading, error } = useAppSelector((state) => state.dashboard);
-  const [timeFilter, setTimeFilter] = useState<"weekly" | "monthly">("weekly");
+  // Start with the learner's complete performance history. Restricting the
+  // initial request to the current week made established Saudi learners look
+  // like they had no assessment data at all.
+  const [timeFilter, setTimeFilter] = useState<"weekly" | "monthly" | "all">("all");
   const [selectedCourseId, setSelectedCourseId] = useState<string>("");
   const [searchParams, setSearchParams] = useSearchParams();
   const [tourActive, setTourActive] = useState(searchParams.get("tour") === "true");
@@ -536,9 +539,9 @@ export default function LanguageLearningDashboard() {
         )}
       </div>
 
-      <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="w-full grid grid-cols-1 lg:grid-cols-2 items-stretch gap-6">
         {/* Completed Topics Section */}
-        <Card id="tour-completed-topics" className="shadow-md border-[#F4F4F4] bg-white rounded-[16.11px]">
+        <Card id="tour-completed-topics" className="h-full shadow-md border-[#F4F4F4] bg-white rounded-[16.11px]">
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between gap-2">
               <div className="flex flex-col gap-1">
@@ -632,7 +635,7 @@ export default function LanguageLearningDashboard() {
         </Card>
 
         {/* My Performance Section */}
-        <div id="tour-performance">
+        <div id="tour-performance" className="h-full">
           <PerformanceGraph
             assessmentGraphData={assessmentGraphData}
             timeFilter={timeFilter}
