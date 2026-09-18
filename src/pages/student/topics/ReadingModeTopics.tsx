@@ -135,6 +135,7 @@ export default function ReadingModeTopics() {
     contentPayload,
     mcqList,
     mcqAnswerFeedback,
+    isCheckingMcqAnswer,
     readingProgress,
     isTyping,
     isCompleted,
@@ -823,14 +824,15 @@ export default function ReadingModeTopics() {
                         const isIncorrectSelection = isSelected && answerFeedback?.isCorrect === false;
 
                         return (
-                          <div
+                          <button
                             key={oIdx}
+                            type="button"
                             onClick={() => {
                               if (hasCorrectAnswer) return;
                               clearMcqAnswerFeedback(mcq.id);
                               setSelectedAnswers(prev => ({ ...prev, [currentMcqIndex]: optVal }));
                             }}
-                            className={`w-full p-[14px_16px] rounded-[10px] flex flex-row items-center gap-3 cursor-pointer transition-all ${
+                            className={`w-full p-[14px_16px] rounded-[10px] flex flex-row items-center gap-3 cursor-pointer text-left transition-all ${
                               isCorrectSelection
                                 ? 'bg-[#ECFDF3] border border-[#22C55E] text-[#166534] shadow-sm'
                                 : isIncorrectSelection
@@ -854,7 +856,7 @@ export default function ReadingModeTopics() {
                             }`}>
                               {optLabel}
                             </span>
-                          </div>
+                          </button>
                         );
                       })}
                     </div>
@@ -902,10 +904,10 @@ export default function ReadingModeTopics() {
                               checkMcqAnswer(mcq.id, currentAnswer);
                             }
                           }}
-                          disabled={currentAnswer === undefined || isAccountBlocked}
+                          disabled={currentAnswer === undefined || isAccountBlocked || isCheckingMcqAnswer}
                           className="px-6 py-2.5 bg-[#3B82F6] text-white rounded-full font-['Outfit'] font-semibold text-[14px] hover:bg-[#2563EB] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         >
-                          {hasCorrectAnswer ? 'Next Question' : hasCheckedAnswer ? 'Choose Another Answer' : 'Check Answer'}
+                          {hasCorrectAnswer ? 'Next Question' : isCheckingMcqAnswer ? 'Checking…' : hasCheckedAnswer ? 'Choose Another Answer' : 'Check Answer'}
                         </button>
                       ) : (
                         <button
@@ -924,12 +926,12 @@ export default function ReadingModeTopics() {
                             const answers = mcqList.map((_, idx) => selectedAnswers[idx] ?? -1);
                             submitMcqs(answers);
                           }}
-                          disabled={currentAnswer === undefined || isAccountBlocked || (hasCorrectAnswer && !allAnswersCheckedCorrectly)}
+                          disabled={currentAnswer === undefined || isAccountBlocked || isCheckingMcqAnswer || (hasCorrectAnswer && !allAnswersCheckedCorrectly)}
                           className="px-6 py-2.5 bg-[#3B82F6] text-white rounded-full font-['Outfit'] font-semibold text-[14px] hover:bg-[#2563EB] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         >
                           {hasCorrectAnswer && allAnswersCheckedCorrectly
                             ? 'Submit Answers'
-                            : hasCheckedAnswer ? 'Choose Another Answer' : 'Check Answer'}
+                            : isCheckingMcqAnswer ? 'Checking…' : hasCheckedAnswer ? 'Choose Another Answer' : 'Check Answer'}
                         </button>
                       )}
                     </div>

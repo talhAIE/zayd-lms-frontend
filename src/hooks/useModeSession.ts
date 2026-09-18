@@ -91,6 +91,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
   const [mcqList, setMcqList] = useState<Mcq[]>([]);
   const [mcqResult, setMcqResult] = useState<McqResult | null>(null);
   const [mcqAnswerFeedback, setMcqAnswerFeedback] = useState<Record<string, McqAnswerFeedback>>({});
+  const [isCheckingMcqAnswer, setIsCheckingMcqAnswer] = useState(false);
   const [listeningPayload, setListeningPayload] = useState<ListeningPayload | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -129,6 +130,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     setMcqList([]);
     setMcqResult(null);
     setMcqAnswerFeedback({});
+    setIsCheckingMcqAnswer(false);
     setListeningPayload(null);
     setReadingProgress(null);
     setRoleplayProgress(null);
@@ -199,6 +201,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
         setMcqList(session.mcqs);
         setMcqResult(null);
         setMcqAnswerFeedback({});
+        setIsCheckingMcqAnswer(false);
       }
       if (session.readingProgress) {
         setReadingProgress(session.readingProgress);
@@ -259,9 +262,11 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       setMcqList(payload.questions);
       setMcqResult(null);
       setMcqAnswerFeedback({});
+      setIsCheckingMcqAnswer(false);
     });
 
     newSocket.on('mcq_answer_result', (payload: McqAnswerFeedback) => {
+      setIsCheckingMcqAnswer(false);
       setMcqAnswerFeedback((current) => ({
         ...current,
         [payload.questionId]: payload,
@@ -362,6 +367,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       toast.error(payload.message);
       modeRequestInFlightRef.current = false;
       setIsTyping(false);
+      setIsCheckingMcqAnswer(false);
     });
 
     newSocket.on('badge_unlocked', (payload: any) => {
@@ -449,13 +455,14 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
   }, [socket, isAccountBlocked]);
 
   const checkMcqAnswer = useCallback((questionId: string, answer: number | string) => {
-    if (!socket || !modeSessionIdRef.current || isAccountBlocked) return;
+    if (!socket || !modeSessionIdRef.current || isAccountBlocked || isCheckingMcqAnswer) return;
+    setIsCheckingMcqAnswer(true);
     socket.emit('check_mcq_answer', {
       modeSessionId: modeSessionIdRef.current,
       questionId,
       answer,
     });
-  }, [socket, isAccountBlocked]);
+  }, [socket, isAccountBlocked, isCheckingMcqAnswer]);
 
   const clearMcqAnswerFeedback = useCallback((questionId: string) => {
     setMcqAnswerFeedback((current) => {
@@ -496,6 +503,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     mcqList,
     mcqResult,
     mcqAnswerFeedback,
+    isCheckingMcqAnswer,
     listeningPayload,
     readingProgress,
     roleplayProgress,
