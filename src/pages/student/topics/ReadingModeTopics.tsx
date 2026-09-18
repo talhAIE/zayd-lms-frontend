@@ -629,6 +629,12 @@ export default function ReadingModeTopics() {
                   const hasSpeechFallback =
                     msg.role === 'assistant' && !msg.audioUrl && Boolean(msg.content.trim());
                   const isFallbackSpeechPlaying = fallbackSpeechMessageId === msg.id;
+                  const hasSavedSpeechAssessment = isSpeechAssessment(msg.assessments);
+                  // Browser object URLs are available only for the live
+                  // attempt. On resume, use the stored recording when it is
+                  // available and retain a transcript-to-speech fallback when
+                  // only the persisted pronunciation assessment is available.
+                  const canReplayLearnerSpeech = Boolean(msg.audioUrl) || hasSavedSpeechAssessment;
 
                   return (
                 <div 
@@ -656,23 +662,31 @@ export default function ReadingModeTopics() {
                         {msg.content}
                       </ReactMarkdown>
                     </div>
-                  {msg.role === 'user' && msg.audioUrl && (
+                  {msg.role === 'user' && canReplayLearnerSpeech && (
                     <div className="mt-3 flex items-center justify-end gap-4 border-t border-[#BFDBFE] pt-2.5">
                       <button
                         type="button"
-                        onClick={() => toggleStoredAudio(msg.id, msg.audioUrl!)}
+                        onClick={() => msg.audioUrl
+                          ? toggleStoredAudio(msg.id, msg.audioUrl)
+                          : toggleInitialReadingPromptSpeech(msg.id, msg.content)}
                         className="flex items-center text-[#0F1450] hover:text-[#2563EB] transition-colors"
-                        aria-label={playingAudioId === msg.id && isCurrentlyPlaying ? 'Pause your recording' : 'Play your recording'}
+                        aria-label={
+                          (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) ||
+                          (isFallbackSpeechPlaying && !isFallbackSpeechPaused)
+                            ? 'Pause your spoken response'
+                            : 'Play your spoken response'
+                        }
                       >
                         {loadingAudioId === msg.id ? (
                           <LoaderCircle className="w-5 h-5 animate-spin" />
-                        ) : playingAudioId === msg.id && isCurrentlyPlaying ? (
+                        ) : (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) ||
+                          (isFallbackSpeechPlaying && !isFallbackSpeechPaused) ? (
                           <Pause className="w-5 h-5" />
                         ) : (
                           <Play className="w-5 h-5" />
                         )}
                       </button>
-                      {isSpeechAssessment(msg.assessments) && (
+                      {hasSavedSpeechAssessment && (
                         <button
                           type="button"
                           onClick={() => setActiveAssessment(msg.assessments)}
