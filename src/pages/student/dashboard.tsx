@@ -536,9 +536,9 @@ export default function LanguageLearningDashboard() {
         )}
       </div>
 
-      <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="w-full grid grid-cols-1 lg:grid-cols-2 items-stretch gap-6">
         {/* Completed Topics Section */}
-        <Card id="tour-completed-topics" className="shadow-md border-[#F4F4F4] bg-white rounded-[16.11px]">
+        <Card id="tour-completed-topics" className="h-full shadow-md border-[#F4F4F4] bg-white rounded-[16.11px]">
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between gap-2">
               <div className="flex flex-col gap-1">
@@ -632,7 +632,7 @@ export default function LanguageLearningDashboard() {
         </Card>
 
         {/* My Performance Section */}
-        <div id="tour-performance">
+        <div id="tour-performance" className="h-full">
           <PerformanceGraph
             assessmentGraphData={assessmentGraphData}
             timeFilter={timeFilter}

@@ -108,7 +108,7 @@ export default function PerformanceGraph({
   const graphData = formatGraphData();
 
   return (
-    <Card className="shadow-md border-slate-200">
+    <Card className="h-full shadow-md border-slate-200">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div>
