@@ -15,6 +15,7 @@ import { Menu, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logout } from "@/redux/slices/authSlice";
+import apiClient from "@/config/ApiConfig";
 import { toast } from "sonner";
 import StudentReportModal from "../ui/StudentReportModal";
 
@@ -74,6 +75,76 @@ export function StudentLayout({ children }: StudentLayoutProps) {
       navigate("/");
     }
   }, [isAuthenticated, user, navigate]);
+
+  useEffect(() => {
+    if (user?.role !== "student") return;
+
+    let intervalId: number | undefined;
+    let sessionBootstrapAttempted = false;
+
+    const sendHeartbeat = async () => {
+      if (document.visibilityState !== "visible" || !navigator.onLine) return;
+
+      let sessionId = localStorage.getItem("engagementSessionId");
+      if (!sessionId) {
+        if (sessionBootstrapAttempted) return;
+        sessionBootstrapAttempted = true;
+        try {
+          const response = await apiClient.post("/engagement/session");
+          sessionId = response.data?.data?.sessionId;
+          if (typeof sessionId === "string") {
+            localStorage.setItem("engagementSessionId", sessionId);
+          }
+        } catch {
+          return;
+        }
+      }
+      if (!sessionId) return;
+
+      const bucketStartedAt = new Date(
+        Math.floor(Date.now() / 60_000) * 60_000,
+      ).toISOString();
+
+      try {
+        await apiClient.post("/engagement/heartbeat", {
+          sessionId,
+          bucketStartedAt,
+          source: "learning",
+        });
+      } catch {
+        // Engagement analytics must never interrupt a learner's lesson. The
+        // backend deduplicates minute buckets, so the next scheduled attempt
+        // can safely retry after a transient network failure.
+      }
+    };
+
+    const stop = () => {
+      if (intervalId !== undefined) {
+        window.clearInterval(intervalId);
+        intervalId = undefined;
+      }
+    };
+
+    const start = () => {
+      stop();
+      // Wait a full active minute before accounting for it. This prevents a
+      // page that is opened and immediately closed from being credited.
+      intervalId = window.setInterval(() => void sendHeartbeat(), 60_000);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") start();
+      else stop();
+    };
+
+    if (document.visibilityState === "visible") start();
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      stop();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [user?.id, user?.role]);
 
   const isActive = (path: string) => {
     return location.pathname === path;

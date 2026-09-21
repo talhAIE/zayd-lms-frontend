@@ -116,7 +116,6 @@ export default function TeacherDashboard() {
   const [downloadingStudent, setDownloadingStudent] = useState<string | null>(
     null
   );
-  const [allStudents, setAllStudents] = useState<any[]>([]);
 
   const columnOptions = [
     { key: "class", label: "Class" },
@@ -148,12 +147,15 @@ export default function TeacherDashboard() {
 
   const toggleSelectAll = () => {
     if (
-      selectedStudents.size === allStudents.length &&
-      allStudents.length > 0
+      selectedStudents.size === transformedStudents.length &&
+      transformedStudents.length > 0
     ) {
       setSelectedStudents(new Set());
     } else {
-      setSelectedStudents(new Set(allStudents.map((student) => student.id)));
+      // Selection is deliberately scoped to the visible page. Loading every
+      // learner just to render this checkbox used to duplicate the dashboard's
+      // most expensive request on every filter change.
+      setSelectedStudents(new Set(transformedStudents.map((student) => student.id)));
     }
   };
 
@@ -165,6 +167,13 @@ export default function TeacherDashboard() {
       if (selectedStudents.size > 0) {
         studentIds = Array.from(selectedStudents);
       } else {
+        // Fetch the complete filtered set only when the teacher explicitly
+        // asks to generate every report, rather than on every dashboard load.
+        const { page: _page, limit: _limit, ...allStudentsFilters } = buildFilters();
+        const allStudents = await fetchAllTeacherStudents(
+          teacherId,
+          allStudentsFilters,
+        );
         studentIds = allStudents.map((student) => student.id);
       }
 
@@ -254,7 +263,6 @@ export default function TeacherDashboard() {
 
   useEffect(() => {
     if (teacherId) {
-      fetchData();
       dispatch(fetchTeacherFilterValues(teacherId));
     }
   }, [teacherId, dispatch]);
@@ -270,44 +278,6 @@ export default function TeacherDashboard() {
     sortBy,
     sortOrder,
     currentPage,
-    // debouncedSearchTerm,
-  ]);
-
-  useEffect(() => {
-    const fetchAllStudents = async () => {
-      if (teacherId) {
-        try {
-          const filters = buildFilters();
-          const { page, limit, ...allStudentsFilters } = filters;
-          const allStudentsData = await fetchAllTeacherStudents(
-            teacherId,
-            allStudentsFilters
-          );
-          const transformedAllStudents = allStudentsData.map((student) => ({
-            id: student.id,
-            name: student.studentName,
-            class: student.class,
-            cefrLevel: student.cefrLevel,
-            streak: student.currentStreak,
-            usage: student.usage,
-            totalPoints: student.totalPoints,
-            completedLessons: student.completedLessons,
-            totalLessons: student.totalLessons,
-          }));
-          setAllStudents(transformedAllStudents);
-        } catch (error) {
-          console.error("Error fetching all students:", error);
-        }
-      }
-    };
-
-    fetchAllStudents();
-  }, [
-    classFilter,
-    completionStatusFilter,
-    timeFilter,
-    sortBy,
-    sortOrder,
     // debouncedSearchTerm,
   ]);
 
@@ -817,7 +787,7 @@ export default function TeacherDashboard() {
                   <Download className="h-4 w-4 mr-2" />
                   {selectedStudents.size > 0
                     ? `Download Selected Reports (${selectedStudents.size})`
-                    : `Download All Reports (${allStudents.length})`}
+                    : `Download All Reports (${totalStudents})`}
                 </>
               )}
             </Button>
@@ -836,8 +806,8 @@ export default function TeacherDashboard() {
                   <TableHead className="w-12 px-6 py-4">
                     <Checkbox
                       checked={
-                        allStudents.length > 0 &&
-                        selectedStudents.size === allStudents.length
+                        transformedStudents.length > 0 &&
+                        selectedStudents.size === transformedStudents.length
                       }
                       onCheckedChange={toggleSelectAll}
                       aria-label="Select all students"
@@ -1013,10 +983,10 @@ export default function TeacherDashboard() {
             {paginatedStudents.length > 0 && (
               <div className="flex justify-between items-center mt-4 mb-4">
                 <span className="text-sm text-gray-600">
-                  {selectedStudents.size} of {allStudents.length} selected
+                  {selectedStudents.size} of {transformedStudents.length} selected on this page
                 </span>
                 <Button variant="outline" size="sm" onClick={toggleSelectAll}>
-                  {selectedStudents.size === allStudents.length
+                  {selectedStudents.size === transformedStudents.length
                     ? "Deselect All"
                     : "Select All"}
                 </Button>

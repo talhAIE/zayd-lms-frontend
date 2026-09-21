@@ -377,7 +377,9 @@ export const fetchStudentProfile = async (
     const usageDays = timeFilter === 'weekly' ? 7 : 30;
     const [profileResponse, usageResponse] = await Promise.all([
       apiClient.get<ApiEnvelope<LmsStudentProfileResponse>>(`/teacher/me/students/${studentId}`),
-      apiClient.get<ApiEnvelope<LmsUsageResponse>>(`/teacher/me/students/${studentId}/usage`, { params: { days: usageDays } }),
+      apiClient.get<ApiEnvelope<LmsUsageResponse>>(`/teacher/me/students/${studentId}/usage`, {
+        params: { days: usageDays, timeFilter },
+      }),
     ]);
     const profile = unwrap(profileResponse);
     const usage = unwrap(usageResponse);
