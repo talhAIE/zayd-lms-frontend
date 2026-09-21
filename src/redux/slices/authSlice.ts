@@ -57,38 +57,12 @@ const TOPIC_MODES_TO_CHECK = [
   '3d-listening-mode',
 ];
 
-const fetchAvailableTopicModes = async (userId: string, accessToken: string) => {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
-  const headers = {
-    Authorization: `Bearer ${accessToken}`,
-    'Content-Type': 'application/json',
-  };
-
-  try {
-    const response = await axios.get(
-      `${baseUrl}/api/v1/topic/available-modes?userId=${userId}`,
-      { headers }
-    );
-    
-    const modesData = response?.data?.data?.modes;
-    if (!modesData) return [];
-
-    const availableModes: string[] = [];
-    modesData.forEach((m: any) => {
-      if (m.isAvailable) availableModes.push(m.topicMode);
-      if (m.children) {
-        m.children.forEach((child: any) => {
-          if (child.isAvailable) availableModes.push(child.topicMode);
-        });
-      }
-    });
-
-    return availableModes;
-  } catch (error) {
-    // Fail open to avoid hiding modes on transient errors
-    return TOPIC_MODES_TO_CHECK;
-  }
-};
+/**
+ * The former Topic API is not part of the LMS backend. Preserve the previous
+ * fail-open behaviour locally so login never calls the removed endpoint.
+ * School-specific visibility remains enforced by the learning-mode page.
+ */
+const getAvailableTopicModes = (): string[] => [...TOPIC_MODES_TO_CHECK];
 
 export const login = createAsyncThunk(
   'auth/login',
@@ -117,10 +91,7 @@ export const login = createAsyncThunk(
       localStorage.removeItem('loginEvent');
 
       try {
-        const availableModes = await fetchAvailableTopicModes(
-          userWithRole.id,
-          data.accessToken
-        );
+        const availableModes = getAvailableTopicModes();
         localStorage.setItem(
           AVAILABLE_TOPIC_MODES_KEY,
           JSON.stringify(availableModes)
@@ -175,10 +146,7 @@ export const addPhoneNumber = createAsyncThunk(
 
       if (accessToken) {
         try {
-          const availableModes = await fetchAvailableTopicModes(
-            userWithRole.id,
-            accessToken
-          );
+          const availableModes = getAvailableTopicModes();
           localStorage.setItem(
             AVAILABLE_TOPIC_MODES_KEY,
             JSON.stringify(availableModes)
@@ -275,10 +243,7 @@ export const getCurrentUser = createAsyncThunk(
       const cached = localStorage.getItem(AVAILABLE_TOPIC_MODES_KEY);
       if (!cached) {
         try {
-          const availableModes = await fetchAvailableTopicModes(
-            userWithRole.id,
-            accessToken
-          );
+          const availableModes = getAvailableTopicModes();
           localStorage.setItem(
             AVAILABLE_TOPIC_MODES_KEY,
             JSON.stringify(availableModes)

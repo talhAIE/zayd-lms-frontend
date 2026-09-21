@@ -83,6 +83,7 @@ interface LmsStudentProfileResponse {
   };
   summary: LmsStudentSummary;
   courses: unknown[];
+  assessmentGraphData: AssessmentGraphData[];
 }
 
 interface LmsUsageResponse {
@@ -376,7 +377,9 @@ export const fetchStudentProfile = async (
   try {
     const usageDays = timeFilter === 'weekly' ? 7 : 30;
     const [profileResponse, usageResponse] = await Promise.all([
-      apiClient.get<ApiEnvelope<LmsStudentProfileResponse>>(`/teacher/me/students/${studentId}`),
+      apiClient.get<ApiEnvelope<LmsStudentProfileResponse>>(`/teacher/me/students/${studentId}`, {
+        params: { timeFilter },
+      }),
       apiClient.get<ApiEnvelope<LmsUsageResponse>>(`/teacher/me/students/${studentId}/usage`, {
         params: { days: usageDays, timeFilter },
       }),
@@ -399,7 +402,7 @@ export const fetchStudentProfile = async (
         date: record.date,
         duration: Math.round(record.duration / 60),
       })),
-      assessmentGraphData: [],
+      assessmentGraphData: profile.assessmentGraphData,
       achievements: [],
       lessonModesByKey: toLessonModesProgress(summary.lessonModesByKey),
       completedLessons: summary.progress.completedLessons,
