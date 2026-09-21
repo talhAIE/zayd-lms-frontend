@@ -29,10 +29,36 @@ export interface AvailableModesResponse {
   };
 }
 
+const LMS_MODE_FALLBACK: AvailableMode[] = [
+  'chat-mode',
+  'photo-mode',
+  'reading-mode',
+  'roleplay-mode',
+  'listening-mode',
+  'debate-mode',
+  'curriculum-mode',
+  '3d-reading-mode',
+  '3d-roleplay-mode',
+  '3d-listening-mode',
+].map((topicMode) => ({
+  mode: topicMode,
+  topicMode,
+  displayName: topicMode,
+  isAvailable: true,
+  isChapterBased: false,
+  totalItems: 0,
+}));
+
 export const TopicService = {
-  getAvailableModes: (userId: string) => {
-    return apiClient.get<AvailableModesResponse>(`/topic/available-modes?userId=${userId}`);
-  },
+  // The legacy Topic module is intentionally absent from the LMS API. Its
+  // former endpoint failed open, so retain that behaviour without issuing a
+  // guaranteed 404 on every login or learning-mode page visit.
+  getAvailableModes: async (_userId: string) => ({
+    data: {
+      statusMessage: 'success',
+      data: { modes: LMS_MODE_FALLBACK },
+    } satisfies AvailableModesResponse,
+  }),
 
   getTopics: (userId: string, topicMode: string) => {
     return apiClient.post<TopicsResponse>('/topic/search', {

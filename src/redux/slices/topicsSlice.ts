@@ -27,6 +27,26 @@ const initialState: TopicsState = {
   error: null
 };
 
+const LMS_TOPIC_MODE_FALLBACK: AvailableMode[] = [
+  'chat-mode',
+  'photo-mode',
+  'reading-mode',
+  'roleplay-mode',
+  'listening-mode',
+  'debate-mode',
+  'curriculum-mode',
+  '3d-reading-mode',
+  '3d-roleplay-mode',
+  '3d-listening-mode',
+].map((topicMode) => ({
+  mode: topicMode,
+  topicMode,
+  displayName: topicMode,
+  isAvailable: true,
+  isChapterBased: false,
+  totalItems: 0,
+}));
+
 // Async thunk for fetching topics
 export const fetchTopics = createAsyncThunk(
   'topics/fetchTopics',
@@ -52,19 +72,10 @@ export const fetchTopics = createAsyncThunk(
 
 export const fetchAvailableModes = createAsyncThunk(
   'topics/fetchAvailableModes',
-  async (userId: string, { rejectWithValue }) => {
-    try {
-      const response = await apiClient.get(`/topic/available-modes?userId=${userId}`);
-      return response.data.data.modes as AvailableMode[];
-    } catch (error: any) {
-      if (error.response?.status === 404) {
-        return [];
-      }
-      if (error.response && error.response.data) {
-        return rejectWithValue(error.response.data.message || 'Failed to fetch available modes');
-      }
-      return rejectWithValue(error.message || 'Failed to fetch available modes');
-    }
+  async (_userId: string) => {
+    // The LMS backend has no legacy Topic module. Match its former fail-open
+    // behaviour without making a request that can only return 404.
+    return LMS_TOPIC_MODE_FALLBACK;
   }
 );
 
