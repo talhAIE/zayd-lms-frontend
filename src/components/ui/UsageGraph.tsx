@@ -14,24 +14,14 @@ const formatDateForDisplay = (dateString: string) => {
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 };
 
-const getCurrentMonthMaxUsage = (
+const getMaxUsage = (
   usageData: Array<{ date: string; duration: number }>
 ) => {
-  const currentDate = new Date();
-  const currentMonth = currentDate.getMonth();
-  const currentYear = currentDate.getFullYear();
+  if (usageData.length === 0) return 60;
 
-  const currentMonthData = usageData.filter((item) => {
-    const itemDate = new Date(item.date);
-    return (
-      itemDate.getMonth() === currentMonth &&
-      itemDate.getFullYear() === currentYear
-    );
-  });
-
-  if (currentMonthData.length === 0) return 60;
-
-  return Math.max(...currentMonthData.map((item) => item.duration));
+  // The selected period can be weekly, monthly, or all time. Using only the
+  // current month's maximum could clip historic points in an all-time graph.
+  return Math.max(1, ...usageData.map((item) => item.duration));
 };
 
 const CustomTooltip = ({ active, payload }: any) => {
@@ -40,24 +30,6 @@ const CustomTooltip = ({ active, payload }: any) => {
       <div className="bg-white p-2 border border-gray-200 rounded shadow-lg">
         <p className="text-sm font-medium">{`${payload[0].value}min`}</p>
       </div>
-    );
-  }
-  return null;
-};
-
-const CustomDot = (props: any) => {
-  const { cx, cy, payload } = props;
-
-  if (payload.day === "Fri") {
-    return (
-      <circle
-        cx={cx}
-        cy={cy}
-        r={6}
-        fill="#3B82F6"
-        stroke="#ffffff"
-        strokeWidth={2}
-      />
     );
   }
   return null;
@@ -72,7 +44,7 @@ interface RevenueGraphProps {
 }
 
 export function RevenueGraph({ usageData, periodLabel = "This Month" }: RevenueGraphProps) {
-  const maxUsage = usageData ? getCurrentMonthMaxUsage(usageData) : 60;
+  const maxUsage = usageData ? getMaxUsage(usageData) : 60;
 
   const chartData =
     usageData?.map((item) => ({
@@ -118,7 +90,9 @@ export function RevenueGraph({ usageData, periodLabel = "This Month" }: RevenueG
                 dataKey="minutes"
                 stroke="#3B82F6"
                 strokeWidth={3}
-                dot={<CustomDot />}
+                // A one-day activity series has no line segment. Always draw
+                // data-point markers so valid single-day usage is visible.
+                dot={{ r: 5, fill: "#3B82F6", stroke: "#ffffff", strokeWidth: 2 }}
                 activeDot={{ r: 6, fill: "#3B82F6" }}
               />
             </LineChart>

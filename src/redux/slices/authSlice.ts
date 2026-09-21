@@ -11,6 +11,8 @@ export interface AuthResponse {
   user: User;
   accessToken: string; // JWT access token
   refreshToken: string; // JWT refresh token
+  /** Present when LMS activity tracking is enabled for the deployment. */
+  engagementSessionId?: string;
 }
 
 export interface LoginCredentials {
@@ -105,6 +107,11 @@ export const login = createAsyncThunk(
       
       localStorage.setItem('accessToken', data.accessToken);
       localStorage.setItem('refreshToken', data.refreshToken);
+      if (data.engagementSessionId) {
+        localStorage.setItem('engagementSessionId', data.engagementSessionId);
+      } else {
+        localStorage.removeItem('engagementSessionId');
+      }
       
       localStorage.setItem('loginEvent', Date.now().toString());
       localStorage.removeItem('loginEvent');

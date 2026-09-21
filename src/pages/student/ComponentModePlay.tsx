@@ -65,6 +65,19 @@ const RETRYABLE_COMPONENT_TYPES = new Set([
   'writing_table',
 ]);
 
+/**
+ * A completed LessonMode can have a later practice cycle. The LMS retains the
+ * original completion for progress/rewards, while reset-practice creates a
+ * fresh ComponentAttempt for every component. The completed/revisit prompt
+ * must therefore respect the latest attempt cycle rather than the historical
+ * LessonMode status by itself.
+ */
+const hasIncompletePracticeAttempt = (components: LearningComponent[]) =>
+  components.some(
+    (component) =>
+      component.attempt !== null && !component.attempt.completedAt,
+  );
+
 export default function ComponentModePlay() {
   const { courseId, unitId, lessonId, modeId } = useParams<{
     courseId: string;
@@ -187,6 +200,8 @@ export default function ComponentModePlay() {
       setLoading(true);
       setError(null);
       setResolvedMode(null);
+      setShowCompletionModal(false);
+      setIsJustCompleted(false);
       try {
         // Direct-launch Saudi lessons do not visit the lesson-modes list.
         // Fetch it here before rendering so title, access state, and the
@@ -298,7 +313,14 @@ export default function ComponentModePlay() {
           setCurrentIndex(0);
         }
 
-        if (mode?.status === 'completed') {
+        // Resetting a completed mode deliberately preserves its LMS completion
+        // record, but gives every component a fresh in-progress attempt. Only
+        // show the revisit popup when there is no active practice attempt to
+        // resume; otherwise restore the first unfinished component above.
+        if (
+          mode?.status === 'completed' &&
+          !hasIncompletePracticeAttempt(sorted)
+        ) {
           setShowCompletionModal(true);
         }
       } catch (err: any) {
@@ -584,6 +606,10 @@ export default function ComponentModePlay() {
     .filter((component) => component.isRequired)
     .every(isComponentComplete);
   const canAdvanceMode = Boolean(currentMode?.status === 'completed' || requiredComponentsComplete);
+  const canShowCompletedModePopup = Boolean(
+    currentMode?.status === 'completed' &&
+      !hasIncompletePracticeAttempt(components),
+  );
   const currentWritingReview = currentComp
     ? writingReviewFeedback[currentComp.id]
     : undefined;
@@ -635,8 +661,15 @@ export default function ComponentModePlay() {
         <button
           type="button"
           onClick={() => {
-            setIsJustCompleted(false);
-            setShowCompletionModal(true);
+            if (canShowCompletedModePopup) {
+              setIsJustCompleted(false);
+              setShowCompletionModal(true);
+              return;
+            }
+
+            // An unfinished mode has a resumable current attempt, not a
+            // completed activity to finish. Reset it directly when requested.
+            void handleResetMode();
           }}
           className="inline-flex items-center gap-2 px-3.5 py-1.5 text-[13px] font-bold text-[#5C9DFF] bg-[#EFF6FF] hover:bg-[#DBEAFE] border border-[#5C9DFF]/30 rounded-full transition-colors cursor-pointer shadow-sm shrink-0"
           title="Reset Lesson"
