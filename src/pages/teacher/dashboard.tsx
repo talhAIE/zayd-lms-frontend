@@ -339,7 +339,7 @@ export default function TeacherDashboard() {
     timeFilter,
   ]);
 
-  if (isLoading) {
+  if (isLoading && !pagination) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="flex items-center gap-2">
@@ -350,7 +350,7 @@ export default function TeacherDashboard() {
     );
   }
 
-  if (error) {
+  if (error && !pagination) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <Card className="p-6">
@@ -794,6 +794,22 @@ export default function TeacherDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Keep the dashboard visible while a filter request refreshes the table. */}
+      {isLoading && pagination && (
+        <div role="status" aria-live="polite" className="flex items-center gap-2 mb-3 text-sm text-gray-600">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Updating students data...
+        </div>
+      )}
+      {error && pagination && (
+        <div role="alert" className="flex items-center justify-between gap-3 mb-3 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+          <span>Could not update students data: {error}. Showing previous results.</span>
+          <Button onClick={fetchData} variant="outline" size="sm">
+            Retry
+          </Button>
+        </div>
+      )}
 
       {/* Students Table */}
       <Card>
