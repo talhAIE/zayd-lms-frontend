@@ -55,20 +55,10 @@ import {
 } from "@/services/teacherService";
 import { toast } from "sonner";
 
-const formatHours = (hours: number): string => {
-  if (hours % 1 === 0) {
-    return `${Math.round(hours)} Hrs`;
-  }
-  return `${Math.round(hours * 10) / 10} Hrs`;
-};
-
 const formatStudentUsage = (usageInSeconds: number): string => {
-  // Convert seconds to hours
-  const hours = usageInSeconds / 3600;
-  if (hours % 1 === 0) {
-    return `${Math.round(hours)} Hrs`;
-  }
-  return `${Math.round(hours * 10) / 10} Hrs`;
+  if (usageInSeconds <= 0) return "0 Min";
+  if (usageInSeconds < 3600) return `${Math.ceil(usageInSeconds / 60)} Min`;
+  return `${Math.round((usageInSeconds / 3600) * 10) / 10} Hrs`;
 };
 
 export default function TeacherDashboard() {
@@ -339,7 +329,7 @@ export default function TeacherDashboard() {
     timeFilter,
   ]);
 
-  if (isLoading) {
+  if (isLoading && !pagination) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="flex items-center gap-2">
@@ -350,7 +340,7 @@ export default function TeacherDashboard() {
     );
   }
 
-  if (error) {
+  if (error && !pagination) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <Card className="p-6">
@@ -398,8 +388,8 @@ export default function TeacherDashboard() {
                 </p>
                 <p className="text-sm font-bold text-gray-900 sm:text-2xl">
                   {summary?.totalUsageHours !== undefined
-                    ? formatHours(summary.totalUsageHours)
-                    : "0 Hrs"}
+                    ? formatStudentUsage(summary.totalUsageHours * 3600)
+                    : "0 Min"}
                 </p>
               </div>
               <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-green-100 flex items-center justify-center">
@@ -556,7 +546,7 @@ export default function TeacherDashboard() {
                 <SelectItem value="all">All Classes</SelectItem>
                 {filterValues?.classes?.length
                   ? filterValues.classes.map((classItem) => (
-                      <SelectItem key={classItem} value={`Class ${classItem}`}>
+                      <SelectItem key={classItem} value={classItem}>
                         Class {classItem}
                       </SelectItem>
                     ))
@@ -794,6 +784,22 @@ export default function TeacherDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Keep the dashboard visible while a filter request refreshes the table. */}
+      {isLoading && pagination && (
+        <div role="status" aria-live="polite" className="flex items-center gap-2 mb-3 text-sm text-gray-600">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Updating students data...
+        </div>
+      )}
+      {error && pagination && (
+        <div role="alert" className="flex items-center justify-between gap-3 mb-3 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+          <span>Could not update students data: {error}. Showing previous results.</span>
+          <Button onClick={fetchData} variant="outline" size="sm">
+            Retry
+          </Button>
+        </div>
+      )}
 
       {/* Students Table */}
       <Card>

@@ -16,6 +16,12 @@ interface CertificationsSectionProps {
 export function CertificationsSection({
   achievements,
 }: CertificationsSectionProps) {
+  const certificates = achievements?.filter(
+    (achievement) => achievement.category === "certificate"
+  ) ?? [];
+  const rewards = achievements?.filter(
+    (achievement) => achievement.category !== "certificate"
+  ) ?? [];
   // Helper function to format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -46,12 +52,8 @@ export function CertificationsSection({
 
           <TabsContent value="certifications" className="mt-4">
             <div className="space-y-3 max-h-80 overflow-y-auto">
-              {achievements && achievements.length > 0 ? (
-                achievements
-                  .filter(
-                    (achievement) => achievement.category === "certificate"
-                  )
-                  .map((achievement) => (
+              {certificates.length > 0 ? (
+                certificates.map((achievement) => (
                     <div
                       key={achievement.id}
                       className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
@@ -84,7 +86,7 @@ export function CertificationsSection({
                   ))
               ) : (
                 <div className="text-center py-8 text-gray-500">
-                  <p>No achievements yet</p>
+                  <p>No certifications yet</p>
                 </div>
               )}
             </div>
@@ -92,12 +94,8 @@ export function CertificationsSection({
 
           <TabsContent value="rewards" className="mt-4">
             <div className="space-y-3 max-h-80 overflow-y-auto">
-              {achievements && achievements.length > 0 ? (
-                achievements
-                  .filter(
-                    (achievement) => achievement.category !== "certificate"
-                  )
-                  .map((achievement) => (
+              {rewards.length > 0 ? (
+                rewards.map((achievement) => (
                     <div
                       key={achievement.id}
                       className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"

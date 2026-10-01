@@ -84,6 +84,7 @@ interface LmsStudentProfileResponse {
   summary: LmsStudentSummary;
   courses: unknown[];
   assessmentGraphData: AssessmentGraphData[];
+  achievements: Achievement[];
 }
 
 interface LmsUsageResponse {
@@ -158,12 +159,14 @@ export interface UsageGraphData {
 
 export interface Achievement {
   id: string;
+  key: string;
   name: string;
   description: string;
   pointValue: number;
   awardedAt: string;
   iconUrl: string;
   category: string;
+  rewardClaimed: boolean;
 }
 
 export interface LessonModesByKey {
@@ -403,7 +406,7 @@ export const fetchStudentProfile = async (
         duration: Math.round(record.duration / 60),
       })),
       assessmentGraphData: profile.assessmentGraphData,
-      achievements: [],
+      achievements: profile.achievements,
       lessonModesByKey: toLessonModesProgress(summary.lessonModesByKey),
       completedLessons: summary.progress.completedLessons,
       totalLessons: summary.progress.totalLessons,
