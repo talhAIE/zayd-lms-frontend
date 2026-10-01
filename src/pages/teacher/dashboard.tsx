@@ -546,7 +546,7 @@ export default function TeacherDashboard() {
                 <SelectItem value="all">All Classes</SelectItem>
                 {filterValues?.classes?.length
                   ? filterValues.classes.map((classItem) => (
-                      <SelectItem key={classItem} value={`Class ${classItem}`}>
+                      <SelectItem key={classItem} value={classItem}>
                         Class {classItem}
                       </SelectItem>
                     ))
