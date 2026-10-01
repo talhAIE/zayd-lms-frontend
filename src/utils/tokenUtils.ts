@@ -123,4 +123,5 @@ export const clearAuthData = (): void => {
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
   localStorage.removeItem('engagementSessionId');
+  localStorage.removeItem('engagementSessionCreatedAt');
 };

@@ -83,8 +83,10 @@ export const login = createAsyncThunk(
       localStorage.setItem('refreshToken', data.refreshToken);
       if (data.engagementSessionId) {
         localStorage.setItem('engagementSessionId', data.engagementSessionId);
+        localStorage.setItem('engagementSessionCreatedAt', Date.now().toString());
       } else {
         localStorage.removeItem('engagementSessionId');
+        localStorage.removeItem('engagementSessionCreatedAt');
       }
       
       localStorage.setItem('loginEvent', Date.now().toString());

@@ -55,20 +55,10 @@ import {
 } from "@/services/teacherService";
 import { toast } from "sonner";
 
-const formatHours = (hours: number): string => {
-  if (hours % 1 === 0) {
-    return `${Math.round(hours)} Hrs`;
-  }
-  return `${Math.round(hours * 10) / 10} Hrs`;
-};
-
 const formatStudentUsage = (usageInSeconds: number): string => {
-  // Convert seconds to hours
-  const hours = usageInSeconds / 3600;
-  if (hours % 1 === 0) {
-    return `${Math.round(hours)} Hrs`;
-  }
-  return `${Math.round(hours * 10) / 10} Hrs`;
+  if (usageInSeconds <= 0) return "0 Min";
+  if (usageInSeconds < 3600) return `${Math.ceil(usageInSeconds / 60)} Min`;
+  return `${Math.round((usageInSeconds / 3600) * 10) / 10} Hrs`;
 };
 
 export default function TeacherDashboard() {
@@ -398,8 +388,8 @@ export default function TeacherDashboard() {
                 </p>
                 <p className="text-sm font-bold text-gray-900 sm:text-2xl">
                   {summary?.totalUsageHours !== undefined
-                    ? formatHours(summary.totalUsageHours)
-                    : "0 Hrs"}
+                    ? formatStudentUsage(summary.totalUsageHours * 3600)
+                    : "0 Min"}
                 </p>
               </div>
               <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-green-100 flex items-center justify-center">

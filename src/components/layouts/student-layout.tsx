@@ -80,23 +80,34 @@ export function StudentLayout({ children }: StudentLayoutProps) {
     if (user?.role !== "student") return;
 
     let intervalId: number | undefined;
-    let sessionBootstrapAttempted = false;
+    let sessionBootstrapInFlight = false;
 
     const sendHeartbeat = async () => {
       if (document.visibilityState !== "visible" || !navigator.onLine) return;
 
       let sessionId = localStorage.getItem("engagementSessionId");
+      const createdAt = Number(localStorage.getItem("engagementSessionCreatedAt"));
+      // Server sessions last 12 hours. Renew before expiry, including sessions
+      // stored by older client versions without a creation timestamp.
+      if (sessionId && (!createdAt || Date.now() - createdAt >= 11 * 60 * 60 * 1000)) {
+        sessionId = null;
+        localStorage.removeItem("engagementSessionId");
+        localStorage.removeItem("engagementSessionCreatedAt");
+      }
       if (!sessionId) {
-        if (sessionBootstrapAttempted) return;
-        sessionBootstrapAttempted = true;
+        if (sessionBootstrapInFlight) return;
+        sessionBootstrapInFlight = true;
         try {
           const response = await apiClient.post("/engagement/session");
           sessionId = response.data?.data?.sessionId;
           if (typeof sessionId === "string") {
             localStorage.setItem("engagementSessionId", sessionId);
+            localStorage.setItem("engagementSessionCreatedAt", Date.now().toString());
           }
         } catch {
           return;
+        } finally {
+          sessionBootstrapInFlight = false;
         }
       }
       if (!sessionId) return;
