@@ -41,7 +41,6 @@ export default function TextVariationComponent({ component, groupedComponents }:
     return <section className="overflow-hidden rounded-[18px] border border-[#E2E8F0] bg-white shadow-sm font-['Outfit',sans-serif]">{heading && <h2 className="px-6 py-5 text-xl font-bold text-[#0F172A]">{heading}</h2>}<div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead className="bg-[#EEF2FF]"><tr>{columns.map((column) => <th key={column} className="px-5 py-3 font-bold text-[#3730A3]">{column}</th>)}</tr></thead><tbody>{tableRows.map((row, index) => <tr key={`${row.join('-')}-${index}`} className="border-t border-[#E2E8F0]">{row.map((cell, cellIndex) => <td key={`${cell}-${cellIndex}`} className="px-5 py-3 text-[#475569]">{cell}</td>)}</tr>)}</tbody></table></div></section>;
   }
   if (presentation === 'writing_introduction') {
-    const activityHeading = typeof content.activityHeading === 'string' ? content.activityHeading : 'Writing Activity';
     const activityTitle = typeof content.activityTitle === 'string' ? content.activityTitle : component.title;
     const scenario = typeof content.scenario === 'string' ? content.scenario : '';
     const instruction = typeof content.instruction === 'string' ? content.instruction : '';
@@ -58,7 +57,6 @@ export default function TextVariationComponent({ component, groupedComponents }:
     return (
       <section className="rounded-[18px] border border-[#E2E8F0] bg-white p-6 md:p-8 shadow-sm font-['Outfit',sans-serif]">
         <div className="mb-6 flex flex-col gap-2 border-b border-[#E2E8F0] pb-5">
-          <span className="text-[12px] font-bold tracking-wider uppercase text-[#4F8DFB]">{activityHeading}</span>
           <h2 className="text-2xl font-bold text-[#0F172A]">{activityTitle}</h2>
         </div>
         

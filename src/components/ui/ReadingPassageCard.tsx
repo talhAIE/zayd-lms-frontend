@@ -209,9 +209,6 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
             {readingPresentation?.title && (
               <h3 className="mb-0.5 text-[16px] font-bold leading-6">{readingPresentation.title}</h3>
             )}
-            {readingPresentation?.author && (
-              <p className="mb-3 italic">{readingPresentation.author}</p>
-            )}
             {isConversation ? (
               <div className="space-y-1">
                 {blocks.map((block, index) => (
