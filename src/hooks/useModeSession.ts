@@ -13,6 +13,7 @@ export interface HistoryItem {
   assessments: any | null;
   audioUrl: string | null;
   createdAt: string;
+  deliveryStatus?: 'sending' | 'failed';
 }
 
 export interface Mcq {
@@ -94,6 +95,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
   const [isCheckingMcqAnswer, setIsCheckingMcqAnswer] = useState(false);
   const [listeningPayload, setListeningPayload] = useState<ListeningPayload | null>(null);
   const [isTyping, setIsTyping] = useState(false);
+  const [hasPendingAudio, setHasPendingAudio] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [sessionStatus, setSessionStatus] = useState<SessionStatus>({ remainingSeconds: null });
   const [readingProgress, setReadingProgress] = useState<ReadingProgress | null>(null);
@@ -108,6 +110,8 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
   const onCompletedRef = useRef(onCompleted);
   const onBadgeUnlockedRef = useRef(onBadgeUnlocked);
   const pendingAudioMessageIdRef = useRef<string | null>(null);
+  const pendingAudioRef = useRef<{ id: string; base64: string; format: string; audioUrl: string; sessionId: string } | null>(null);
+  const pendingAudioTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const modeRequestInFlightRef = useRef(false);
 
   useEffect(() => {
@@ -122,6 +126,10 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     // handlers send a message to the previous lesson's session.
     modeSessionIdRef.current = null;
     pendingAudioMessageIdRef.current = null;
+    pendingAudioRef.current = null;
+    setHasPendingAudio(false);
+    if (pendingAudioTimeoutRef.current) clearTimeout(pendingAudioTimeoutRef.current);
+    pendingAudioTimeoutRef.current = null;
     modeRequestInFlightRef.current = false;
     completionHandledRef.current = false;
     setModeSessionId(null);
@@ -166,6 +174,15 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
 
     newSocket.on('disconnect', (reason) => {
       console.warn('[Socket] Disconnected:', reason);
+      if (pendingAudioRef.current) {
+        if (pendingAudioTimeoutRef.current) clearTimeout(pendingAudioTimeoutRef.current);
+        pendingAudioTimeoutRef.current = null;
+        modeRequestInFlightRef.current = false;
+        setIsTyping(false);
+        setChatHistory(prev => prev.map(message => message.id === pendingAudioRef.current?.id
+          ? { ...message, deliveryStatus: 'failed' }
+          : message));
+      }
     });
 
     newSocket.io.on('reconnect_attempt', (attempt) => {
@@ -192,7 +209,10 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       setModeSessionId(session.modeSessionId);
       modeSessionIdRef.current = session.modeSessionId;
       if (session.chatHistory) {
-        setChatHistory(session.chatHistory);
+        setChatHistory(prev => {
+          const pending = pendingAudioRef.current && prev.find(message => message.id === pendingAudioRef.current?.id);
+          return pending ? [...session.chatHistory!, pending] : session.chatHistory!;
+        });
       }
       if (session.contentPayload) {
         setContentPayload(session.contentPayload);
@@ -217,7 +237,10 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     });
 
     newSocket.on('chat_history', (payload: { modeSessionId: string, chatHistory: HistoryItem[], roleplayProgress?: RoleplayProgress }) => {
-      setChatHistory(payload.chatHistory);
+      setChatHistory(prev => {
+        const pending = pendingAudioRef.current && prev.find(message => message.id === pendingAudioRef.current?.id);
+        return pending ? [...payload.chatHistory, pending] : payload.chatHistory;
+      });
       if (payload.roleplayProgress) setRoleplayProgress(payload.roleplayProgress);
     });
 
@@ -300,22 +323,31 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       }
     });
 
-    newSocket.on('speech_transcribed', (payload: { textMessage: string, assessments: any, audioUrl?: string }) => {
-      const pendingAudioMessageId = pendingAudioMessageIdRef.current;
-      pendingAudioMessageIdRef.current = null;
+    newSocket.on('speech_transcribed', (payload: { textMessage: string, assessments: any, audioUrl?: string, clientAttemptId?: string }) => {
+      const pendingAudioMessageId = payload.clientAttemptId || pendingAudioMessageIdRef.current;
+      if (pendingAudioMessageId === pendingAudioMessageIdRef.current) {
+        if (pendingAudioTimeoutRef.current) clearTimeout(pendingAudioTimeoutRef.current);
+        pendingAudioTimeoutRef.current = null;
+        pendingAudioMessageIdRef.current = null;
+        pendingAudioRef.current = null;
+        setHasPendingAudio(false);
+      }
 
       setChatHistory(prev => {
         if (pendingAudioMessageId) {
-          return prev.map(message =>
+          const updated = prev.map(message =>
             message.id === pendingAudioMessageId
               ? {
                   ...message,
                   content: payload.textMessage,
                   assessments: payload.assessments,
                   audioUrl: payload.audioUrl || message.audioUrl,
+                  deliveryStatus: undefined,
                 }
               : message,
           );
+          if (updated.some(message => message.id === pendingAudioMessageId)) return updated;
+          if (updated.some(message => message.hint === `audio-attempt:${pendingAudioMessageId}`)) return updated;
         }
 
         return [
@@ -333,6 +365,11 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
           },
         ];
       });
+    });
+
+    newSocket.on('audio_already_received', () => {
+      modeRequestInFlightRef.current = false;
+      setIsTyping(false);
     });
 
     newSocket.on('session_status', (payload: { remainingSeconds: number, message?: string }) => {
@@ -363,8 +400,16 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       }, 2000);
     });
 
-    newSocket.on('error', (payload: { message: string }) => {
+    newSocket.on('error', (payload: { message: string, clientAttemptId?: string }) => {
       toast.error(payload.message);
+      if (pendingAudioRef.current && (!payload.clientAttemptId || payload.clientAttemptId === pendingAudioRef.current.id)) {
+        if (pendingAudioTimeoutRef.current) clearTimeout(pendingAudioTimeoutRef.current);
+        pendingAudioTimeoutRef.current = null;
+        const pendingId = pendingAudioRef.current.id;
+        setChatHistory(prev => prev.map(message => message.id === pendingId
+          ? { ...message, deliveryStatus: 'failed' }
+          : message));
+      }
       modeRequestInFlightRef.current = false;
       setIsTyping(false);
       setIsCheckingMcqAnswer(false);
@@ -376,6 +421,8 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     });
 
     return () => {
+      if (pendingAudioTimeoutRef.current) clearTimeout(pendingAudioTimeoutRef.current);
+      pendingAudioTimeoutRef.current = null;
       newSocket.disconnect();
       setSocket((currentSocket) => currentSocket === newSocket ? null : currentSocket);
     };
@@ -407,37 +454,68 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     socket.emit('text', { modeSessionId: modeSessionIdRef.current, textMessage: text });
   }, [socket, isAccountBlocked]);
 
-  const sendAudio = useCallback((base64Audio: string, format: string = 'wav', localAudioUrl?: string) => {
+  const sendAudio = useCallback((base64Audio: string, format: string = 'wav', localAudioUrl?: string): boolean => {
+    if (pendingAudioRef.current) {
+      toast.error('Please finish or retry the previous recording first.');
+      return false;
+    }
+    const id = crypto.randomUUID();
+    if (localAudioUrl && modeSessionIdRef.current) {
+      pendingAudioMessageIdRef.current = id;
+      pendingAudioRef.current = { id, base64: base64Audio, format, audioUrl: localAudioUrl, sessionId: modeSessionIdRef.current };
+      setHasPendingAudio(true);
+      setChatHistory(prev => [...prev, {
+        id, sender: 'user', role: 'user', content: '', hint: null,
+        feedback: null, assessments: null, audioUrl: localAudioUrl,
+        createdAt: new Date().toISOString(), deliveryStatus: 'sending',
+      }]);
+    }
     if (
       !socket ||
+      !socket.connected ||
       !modeSessionIdRef.current ||
       isAccountBlocked ||
       modeRequestInFlightRef.current
-    ) return;
-    modeRequestInFlightRef.current = true;
-
-    if (localAudioUrl) {
-      const id = `audio-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-      pendingAudioMessageIdRef.current = id;
-      setChatHistory(prev => [
-        ...prev,
-        {
-          id,
-          sender: 'user',
-          role: 'user',
-          content: '',
-          hint: null,
-          feedback: null,
-          assessments: null,
-          audioUrl: localAudioUrl,
-          createdAt: new Date().toISOString(),
-        },
-      ]);
+    ) {
+      if (localAudioUrl) {
+        setChatHistory(prev => prev.map(message => message.id === id ? { ...message, deliveryStatus: 'failed' } : message));
+      }
+      toast.error('Recording was saved here but could not be sent. Please retry it.');
+      return false;
     }
-
+    modeRequestInFlightRef.current = true;
     setIsTyping(true);
-    socket.emit('audio', { modeSessionId: modeSessionIdRef.current, audioBuffer: base64Audio, format });
+    socket.emit('audio', { modeSessionId: modeSessionIdRef.current, audioBuffer: base64Audio, format, clientAttemptId: id });
+    pendingAudioTimeoutRef.current = setTimeout(() => {
+      if (pendingAudioRef.current?.id !== id) return;
+      modeRequestInFlightRef.current = false;
+      setIsTyping(false);
+      setChatHistory(prev => prev.map(message => message.id === id ? { ...message, deliveryStatus: 'failed' } : message));
+      toast.error('Recording is taking too long. Please retry it.');
+    }, 180_000);
+    return true;
   }, [socket, isAccountBlocked]);
+
+  const retryAudio = useCallback(() => {
+    const pending = pendingAudioRef.current;
+    if (!pending || !socket?.connected || modeRequestInFlightRef.current || modeSessionIdRef.current !== pending.sessionId) {
+      toast.error('Please reconnect or wait before retrying this recording.');
+      return;
+    }
+    modeRequestInFlightRef.current = true;
+    setIsTyping(true);
+    setChatHistory(prev => prev.map(message => message.id === pending.id
+      ? { ...message, deliveryStatus: 'sending' }
+      : message));
+    socket.emit('audio', { modeSessionId: pending.sessionId, audioBuffer: pending.base64, format: pending.format, clientAttemptId: pending.id });
+    pendingAudioTimeoutRef.current = setTimeout(() => {
+      if (pendingAudioRef.current?.id !== pending.id) return;
+      modeRequestInFlightRef.current = false;
+      setIsTyping(false);
+      setChatHistory(prev => prev.map(message => message.id === pending.id ? { ...message, deliveryStatus: 'failed' } : message));
+      toast.error('Recording is taking too long. Please retry it.');
+    }, 180_000);
+  }, [socket]);
 
   const submitMcqs = useCallback((answers: Array<number | string>) => {
     if (!socket || !modeSessionIdRef.current || isAccountBlocked) return;
@@ -508,6 +586,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     readingProgress,
     roleplayProgress,
     isTyping,
+    hasPendingAudio,
     setIsTyping,
     isCompleted,
     sessionStatus,
@@ -518,6 +597,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     resetActivityTimer,
     sendMessage,
     sendAudio,
+    retryAudio,
     submitMcqs,
     checkMcqAnswer,
     clearMcqAnswerFeedback,

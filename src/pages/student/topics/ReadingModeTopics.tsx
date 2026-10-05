@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { BarChart3, ChevronLeft, Mic, Square, Trash2, Check, MessageCircle, Pause, Play, LoaderCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { BarChart3, ChevronLeft, Mic, Square, Trash2, Check, MessageCircle, Pause, Play, LoaderCircle, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { useModeSession } from '@/hooks/useModeSession';
 import { useAudioRecorder } from '@/hooks/useAudioRecorder';
@@ -131,6 +131,7 @@ export default function ReadingModeTopics() {
   } = useAudioRecorder();
 
   const {
+    modeSessionId,
     chatHistory,
     contentPayload,
     mcqList,
@@ -138,6 +139,7 @@ export default function ReadingModeTopics() {
     isCheckingMcqAnswer,
     readingProgress,
     isTyping,
+    hasPendingAudio,
     isCompleted,
     isAccountBlocked,
     sessionStatus,
@@ -145,6 +147,7 @@ export default function ReadingModeTopics() {
     setIsContentFilterWarningOpen,
     contentFilterWarningData,
     sendAudio,
+    retryAudio,
     submitMcqs,
     checkMcqAnswer,
     clearMcqAnswerFeedback,
@@ -189,8 +192,7 @@ export default function ReadingModeTopics() {
     if (cooldown || isTyping || isAccountBlocked) return;
     const res = await stopRecording();
     if (res) {
-      sendAudio(res.audioBase64, res.format, res.audioUrl);
-      triggerCooldown();
+      if (sendAudio(res.audioBase64, res.format, res.audioUrl)) triggerCooldown();
     }
   };
 
@@ -679,6 +681,14 @@ export default function ReadingModeTopics() {
                         {msg.content}
                       </ReactMarkdown>
                     </div>
+                  {msg.deliveryStatus === 'sending' && (
+                    <div className="mt-2 text-xs text-[#2563EB]">Sending recording...</div>
+                  )}
+                  {msg.deliveryStatus === 'failed' && (
+                    <button type="button" onClick={retryAudio} className="mt-2 flex items-center gap-1 text-xs font-semibold text-red-600">
+                      <RotateCcw className="h-3 w-3" /> Send this recording again
+                    </button>
+                  )}
                   {msg.role === 'user' && canReplayLearnerSpeech && (
                     <div className="mt-3 flex items-center justify-end gap-4 border-t border-[#BFDBFE] pt-2.5">
                       <button
@@ -990,7 +1000,7 @@ export default function ReadingModeTopics() {
                   />
                   <button
                     onClick={startRecording}
-                    disabled={cooldown || isTyping || isAccountBlocked}
+                    disabled={!modeSessionId || cooldown || isTyping || isAccountBlocked || hasPendingAudio}
                     className="flex justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Mic className="w-5 h-5" />

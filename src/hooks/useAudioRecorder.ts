@@ -88,6 +88,11 @@ export function useAudioRecorder() {
         }
       };
 
+      recorder.onerror = () => {
+        toast.error('Recording failed. Please try again.');
+        cleanup();
+      };
+
       recorder.start();
       setIsRecording(true);
       setRecordTime(0);
@@ -135,14 +140,24 @@ export function useAudioRecorder() {
           return;
         }
 
-        const audioBase64 = await blobToBase64(audioBlob);
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const format = mimeType.split('/')[1]?.split(';')[0] || 'webm';
-
-        resolve({ audioBase64, audioUrl, format });
+        try {
+          const audioBase64 = await blobToBase64(audioBlob);
+          const audioUrl = URL.createObjectURL(audioBlob);
+          const format = mimeType.split('/')[1]?.split(';')[0] || 'webm';
+          resolve({ audioBase64, audioUrl, format });
+        } catch {
+          toast.error('Could not prepare the recording. Please try again.');
+          resolve(null);
+        }
       };
 
-      recorder.stop();
+      try {
+        recorder.stop();
+      } catch {
+        cleanup();
+        toast.error('Could not stop the recording. Please try again.');
+        resolve(null);
+      }
     });
   }, [cleanup]);
 
