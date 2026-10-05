@@ -152,6 +152,7 @@ export default function ReadingModeTopics() {
     checkMcqAnswer,
     clearMcqAnswerFeedback,
     markReadingPassageListened,
+    retryReadingPassageAudio,
     restartSession
   } = useModeSession({ 
     lessonModeId,
@@ -319,7 +320,7 @@ export default function ReadingModeTopics() {
   })();
 
   const togglePassageAudio = () => {
-    const audioUrl = contentPayload?.contentAudioUrl || contentPayload?.narrationAudioUrl || contentPayload?.attachmentUrl;
+    const audioUrl = contentPayload?.contentAudioUrl;
     if (audioUrl) {
       if (fallbackSpeechMessageId) {
         window.speechSynthesis.cancel();
@@ -330,11 +331,10 @@ export default function ReadingModeTopics() {
       return;
     }
 
-    toggleInitialReadingPromptSpeech(
-      'reading-passage-fallback',
-      readingPassageText,
-      markReadingPassageListened,
-    );
+    const retrying = retryReadingPassageAudio();
+    toast.error(retrying
+      ? 'Reading Passage audio is unavailable. Trying Tony narration again; tap Listen shortly.'
+      : 'Reading Passage audio is unavailable. Reconnect and try again.');
   };
 
   const toggleStoredAudio = (messageId: string, audioUrl: string, onEnd?: () => void) => {
@@ -583,11 +583,11 @@ export default function ReadingModeTopics() {
             <div className={`flex flex-col gap-4 min-h-0 ${step1Active ? 'flex-1' : 'flex-shrink-0'}`}>
               <ReadingPassageCard 
                 content={contentPayload.passage || contentPayload.content || (contentPayload.sentences ? contentPayload.sentences.join('\n\n') : '')}
-                audioUrl={contentPayload.contentAudioUrl || contentPayload.narrationAudioUrl || contentPayload.attachmentUrl}
+                audioUrl={contentPayload.contentAudioUrl}
                 readingPresentation={readingPresentation}
                 onVocabularyClick={setActiveVocabularyCard}
                 showAudioControl={Boolean(readingPassageText)}
-                isPlaying={(playingAudioId === 'reading-passage' && isCurrentlyPlaying) || (fallbackSpeechMessageId === 'reading-passage-fallback' && !isFallbackSpeechPaused)}
+                isPlaying={playingAudioId === 'reading-passage' && isCurrentlyPlaying}
                 onToggleAudio={togglePassageAudio}
                 forceExpanded={step1Active}
                 collapsibleMode="accordion"

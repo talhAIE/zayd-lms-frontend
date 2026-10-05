@@ -610,6 +610,12 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     });
   }, [socket, isAccountBlocked]);
 
+  const retryReadingPassageAudio = useCallback(() => {
+    if (!socket?.connected || !lessonModeId || isAccountBlocked) return false;
+    socket.emit('start_mode_session', { lessonModeId });
+    return true;
+  }, [socket, lessonModeId, isAccountBlocked]);
+
   const restartSession = useCallback(() => {
     if (!socket || !lessonModeId || isAccountBlocked) return;
     if (pendingAudioRef.current) {
@@ -665,6 +671,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     startListening,
     nextListeningStage,
     markReadingPassageListened,
+    retryReadingPassageAudio,
     restartSession
   };
 }
