@@ -192,7 +192,7 @@ export default function ReadingModeTopics() {
     if (cooldown || isTyping || isAccountBlocked) return;
     const res = await stopRecording();
     if (res) {
-      if (sendAudio(res.audioBase64, res.format, res.audioUrl)) triggerCooldown();
+      if (await sendAudio(res.audioBase64, res.format, res.audioUrl)) triggerCooldown();
     }
   };
 
