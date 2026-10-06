@@ -140,6 +140,8 @@ export default function ReadingModeTopics() {
     readingProgress,
     isTyping,
     hasPendingAudio,
+    isSocketConnected,
+    isReconcilingAudio,
     lastNoSpeechAttemptId,
     isCompleted,
     isAccountBlocked,
@@ -690,9 +692,18 @@ export default function ReadingModeTopics() {
                     <div className="mt-2 text-xs text-[#2563EB]">Sending recording...</div>
                   )}
                   {msg.deliveryStatus === 'failed' && (
-                    <button type="button" onClick={retryAudio} className="mt-2 flex items-center gap-1 text-xs font-semibold text-red-600">
-                      <RotateCcw className="h-3 w-3" /> Send this recording again
-                    </button>
+                    <div className="mt-2 space-y-1">
+                      <p className="text-xs text-[#475569]">
+                        {isSocketConnected
+                          ? isReconcilingAudio
+                            ? 'Checking whether your recording was received...'
+                            : 'Your recording is saved here and ready to resend.'
+                          : 'Your recording is saved here. Reconnect to send it again.'}
+                      </p>
+                      <button type="button" onClick={retryAudio} disabled={!isSocketConnected || isReconcilingAudio} className="flex items-center gap-1 text-xs font-semibold text-red-600 disabled:cursor-not-allowed disabled:opacity-50">
+                        <RotateCcw className="h-3 w-3" /> Send this recording again
+                      </button>
+                    </div>
                   )}
                   {msg.role === 'user' && canReplayLearnerSpeech && (
                     <div className="mt-3 flex items-center justify-end gap-4 border-t border-[#BFDBFE] pt-2.5">
