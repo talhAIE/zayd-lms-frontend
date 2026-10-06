@@ -112,7 +112,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
   const [hasPendingAudio, setHasPendingAudio] = useState(false);
   const [isSocketConnected, setIsSocketConnected] = useState(false);
   const [isReconcilingAudio, setIsReconcilingAudio] = useState(false);
-  const [lastNoSpeechAttemptId, setLastNoSpeechAttemptId] = useState<string | null>(null);
+  const [lastNewRecordingAttemptId, setLastNewRecordingAttemptId] = useState<string | null>(null);
   const [isCompleted, setIsCompleted] = useState(false);
   const [sessionStatus, setSessionStatus] = useState<SessionStatus>({ remainingSeconds: null });
   const [readingProgress, setReadingProgress] = useState<ReadingProgress | null>(null);
@@ -152,7 +152,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     pendingAudioRef.current = null;
     discardedAudioAttemptIdsRef.current = new Set();
     setHasPendingAudio(true);
-    setLastNoSpeechAttemptId(null);
+    setLastNewRecordingAttemptId(null);
     if (pendingAudioTimeoutRef.current) clearTimeout(pendingAudioTimeoutRef.current);
     pendingAudioTimeoutRef.current = null;
     if (reconciliationTimeoutRef.current) clearTimeout(reconciliationTimeoutRef.current);
@@ -530,7 +530,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
 
     newSocket.on('error', (payload: { message: string, clientAttemptId?: string, code?: string }) => {
       const pending = pendingAudioRef.current;
-      if (payload.code === 'NO_SPEECH') {
+      if (payload.code === 'NO_SPEECH' || payload.code === 'UNCLEAR_SPEECH') {
         if (payload.clientAttemptId && pending?.id !== payload.clientAttemptId) return;
         if (pending) {
           if (pendingAudioTimeoutRef.current) clearTimeout(pendingAudioTimeoutRef.current);
@@ -539,7 +539,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
           pendingAudioRef.current = null;
           pendingAudioMessageIdRef.current = null;
           setHasPendingAudio(false);
-          setLastNoSpeechAttemptId(pending.id);
+          setLastNewRecordingAttemptId(pending.id);
           setChatHistory(prev => prev.filter(message => message.id !== pending.id));
           if (pending.audioUrl.startsWith('blob:')) URL.revokeObjectURL(pending.audioUrl);
           void removePendingReadingAudio(lessonModeId, pending.id).catch(() => undefined);
@@ -551,7 +551,9 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
           ? { ...message, deliveryStatus: 'failed' }
           : message));
       }
-      toast.error(payload.message);
+      toast.error(payload.code === 'UNCLEAR_SPEECH' && modeKeyRef.current === 'reading-mode'
+        ? 'Please try reading this sentence again.'
+        : payload.message);
       modeRequestInFlightRef.current = false;
       setIsTyping(false);
       setIsCheckingMcqAnswer(false);
@@ -764,7 +766,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     hasPendingAudio,
     isSocketConnected,
     isReconcilingAudio,
-    lastNoSpeechAttemptId,
+    lastNewRecordingAttemptId,
     setIsTyping,
     isCompleted,
     sessionStatus,

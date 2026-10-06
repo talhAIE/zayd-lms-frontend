@@ -142,7 +142,7 @@ export default function ReadingModeTopics() {
     hasPendingAudio,
     isSocketConnected,
     isReconcilingAudio,
-    lastNoSpeechAttemptId,
+    lastNewRecordingAttemptId,
     isCompleted,
     isAccountBlocked,
     sessionStatus,
@@ -193,8 +193,8 @@ export default function ReadingModeTopics() {
   const [cooldown, setCooldown] = useState(false);
 
   useEffect(() => {
-    if (lastNoSpeechAttemptId) setCooldown(false);
-  }, [lastNoSpeechAttemptId]);
+    if (lastNewRecordingAttemptId) setCooldown(false);
+  }, [lastNewRecordingAttemptId]);
 
   const handleStopRecording = async () => {
     if (cooldown || isTyping || isAccountBlocked) return;
