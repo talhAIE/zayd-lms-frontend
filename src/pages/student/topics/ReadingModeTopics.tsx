@@ -140,6 +140,7 @@ export default function ReadingModeTopics() {
     readingProgress,
     isTyping,
     hasPendingAudio,
+    lastNoSpeechAttemptId,
     isCompleted,
     isAccountBlocked,
     sessionStatus,
@@ -188,6 +189,10 @@ export default function ReadingModeTopics() {
 
 
   const [cooldown, setCooldown] = useState(false);
+
+  useEffect(() => {
+    if (lastNoSpeechAttemptId) setCooldown(false);
+  }, [lastNoSpeechAttemptId]);
 
   const handleStopRecording = async () => {
     if (cooldown || isTyping || isAccountBlocked) return;

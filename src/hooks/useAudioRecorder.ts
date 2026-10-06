@@ -128,14 +128,19 @@ export function useAudioRecorder() {
         const mimeType = recorder.mimeType || getSupportedMimeType() || 'audio/webm';
         cleanup();
 
-        if (wasCanceled || chunks.length === 0) {
+        if (wasCanceled) {
+          resolve(null);
+          return;
+        }
+        if (chunks.length === 0) {
+          toast.error('No audio was captured. Please record the sentence again.');
           resolve(null);
           return;
         }
 
         const audioBlob = new Blob(chunks, { type: mimeType });
         if (audioBlob.size < 200) {
-          toast.error('Recording was too short.');
+          toast.error('Recording was too short. Please record the sentence again.');
           resolve(null);
           return;
         }

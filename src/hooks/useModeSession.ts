@@ -97,6 +97,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
   const [listeningPayload, setListeningPayload] = useState<ListeningPayload | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   const [hasPendingAudio, setHasPendingAudio] = useState(false);
+  const [lastNoSpeechAttemptId, setLastNoSpeechAttemptId] = useState<string | null>(null);
   const [isCompleted, setIsCompleted] = useState(false);
   const [sessionStatus, setSessionStatus] = useState<SessionStatus>({ remainingSeconds: null });
   const [readingProgress, setReadingProgress] = useState<ReadingProgress | null>(null);
@@ -112,6 +113,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
   const onBadgeUnlockedRef = useRef(onBadgeUnlocked);
   const pendingAudioMessageIdRef = useRef<string | null>(null);
   const pendingAudioRef = useRef<{ id: string; base64: string; format: string; audioUrl: string; sessionId: string } | null>(null);
+  const discardedAudioAttemptIdsRef = useRef(new Set<string>());
   const pendingAudioTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const modeRequestInFlightRef = useRef(false);
 
@@ -128,7 +130,9 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     modeSessionIdRef.current = null;
     pendingAudioMessageIdRef.current = null;
     pendingAudioRef.current = null;
+    discardedAudioAttemptIdsRef.current = new Set();
     setHasPendingAudio(true);
+    setLastNoSpeechAttemptId(null);
     if (pendingAudioTimeoutRef.current) clearTimeout(pendingAudioTimeoutRef.current);
     pendingAudioTimeoutRef.current = null;
     modeRequestInFlightRef.current = false;
@@ -228,12 +232,17 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       if (!pendingAudioRef.current) {
         void loadPendingReadingAudio(lessonModeId).then((draft) => {
           if (!draft) {
-            setHasPendingAudio(false);
+            if (!pendingAudioRef.current) setHasPendingAudio(false);
+            return;
+          }
+          if (discardedAudioAttemptIdsRef.current.has(draft.id)) {
+            void removePendingReadingAudio(lessonModeId, draft.id).catch(() => undefined);
+            if (!pendingAudioRef.current) setHasPendingAudio(false);
             return;
           }
           if (draft.sessionId !== session.modeSessionId || session.chatHistory?.some(message => message.hint === `audio-attempt:${draft.id}`)) {
             void removePendingReadingAudio(lessonModeId, draft.id);
-            setHasPendingAudio(false);
+            if (!pendingAudioRef.current) setHasPendingAudio(false);
             return;
           }
           if (pendingAudioRef.current) return;
@@ -246,7 +255,9 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
             feedback: null, assessments: null, audioUrl,
             createdAt: draft.createdAt, deliveryStatus: 'failed',
           }]);
-        }).catch(() => setHasPendingAudio(false));
+        }).catch(() => {
+          if (!pendingAudioRef.current) setHasPendingAudio(false);
+        });
       }
       if (session.contentPayload) {
         setContentPayload(session.contentPayload);
@@ -445,16 +456,30 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       }, 2000);
     });
 
-    newSocket.on('error', (payload: { message: string, clientAttemptId?: string }) => {
-      toast.error(payload.message);
-      if (pendingAudioRef.current && (!payload.clientAttemptId || payload.clientAttemptId === pendingAudioRef.current.id)) {
+    newSocket.on('error', (payload: { message: string, clientAttemptId?: string, code?: string }) => {
+      const pending = pendingAudioRef.current;
+      if (payload.code === 'NO_SPEECH') {
+        if (payload.clientAttemptId && pending?.id !== payload.clientAttemptId) return;
+        if (pending) {
+          if (pendingAudioTimeoutRef.current) clearTimeout(pendingAudioTimeoutRef.current);
+          pendingAudioTimeoutRef.current = null;
+          discardedAudioAttemptIdsRef.current.add(pending.id);
+          pendingAudioRef.current = null;
+          pendingAudioMessageIdRef.current = null;
+          setHasPendingAudio(false);
+          setLastNoSpeechAttemptId(pending.id);
+          setChatHistory(prev => prev.filter(message => message.id !== pending.id));
+          if (pending.audioUrl.startsWith('blob:')) URL.revokeObjectURL(pending.audioUrl);
+          void removePendingReadingAudio(lessonModeId, pending.id).catch(() => undefined);
+        }
+      } else if (pending && (!payload.clientAttemptId || payload.clientAttemptId === pending.id)) {
         if (pendingAudioTimeoutRef.current) clearTimeout(pendingAudioTimeoutRef.current);
         pendingAudioTimeoutRef.current = null;
-        const pendingId = pendingAudioRef.current.id;
-        setChatHistory(prev => prev.map(message => message.id === pendingId
+        setChatHistory(prev => prev.map(message => message.id === pending.id
           ? { ...message, deliveryStatus: 'failed' }
           : message));
       }
+      toast.error(payload.message);
       modeRequestInFlightRef.current = false;
       setIsTyping(false);
       setIsCheckingMcqAnswer(false);
@@ -654,6 +679,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     roleplayProgress,
     isTyping,
     hasPendingAudio,
+    lastNoSpeechAttemptId,
     setIsTyping,
     isCompleted,
     sessionStatus,
