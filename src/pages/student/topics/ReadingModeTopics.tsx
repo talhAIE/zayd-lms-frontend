@@ -688,6 +688,9 @@ export default function ReadingModeTopics() {
                         {msg.content}
                       </ReactMarkdown>
                     </div>
+                  {msg.role === 'user' && hasSavedSpeechAssessment && (
+                    <p className="mt-1 text-[11px] text-[#526078]">Speech service transcript</p>
+                  )}
                   {msg.deliveryStatus === 'sending' && (
                     <div className="mt-2 text-xs text-[#2563EB]">Sending recording...</div>
                   )}
