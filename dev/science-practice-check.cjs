@@ -23,4 +23,19 @@ for (const url of ['javascript:alert(1)', 'https://evil.test/details/light/id', 
 for (const change of [{ provider: 'other' }, { activityKey: 'lesson-1' }, { embedMode: undefined }, { embedMode: 'verified-by-load' }]) {
   check(`Reject incorrect payload: ${JSON.stringify(change)}`, () => assert.throws(() => validate({ ...base, ...change })));
 }
+const simulation = { kind: 'external_simulation', activityKey: 'simulation', provider: 'phet', detailsUrl: 'https://phet.colorado.edu/en/simulations/quantum-wave-interference', embedUrl: 'https://phet.colorado.edu/sims/html/quantum-wave-interference/latest/quantum-wave-interference_en.html' };
+check('Official playable PhET simulation accepted', () => {
+  assert.equal(validate(simulation).embedUrl, simulation.embedUrl);
+  assert.equal(validate(simulation).detailsUrl, simulation.detailsUrl);
+});
+for (const change of [
+  { provider: 'kahoot' }, { activityKey: 'practice' },
+  { embedUrl: simulation.detailsUrl },
+  { embedUrl: 'https://phet.colorado.edu.evil.test/sim' },
+  { embedUrl: simulation.embedUrl + '?redirect=evil' },
+  { detailsUrl: 'https://evil.test/' },
+  { embedUrl: 'javascript:alert(1)' },
+]) {
+  check(`Reject unsafe simulation: ${JSON.stringify(change)}`, () => assert.throws(() => validate({ ...simulation, ...change })));
+}
 console.log(JSON.stringify({ phase: 6, checks, networkCalls: 0, databaseConnections: 0 }, null, 2));
