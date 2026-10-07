@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { Atom, Play } from "lucide-react";
 import type { ScienceSparkExternalContent } from "@/types/science-spark.contract";
 import { validateSciencePractice } from "./sciencePractice";
 
@@ -30,7 +31,7 @@ export function SciencePracticeViewer({
   const workspace = useRef<HTMLDivElement>(null);
   const close = useRef<HTMLButtonElement>(null);
   const [status, setStatus] = useState<"loading" | "loaded" | "unavailable">(
-    "loading",
+    isSimulation ? "loaded" : "loading",
   );
   const [fullscreen, setFullscreen] = useState(false);
   const [fullscreenError, setFullscreenError] = useState("");
@@ -92,7 +93,9 @@ export function SciencePracticeViewer({
       >
         <header className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b px-4 py-3">
           <h1 id={titleId} className="text-xl font-bold">
-            {isSimulation ? "Simulation — Quantum Wave Interference" : "Practice — Light"}
+            {isSimulation
+              ? "Simulation — Quantum Wave Interference"
+              : "Practice — Light"}
           </h1>
           <div className="flex flex-wrap gap-3 items-center text-sm">
             <button
@@ -120,48 +123,74 @@ export function SciencePracticeViewer({
             </button>
           </div>
         </header>
-        {content.kind === "external_practice" && content.embedMode === "preview" && (
-          <p role="note" className="shrink-0 bg-amber-50 px-4 py-3 text-sm">
-            This is a Kahoot preview. Play may open Kahoot in a new tab;
-            individual practice inside Zayd is not available yet.
-          </p>
-        )}
+        {content.kind === "external_practice" &&
+          content.embedMode === "preview" && (
+            <p role="note" className="shrink-0 bg-amber-50 px-4 py-3 text-sm">
+              This is a Kahoot preview. Play may open Kahoot in a new tab;
+              individual practice inside Zayd is not available yet.
+            </p>
+          )}
         {fullscreenError && (
           <p role="status" className="shrink-0 px-4 py-2 text-sm">
             {fullscreenError}
           </p>
         )}
         <div className="relative min-h-0 flex-1 bg-slate-50">
-          {status === "loading" && (
-            <p
-              role="status"
-              className="pointer-events-none absolute top-3 left-4 bg-white p-2 text-sm"
-            >
-              Loading {providerName}…
-            </p>
+          {isSimulation ? (
+            <div className="flex h-full flex-col items-center justify-center gap-6 overflow-y-auto bg-gradient-to-br from-sky-50 to-blue-100 p-6 text-center">
+              <Atom className="h-20 w-20 text-[#4F8DFB]" aria-hidden="true" />
+              <h2 className="text-2xl font-bold">Quantum Wave Interference</h2>
+              <p className="max-w-md text-slate-600">
+                Select Play to open the PhET simulation in a new tab. Return to
+                Zayd when you are ready to complete this activity.
+              </p>
+              <a
+                href={detailsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 rounded-xl bg-[#4F8DFB] px-8 py-4 text-lg font-semibold text-white hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600"
+              >
+                <Play className="h-5 w-5 fill-current" aria-hidden="true" />
+                Play
+                <span className="sr-only"> — opens PhET in a new tab</span>
+              </a>
+            </div>
+          ) : (
+            <>
+              {status === "loading" && (
+                <p
+                  role="status"
+                  className="pointer-events-none absolute top-3 left-4 bg-white p-2 text-sm"
+                >
+                  Loading {providerName}…
+                </p>
+              )}
+              <iframe
+                title={`Science ${activityName} — ${providerName}`}
+                src={embedUrl}
+                className="h-full w-full border-0"
+                sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
+                allow="autoplay; fullscreen"
+                allowFullScreen
+                referrerPolicy="no-referrer"
+                onLoad={() => setStatus("loaded")}
+                onError={() => setStatus("unavailable")}
+              />
+            </>
           )}
-          <iframe
-            title={`Science ${activityName} — ${providerName}`}
-            src={embedUrl}
-            className="h-full w-full border-0"
-            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
-            allow="autoplay; fullscreen"
-            allowFullScreen
-            referrerPolicy="no-referrer"
-            onLoad={() => setStatus("loaded")}
-            onError={() => setStatus("unavailable")}
-          />
         </div>
         <footer className="shrink-0 border-t px-4 py-3 space-y-3">
           {status === "unavailable" && (
             <p role="alert" className="text-sm text-amber-800">
-              {providerName} could not load. Retry or use Open on {providerName}.
+              {providerName} could not load. Retry or use Open on {providerName}
+              .
             </p>
           )}
           <div className="flex flex-wrap justify-between items-center gap-3">
             <p className="text-sm text-slate-600">
-              If this activity does not start here, use Open on {providerName}. Closing or
-              opening that link does not complete this activity.
+              {isSimulation
+                ? "Playing or closing the simulation does not complete this activity. Return here to mark it completed."
+                : "If this activity does not start here, use Open on Kahoot. Closing or opening that link does not complete this activity."}
             </p>
             <button
               type="button"
@@ -180,7 +209,9 @@ export function SciencePracticeViewer({
                 ? "Saving…"
                 : saveError
                   ? "Retry completion"
-                  : isSimulation ? "Complete and return to Unit 1" : "Complete and Next"}
+                  : isSimulation
+                    ? "Complete and return to Unit 1"
+                    : "Complete and Next"}
             </button>
           </div>
           {saveError && (
