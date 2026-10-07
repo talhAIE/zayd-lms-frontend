@@ -122,6 +122,8 @@ export interface ScienceSparkPracticeContent {
   provider: 'kahoot';
   detailsUrl: string;
   embedUrl: string;
+  /** Preview is not evidence of playable embedded practice. Assignment requires owner configuration. */
+  embedMode: 'preview' | 'assignment';
 }
 
 export type ScienceSparkContentResponse = ScienceSparkEnvelope<

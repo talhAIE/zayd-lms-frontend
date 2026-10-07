@@ -11,10 +11,11 @@ import {
   type ScienceOwner,
 } from "@/services/scienceSparkService";
 import { ScienceHtmlViewer } from "@/components/science/ScienceHtmlViewer";
+import { SciencePracticeViewer } from "@/components/science/SciencePracticeViewer";
+import { validateSciencePractice } from "@/components/science/sciencePractice";
 import type {
   ScienceSparkActivityKey,
   ScienceSparkActivityState,
-  ScienceSparkHtmlContent,
 } from "@/types/science-spark.contract";
 
 const coursePath = "/student/science/courses/science-spark";
@@ -168,11 +169,6 @@ function Unit({ owner, unitKey }: { owner: ScienceOwner; unitKey: string }) {
                       activity.lessonId &&
                       `Lesson ${activity.lessonId.slice(1)}: `}
                     {activity.title}
-                    {activity.kind === "external_practice" && (
-                      <span className="ml-2 text-sm font-normal text-slate-500">
-                        (Coming soon)
-                      </span>
-                    )}
                   </span>
                   <ScienceBadge state={state} />
                 </Link>
@@ -225,18 +221,18 @@ function Activity({
         (item) => item.activity.activityKey === activityKey,
       );
       if (!selected) throw new Error("Activity unavailable");
-      if (selected.activity.kind === "external_practice")
-        return { selected, content: null, state: selected.state };
       const content = await api.content(owner, s, unitKey, activityKey);
       if (
-        content.data.kind !== "local_html" ||
+        content.data.kind !== selected.activity.kind ||
         content.data.activityKey !== activityKey
       )
         throw new Error("Unexpected Science content");
+      if (content.data.kind === "external_practice")
+        validateSciencePractice(content.data);
       const opened = await api.open(owner, s, unitKey, activityKey);
       return {
         selected,
-        content: content.data as ScienceSparkHtmlContent,
+        content: content.data,
         state: opened.data,
       };
     },
@@ -252,7 +248,12 @@ function Activity({
     [navigate, unitKey],
   );
   const complete = async () => {
-    if (busy.current || !data?.content || !ready) return;
+    if (
+      busy.current ||
+      !data?.content ||
+      (data.content.kind === "local_html" && !ready)
+    )
+      return;
     busy.current = true;
     setSaving(true);
     setSaveError("");
@@ -288,20 +289,15 @@ function Activity({
         <Failure error={error} retry={retry} />
       ) : !data ? (
         <p role="status">Loading activity…</p>
-      ) : !data.content ? (
-        <div className="rounded-2xl border bg-white p-8">
-          <h1 className="text-2xl font-bold">Practice</h1>
-          <p className="mt-4">Practice is not available yet.</p>
-          {import.meta.env.DEV && (
-            <p className="mt-2 text-slate-600">
-              Development preview: the embedded practice and its completion
-              controls will be added in Phase 6.
-            </p>
-          )}
-          <Link className="mt-4 inline-block underline" to={unitPath(unitKey)}>
-            Return to Unit 1
-          </Link>
-        </div>
+      ) : data.content.kind === "external_practice" ? (
+        <SciencePracticeViewer
+          content={data.content}
+          onClose={back}
+          onRetry={retry}
+          onComplete={() => void complete()}
+          saving={saving}
+          saveError={saveError}
+        />
       ) : (
         <>
           <h1 className="text-xl font-bold">{data.selected.activity.title}</h1>
