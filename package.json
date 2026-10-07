@@ -10,7 +10,8 @@
     "qa:science-spark:practice": "node dev/science-practice-check.cjs",
     "lint": "eslint .",
     "preview": "vite preview",
-    "qa:science-spark:release": "node dev/science-release-check.cjs"
+    "qa:science-spark:release": "node dev/science-release-check.cjs",
+    "qa:science-spark:phase8:preflight": "node dev/science-phase8-preflight.cjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
