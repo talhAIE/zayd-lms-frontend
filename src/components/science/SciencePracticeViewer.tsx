@@ -1,10 +1,10 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { ScienceSparkPracticeContent } from "@/types/science-spark.contract";
+import type { ScienceSparkExternalContent } from "@/types/science-spark.contract";
 import { validateSciencePractice } from "./sciencePractice";
 
 interface Props {
-  content: ScienceSparkPracticeContent;
+  content: ScienceSparkExternalContent;
   onClose: () => void;
   onRetry: () => void;
   onComplete: () => void;
@@ -22,6 +22,9 @@ export function SciencePracticeViewer({
   saveError,
 }: Props) {
   const { embedUrl, detailsUrl } = validateSciencePractice(content);
+  const isSimulation = content.kind === "external_simulation";
+  const activityName = isSimulation ? "Simulation" : "Practice";
+  const providerName = isSimulation ? "PhET" : "Kahoot";
   const titleId = useId();
   const dialog = useRef<HTMLDialogElement>(null);
   const workspace = useRef<HTMLDivElement>(null);
@@ -89,7 +92,7 @@ export function SciencePracticeViewer({
       >
         <header className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b px-4 py-3">
           <h1 id={titleId} className="text-xl font-bold">
-            Practice — Light
+            {isSimulation ? "Simulation — Quantum Wave Interference" : "Practice — Light"}
           </h1>
           <div className="flex flex-wrap gap-3 items-center text-sm">
             <button
@@ -105,7 +108,7 @@ export function SciencePracticeViewer({
               target="_blank"
               rel="noopener noreferrer"
             >
-              Open on Kahoot
+              Open on {providerName}
             </a>
             <button
               ref={close}
@@ -113,11 +116,11 @@ export function SciencePracticeViewer({
               className="rounded-lg border px-3 py-2"
               onClick={onClose}
             >
-              Close Practice
+              Close {activityName}
             </button>
           </div>
         </header>
-        {content.embedMode === "preview" && (
+        {content.kind === "external_practice" && content.embedMode === "preview" && (
           <p role="note" className="shrink-0 bg-amber-50 px-4 py-3 text-sm">
             This is a Kahoot preview. Play may open Kahoot in a new tab;
             individual practice inside Zayd is not available yet.
@@ -134,11 +137,11 @@ export function SciencePracticeViewer({
               role="status"
               className="pointer-events-none absolute top-3 left-4 bg-white p-2 text-sm"
             >
-              Loading Kahoot…
+              Loading {providerName}…
             </p>
           )}
           <iframe
-            title="Science Practice — Kahoot"
+            title={`Science ${activityName} — ${providerName}`}
             src={embedUrl}
             className="h-full w-full border-0"
             sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
@@ -152,12 +155,12 @@ export function SciencePracticeViewer({
         <footer className="shrink-0 border-t px-4 py-3 space-y-3">
           {status === "unavailable" && (
             <p role="alert" className="text-sm text-amber-800">
-              Kahoot could not load. Retry or use Open on Kahoot.
+              {providerName} could not load. Retry or use Open on {providerName}.
             </p>
           )}
           <div className="flex flex-wrap justify-between items-center gap-3">
             <p className="text-sm text-slate-600">
-              If practice does not start here, use Open on Kahoot. Closing or
+              If this activity does not start here, use Open on {providerName}. Closing or
               opening that link does not complete this activity.
             </p>
             <button
@@ -165,7 +168,7 @@ export function SciencePracticeViewer({
               className="underline text-sm"
               onClick={onRetry}
             >
-              Reload Practice
+              Reload {activityName}
             </button>
             <button
               type="button"
@@ -177,12 +180,12 @@ export function SciencePracticeViewer({
                 ? "Saving…"
                 : saveError
                   ? "Retry completion"
-                  : "Complete and return to Unit 1"}
+                  : isSimulation ? "Complete and return to Unit 1" : "Complete and Next"}
             </button>
           </div>
           {saveError && (
             <p role="alert" className="text-sm text-red-700">
-              Completion was not confirmed. You are still on Practice.{" "}
+              Completion was not confirmed. You are still on {activityName}.{" "}
               {saveError}
             </p>
           )}

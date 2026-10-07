@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { BookOpen, FlaskConical, Ruler, ChartNoAxesCombined, Cpu, Gamepad2, Play } from "lucide-react";
+import { BookOpen, FlaskConical, Ruler, ChartNoAxesCombined, Cpu, Gamepad2, Atom, Play } from "lucide-react";
 import {
   Link,
   useNavigate,
@@ -117,7 +117,7 @@ function Course({
           >
             <h2 className="text-xl font-semibold">{unit.title}</h2>
             <p className="mt-2 text-slate-600">
-              Introduction · Four lessons · Practice
+              Introduction · Four lessons · Practice · Simulation
             </p>
           </Link>
         ))
@@ -159,16 +159,16 @@ function Unit({ owner, unitKey }: { owner: ScienceOwner; unitKey: string }) {
           </p>
           <div className="rounded-[24px] border border-gray-100 bg-white p-4 shadow-sm md:p-8">
             <h2 className="text-xl font-bold text-[#282828]">Lesson activities</h2>
-            <p className="mt-1 mb-4 text-sm text-[#64748B]">Introduction · Four lessons · Practice</p>
+            <p className="mt-1 mb-4 text-sm text-[#64748B]">Introduction · Four lessons · Practice · Simulation</p>
             <ol className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
               {data.data.activities.map(({ activity, state }, index) => {
-                const Icon = activity.kind === "external_practice"
+                const Icon = activity.kind === "external_simulation" ? Atom : activity.kind === "external_practice"
                   ? Gamepad2
                   : activity.lessonId === "l1" ? FlaskConical
                   : activity.lessonId === "l2" ? Ruler
                   : activity.lessonId === "l3" ? ChartNoAxesCombined
                   : activity.lessonId === "l4" ? Cpu : BookOpen;
-                const label = activity.kind === "external_practice"
+                const label = activity.kind === "external_simulation" ? "PhET Simulation" : activity.kind === "external_practice"
                   ? "Practice" : activity.lessonId ? `Lesson ${activity.lessonId.slice(1)}` : "Introduction";
                 return <li key={activity.activityKey} className="flex min-w-0">
                   <Link
@@ -250,7 +250,7 @@ function Activity({
         content.data.activityKey !== activityKey
       )
         throw new Error("Unexpected Science content");
-      if (content.data.kind === "external_practice")
+      if (content.data.kind !== "local_html")
         validateSciencePractice(content.data);
       const opened = await api.open(owner, s, unitKey, activityKey);
       return {
@@ -312,7 +312,7 @@ function Activity({
         <Failure error={error} retry={retry} />
       ) : !data ? (
         <p role="status">Loading activity…</p>
-      ) : data.content.kind === "external_practice" ? (
+      ) : data.content.kind !== "local_html" ? (
         <SciencePracticeViewer
           content={data.content}
           onClose={back}

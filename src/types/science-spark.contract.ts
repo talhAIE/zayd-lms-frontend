@@ -10,7 +10,8 @@ export type ScienceSparkActivityKey =
   | 'lesson-2'
   | 'lesson-3'
   | 'lesson-4'
-  | 'practice';
+  | 'practice'
+  | 'simulation';
 export type ScienceSparkLessonId = 'l1' | 'l2' | 'l3' | 'l4';
 
 export interface ScienceSparkCourse {
@@ -49,8 +50,15 @@ export interface ScienceSparkPracticeActivity extends ScienceSparkActivityBase {
   provider: 'kahoot';
 }
 
+export interface ScienceSparkSimulationActivity extends ScienceSparkActivityBase {
+  kind: 'external_simulation';
+  provider: 'phet';
+}
+
 export type ScienceSparkActivity =
-  ScienceSparkHtmlActivity | ScienceSparkPracticeActivity;
+  | ScienceSparkHtmlActivity
+  | ScienceSparkPracticeActivity
+  | ScienceSparkSimulationActivity;
 
 /** Timestamps are ISO-8601 strings; booleans are derived, never independent state. */
 export interface ScienceSparkActivityState {
@@ -126,8 +134,19 @@ export interface ScienceSparkPracticeContent {
   embedMode: 'preview' | 'assignment';
 }
 
+export interface ScienceSparkSimulationContent {
+  kind: 'external_simulation';
+  activityKey: 'simulation';
+  provider: 'phet';
+  detailsUrl: string;
+  embedUrl: string;
+}
+
+export type ScienceSparkExternalContent =
+  ScienceSparkPracticeContent | ScienceSparkSimulationContent;
+
 export type ScienceSparkContentResponse = ScienceSparkEnvelope<
-  ScienceSparkHtmlContent | ScienceSparkPracticeContent
+  ScienceSparkHtmlContent | ScienceSparkExternalContent
 >;
 
 /** Route keys and user identity come from authenticated context/path, not body fields. */
