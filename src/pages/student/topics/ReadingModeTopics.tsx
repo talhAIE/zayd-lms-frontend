@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { BarChart3, ChevronLeft, Mic, Square, Trash2, Check, MessageCircle, Pause, Play, LoaderCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { BarChart3, ChevronLeft, Mic, Square, Trash2, Check, MessageCircle, Pause, Play, LoaderCircle, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { useModeSession } from '@/hooks/useModeSession';
 import { useAudioRecorder } from '@/hooks/useAudioRecorder';
@@ -124,13 +124,15 @@ export default function ReadingModeTopics() {
   const fallbackSpeechRef = useRef<SpeechSynthesisUtterance | null>(null);
   const {
     isRecording,
+    isProcessingRecording,
     recordTime,
     startRecording,
     stopRecording,
     cancelRecording
-  } = useAudioRecorder();
+  } = useAudioRecorder({ detectSilence: true });
 
   const {
+    modeSessionId,
     chatHistory,
     contentPayload,
     mcqList,
@@ -138,6 +140,10 @@ export default function ReadingModeTopics() {
     isCheckingMcqAnswer,
     readingProgress,
     isTyping,
+    hasPendingAudio,
+    isSocketConnected,
+    isReconcilingAudio,
+    lastNewRecordingAttemptId,
     isCompleted,
     isAccountBlocked,
     sessionStatus,
@@ -145,10 +151,13 @@ export default function ReadingModeTopics() {
     setIsContentFilterWarningOpen,
     contentFilterWarningData,
     sendAudio,
+    retryAudio,
+    discardAudio,
     submitMcqs,
     checkMcqAnswer,
     clearMcqAnswerFeedback,
     markReadingPassageListened,
+    retryReadingPassageAudio,
     restartSession
   } = useModeSession({ 
     lessonModeId,
@@ -185,12 +194,15 @@ export default function ReadingModeTopics() {
 
   const [cooldown, setCooldown] = useState(false);
 
+  useEffect(() => {
+    if (lastNewRecordingAttemptId) setCooldown(false);
+  }, [lastNewRecordingAttemptId]);
+
   const handleStopRecording = async () => {
     if (cooldown || isTyping || isAccountBlocked) return;
     const res = await stopRecording();
     if (res) {
-      sendAudio(res.audioBase64, res.format, res.audioUrl);
-      triggerCooldown();
+      if (await sendAudio(res.audioBase64, res.format, res.audioUrl)) triggerCooldown();
     }
   };
 
@@ -317,7 +329,7 @@ export default function ReadingModeTopics() {
   })();
 
   const togglePassageAudio = () => {
-    const audioUrl = contentPayload?.contentAudioUrl || contentPayload?.narrationAudioUrl || contentPayload?.attachmentUrl;
+    const audioUrl = contentPayload?.contentAudioUrl;
     if (audioUrl) {
       if (fallbackSpeechMessageId) {
         window.speechSynthesis.cancel();
@@ -328,11 +340,10 @@ export default function ReadingModeTopics() {
       return;
     }
 
-    toggleInitialReadingPromptSpeech(
-      'reading-passage-fallback',
-      readingPassageText,
-      markReadingPassageListened,
-    );
+    const retrying = retryReadingPassageAudio();
+    toast.error(retrying
+      ? 'Reading Passage audio is unavailable. Trying Tony narration again; tap Listen shortly.'
+      : 'Reading Passage audio is unavailable. Reconnect and try again.');
   };
 
   const toggleStoredAudio = (messageId: string, audioUrl: string, onEnd?: () => void) => {
@@ -581,11 +592,11 @@ export default function ReadingModeTopics() {
             <div className={`flex flex-col gap-4 min-h-0 ${step1Active ? 'flex-1' : 'flex-shrink-0'}`}>
               <ReadingPassageCard 
                 content={contentPayload.passage || contentPayload.content || (contentPayload.sentences ? contentPayload.sentences.join('\n\n') : '')}
-                audioUrl={contentPayload.contentAudioUrl || contentPayload.narrationAudioUrl || contentPayload.attachmentUrl}
+                audioUrl={contentPayload.contentAudioUrl}
                 readingPresentation={readingPresentation}
                 onVocabularyClick={setActiveVocabularyCard}
                 showAudioControl={Boolean(readingPassageText)}
-                isPlaying={(playingAudioId === 'reading-passage' && isCurrentlyPlaying) || (fallbackSpeechMessageId === 'reading-passage-fallback' && !isFallbackSpeechPaused)}
+                isPlaying={playingAudioId === 'reading-passage' && isCurrentlyPlaying}
                 onToggleAudio={togglePassageAudio}
                 forceExpanded={step1Active}
                 collapsibleMode="accordion"
@@ -679,6 +690,29 @@ export default function ReadingModeTopics() {
                         {msg.content}
                       </ReactMarkdown>
                     </div>
+                  {msg.role === 'user' && hasSavedSpeechAssessment && (
+                    <p className="mt-1 text-[11px] text-[#526078]">Speech service transcript</p>
+                  )}
+                  {msg.deliveryStatus === 'sending' && (
+                    <div className="mt-2 text-xs text-[#2563EB]">Sending recording...</div>
+                  )}
+                  {msg.deliveryStatus === 'failed' && (
+                    <div className="mt-2 space-y-1">
+                      <p className="text-xs text-[#475569]">
+                        {isSocketConnected
+                          ? isReconcilingAudio
+                            ? 'Checking whether your recording was received...'
+                            : 'Your recording is saved here and ready to resend.'
+                          : 'Your recording is saved here. Reconnect to send it again.'}
+                      </p>
+                      <button type="button" onClick={retryAudio} disabled={!isSocketConnected || isReconcilingAudio} className="flex items-center gap-1 text-xs font-semibold text-red-600 disabled:cursor-not-allowed disabled:opacity-50">
+                        <RotateCcw className="h-3 w-3" /> Send this recording again
+                      </button>
+                      <button type="button" onClick={() => void discardAudio(msg.id)} disabled={isReconcilingAudio || isTyping} className="flex items-center gap-1 text-xs font-semibold text-[#475569] disabled:cursor-not-allowed disabled:opacity-50">
+                        <Trash2 className="h-3 w-3" /> Discard and record again
+                      </button>
+                    </div>
+                  )}
                   {msg.role === 'user' && canReplayLearnerSpeech && (
                     <div className="mt-3 flex items-center justify-end gap-4 border-t border-[#BFDBFE] pt-2.5">
                       <button
@@ -982,7 +1016,7 @@ export default function ReadingModeTopics() {
                 <>
                   <input
                     type="text"
-                    placeholder={cooldown ? "Please wait..." : "Record the displayed sentence aloud..."}
+                    placeholder={isProcessingRecording ? "Checking recording..." : cooldown ? "Please wait..." : "Record the displayed sentence aloud..."}
                     value=""
                     readOnly
                     aria-label="Reading responses must be recorded with the microphone"
@@ -990,7 +1024,7 @@ export default function ReadingModeTopics() {
                   />
                   <button
                     onClick={startRecording}
-                    disabled={cooldown || isTyping || isAccountBlocked}
+                    disabled={!modeSessionId || cooldown || isProcessingRecording || isTyping || isAccountBlocked || hasPendingAudio}
                     className="flex justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Mic className="w-5 h-5" />

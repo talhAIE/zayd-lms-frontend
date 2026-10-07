@@ -99,6 +99,7 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = React.useState(collapsibleMode === 'accordion' ? false : false);
   const [shouldShowExpandButton, setShouldShowExpandButton] = React.useState(false);
+  const contentId = React.useId();
   const contentRef = useRef<HTMLDivElement>(null);
 
   // Check if content needs expansion button
@@ -151,6 +152,7 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
             onClick={handleToggleExpand}
             className="flex items-center gap-3 cursor-pointer select-none"
             aria-expanded={isExpanded}
+            aria-controls={contentId}
             aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${title}`}
           >
             {/* Reading Passage Badge */}
@@ -185,7 +187,7 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
               onToggleAudio();
             }}
             className="flex items-center gap-1.5 text-[#5C9DFF] hover:text-[#4A8BEB] transition-colors p-1"
-            aria-label={isPlaying ? 'Pause reading passage audio' : 'Play reading passage audio'}
+            aria-label={`${isPlaying ? 'Pause' : 'Play'} ${title.toLowerCase()} audio`}
           >
             {isPlaying ? (
               <Pause className="w-4 h-4" />
@@ -198,8 +200,11 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
       </div>
 
       {/* Content */}
-      {!(collapsibleMode === 'accordion' && !forceExpanded && !isExpanded) && (
-        <div className={`min-h-0 flex-shrink overflow-y-auto pr-2 custom-scrollbar ${collapsibleMode === 'accordion' && !forceExpanded ? 'max-h-[120px]' : ''}`}>
+      <div
+        id={contentId}
+        hidden={collapsibleMode === 'accordion' && !forceExpanded && !isExpanded}
+        className={`min-h-0 flex-shrink overflow-y-auto pr-2 custom-scrollbar ${collapsibleMode === 'accordion' && !forceExpanded ? 'max-h-[120px]' : ''}`}
+      >
           <div
             ref={contentRef}
             className={`font-['Outfit'] font-normal text-[14px] leading-[22px] text-[#282828] transition-all duration-200 ${
@@ -208,9 +213,6 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
           >
             {readingPresentation?.title && (
               <h3 className="mb-0.5 text-[16px] font-bold leading-6">{readingPresentation.title}</h3>
-            )}
-            {readingPresentation?.author && (
-              <p className="mb-3 italic">{readingPresentation.author}</p>
             )}
             {isConversation ? (
               <div className="space-y-1">
@@ -242,8 +244,7 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
               </div>
             )}
           </div>
-        </div>
-      )}
+      </div>
 
       {/* See More Row */}
       {(collapsibleMode === 'see-more' && shouldShowExpandButton && !forceExpanded) && (

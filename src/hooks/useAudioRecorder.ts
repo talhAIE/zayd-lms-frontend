@@ -7,8 +7,31 @@ export interface AudioRecordResult {
   format: string;
 }
 
-export function useAudioRecorder() {
+async function isDefinitelySilent(blob: Blob): Promise<boolean> {
+  let context: AudioContext | null = null;
+  try {
+    context = new AudioContext();
+    const decoded = await context.decodeAudioData(await blob.arrayBuffer());
+    // Only discard near-digital silence. Quiet voices and recordings that the
+    // browser cannot decode still go to the speech service for assessment.
+    const stride = Math.max(1, Math.floor(decoded.sampleRate / 4_000));
+    for (let channel = 0; channel < decoded.numberOfChannels; channel += 1) {
+      const samples = decoded.getChannelData(channel);
+      for (let index = 0; index < samples.length; index += stride) {
+        if (Math.abs(samples[index]) > 0.002) return false;
+      }
+    }
+    return true;
+  } catch {
+    return false;
+  } finally {
+    if (context) await context.close().catch(() => undefined);
+  }
+}
+
+export function useAudioRecorder({ detectSilence = false }: { detectSilence?: boolean } = {}) {
   const [isRecording, setIsRecording] = useState(false);
+  const [isProcessingRecording, setIsProcessingRecording] = useState(false);
   const [recordTime, setRecordTime] = useState(0);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -58,6 +81,7 @@ export function useAudioRecorder() {
   };
 
   const startRecording = useCallback(async () => {
+    if (isProcessingRecording) return;
     try {
       cleanup();
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -88,6 +112,11 @@ export function useAudioRecorder() {
         }
       };
 
+      recorder.onerror = () => {
+        toast.error('Recording failed. Please try again.');
+        cleanup();
+      };
+
       recorder.start();
       setIsRecording(true);
       setRecordTime(0);
@@ -106,7 +135,7 @@ export function useAudioRecorder() {
       toast.error(errorMessage);
       cleanup();
     }
-  }, [cleanup]);
+  }, [cleanup, isProcessingRecording]);
 
   const stopRecording = useCallback((): Promise<AudioRecordResult | null> => {
     return new Promise((resolve) => {
@@ -123,28 +152,51 @@ export function useAudioRecorder() {
         const mimeType = recorder.mimeType || getSupportedMimeType() || 'audio/webm';
         cleanup();
 
-        if (wasCanceled || chunks.length === 0) {
+        if (wasCanceled) {
+          resolve(null);
+          return;
+        }
+        if (chunks.length === 0) {
+          toast.error('No audio was captured. Please record the sentence again.');
           resolve(null);
           return;
         }
 
         const audioBlob = new Blob(chunks, { type: mimeType });
         if (audioBlob.size < 200) {
-          toast.error('Recording was too short.');
+          toast.error('Recording was too short. Please record the sentence again.');
           resolve(null);
           return;
         }
 
-        const audioBase64 = await blobToBase64(audioBlob);
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const format = mimeType.split('/')[1]?.split(';')[0] || 'webm';
-
-        resolve({ audioBase64, audioUrl, format });
+        setIsProcessingRecording(true);
+        try {
+          if (detectSilence && await isDefinitelySilent(audioBlob)) {
+            toast.error('No speech was detected. Please record the sentence again.');
+            resolve(null);
+            return;
+          }
+          const audioBase64 = await blobToBase64(audioBlob);
+          const audioUrl = URL.createObjectURL(audioBlob);
+          const format = mimeType.split('/')[1]?.split(';')[0] || 'webm';
+          resolve({ audioBase64, audioUrl, format });
+        } catch {
+          toast.error('Could not prepare the recording. Please try again.');
+          resolve(null);
+        } finally {
+          setIsProcessingRecording(false);
+        }
       };
 
-      recorder.stop();
+      try {
+        recorder.stop();
+      } catch {
+        cleanup();
+        toast.error('Could not stop the recording. Please try again.');
+        resolve(null);
+      }
     });
-  }, [cleanup]);
+  }, [cleanup, detectSilence]);
 
   const cancelRecording = useCallback(() => {
     isCanceledRef.current = true;
@@ -157,6 +209,7 @@ export function useAudioRecorder() {
 
   return {
     isRecording,
+    isProcessingRecording,
     recordTime,
     startRecording,
     stopRecording,

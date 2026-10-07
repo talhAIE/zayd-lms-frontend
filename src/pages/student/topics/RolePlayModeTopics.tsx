@@ -33,6 +33,10 @@ export default function RolePlayModeTopics() {
   const [inputValue, setInputValue] = useState('');
   const [isScenarioExpanded, setIsScenarioExpanded] = useState(false);
   const [isStepsExpanded, setIsStepsExpanded] = useState(false);
+  const [isComposerFocused, setIsComposerFocused] = useState(false);
+  const [visibleViewportHeight, setVisibleViewportHeight] = useState(() =>
+    typeof window === 'undefined' ? 0 : (window.visualViewport?.height ?? window.innerHeight)
+  );
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [isJustCompleted, setIsJustCompleted] = useState(false);
   const [activeFeedback, setActiveFeedback] = useState<string | null>(null);
@@ -80,6 +84,17 @@ export default function RolePlayModeTopics() {
   useEffect(() => {
     return () => {
       window.speechSynthesis?.cancel();
+    };
+  }, []);
+
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    const updateHeight = () => setVisibleViewportHeight(viewport?.height ?? window.innerHeight);
+    viewport?.addEventListener('resize', updateHeight);
+    window.addEventListener('resize', updateHeight);
+    return () => {
+      viewport?.removeEventListener('resize', updateHeight);
+      window.removeEventListener('resize', updateHeight);
     };
   }, []);
 
@@ -176,7 +191,10 @@ export default function RolePlayModeTopics() {
   };
 
   return (
-    <div className="w-full max-w-[1207px] mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)] border border-gray-100 shadow-sm relative">
+    <div
+      className="w-full max-w-[1207px] mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden h-[calc(var(--roleplay-viewport-height)-6rem)] md:h-[794px] md:max-h-[calc(100dvh-7rem)] border border-gray-100 shadow-sm relative"
+      style={{ '--roleplay-viewport-height': `${visibleViewportHeight}px` } as React.CSSProperties}
+    >
       
       <TopicCompletionModal 
         isOpen={showCompletionModal}
@@ -208,7 +226,7 @@ export default function RolePlayModeTopics() {
       />
 
       {/* Header Progress Group */}
-      <div className="flex flex-col gap-2.5 pb-3">
+      <div className="flex flex-col flex-shrink-0 gap-2.5 pb-3">
         
         {/* Top Bar */}
         <div className="flex flex-row justify-between items-center px-4 md:px-6 py-4 bg-white border-b border-[#E5E7EB]">
@@ -244,7 +262,7 @@ export default function RolePlayModeTopics() {
         </div>
 
         {/* Progress Bar Container (Figma Spec) */}
-        <div className="flex flex-col px-4 md:px-8 gap-2.5 pt-3 flex-shrink-0">
+        <div className={`flex-col px-4 md:px-8 gap-2.5 pt-3 flex-shrink-0 ${isComposerFocused ? 'hidden md:flex' : 'flex'}`}>
           <div className="w-full h-3 bg-[#E5E7EB] rounded-[6px] relative overflow-hidden">
             <div 
               className="h-full bg-[#06CCB5] rounded-[6px] transition-all duration-500 ease-out"
@@ -260,10 +278,10 @@ export default function RolePlayModeTopics() {
       </div>
 
       {/* Main Split Content */}
-      <div className="flex flex-col md:flex-row px-4 md:px-8 gap-4 flex-1 min-h-0 pb-6">
+      <div className="flex flex-col md:flex-row px-3 md:px-8 gap-3 md:gap-4 flex-1 min-h-0 pb-3 md:pb-6">
         
         {/* Mode Sidebar */}
-        <div className="flex flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0">
+        <div className={`${isComposerFocused ? 'hidden md:flex' : 'flex'} flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0`}>
           <div 
             className="px-4 pb-2 md:pb-2.5 flex justify-between items-center cursor-pointer md:cursor-default"
             onClick={() => window.innerWidth < 768 && setIsStepsExpanded(!isStepsExpanded)}
@@ -358,11 +376,11 @@ export default function RolePlayModeTopics() {
         </div>
 
         {/* Workspace Main */}
-        <div className="flex flex-col flex-1 gap-4 min-h-0 overflow-y-auto pr-1">
+        <div className={`flex flex-col flex-1 gap-3 md:gap-4 min-h-0 pr-1 ${step1Active ? 'overflow-y-auto' : 'overflow-hidden'}`}>
           
           {/* Scenario Card */}
           {contentPayload && (contentPayload.passage || contentPayload.content || contentPayload.scenario) && (
-            <div className="flex-shrink-0 flex flex-col gap-4 pl-2 mt-2">
+            <div className={`flex flex-col gap-3 min-h-0 pl-1 md:pl-2 ${step1Active ? 'flex-1 mt-2' : 'flex-shrink-0'}`}>
               <ReadingPassageCard 
                 title="Roleplay Scenario"
                 content={contentPayload.passage || contentPayload.content || contentPayload.scenario || ''}
@@ -377,6 +395,7 @@ export default function RolePlayModeTopics() {
                 }
                 onExpand={() => setIsScenarioExpanded(true)}
                 forceExpanded={step1Active}
+                collapsibleMode="accordion"
               />
               {step1Active && (
                 <div className="flex justify-end w-full pb-2">
@@ -396,10 +415,10 @@ export default function RolePlayModeTopics() {
 
           {/* Chat History Area */}
           {!step1Active && (
-          <div className="flex flex-col flex-1 border border-[#E5E7EB] bg-white rounded-xl min-h-0 overflow-hidden mb-2 ml-2">
+          <div className="flex flex-col flex-1 border border-[#E5E7EB] bg-white rounded-xl min-h-0 overflow-hidden ml-1 md:ml-2">
             <div 
               ref={chatContainerRef}
-              className="flex flex-col p-5 px-6 gap-3 flex-1 min-h-0 bg-[#F8F9FA] overflow-y-auto"
+              className="flex flex-col p-3 sm:p-5 md:px-6 gap-3 flex-1 min-h-0 bg-[#F8F9FA] overflow-y-auto overscroll-contain"
             >
             {chatHistory.map((msg, index) => (
               <div 
@@ -528,7 +547,7 @@ export default function RolePlayModeTopics() {
           </div>
 
           {/* Input Bar */}
-          <div className="flex flex-row items-center px-5 py-4 gap-3 bg-white border-t border-[#E5E7EB] flex-shrink-0">
+          <div className="flex flex-row items-center px-3 md:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] md:py-4 gap-3 bg-white border-t border-[#E5E7EB] flex-shrink-0">
             {isRecording ? (
               <div className="flex-1 flex items-center justify-between px-4 py-2 bg-[#FEF1E8] border border-[#F97316]/30 rounded-[10px]">
                 <div className="flex items-center gap-2">
@@ -563,6 +582,8 @@ export default function RolePlayModeTopics() {
                   disabled={cooldown || isTyping || isAccountBlocked}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyDown}
+                  onFocus={() => setIsComposerFocused(true)}
+                  onBlur={() => setIsComposerFocused(false)}
                   className="flex-1 px-4 py-3 bg-white border border-[#E5E7EB] rounded-[10px] text-[14px] text-[#282828] placeholder-[#6E748F]/60 focus:outline-none focus:border-[#5C9DFF] focus:ring-1 focus:ring-[#5C9DFF] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
                 />
                 {inputValue.trim() ? (
