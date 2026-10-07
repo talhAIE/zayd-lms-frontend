@@ -387,7 +387,9 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
         setRoleplayProgress(payload.roleplayProgress);
       }
       setChatHistory(prev => [
-        ...prev,
+        ...prev.map(message => completedAudio && message.id === completedAudio.id
+          ? { ...message, deliveryStatus: undefined }
+          : message),
         {
           id: Date.now().toString(),
           sender: 'ai',
@@ -470,7 +472,8 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
                   content: payload.textMessage,
                   assessments: payload.assessments,
                   audioUrl: payload.audioUrl || message.audioUrl,
-                  deliveryStatus: pendingAudioRef.current?.id === pendingAudioMessageId ? 'sending' as const : undefined,
+                  // The server has received and transcribed this recording.
+                  deliveryStatus: undefined,
                 }
               : message,
           );
