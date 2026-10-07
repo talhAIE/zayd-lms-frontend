@@ -124,11 +124,12 @@ export default function ReadingModeTopics() {
   const fallbackSpeechRef = useRef<SpeechSynthesisUtterance | null>(null);
   const {
     isRecording,
+    isProcessingRecording,
     recordTime,
     startRecording,
     stopRecording,
     cancelRecording
-  } = useAudioRecorder();
+  } = useAudioRecorder({ detectSilence: true });
 
   const {
     modeSessionId,
@@ -151,6 +152,7 @@ export default function ReadingModeTopics() {
     contentFilterWarningData,
     sendAudio,
     retryAudio,
+    discardAudio,
     submitMcqs,
     checkMcqAnswer,
     clearMcqAnswerFeedback,
@@ -706,6 +708,9 @@ export default function ReadingModeTopics() {
                       <button type="button" onClick={retryAudio} disabled={!isSocketConnected || isReconcilingAudio} className="flex items-center gap-1 text-xs font-semibold text-red-600 disabled:cursor-not-allowed disabled:opacity-50">
                         <RotateCcw className="h-3 w-3" /> Send this recording again
                       </button>
+                      <button type="button" onClick={() => void discardAudio(msg.id)} disabled={isReconcilingAudio || isTyping} className="flex items-center gap-1 text-xs font-semibold text-[#475569] disabled:cursor-not-allowed disabled:opacity-50">
+                        <Trash2 className="h-3 w-3" /> Discard and record again
+                      </button>
                     </div>
                   )}
                   {msg.role === 'user' && canReplayLearnerSpeech && (
@@ -1011,7 +1016,7 @@ export default function ReadingModeTopics() {
                 <>
                   <input
                     type="text"
-                    placeholder={cooldown ? "Please wait..." : "Record the displayed sentence aloud..."}
+                    placeholder={isProcessingRecording ? "Checking recording..." : cooldown ? "Please wait..." : "Record the displayed sentence aloud..."}
                     value=""
                     readOnly
                     aria-label="Reading responses must be recorded with the microphone"
@@ -1019,7 +1024,7 @@ export default function ReadingModeTopics() {
                   />
                   <button
                     onClick={startRecording}
-                    disabled={!modeSessionId || cooldown || isTyping || isAccountBlocked || hasPendingAudio}
+                    disabled={!modeSessionId || cooldown || isProcessingRecording || isTyping || isAccountBlocked || hasPendingAudio}
                     className="flex justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Mic className="w-5 h-5" />

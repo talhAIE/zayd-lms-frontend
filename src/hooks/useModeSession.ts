@@ -4,6 +4,8 @@ import { toast } from 'sonner';
 import { ContentFilterWarningData } from '@/components/ui/ContentPolicyWarningModal';
 import { createPendingAudioUrl, loadPendingReadingAudio, removePendingReadingAudio, savePendingReadingAudio } from '@/utils/pendingReadingAudio';
 
+const MAX_READING_SOCKET_AUDIO_BASE64_LENGTH = 900_000;
+
 export interface HistoryItem {
   id: string;
   sender: string;
@@ -608,6 +610,14 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       toast.error('Please finish or retry the previous recording first.');
       return false;
     }
+    // Socket.IO's default message limit is 1 MB. Base64 audio is larger than
+    // the original blob, so reject an oversized Reading upload before it can
+    // disconnect the socket and strand the recording in the pending state.
+    if (modeKeyRef.current === 'reading-mode' && base64Audio.length > MAX_READING_SOCKET_AUDIO_BASE64_LENGTH) {
+      if (localAudioUrl?.startsWith('blob:')) URL.revokeObjectURL(localAudioUrl);
+      toast.error('This recording is too long to send. Please record the sentence again.');
+      return false;
+    }
     const id = crypto.randomUUID();
     if (localAudioUrl && modeSessionIdRef.current) {
       pendingAudioMessageIdRef.current = id;
@@ -656,6 +666,10 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
   const retryAudio = useCallback(() => {
     const pending = pendingAudioRef.current;
     if (!pending) return;
+    if (modeKeyRef.current === 'reading-mode' && pending.base64.length > MAX_READING_SOCKET_AUDIO_BASE64_LENGTH) {
+      toast.error('This recording is too long to send. Discard it and record the sentence again.');
+      return;
+    }
     if (!socket?.connected) {
       toast.error('Your recording is still here. Please reconnect before sending it again.');
       return;
@@ -682,6 +696,39 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       toast.error('Recording is taking too long. Please retry it.');
     }, 180_000);
   }, [socket]);
+
+  const discardAudio = useCallback(async (attemptId: string) => {
+    const pending = pendingAudioRef.current;
+    if (!pending || pending.id !== attemptId) return;
+    if (modeRequestInFlightRef.current || reconcilingAudioRef.current) {
+      toast.error('Please wait while we check this recording.');
+      return;
+    }
+    try {
+      await removePendingReadingAudio(lessonModeId, attemptId);
+    } catch {
+      toast.error('The saved copy could not be removed. It may reappear after a refresh.');
+    }
+    if (pendingAudioRef.current?.id !== attemptId) return;
+    if (pendingAudioTimeoutRef.current) clearTimeout(pendingAudioTimeoutRef.current);
+    pendingAudioTimeoutRef.current = null;
+    discardedAudioAttemptIdsRef.current.add(attemptId);
+    pendingAudioRef.current = null;
+    pendingAudioMessageIdRef.current = null;
+    setHasPendingAudio(false);
+    setLastNewRecordingAttemptId(attemptId);
+    setIsTyping(false);
+    setChatHistory(prev => prev.flatMap(message => {
+      if (message.id !== attemptId) return [message];
+      if (!message.content.trim()) return [];
+      return [{
+        ...message,
+        deliveryStatus: undefined,
+        audioUrl: message.audioUrl?.startsWith('blob:') ? null : message.audioUrl,
+      }];
+    }));
+    if (pending.audioUrl.startsWith('blob:')) URL.revokeObjectURL(pending.audioUrl);
+  }, [lessonModeId]);
 
   const submitMcqs = useCallback((answers: Array<number | string>) => {
     if (!socket || !modeSessionIdRef.current || isAccountBlocked) return;
@@ -781,6 +828,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     sendMessage,
     sendAudio,
     retryAudio,
+    discardAudio,
     submitMcqs,
     checkMcqAnswer,
     clearMcqAnswerFeedback,
