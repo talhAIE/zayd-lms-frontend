@@ -1,0 +1,167 @@
+{
+  "phase": 7,
+  "capturedAtUtc": "2026-10-07T16:47:32.191Z",
+  "checks": [
+    {
+      "name": "built_index_exists",
+      "passed": true
+    },
+    {
+      "name": "no_harness_entries_or_private_fixture_files",
+      "passed": true
+    },
+    {
+      "name": "no_development_API_or_test_account_controls_in_bundle",
+      "passed": true
+    },
+    {
+      "name": "canonical_backend_contract_matches",
+      "passed": true
+    },
+    {
+      "name": "eight_real_auth_transport_regressions",
+      "passed": true
+    },
+    {
+      "name": "twenty_Practice_provider_URL_boundary_checks",
+      "passed": true
+    }
+  ],
+  "transportChecks": [
+    {
+      "name": "Science mutations send only empty body, authenticated path and bounded timeout",
+      "passed": true
+    },
+    {
+      "name": "Canceled/foreign owner cannot dispatch a Science request",
+      "passed": true
+    },
+    {
+      "name": "Late content response is rejected after account change",
+      "passed": true
+    },
+    {
+      "name": "Concurrent generic/Science 401s share one refresh and both retry",
+      "passed": true
+    },
+    {
+      "name": "Account switch during refresh neither overwrites nor logs out new account",
+      "passed": true
+    },
+    {
+      "name": "Aborted queued Science request cannot retry while generic refresh succeeds",
+      "passed": true
+    },
+    {
+      "name": "Failed refresh clears current session; retry count is bounded",
+      "passed": true
+    },
+    {
+      "name": "Missing refresh token does not leave the shared queue stuck",
+      "passed": true
+    }
+  ],
+  "practiceChecks": [
+    {
+      "name": "Shareable preview URL accepted without claiming assignment",
+      "passed": true
+    },
+    {
+      "name": "Server-configured assignment query preserved",
+      "passed": true
+    },
+    {
+      "name": "Reject unsafe embed: javascript:alert(1)",
+      "passed": true
+    },
+    {
+      "name": "Reject unsafe embed: data:text/html,example",
+      "passed": true
+    },
+    {
+      "name": "Reject unsafe embed: http://embed.kahoot.it/id",
+      "passed": true
+    },
+    {
+      "name": "Reject unsafe embed: https://embed.kahoot.it.evil.test/id",
+      "passed": true
+    },
+    {
+      "name": "Reject unsafe embed: https://evil.test/id",
+      "passed": true
+    },
+    {
+      "name": "Reject unsafe embed: https://user:password@embed.kahoot.it/id",
+      "passed": true
+    },
+    {
+      "name": "Reject unsafe embed: https://embed.kahoot.it:444/id",
+      "passed": true
+    },
+    {
+      "name": "Reject unsafe embed: https://embed.kahoot.it/id#other",
+      "passed": true
+    },
+    {
+      "name": "Reject unsafe embed: https://embed.kahoot.it/",
+      "passed": true
+    },
+    {
+      "name": "Reject unsafe fallback: javascript:alert(1)",
+      "passed": true
+    },
+    {
+      "name": "Reject unsafe fallback: https://evil.test/details/light/id",
+      "passed": true
+    },
+    {
+      "name": "Reject unsafe fallback: https://create.kahoot.it/auth/login",
+      "passed": true
+    },
+    {
+      "name": "Reject unsafe fallback: https://create.kahoot.it/details/light/id?token=example",
+      "passed": true
+    },
+    {
+      "name": "Reject unsafe fallback: https://create.kahoot.it/details/light/id#fragment",
+      "passed": true
+    },
+    {
+      "name": "Reject incorrect payload: {\"provider\":\"other\"}",
+      "passed": true
+    },
+    {
+      "name": "Reject incorrect payload: {\"activityKey\":\"lesson-1\"}",
+      "passed": true
+    },
+    {
+      "name": "Reject incorrect payload: {}",
+      "passed": true
+    },
+    {
+      "name": "Reject incorrect payload: {\"embedMode\":\"verified-by-load\"}",
+      "passed": true
+    }
+  ],
+  "networkCalls": 0,
+  "databaseConnections": 0,
+  "productionBuildArtifacts": [
+    {
+      "file": "assets/index-BpdxDITr.js",
+      "sha256": "cd7aac85e45c2c2f63074e030c9c975316ff2bd7342a36d72e2362e0e09efda1"
+    },
+    {
+      "file": "assets/index-C3Sfn9U_.css",
+      "sha256": "46056ee79a3139a36eaa24b5193ff4e4dcac5b74a722f1614cc4cf6a5be2b44f"
+    },
+    {
+      "file": "assets/pdf.worker.min-DKQKFyKK.js",
+      "sha256": "feabdf309770ed24bba31a5467836cdc8cf639c705af27d52b585b041bb8527b"
+    },
+    {
+      "file": "index.html",
+      "sha256": "6894e8134fdd9be9a6fd9bc5b2b02ddc7ce8080993d37a869f2e0ce24d4bee96"
+    }
+  ],
+  "releaseReadiness": "See backend phase7-release-verification.json; prior runtime/playable checks and full generic browser regression remain pending."
+}

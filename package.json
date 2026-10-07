@@ -9,7 +9,8 @@
     "qa:science-spark:transport": "node dev/science-service-check.cjs",
     "qa:science-spark:practice": "node dev/science-practice-check.cjs",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "qa:science-spark:release": "node dev/science-release-check.cjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
