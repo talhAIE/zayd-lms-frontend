@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { BookOpen, FlaskConical, Ruler, ChartNoAxesCombined, Cpu, Gamepad2, Play } from "lucide-react";
 import {
   Link,
   useNavigate,
@@ -154,27 +155,49 @@ function Unit({ owner, unitKey }: { owner: ScienceOwner; unitKey: string }) {
         <>
           <h1 className="text-3xl font-bold">{data.data.unit.title}</h1>
           <p className="text-slate-600">
-            Choose an activity. Complete and Next saves completion; you can
-            revisit any lesson.
+            Explore each activity, then select Complete and Next to continue.
           </p>
-          <ol className="space-y-3">
-            {data.data.activities.map(({ activity, state }) => (
-              <li key={activity.activityKey}>
-                <Link
-                  className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-white p-5 hover:border-sky-500"
-                  to={activityPath(unitKey, activity.activityKey)}
-                >
-                  <span className="font-semibold">
-                    {activity.kind === "local_html" &&
-                      activity.lessonId &&
-                      `Lesson ${activity.lessonId.slice(1)}: `}
-                    {activity.title}
-                  </span>
-                  <ScienceBadge state={state} />
-                </Link>
-              </li>
-            ))}
-          </ol>
+          <div className="rounded-[24px] border border-gray-100 bg-white p-4 shadow-sm md:p-8">
+            <h2 className="text-xl font-bold text-[#282828]">Lesson activities</h2>
+            <p className="mt-1 mb-4 text-sm text-[#64748B]">Introduction · Four lessons · Practice</p>
+            <ol className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
+              {data.data.activities.map(({ activity, state }, index) => {
+                const Icon = activity.kind === "external_practice"
+                  ? Gamepad2
+                  : activity.lessonId === "l1" ? FlaskConical
+                  : activity.lessonId === "l2" ? Ruler
+                  : activity.lessonId === "l3" ? ChartNoAxesCombined
+                  : activity.lessonId === "l4" ? Cpu : BookOpen;
+                const label = activity.kind === "external_practice"
+                  ? "Practice" : activity.lessonId ? `Lesson ${activity.lessonId.slice(1)}` : "Introduction";
+                return <li key={activity.activityKey} className="flex min-w-0">
+                  <Link
+                    className="flex min-h-[224px] w-full flex-col justify-between rounded-[16px] border border-[#4F8DFB] bg-white p-4 text-left transition-shadow hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#4F8DFB]"
+                    to={activityPath(unitKey, activity.activityKey)}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="text-xs font-semibold text-[#94A3B8]">{String(index + 1).padStart(2, "0")}</span>
+                      <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${state.completed ? "bg-[#DCFCE7] text-[#15803D]" : "bg-[#EFF6FF] text-[#2563EB]"}`}>
+                        {state.completed ? "Completed" : state.opened ? "Resume" : "Start"}
+                      </span>
+                    </div>
+                    <div className="my-4">
+                      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#EFF6FF]">
+                        <Icon className="h-6 w-6 text-[#4F8DFB]" aria-hidden="true" />
+                      </div>
+                      <h3 className="text-[16px] font-bold leading-tight text-[#282828]">{activity.title}</h3>
+                      <p className="mt-1 text-xs font-medium text-[#4F8DFB]">{label}</p>
+                      <p className="mt-2 text-xs text-[#64748B]">Nature of Science · Unit 1</p>
+                    </div>
+                    <div className="flex items-center justify-between gap-2 pt-3 text-xs font-semibold text-[#64748B]">
+                      <span>{state.completed ? "Completed" : state.opened ? "Opened" : "Not opened"}</span>
+                      <Play className="h-4 w-4 shrink-0 fill-current text-[#4F8DFB]" aria-hidden="true" />
+                    </div>
+                  </Link>
+                </li>;
+              })}
+            </ol>
+          </div>
         </>
       )}
     </section>
