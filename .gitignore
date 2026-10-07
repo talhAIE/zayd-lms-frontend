@@ -23,3 +23,6 @@ docs/
 *.njsproj
 *.sln
 *.sw?
+
+# Local private-storage viewer fixtures; never deployed or committed.
+/dev/.science-spark-fixtures/

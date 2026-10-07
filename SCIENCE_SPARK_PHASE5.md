@@ -1,0 +1,9 @@
+# Phase 5 — Frontend Science journey
+
+Implemented locally on `feat/sciencespark`. Science has its own course card, course/unit/activity routes, state labels and isolated viewer. **Complete and Next** saves before navigating; **Next section** and Back do not complete anything. Refresh/revisit restores server state, failed save/content offers Retry, and switching/logging out destroys the previous account's frame/data and cancels its requests.
+
+Science shares the existing authentication refresh queue through request-local ownership guards. It stays outside learning progress/certificates/rewards and suppresses Science-route engagement heartbeats. The application menu initially collapses on desktop activity pages and returns to its prior state on leaving. Practice is explicitly pending for Phase 6, without an embed/completion control.
+
+Verification: production frontend build/typecheck, dedicated development harness typecheck and eight pure transport checks passed. Local browser checks covered both curricula, course-to-lessons navigation, retries, skipped activities, refresh/relogin, browser history, account-switch/loading/save isolation, disabled/ineligible access, logout and mobile layout. The backend separately passed 283 actual API/private-Blob/production-QA rollback assertions, preserving all existing Science state, and its 56 suites/336 tests passed.
+
+Run `npm run qa:science-spark:transport` for the no-network transport checks. See the backend's `docs/science-spark/PHASE5.md`, API evidence and screenshots for reproduction and scope. The browser harness uses synthetic state; the production API checks use only authorized QA Science state inside rollback transactions. No application deployment or production pilot enablement occurred. Actual Docker verification from Phase 4 and playable Practice from Phase 6 remain pending.

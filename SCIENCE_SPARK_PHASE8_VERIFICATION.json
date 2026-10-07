@@ -1,0 +1,39 @@
+{
+  "phase": 8,
+  "capturedAtUtc": "2026-10-07T17:01:47.986Z",
+  "status": "local_Vercel_handover_verified_rollout_pending",
+  "provider": "vercel",
+  "providerSource": "Human user confirmation",
+  "checks": [
+    {
+      "name": "Vercel_SPA_rewrite_present",
+      "passed": true
+    },
+    {
+      "name": "recorded_release_artifact_auth_and_URL_checks_passed",
+      "passed": true
+    },
+    {
+      "name": "Phase8_record_respects_user_confirmed_Vercel_provider",
+      "passed": true
+    },
+    {
+      "name": "blocked_rollout_has_no_production_mutations",
+      "passed": true
+    }
+  ],
+  "configurationSha256": "e97d4a115a68dc58bc514d51eef76b6ff11ba840478567cca6852022dcdccd07",
+  "hostingProjectVerified": false,
+  "deployedFrontendVersion": null,
+  "matchedProductionBackendOriginVerified": false,
+  "productionDeploymentPerformed": false,
+  "netlifyConfigurationChanged": false,
+  "blockers": [
+    "Actual Docker/deployed-image runtime verification is pending; Docker is unavailable on this host.",
+    "Owner-provided playable Kahoot assignment iframe src and actual in-Zayd learner gameplay verification are pending.",
+    "End-to-end ordinary American English, Saudi English and Saudi technology checks in a complete application environment are pending; the local browser API deliberately stubs generic courses.",
+    "Actual browser 200% zoom verification is pending; mobile/reflow checks are separately recorded.",
+    "Frontend Vercel project/domain and matched backend API configuration have not been verified in the hosting account.",
+    "Authenticated production deployment access, current deployed versions and actual deployed Science settings have not been verified."
+  ]
+}
