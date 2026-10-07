@@ -13,6 +13,8 @@ import ChineseContactUs from "@/pages/public/chinese/ChineseContactUs";
 
 // Student Pages
 import StudentCourses from "@/pages/student/courses";
+import { ScienceSession } from "@/components/science/ScienceSession";
+import { ScienceCoursePage, ScienceUnitPage, ScienceActivityPage } from "@/pages/student/science/ScienceJourney";
 import CourseUnits from "@/pages/student/course-units";
 import UnitLessons from "@/pages/student/unit-lessons";
 import UnitOverview from "@/pages/student/unit-overview";
@@ -109,6 +111,12 @@ const AppRoutes = () => {
       /> */}
 
       {/* Student Routes */}
+      <Route path="/student/science" element={<ScienceSession />}>
+        <Route path="courses/:courseKey" element={<ScienceCoursePage />} />
+        <Route path="units/:unitKey" element={<ScienceUnitPage />} />
+        <Route path="units/:unitKey/activities/:activityKey" element={<ScienceActivityPage />} />
+        <Route path="*" element={<Navigate to="/student/courses" replace />} />
+      </Route>
       <Route
         path="/student/dashboard"
         element={

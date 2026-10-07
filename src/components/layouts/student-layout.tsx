@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 // import { useAppSelector } from '@/redux/hooks';
 import { Link, useLocation } from "react-router-dom";
@@ -28,6 +28,18 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const location = useLocation();
+  const isScienceRoute = location.pathname === '/student/science' || location.pathname.startsWith('/student/science/');
+  const isScienceActivity = isScienceRoute && location.pathname.includes('/activities/');
+  const previousSidebar = useRef(false);
+  useEffect(() => {
+    if (!isScienceActivity) return;
+    previousSidebar.current = isDesktopCollapsed;
+    setIsDesktopCollapsed(true);
+    return () => setIsDesktopCollapsed(previousSidebar.current);
+    // Collapse when entering an activity, but allow the learner to reopen it.
+    // Restore their prior preference on leaving; toggling is not a route change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isScienceActivity]);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -48,7 +60,9 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   };
 
   let formattedTitle;
-  if (location.pathname.startsWith("/teacher/student-profile/")) {
+  if (isScienceRoute) {
+    formattedTitle = 'Science';
+  } else if (location.pathname.startsWith("/teacher/student-profile/")) {
     formattedTitle = "Student Profile";
   } else if (location.pathname.includes("/lessons/")) {
     formattedTitle = "Lessons";
@@ -77,13 +91,14 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   }, [isAuthenticated, user, navigate]);
 
   useEffect(() => {
-    if (user?.role !== "student") return;
+    if (user?.role !== "student" || isScienceRoute) return;
 
     let intervalId: number | undefined;
     let sessionBootstrapInFlight = false;
+    const controller = new AbortController();
 
     const sendHeartbeat = async () => {
-      if (document.visibilityState !== "visible" || !navigator.onLine) return;
+      if (controller.signal.aborted || document.visibilityState !== "visible" || !navigator.onLine) return;
 
       let sessionId = localStorage.getItem("engagementSessionId");
       const createdAt = Number(localStorage.getItem("engagementSessionCreatedAt"));
@@ -98,7 +113,8 @@ export function StudentLayout({ children }: StudentLayoutProps) {
         if (sessionBootstrapInFlight) return;
         sessionBootstrapInFlight = true;
         try {
-          const response = await apiClient.post("/engagement/session");
+          const response = await apiClient.post("/engagement/session", undefined, { signal: controller.signal });
+          if (controller.signal.aborted) return;
           sessionId = response.data?.data?.sessionId;
           if (typeof sessionId === "string") {
             localStorage.setItem("engagementSessionId", sessionId);
@@ -110,7 +126,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
           sessionBootstrapInFlight = false;
         }
       }
-      if (!sessionId) return;
+      if (!sessionId || controller.signal.aborted) return;
 
       const bucketStartedAt = new Date(
         Math.floor(Date.now() / 60_000) * 60_000,
@@ -121,7 +137,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
           sessionId,
           bucketStartedAt,
           source: "learning",
-        });
+        }, { signal: controller.signal });
       } catch {
         // Engagement analytics must never interrupt a learner's lesson. The
         // backend deduplicates minute buckets, so the next scheduled attempt
@@ -152,10 +168,11 @@ export function StudentLayout({ children }: StudentLayoutProps) {
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
+      controller.abort();
       stop();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [user?.id, user?.role]);
+  }, [user?.id, user?.role, isScienceRoute]);
 
   const isActive = (path: string) => {
     return location.pathname === path;

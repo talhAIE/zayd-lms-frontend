@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "qa:science-spark:transport": "node dev/science-service-check.cjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },

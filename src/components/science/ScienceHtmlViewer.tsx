@@ -12,6 +12,7 @@ interface Props {
   onBackToUnit: () => void;
   onSelectActivity: (activityKey: ScienceSparkActivityKey) => void;
   onRetry: () => void;
+  onReadyChange?: (ready: boolean) => void;
 }
 
 export function ScienceHtmlViewer(props: Props) {
@@ -30,6 +31,7 @@ function ScienceFrame({
   onBackToUnit,
   onSelectActivity,
   onRetry,
+  onReadyChange,
 }: Props) {
   const iframe = useRef<HTMLIFrameElement>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "unavailable">(
@@ -47,6 +49,10 @@ function ScienceFrame({
       return null;
     }
   }, [content, nonce]);
+  useEffect(() => {
+    onReadyChange?.(status === 'ready' && !!srcDoc);
+    return () => onReadyChange?.(false);
+  }, [status, srcDoc, onReadyChange]);
   useEffect(() => {
     const listener = (event: MessageEvent) => {
       if (
