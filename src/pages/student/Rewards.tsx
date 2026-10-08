@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useAppSelector } from "@/redux/hooks";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { Trophy, Star, Calendar, Clock, BookOpen, Lock } from "lucide-react";
 import apiClient from "@/config/ApiConfig";
@@ -21,16 +22,11 @@ import fontkit from "@pdf-lib/fontkit";
 import certTemplateUrl from "/src/assets/Certificate_Template.pdf?url";
 import markerFontUrl from "/src/assets/fonts/lumiosbrush-regular.otf?url";
 import rewardBadgeBgUrl from "/src/assets/svgs/rewards.svg?url";
-import * as pdfjs from "pdfjs-dist";
+import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.js?url";
 import InteractiveTour, { TourStep } from "@/components/ui/InteractiveTour";
 
 import achievementsImg1 from "@/assets/user-guide/achievements/1.png";
 import achievementsImg2 from "@/assets/user-guide/achievements/2.png";
-
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.js",
-  import.meta.url
-).toString();
 
 // Describes a single achievement from your API
 interface Achievement {
@@ -58,7 +54,8 @@ interface UserStats {
   currentStreak: number;
   lastLoginDate: string;
   totalUsageSec: number;
-  totalTopicsDone: number;
+  totalLessonsDone: number;
+  totalLessonModesDone: number;
   totalPoints: number;
   updatedAt: string;
 }
@@ -109,11 +106,17 @@ const TOUR_STEPS: TourStep[] = [
 const Rewards = (): JSX.Element => {
   const [achievements, setAchievements] = useState<AchievementCategory[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [_error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [certificatesError, setCertificatesError] = useState<string | null>(null);
   const [_totalPoints, _setTotalPoints] = useState<number>(0);
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [claimingReward, setClaimingReward] = useState<string | null>(null);
-  const [tab, setTab] = useState<"rewards" | "certifications">("rewards");
+  const [tab, setTab] = useState<"rewards" | "certifications">(
+    () => new URLSearchParams(window.location.search).get('tab') === 'certifications' ? 'certifications' : 'rewards',
+  );
+  const userId = useAppSelector(state => state.auth.user?.id);
+  const owner = useRef(userId);
+  owner.current = userId;
 
   const [certificates, setCertificates] = useState<Certification[]>([]);
   const [certificatesLoading, setCertificatesLoading] = useState<boolean>(true);
@@ -133,23 +136,9 @@ const Rewards = (): JSX.Element => {
     }
   }, [tourActive, searchParams, setSearchParams]);
 
-  useEffect(() => {
-    fetchAchievements();
-    fetchCertificates();
-  }, []);
-
-  const fetchAchievements = async () => {
+  const fetchAchievements = useCallback(async () => {
     try {
-      setLoading(true);
       setError(null);
-      const aiTutorUserString = localStorage.getItem("AiTutorUser");
-      if (!aiTutorUserString) {
-        setError("User not found. Please log in.");
-        setLoading(false);
-        return;
-      }
-      const aiTutorUser = JSON.parse(aiTutorUserString);
-      const userId = aiTutorUser.id;
       if (!userId) {
         setError("User not found. Please log in again.");
         setLoading(false);
@@ -160,6 +149,8 @@ const Rewards = (): JSX.Element => {
         data: { achievements: AchievementCategory[]; userStats: UserStats };
       }>(`/users/${userId}/achievements`);
 
+      if (owner.current !== userId) return;
+
       if (response.data.status === "success") {
         const { achievements, userStats } = response.data.data;
         setAchievements(achievements);
@@ -168,33 +159,27 @@ const Rewards = (): JSX.Element => {
         setError("Failed to load achievements");
       }
     } catch (err: any) {
+      if (owner.current !== userId) return;
       setError(
         err.response?.data?.message ||
           "Failed to load achievements. Please try again."
       );
       console.error("Error fetching achievements:", err);
     } finally {
-      setLoading(false);
+      if (owner.current === userId) setLoading(false);
     }
-  };
+  }, [userId]);
 
-  const fetchCertificates = async () => {
+  const fetchCertificates = useCallback(async () => {
     try {
-      setCertificatesLoading(true);
-      setError(null);
-      const aiTutorUserString = localStorage.getItem("AiTutorUser");
-      if (!aiTutorUserString) {
-        setError("User not found. Please log in.");
-        setCertificatesLoading(false);
-        return;
-      }
-      const aiTutorUser = JSON.parse(aiTutorUserString);
-      const userId = aiTutorUser.id;
+      setCertificatesError(null);
       if (!userId) {
-        setError("User not found. Please log in again.");
+        setCertificatesError("User not found. Please log in again.");
         setCertificatesLoading(false);
         return;
       }
+      await apiClient.post('/courses/certificates/sync', {});
+      if (owner.current !== userId) return;
       const response = await apiClient.get<{
         status: string;
         data: {
@@ -203,6 +188,8 @@ const Rewards = (): JSX.Element => {
           userStats: UserStats;
         };
       }>(`/users/${userId}/achievements/certificates`);
+
+      if (owner.current !== userId) return;
 
       if (response.data.status === "success") {
         const { certificates, user } = response.data.data;
@@ -223,30 +210,47 @@ const Rewards = (): JSX.Element => {
 
         setCertificates(transformedCertifications);
       } else {
-        setError("Failed to load certifications");
+        setCertificatesError("Failed to load certifications");
       }
     } catch (err: any) {
-      setError(
+      if (owner.current !== userId) return;
+      setCertificatesError(
         err.response?.data?.message ||
           "Failed to load certifications. Please try again."
       );
       console.error("Error fetching certifications:", err);
     } finally {
-      setCertificatesLoading(false);
+      if (owner.current === userId) setCertificatesLoading(false);
     }
-  };
+  }, [userId]);
+
+  useEffect(() => {
+    setLoading(true);
+    setCertificatesLoading(true);
+    setAchievements([]);
+    setCertificates([]);
+    setUserStats(null);
+    setSelectedCertificate(null);
+    const refresh = () => {
+      if (document.visibilityState !== 'visible') return;
+      void fetchAchievements();
+      void fetchCertificates();
+    };
+    refresh();
+    window.addEventListener('focus', refresh);
+    document.addEventListener('visibilitychange', refresh);
+    const interval = window.setInterval(refresh, 60_000);
+    return () => {
+      window.removeEventListener('focus', refresh);
+      document.removeEventListener('visibilitychange', refresh);
+      window.clearInterval(interval);
+    };
+  }, [fetchAchievements, fetchCertificates]);
 
   const claimReward = async (achievementKey: string) => {
     try {
       setClaimingReward(achievementKey);
       setError(null);
-      const aiTutorUserString = localStorage.getItem("AiTutorUser");
-      if (!aiTutorUserString) {
-        setError("Cannot claim reward: User not found.");
-        return;
-      }
-      const aiTutorUser = JSON.parse(aiTutorUserString);
-      const userId = aiTutorUser.id;
       if (!userId) {
         setError("Cannot claim reward: User not found.");
         return;
@@ -258,16 +262,18 @@ const Rewards = (): JSX.Element => {
           claimedAt: new Date().toISOString(),
         }
       );
+      if (owner.current !== userId) return;
       await fetchAchievements();
       await fetchCertificates();
     } catch (err: any) {
+      if (owner.current !== userId) return;
       const errorMessage =
         err.response?.data?.message ||
         "Failed to claim reward. Please try again.";
       setError(errorMessage);
       console.error("Error claiming reward:", err);
     } finally {
-      setClaimingReward(null);
+      if (owner.current === userId) setClaimingReward(null);
     }
   };
 
@@ -434,7 +440,13 @@ const Rewards = (): JSX.Element => {
         return userStats.totalUsageSec;
       }
       if (achievement.key.startsWith("topics_")) {
-        return userStats.totalTopicsDone;
+        return userStats.totalLessonModesDone;
+      }
+      if (achievement.key.startsWith("lesson_modes_")) {
+        return userStats.totalLessonModesDone;
+      }
+      if (achievement.key.startsWith("lessons_")) {
+        return userStats.totalLessonsDone;
       }
       if (achievement.key.startsWith("streak_")) {
         return userStats.currentStreak;
@@ -674,6 +686,7 @@ const Rewards = (): JSX.Element => {
   }
 
   const categoryIcons: { [key: string]: JSX.Element } = {
+    Activities: <BookOpen className="w-5 h-5" />,
     Topics: <BookOpen className="w-5 h-5" />,
     Usage: <Clock className="w-5 h-5" />,
     Streak: <Calendar className="w-5 h-5" />,
@@ -699,7 +712,11 @@ const Rewards = (): JSX.Element => {
         <div className="mx-auto">
           <Tabs
             value={tab}
-            onValueChange={(v) => setTab(v as "rewards" | "certifications")}
+            onValueChange={(v) => {
+              setTab(v as "rewards" | "certifications");
+              if (v === 'certifications') void fetchCertificates();
+              else void fetchAchievements();
+            }}
             className="w-full"
           >
             <TabsList className="w-full mb-8 px-2 py-8 gap-2 rounded-3xl">
@@ -719,6 +736,8 @@ const Rewards = (): JSX.Element => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="rewards">
+              {error && <div role="alert" className="mb-4 rounded-xl bg-red-50 p-4 text-red-700">{error} <button className="underline" onClick={() => void fetchAchievements()}>Retry</button></div>}
+              {!error && achievements.length === 0 && <p className="rounded-xl bg-white p-6 text-gray-600">No rewards are available yet. Completed learning activities will appear here when you earn a reward.</p>}
               <main className="space-y-8">
                 {achievements.map((category) => (
                   <section key={category.category}>
@@ -757,6 +776,8 @@ const Rewards = (): JSX.Element => {
               </main>
             </TabsContent>
             <TabsContent value="certifications">
+              {certificatesError && <div role="alert" className="mb-4 rounded-xl bg-red-50 p-4 text-red-700">{certificatesError} <button className="underline" onClick={() => void fetchCertificates()}>Retry</button></div>}
+              {!certificatesLoading && !certificatesError && certificates.length === 0 && <p className="rounded-xl bg-white p-6 text-gray-600">No certificates earned yet. Complete a course or a certificate milestone to earn one.</p>}
               {certificatesLoading ? (
                 <div className="flex items-center justify-center h-64">
                   <div className="text-center">
@@ -804,7 +825,7 @@ const Rewards = (): JSX.Element => {
                       ) : selectedCertificate.pdfUrl ? (
                         <div>
                           <Worker
-                            workerUrl={pdfjs.GlobalWorkerOptions.workerSrc}
+                            workerUrl={pdfWorkerUrl}
                           >
                             <Viewer fileUrl={selectedCertificate.pdfUrl} />
                           </Worker>
