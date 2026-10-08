@@ -96,6 +96,10 @@ export default function ComponentModePlay() {
   const [isSubmittingMode, setIsSubmittingMode] = useState(false);
   const [localResponses, setLocalResponses] = useState<Record<string, any>>({});
   const [writingReviewFeedback, setWritingReviewFeedback] = useState<Record<string, Record<string, unknown>>>({});
+  const draftSaves = useRef(new Map<string, Promise<void>>());
+  const draftRevisions = useRef(new Map<string, number>());
+  const writingSubmitInFlight = useRef<Promise<any> | null>(null);
+  const writingRequestKey = useRef<{ paragraph: string; key: string } | null>(null);
   const [modelAnswerComponentId, setModelAnswerComponentId] = useState<string | null>(null);
   // A direct Saudi lesson launch can reach this screen before Redux has the
   // lesson's modes. Keep the mode resolved from the route's lesson so the
@@ -283,6 +287,9 @@ export default function ComponentModePlay() {
               ...current,
               [paragraphComponent.id]: {
                 submissionId: latestSubmission.id,
+                reviewStatus: latestSubmission.status,
+                retryable: latestSubmission.retryable,
+                completion: latestSubmission.completion,
                 comment,
                 fieldResults: metrics,
                 modelAnswer: latestSubmission.modelAnswer,
@@ -376,13 +383,24 @@ export default function ComponentModePlay() {
   };
 
   const handleComponentChange = async (componentId: string, response: any) => {
+    if (writingSubmitInFlight.current) return;
     setLocalResponses((current) => ({ ...current, [componentId]: response }));
-    try {
-      const result = await saveComponentAttempt(componentId, { response });
-      setComponents((currentComponents) => currentComponents.map((component) => component.id === componentId ? result : component));
-    } catch {
-      // Draft saving is best-effort; the final submit still validates server-side.
-    }
+    // Keep writes in order, coalesce queued keystrokes, and drain before submit.
+    const revision = (draftRevisions.current.get(componentId) ?? 0) + 1;
+    draftRevisions.current.set(componentId, revision);
+    const previous = draftSaves.current.get(componentId) ?? Promise.resolve();
+    const save = previous.catch(() => {}).then(async () => {
+      if (draftRevisions.current.get(componentId) !== revision) return;
+      try {
+        const result = await saveComponentAttempt(componentId, { response });
+        setComponents((currentComponents) => currentComponents.map((component) => component.id === componentId ? result : component));
+      } catch {
+        // Draft saving is best-effort; the final submit still validates server-side.
+      }
+    });
+    draftSaves.current.set(componentId, save);
+    await save;
+    if (draftSaves.current.get(componentId) === save) draftSaves.current.delete(componentId);
   };
 
   const handleRevealAnswer = async (component: LearningComponent) => {
@@ -433,7 +451,7 @@ export default function ComponentModePlay() {
     setLocalResponses((current) => ({ ...current, [componentId]: response }));
   };
 
-  const handleWritingParagraphSubmit = async (
+  const submitWritingParagraph = async (
     component: LearningComponent,
     paragraph: string,
   ) => {
@@ -444,6 +462,7 @@ export default function ComponentModePlay() {
     }
 
     try {
+      await Promise.all([...draftSaves.current.values()]);
       const compilation = await compileWritingParagraph(modeId);
       setComponents((currentComponents) =>
         currentComponents.map((item) =>
@@ -452,7 +471,10 @@ export default function ComponentModePlay() {
             : item,
         ),
       );
-      const review = await submitWriting(component.id, { paragraph });
+      if (writingRequestKey.current?.paragraph !== paragraph) {
+        writingRequestKey.current = { paragraph, key: `writing-${crypto.randomUUID()}` };
+      }
+      const review = await submitWriting(component.id, { paragraph }, { idempotencyKey: writingRequestKey.current.key });
       const reviewFeedback = review.review?.feedback;
       const feedbackText =
         reviewFeedback && typeof reviewFeedback === 'object' &&
@@ -469,6 +491,9 @@ export default function ComponentModePlay() {
         ...current,
         [component.id]: {
           submissionId: review.id,
+          reviewStatus: review.status,
+          retryable: review.retryable,
+          completion: review.completion,
           comment: feedbackText,
           fieldResults: rubricMetrics,
           modelAnswer: review.modelAnswer,
@@ -479,7 +504,7 @@ export default function ComponentModePlay() {
       }));
       await refreshModeState();
 
-      toast.success(
+      (review.status === 'reviewed' && review.completion?.status !== 'needs_resubmission' ? toast.success : toast.info)(
         review.status === 'reviewed'
           ? 'Writing feedback is ready.'
           : 'Your writing has been sent for review.',
@@ -487,6 +512,9 @@ export default function ComponentModePlay() {
       return {
         feedback: {
           comment: feedbackText,
+          reviewStatus: review.status,
+          retryable: review.retryable,
+          completion: review.completion,
           fieldResults: review.review?.rubricMetrics ?? [],
           modelAnswer: review.modelAnswer,
         },
@@ -500,6 +528,29 @@ export default function ComponentModePlay() {
     }
   };
 
+  const handleWritingParagraphSubmit = (component: LearningComponent, paragraph: string) => {
+    if (writingSubmitInFlight.current) return writingSubmitInFlight.current;
+    setIsSubmittingMode(true);
+    const promise = submitWritingParagraph(component, paragraph).finally(() => {
+      writingSubmitInFlight.current = null;
+      setIsSubmittingMode(false);
+    });
+    writingSubmitInFlight.current = promise;
+    return promise;
+  };
+
+  const handleWritingRetry = (componentId: string) => {
+    writingRequestKey.current = null;
+    const latestResponse = components.find(component => component.id === componentId)?.attempt?.response;
+    if (latestResponse) setLocalResponses(current => ({ ...current, [componentId]: latestResponse }));
+    setWritingReviewFeedback(current => {
+      const next = { ...current };
+      delete next[componentId];
+      return next;
+    });
+    setModelAnswerComponentId(null);
+  };
+
   const handleWritingModelAnswerReveal = async (component: LearningComponent) => {
     const review = writingReviewFeedback[component.id];
     const submissionId = review?.submissionId;
@@ -508,7 +559,16 @@ export default function ComponentModePlay() {
       return;
     }
 
-    const revealed = await revealWritingModelAnswer(submissionId);
+    let revealed;
+    try {
+      revealed = await revealWritingModelAnswer(submissionId);
+    } catch (error: any) {
+      if (error.response?.status === 409) {
+        setWritingReviewFeedback(current => ({ ...current, [component.id]: { ...current[component.id], retryable: true, modelAnswer: null,
+          completion: { status: 'needs_resubmission', message: error.response.data?.message || 'Your writing changed. Review your latest paragraph and submit it again.' } } }));
+      }
+      throw error;
+    }
     setWritingReviewFeedback((current) => ({
       ...current,
       [component.id]: {
@@ -786,13 +846,14 @@ export default function ComponentModePlay() {
                           )
                     }
                     reviewFeedback={writingReviewFeedback[comp.id]}
+                    onRetry={() => handleWritingRetry(comp.id)}
                     showModelAnswer={modelAnswerComponentId === comp.id}
                     isSubmitted={
                       isWritingParagraph
                         ? isTerminal || Boolean(writingReviewFeedback[comp.id])
                         : isTerminal || Boolean(comp.attempt?.status === 'submitted')
                     }
-                    disabled={isDisabled}
+                    disabled={isDisabled || isSubmittingMode}
                     defaultText={defaultText}
                   />
                 );

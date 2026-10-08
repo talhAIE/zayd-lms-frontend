@@ -6,6 +6,7 @@ interface SemanticReviewComponentProps {
   component: LearningComponent;
   onAnswerChange?: (text: string) => void;
   onSubmit?: (text: string) => Promise<any> | void;
+  onRetry?: () => void;
   isSubmitted?: boolean;
   disabled?: boolean;
   defaultText?: string;
@@ -17,6 +18,7 @@ export default function SemanticReviewComponent({
   component,
   onAnswerChange,
   onSubmit,
+  onRetry,
   isSubmitted = false,
   disabled = false,
   defaultText = '',
@@ -69,6 +71,7 @@ export default function SemanticReviewComponent({
       setFeedback(reviewFeedback);
       return;
     }
+    if (isCompiledParagraph) setFeedback(null);
     if (!isCompiledParagraph && component.attempt?.feedback) {
       setFeedback(component.attempt.feedback);
     }
@@ -189,6 +192,9 @@ export default function SemanticReviewComponent({
           ? Math.round(scoredMetrics.reduce((sum, score) => sum + score, 0) / scoredMetrics.length)
           : null;
     const taskAchievedText = feedback?.comment || 'Your writing review is ready.';
+    const reviewSucceeded = feedback?.reviewStatus === 'reviewed';
+    const needsResubmission = feedback?.completion?.status === 'needs_resubmission';
+    const canRetry = feedback?.retryable === true || feedback?.reviewStatus === 'needs_review';
 
     return (
       <div className="w-full bg-white rounded-[20px] border border-[#E2E8F0] shadow-sm p-6 md:p-8 flex flex-col gap-6 font-['Outfit',sans-serif]">
@@ -219,7 +225,7 @@ export default function SemanticReviewComponent({
                  </div>
                  <div className="flex flex-col gap-1.5">
                    <h3 className="text-[18px] font-bold text-[#0F172A]">{writingAnalysisHeading}</h3>
-                   <span className="text-[10px] font-bold text-[#059669] bg-[#D1FAE5] px-2 py-0.5 rounded-full uppercase tracking-wider w-fit">Comprehensive Scan Complete</span>
+                   <span className="text-[10px] font-bold text-[#059669] bg-[#D1FAE5] px-2 py-0.5 rounded-full uppercase tracking-wider w-fit">{reviewSucceeded ? 'Review Complete' : 'Review Needs Attention'}</span>
                  </div>
                </div>
                <div className="flex flex-col items-end gap-1.5">
@@ -236,9 +242,22 @@ export default function SemanticReviewComponent({
                 <CheckCircle2 className="w-3 h-3 text-white" />
               </div>
               <p className="text-[14px] text-[#065F46] leading-relaxed">
-                <strong className="font-bold">Task Achieved:</strong> {taskAchievedText}
+                <strong className="font-bold">{reviewSucceeded ? 'Feedback:' : 'Review pending:'}</strong> {taskAchievedText}
               </p>
             </div>
+
+            {feedback?.completion?.message && <p role="alert" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">{feedback.completion.message}</p>}
+            {canRetry && (!reviewSucceeded || needsResubmission) && onRetry && (
+              <button type="button" disabled={disabled || isAnalyzing} onClick={() => {
+                const currentParagraph = component.attempt?.response?.paragraph;
+                if (typeof currentParagraph === 'string') setText(currentParagraph);
+                setFeedback(null);
+                setViewState('builder');
+                onRetry();
+              }} className="self-start rounded-full bg-[#4F8DFB] px-6 py-3 text-sm font-bold text-white disabled:opacity-50">
+                Edit and Retry Review
+              </button>
+            )}
 
             {/* Prompt Alignment Section */}
             <div className="flex flex-col gap-4">
@@ -277,7 +296,7 @@ export default function SemanticReviewComponent({
                 </div>
               ) : (
                 <p className="rounded-[12px] border border-[#E2E8F0] bg-[#FAFAF9] p-4 text-[13px] leading-relaxed text-[#64748B]">
-                  Detailed rubric feedback is not available for this review. Your teacher can provide further guidance.
+                  {canRetry ? 'Your writing is saved. Retry the review to receive rubric feedback.' : 'Detailed rubric feedback is not available for this review. Your teacher can provide further guidance.'}
                 </p>
               )}
             </div>

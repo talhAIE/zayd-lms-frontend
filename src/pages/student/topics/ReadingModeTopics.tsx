@@ -11,8 +11,8 @@ import FeedbackModal from '@/components/ui/FeedbackModal';
 import { ContentPolicyWarningModal } from '@/components/ui/ContentPolicyWarningModal';
 import { useLearningProgressRefresh } from '@/hooks/useLearningProgressRefresh';
 import { useAudioPlayback } from '@/hooks/useAudioPlayback';
-import { fetchUnitLessons } from '@/services/learningService';
-import { getNextLessonPath } from '@/utils/learning-navigation';
+import { fetchLessonModes, fetchUnitLessons } from '@/services/learningService';
+import { getLearningModePath, getNextLessonPath, isLockedLearningItem } from '@/utils/learning-navigation';
 import SpeechAssessmentModal, { isSpeechAssessment, SpeechAssessment } from '@/components/ui/SpeechAssessmentModal';
 import ReactMarkdown from 'react-markdown';
 
@@ -360,8 +360,19 @@ export default function ReadingModeTopics() {
     setShowCompletionModal(false);
     if (courseId && unitId && lessonId) {
       try {
+        const context = { courseId, unitId, lessonId };
+        const modes = await fetchLessonModes(lessonId);
+        const currentIndex = modes.findIndex((mode) => mode.id === lessonModeId);
+        const nextMode = currentIndex >= 0
+          ? modes.slice(currentIndex + 1).find((mode) =>
+            !isLockedLearningItem(mode) && mode.status !== 'completed')
+          : undefined;
+        if (nextMode) {
+          navigate(getLearningModePath(context, nextMode), { replace: true });
+          return;
+        }
         const lessons = await fetchUnitLessons(unitId);
-        navigate(getNextLessonPath({ courseId, unitId, lessonId }, lessons), { replace: true });
+        navigate(getNextLessonPath(context, lessons), { replace: true });
         return;
       } catch {
         // The learner can still safely return to the refreshed lesson list.
