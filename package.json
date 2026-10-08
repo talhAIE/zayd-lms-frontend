@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "qa:writing-review": "node dev/writing-review-check.cjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "qa:science-spark:transport": "node dev/science-service-check.cjs",

@@ -214,6 +214,8 @@ export interface WritingReviewResponse {
     reviewedAt: string;
   } | null;
   modelAnswer: string | null;
+  retryable?: boolean;
+  completion?: { status: 'completed' | 'pending' | 'needs_resubmission'; message?: string };
 }
 
 export interface WritingParagraphCompilation {
@@ -450,9 +452,8 @@ export const submitWriting = async (componentId: string, responsePayload: JsonOb
     idempotencyKey: options.idempotencyKey ?? createIdempotencyKey('writing-submit', componentId),
     ...(options.timeSpentSec === undefined ? {} : { timeSpentSec: options.timeSpentSec }),
   }, {
-    // The backend has a shorter AI timeout. This prevents a broken network
-    // connection from leaving the learner-facing submit button loading forever.
-    timeout: 35_000,
+    // Azure can make up to three 60-second attempts, including SDK retries.
+    timeout: 210_000,
   });
   return response.data.data;
 };
