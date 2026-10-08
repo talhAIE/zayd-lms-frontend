@@ -161,7 +161,12 @@ export const fetchLeaderboard = createAsyncThunk(
       
       const response = await apiClient.get(`/leaderboard/weekly?${queryParams.toString()}`);
       
-      return response.data as {
+      // The LMS wraps results; older deployments returned the payload directly.
+      const payload = response.data?.data ?? response.data;
+      if (!Array.isArray(payload?.leaderboard) || !payload?.currentUser) {
+        throw new Error('The leaderboard returned an invalid response. Please retry.');
+      }
+      return payload as {
         leaderboard: LeaderboardUser[];
         currentUser: LeaderboardUser;
       };
