@@ -12,6 +12,20 @@ const apiClient = axios.create({
   },
 });
 
+// Science supplies a request-local account/lifetime guard. It shares this
+// refresh queue with ordinary courses, so simultaneous 401s rotate only once.
+const assertRequestOwner = (config: any) => {
+  if (config?.scienceSession && !config.scienceSession()) {
+    throw new axios.CanceledError('Science session changed');
+  }
+};
+const sessionIdentity = () => {
+  try {
+    const user = JSON.parse(localStorage.getItem('AiTutorUser') || 'null');
+    return JSON.stringify([user?.id, user?.username]);
+  } catch { return ''; }
+};
+
 // Flag to prevent multiple refresh attempts
 let isRefreshing = false;
 let failedQueue: Array<{
@@ -34,6 +48,7 @@ const processQueue = (error: any, token: string | null = null) => {
 // Add a request interceptor for authentication
 apiClient.interceptors.request.use(
   (config: any) => {
+    assertRequestOwner(config);
     const accessToken = localStorage.getItem("accessToken");
     if (accessToken) {
       config.headers["Authorization"] = `Bearer ${accessToken}`;
@@ -48,10 +63,12 @@ apiClient.interceptors.request.use(
 // Add a response interceptor for handling common errors
 apiClient.interceptors.response.use(
   (response: any) => {
+    assertRequestOwner(response.config);
     return response;
   },
   async (error: any) => {
     const originalRequest = error.config;
+    assertRequestOwner(originalRequest);
 
     // Handle 401 Unauthorized errors
     if (
@@ -59,6 +76,7 @@ apiClient.interceptors.response.use(
       error.response.status === 401 &&
       !originalRequest._retry
     ) {
+      originalRequest._retry = true;
       if (isRefreshing) {
         // If already refreshing, queue this request
         return new Promise((resolve, reject) => {
@@ -73,12 +91,14 @@ apiClient.interceptors.response.use(
           });
       }
 
-      originalRequest._retry = true;
       isRefreshing = true;
 
       const refreshTokenValue = localStorage.getItem("refreshToken");
+      const refreshingIdentity = sessionIdentity();
 
       if (!refreshTokenValue) {
+        isRefreshing = false;
+        processQueue(error);
         // No refresh token, redirect to login
         clearAuthData();
         window.location.href = "/login";
@@ -88,9 +108,13 @@ apiClient.interceptors.response.use(
       try {
         const response = await axios.post(`${baseURL}/auth/refresh`, {
           refreshToken: refreshTokenValue,
-        });
+        }, { timeout: 30000 });
 
         const { accessToken, refreshToken: newRefreshToken } = response.data;
+
+        if (sessionIdentity() !== refreshingIdentity || localStorage.getItem('refreshToken') !== refreshTokenValue) {
+          throw new axios.CanceledError('Session changed during refresh');
+        }
 
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", newRefreshToken);
@@ -102,6 +126,10 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
+        // A late refresh must never clear the newly signed-in account.
+        if (sessionIdentity() !== refreshingIdentity || localStorage.getItem('refreshToken') !== refreshTokenValue) {
+          return Promise.reject(refreshError);
+        }
         // Refresh failed, redirect to login
         clearAuthData();
         window.location.href = "/login";

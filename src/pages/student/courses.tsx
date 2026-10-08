@@ -1,16 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCourses } from '@/redux/slices/learningSlice';
 import { AppDispatch, RootState } from '@/redux/store';
-import { CertificateModal } from '@/components/ui/CertificateModal';
 import { Award } from 'lucide-react';
+import { ScienceCourseCard } from '@/components/science/ScienceCourseCard';
 
 export default function StudentCourses() {
   const dispatch = useDispatch<AppDispatch>();
   const { courses, loading, error } = useSelector((state: RootState) => state.learning);
   const { user } = useSelector((state: RootState) => state.auth);
-  const [selectedCertificateCourse, setSelectedCertificateCourse] = useState<any>(null);
   const studentName = [user?.firstName, user?.lastName]
     .filter((name): name is string => typeof name === 'string' && name.trim().length > 0)
     .join(' ')
@@ -44,10 +43,11 @@ export default function StudentCourses() {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <ScienceCourseCard />
           {loading && <p className="text-gray-500">Loading courses...</p>}
           {error && <p className="text-red-500">{error}</p>}
           {!loading && !error && courses.length === 0 && (
-            <p className="text-gray-500">No courses available.</p>
+            <p className="text-gray-500">No curriculum courses available.</p>
           )}
           {!loading && courses.map((course) => (
             <div 
@@ -98,13 +98,13 @@ export default function StudentCourses() {
                     </Link>
                   )}
                   {course.progressStatus === 'completed' && (
-                    <button 
-                      onClick={() => setSelectedCertificateCourse(course)}
+                    <Link
+                      to="/student/achievements?tab=certifications"
                       className="w-full h-[46px] bg-[#5B9CF7] hover:bg-[#4a8ce8] text-white rounded-[8px] font-semibold text-[14px] flex items-center justify-center gap-2 transition-all duration-200"
                     >
                       <Award className="w-5 h-5" />
-                      Claim Certificate
-                    </button>
+                      View Certificates
+                    </Link>
                   )}
                   {(course.progressStatus === 'locked' || course.isLocked) && (
                     <button disabled className="w-full h-[46px] bg-[#F3F4F6] text-[#9CA3AF] rounded-[8px] font-semibold text-[14px] cursor-not-allowed">
@@ -118,12 +118,6 @@ export default function StudentCourses() {
         </div>
       </div>
       
-      <CertificateModal 
-        isOpen={!!selectedCertificateCourse}
-        course={selectedCertificateCourse}
-        user={user}
-        onClose={() => setSelectedCertificateCourse(null)}
-      />
     </div>
   );
 }

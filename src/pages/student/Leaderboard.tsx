@@ -231,7 +231,9 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       <div className="mx-auto p-6 text-center">
         {/* <h1 className="text-3xl font-bold mb-8 text-center text-gray-700">Leaderboard</h1> */}
         <div className="bg-white p-4 md:p-6 rounded-xl shadow-xl text-gray-500 py-10">
-          No leaderboard data is available.
+          {currentUser && !currentUser.aiCefrLevel
+            ? 'Your language level has not been assessed yet. Complete a speaking activity to receive an assessment and join your level’s leaderboard.'
+            : 'No rankings are available for your level this week. Keep learning and check back soon.'}
         </div>
       </div>
     );

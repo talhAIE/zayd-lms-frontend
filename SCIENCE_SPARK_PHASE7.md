@@ -1,0 +1,13 @@
+# Science Spark Phase 7
+
+Local integration checks and release preparation performed on `feat/sciencespark` on 2026-10-07. **Phase 7 readiness remains pending; no deployment or enablement occurred.**
+
+The production build/application and local journey harness typechecks passed. `npm run qa:science-spark:release` now verifies six release artifact boundaries plus eight real auth/session transport and twenty Practice URL checks without network/database calls. It records `SCIENCE_SPARK_PHASE7_VERIFICATION.json`; developer fixtures, local test endpoints and controls are absent from the production output. Existing Browserslist, pdf.js eval and bundle-size warnings remain.
+
+Browser verification used actual frontend routes with a synthetic-state standalone Science API and real private Blob content. All thirty lesson sections rendered with their correct titles and lesson-only navigation. Eighteen bridge/escaping checks, forged-hash reset, read mode, render-error Retry, six completion transitions, six persisted badges after reload, Saudi failed content/save Retry, skipped activities, mobile navigation/Escape, Back/Forward, unauthorized routes and disabled-pilot Retry passed. Earlier unchanged-code evidence covers Practice fullscreen/mobile/logout and calculator/graph/local checks.
+
+Backend verification passed 56 suites / 341 tests and 1,462 QA-only production API checks across all six activities for all twelve accounts; every transaction intentionally rolled back. Read-only production schema preview passed eight checks. Compiled runtime loaded verified private content from an empty working directory with zero local source reads/database connections. The backend release checker records fourteen passing inventory checks and an explicit readiness guard.
+
+Remaining: owner-provided playable Kahoot assignment iframe src and learner play verification; actual Docker/deployed-image check; full ordinary American English/Saudi English/technology browser regression in a complete application environment; actual browser 200% zoom. The local API stubs generic courses, so no full generic journey is claimed. Shared auth transport tests and current backend regression suites pass, but they do not replace that environment-specific browser check.
+
+See backend `docs/science-spark/PHASE7.md`, `RELEASE.md`, the acceptance plan and `phase7-release-verification.json` for detailed evidence, reviewed feature diff/baselines, configuration, installed additive DDL and preserving-data rollback. No new production feature behavior is added in this phase. No push, deployment, production configuration change, pilot enablement or new schema change occurred. Phase 8 was not started.
