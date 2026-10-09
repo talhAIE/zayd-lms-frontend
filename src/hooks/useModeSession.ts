@@ -3,6 +3,7 @@ import { io, Socket } from 'socket.io-client';
 import { toast } from 'sonner';
 import { ContentFilterWarningData } from '@/components/ui/ContentPolicyWarningModal';
 import { createPendingAudioUrl, loadPendingReadingAudio, removePendingReadingAudio, savePendingReadingAudio } from '@/utils/pendingReadingAudio';
+import { type ReadingVocabularyFeedback } from '@/utils/readingVocabularyFeedback';
 
 const MAX_READING_SOCKET_AUDIO_BASE64_LENGTH = 900_000;
 
@@ -17,6 +18,7 @@ export interface HistoryItem {
   audioUrl: string | null;
   createdAt: string;
   deliveryStatus?: 'sending' | 'failed';
+  readingVocabularyFeedback?: ReadingVocabularyFeedback;
 }
 
 export interface Mcq {
@@ -370,7 +372,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       if (payload.roleplayProgress) setRoleplayProgress(payload.roleplayProgress);
     });
 
-    newSocket.on('streaming_complete', (payload: { ai_response: string, feedback: string, ai_cefr_level: string, isCompleted: boolean, ttsAudioUrl?: string, hint?: string, readingProgress?: ReadingProgress, roleplayProgress?: RoleplayProgress, roleplayProgressEarned?: boolean }) => {
+    newSocket.on('streaming_complete', (payload: { ai_response: string, feedback: string, ai_cefr_level: string, isCompleted: boolean, ttsAudioUrl?: string, hint?: string, readingProgress?: ReadingProgress, roleplayProgress?: RoleplayProgress, roleplayProgressEarned?: boolean, messageId?: string, readingVocabularyFeedback?: ReadingVocabularyFeedback }) => {
       modeRequestInFlightRef.current = false;
       setIsTyping(false);
       const completedAudio = modeKeyRef.current === 'reading-mode' ? pendingAudioRef.current : null;
@@ -393,11 +395,12 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
           ? { ...message, deliveryStatus: undefined }
           : message),
         {
-          id: Date.now().toString(),
+          id: payload.messageId || Date.now().toString(),
           sender: 'ai',
           role: 'assistant',
           content: payload.ai_response,
           feedback: payload.feedback,
+          readingVocabularyFeedback: payload.readingVocabularyFeedback,
           hint: payload.hint || null,
           assessments:
             payload.roleplayProgressEarned === undefined

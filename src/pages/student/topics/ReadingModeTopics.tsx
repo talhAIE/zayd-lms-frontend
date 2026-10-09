@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { readingFeedbackAction, loadViewedReadingFeedback, saveViewedReadingFeedback } from '@/utils/readingVocabularyFeedback';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BarChart3, ChevronLeft, Mic, Square, Trash2, Check, MessageCircle, Pause, Play, LoaderCircle, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
@@ -114,6 +115,15 @@ export default function ReadingModeTopics() {
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [isJustCompleted, setIsJustCompleted] = useState(false);
   const [activeFeedback, setActiveFeedback] = useState<string | null>(null);
+  const [viewedFeedbackIds, setViewedFeedbackIds] = useState(() => loadViewedReadingFeedback(lessonModeId));
+  const openReadingFeedback = useCallback((id: string, feedback: string) => {
+    setActiveFeedback(feedback);
+    setViewedFeedbackIds(previous => {
+      const next = new Set(previous).add(id);
+      saveViewedReadingFeedback(lessonModeId, next);
+      return next;
+    });
+  }, [lessonModeId]);
   const [activeAssessment, setActiveAssessment] = useState<SpeechAssessment | null>(null);
   const [activeVocabularyCard, setActiveVocabularyCard] = useState<ReadingVocabularyCard | null>(null);
   const [hasStartedShadowReading, setHasStartedShadowReading] = useState(false);
@@ -184,7 +194,15 @@ export default function ReadingModeTopics() {
 
   useEffect(() => {
     setHasStartedShadowReading(false);
+    setViewedFeedbackIds(loadViewedReadingFeedback(lessonModeId));
   }, [lessonModeId]);
+
+  useEffect(() => {
+    const latest = [...chatHistory].reverse().find(message => message.role === 'assistant');
+    if (latest?.feedback && readingFeedbackAction(latest.readingVocabularyFeedback, viewedFeedbackIds.has(latest.id)) === 'open') {
+      openReadingFeedback(latest.id, latest.feedback);
+    }
+  }, [chatHistory, viewedFeedbackIds, openReadingFeedback]);
 
   useEffect(() => {
     setCurrentMcqIndex(0);
@@ -787,8 +805,9 @@ export default function ReadingModeTopics() {
                       {msg.feedback && (
                         <button
                           type="button"
-                          onClick={() => setActiveFeedback(msg.feedback || null)}
-                          className="flex items-center gap-1.5 text-[#5C9DFF] hover:text-[#4A8BEB] transition-colors font-semibold text-[12px] leading-[15px]"
+                          onClick={() => openReadingFeedback(msg.id, msg.feedback!)}
+                          className={`flex items-center gap-1.5 text-[#5C9DFF] hover:text-[#4A8BEB] transition-colors font-semibold text-[12px] leading-[15px] ${readingFeedbackAction(msg.readingVocabularyFeedback, viewedFeedbackIds.has(msg.id)) === 'glow' ? 'reading-vocabulary-feedback-glow' : ''}`}
+                          aria-label={readingFeedbackAction(msg.readingVocabularyFeedback, viewedFeedbackIds.has(msg.id)) === 'glow' ? 'View feedback to correct your vocabulary reading' : 'View feedback'}
                         >
                           <MessageCircle className="w-3.5 h-3.5" />
                           <span>View Feedback</span>
