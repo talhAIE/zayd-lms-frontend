@@ -50,8 +50,19 @@ const unit = (key: string) => `/units/${encodeURIComponent(key)}/activities`;
 const activity = (unitKey: string, key: string) =>
   `${unit(unitKey)}/${encodeURIComponent(key)}`;
 export const scienceSparkService = {
-  courses: (o: ScienceOwner, s: AbortSignal) =>
-    request<ScienceSparkCoursesResponse>(o, s, "/courses"),
+  courses: async (o: ScienceOwner, s: AbortSignal): Promise<ScienceSparkCoursesResponse> => {
+    try {
+      return await request<ScienceSparkCoursesResponse>(o, s, "/courses");
+    } catch (error) {
+      assertSession(o, s);
+      // Older production backends do not expose the optional pilot API.
+      // Only course discovery treats a missing route as unavailable.
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        return { status: true, data: { available: false, courses: [] } };
+      }
+      throw error;
+    }
+  },
   units: (o: ScienceOwner, s: AbortSignal, key: string) =>
     request<ScienceSparkUnitsResponse>(
       o,
