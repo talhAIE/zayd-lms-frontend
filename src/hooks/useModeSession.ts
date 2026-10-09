@@ -19,6 +19,7 @@ export interface HistoryItem {
   createdAt: string;
   deliveryStatus?: 'sending' | 'failed';
   readingVocabularyFeedback?: ReadingVocabularyFeedback;
+  readingSpeechText?: string | null;
 }
 
 export interface Mcq {
@@ -372,7 +373,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       if (payload.roleplayProgress) setRoleplayProgress(payload.roleplayProgress);
     });
 
-    newSocket.on('streaming_complete', (payload: { ai_response: string, feedback: string, ai_cefr_level: string, isCompleted: boolean, ttsAudioUrl?: string, hint?: string, readingProgress?: ReadingProgress, roleplayProgress?: RoleplayProgress, roleplayProgressEarned?: boolean, messageId?: string, readingVocabularyFeedback?: ReadingVocabularyFeedback }) => {
+    newSocket.on('streaming_complete', (payload: { ai_response: string, feedback: string, ai_cefr_level: string, isCompleted: boolean, ttsAudioUrl?: string, hint?: string, readingProgress?: ReadingProgress, roleplayProgress?: RoleplayProgress, roleplayProgressEarned?: boolean, messageId?: string, readingVocabularyFeedback?: ReadingVocabularyFeedback, readingSpeechText?: string | null }) => {
       modeRequestInFlightRef.current = false;
       setIsTyping(false);
       const completedAudio = modeKeyRef.current === 'reading-mode' ? pendingAudioRef.current : null;
@@ -401,6 +402,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
           content: payload.ai_response,
           feedback: payload.feedback,
           readingVocabularyFeedback: payload.readingVocabularyFeedback,
+          readingSpeechText: payload.readingSpeechText,
           hint: payload.hint || null,
           assessments:
             payload.roleplayProgressEarned === undefined

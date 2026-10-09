@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { readingFeedbackAction, loadViewedReadingFeedback, saveViewedReadingFeedback } from '@/utils/readingVocabularyFeedback';
+import { readingPracticeSpeechText, readingPracticeAudioUrl } from '@/utils/readingPracticeAudio';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BarChart3, ChevronLeft, Mic, Square, Trash2, Check, MessageCircle, Pause, Play, LoaderCircle, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
@@ -268,9 +269,8 @@ export default function ReadingModeTopics() {
     window.speechSynthesis.cancel();
     setIsFallbackSpeechPaused(false);
 
-    // Read the sentence itself, rather than the surrounding instruction.
-    const sentence = content.match(/"([^"\n]+)"/)?.[1] || content;
-    const utterance = new SpeechSynthesisUtterance(sentence);
+    // Callers supply the full target directly, preserving dialogue quotes.
+    const utterance = new SpeechSynthesisUtterance(content);
     utterance.onend = () => {
       if (fallbackSpeechRef.current === utterance) {
         fallbackSpeechRef.current = null;
@@ -683,8 +683,9 @@ export default function ReadingModeTopics() {
               )}
               {chatHistory.map((msg, index) => (
                 (() => {
-                  const hasSpeechFallback =
-                    msg.role === 'assistant' && !msg.audioUrl && Boolean(msg.content.trim());
+                  const practiceSpeechText = msg.role === 'assistant' ? readingPracticeSpeechText(msg) : null;
+                  const practiceAudioUrl = msg.role === 'assistant' ? readingPracticeAudioUrl(msg) : null;
+                  const hasSpeechFallback = Boolean(practiceSpeechText && !practiceAudioUrl);
                   const isFallbackSpeechPlaying = fallbackSpeechMessageId === msg.id;
                   const hasSavedSpeechAssessment = isSpeechAssessment(msg.assessments);
                   // Browser object URLs are available only for the live
@@ -778,24 +779,24 @@ export default function ReadingModeTopics() {
                       )}
                     </div>
                   )}
-                  {msg.role === 'assistant' && (msg.audioUrl || msg.feedback || hasSpeechFallback) && (
+                  {msg.role === 'assistant' && (practiceAudioUrl || msg.feedback || hasSpeechFallback) && (
                     <div className="mt-3 flex items-center gap-4 border-t border-[#E5E7EB] pt-2.5">
-                      {(msg.audioUrl || hasSpeechFallback) && (
+                      {(practiceAudioUrl || hasSpeechFallback) && (
                         <button
                           type="button"
-                          onClick={() => msg.audioUrl
-                            ? toggleStoredAudio(msg.id, msg.audioUrl)
-                            : toggleInitialReadingPromptSpeech(msg.id, msg.content)}
+                          onClick={() => practiceAudioUrl
+                            ? toggleStoredAudio(msg.id, practiceAudioUrl)
+                            : toggleInitialReadingPromptSpeech(msg.id, practiceSpeechText!)}
                           className="flex items-center text-[#0F1450] hover:text-[#5C9DFF] transition-colors"
                           aria-label={
-                            (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || (isFallbackSpeechPlaying && !isFallbackSpeechPaused)
+                            (practiceAudioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || (isFallbackSpeechPlaying && !isFallbackSpeechPaused)
                               ? 'Pause AI response'
                               : 'Play AI response'
                           }
                         >
                           {loadingAudioId === msg.id ? (
                             <LoaderCircle className="w-5 h-5 animate-spin" />
-                          ) : (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || (isFallbackSpeechPlaying && !isFallbackSpeechPaused) ? (
+                          ) : (practiceAudioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || (isFallbackSpeechPlaying && !isFallbackSpeechPaused) ? (
                             <Pause className="w-5 h-5" />
                           ) : (
                             <Play className="w-5 h-5" />
