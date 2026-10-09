@@ -1120,6 +1120,14 @@ function ComponentAttemptFeedback({
   const attempt = component.attempt;
   const feedback = attempt?.feedback;
   const fieldResults = Array.isArray(feedback?.fieldResults) ? feedback.fieldResults : [];
+  const fieldFeedbackRows = fieldResults.flatMap((result) => {
+    if (!result || typeof result !== 'object') return [];
+    const field = result as Record<string, unknown>;
+    const text = typeof field.feedback === 'string' ? field.feedback.trim() : '';
+    const hint = typeof field.hint === 'string' ? field.hint.trim() : '';
+    const explanation = text || hint;
+    return explanation ? [{ id: String(field.id), isCorrect: field.isCorrect === true, explanation }] : [];
+  });
   const canReveal = attempt?.status === 'exhausted' && feedback?.canRevealAnswer === true;
   const message = typeof feedback?.message === 'string'
     ? feedback.message
@@ -1140,15 +1148,9 @@ function ComponentAttemptFeedback({
           <p className="mt-1 text-[#475569]">Attempt {attempt.attemptNumber}{component.maxAttempts ? ` of ${component.maxAttempts}` : ''} · {attempt.status.replace('_', ' ')}</p>
           {message && <p className="mt-2 text-[#166534]">{message}</p>}
           {hint && <p className="mt-2 text-[#92400E]">Hint: {hint}</p>}
-          {fieldResults.length > 0 && <ul className="mt-3 space-y-1">{fieldResults.map((result) => {
-            const field = result as Record<string, unknown>;
-            const textSuffix = typeof field.feedback === 'string' && field.feedback 
-              ? field.feedback 
-              : typeof field.hint === 'string' && field.hint 
-                ? field.hint 
-                : '';
-            return <li key={String(field.id)} className="text-xs text-[#475569]">{field.isCorrect === true ? 'Correct' : 'Review'}{textSuffix ? `: ${textSuffix}` : ''}</li>;
-          })}</ul>}
+          {fieldFeedbackRows.length > 0 && <ul className="mt-3 space-y-1">{fieldFeedbackRows.map((field) => (
+            <li key={field.id} className="text-xs text-[#475569]">{field.isCorrect ? 'Correct' : 'Review'}: {field.explanation}</li>
+          ))}</ul>}
           {canReveal && !answers.length && <button type="button" onClick={onReveal} className="mt-3 inline-flex items-center gap-2 rounded-lg bg-[#92400E] px-3 py-2 text-xs font-bold text-white"><Eye className="h-4 w-4" />Show Answer</button>}
           {answers.length > 0 && <div className="mt-3 rounded-lg border border-amber-200 bg-white p-3"><p className="font-bold text-amber-900">Approved answers</p>{answers.map((answer) => <p key={answer.id} className="mt-1 text-[#475569]">{answer.value}</p>)}</div>}
         </div>
