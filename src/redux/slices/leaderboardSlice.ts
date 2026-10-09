@@ -104,7 +104,8 @@ export interface LeaderboardUser {
   schoolName: string;
   class: string;
   // cefrLevel: string;
-  aiCefrLevel	: string;
+  aiCefrLevel: string | null;
+  cefrLevel?: string | null;
   totalSeconds: number;
   completedTopics: number;
 }

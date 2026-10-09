@@ -10,6 +10,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { resolveLeaderboardLevel } from "@/utils/leaderboardLevel";
 import InteractiveTour, { TourStep } from "@/components/ui/InteractiveTour";
 
 import leaderboardImg1 from "@/assets/user-guide/leaderboard/1.png";
@@ -96,6 +97,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   const { leaderboard, currentUser, isLoading, error } = useAppSelector(
     (state) => state.leaderboard
   );
+  const currentUserLevel = resolveLeaderboardLevel(currentUser, parsedUser);
 
   const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth < 768 : false);
   
@@ -231,7 +233,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       <div className="mx-auto p-6 text-center">
         {/* <h1 className="text-3xl font-bold mb-8 text-center text-gray-700">Leaderboard</h1> */}
         <div className="bg-white p-4 md:p-6 rounded-xl shadow-xl text-gray-500 py-10">
-          {currentUser && !currentUser.aiCefrLevel
+          {currentUser && !currentUserLevel
             ? 'Your language level has not been assessed yet. Complete a speaking activity to receive an assessment and join your level’s leaderboard.'
             : 'No rankings are available for your level this week. Keep learning and check back soon.'}
         </div>
@@ -283,7 +285,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     return "bg-gray-100 border-gray-300";
   };
 
-  const getLevelBadgeColor = (level?: string) => {
+  const getLevelBadgeColor = (level?: string | null) => {
     if (!level) return "bg-gray-100 text-gray-800";
     const levels: Record<string, string> = {
       A1: "bg-green-100 text-green-800",
@@ -660,10 +662,10 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                     <div className="text-xs text-gray-500 mb-1">Level</div>
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${getLevelBadgeColor(
-                        currentUser.aiCefrLevel
+                        currentUserLevel
                       )} border border-blue-300`}
                     >
-                      {currentUser.aiCefrLevel || "N/A"}
+                      {currentUserLevel || "N/A"}
                     </span>
                   </div>
                   <div>
@@ -719,10 +721,10 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                     <td className="py-4 px-3">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${getLevelBadgeColor(
-                          currentUser.aiCefrLevel
+                          currentUserLevel
                         )} border border-blue-300`}
                       >
-                        {currentUser.aiCefrLevel || "N/A"}
+                        {currentUserLevel || "N/A"}
                       </span>
                     </td>
                     <td className="py-4 px-3">
@@ -810,8 +812,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                   </td>
                   <td className="py-3 px-3 text-sm text-blue-600 max-w-[120px]">{currentUser.schoolName || '-'}</td>
                   <td className="py-3 px-3">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getLevelBadgeColor(currentUser.aiCefrLevel)} border border-blue-300`}>
-                      {currentUser.aiCefrLevel || 'N/A'}
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getLevelBadgeColor(currentUserLevel)} border border-blue-300`}>
+                      {currentUserLevel || 'N/A'}
                     </span>
                   </td>
                   <td className="py-3 px-3">
@@ -870,10 +872,10 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                     <td className="py-3 px-3" style={{ width: "120px" }}>
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${getLevelBadgeColor(
-                          currentUser.aiCefrLevel
+                          currentUserLevel
                         )} border border-blue-300`}
                       >
-                        {currentUser.aiCefrLevel || "N/A"}
+                        {currentUserLevel || "N/A"}
                       </span>
                     </td>
                     <td className="py-3 px-3" style={{ width: "120px" }}>
