@@ -112,6 +112,7 @@ export interface LeaderboardUser {
 
 interface LeaderboardState {
   leaderboard: LeaderboardUser[];
+  scope: 'general' | 'level' | null;
   currentUser: LeaderboardUser | null;
   isLoading: boolean;
   error: string | null;
@@ -119,6 +120,7 @@ interface LeaderboardState {
 
 const initialState: LeaderboardState = {
   leaderboard: [],
+  scope: null,
   currentUser: null,
   isLoading: false,
   error: null
@@ -168,6 +170,7 @@ export const fetchLeaderboard = createAsyncThunk(
         throw new Error('The leaderboard returned an invalid response. Please retry.');
       }
       return payload as {
+        scope?: 'general' | 'level';
         leaderboard: LeaderboardUser[];
         currentUser: LeaderboardUser;
       };
@@ -187,6 +190,7 @@ const leaderboardSlice = createSlice({
   reducers: {
     clearLeaderboard: (state) => {
       state.leaderboard = [];
+      state.scope = null;
       state.currentUser = null;
     },
     clearError: (state) => {
@@ -201,11 +205,13 @@ const leaderboardSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchLeaderboard.fulfilled, (state, action: PayloadAction<{
+        scope?: 'general' | 'level';
         leaderboard: LeaderboardUser[];
         currentUser: LeaderboardUser;
       }>) => {
         state.isLoading = false;
         state.leaderboard = action.payload.leaderboard;
+        state.scope = action.payload.scope ?? null;
         state.currentUser = action.payload.currentUser;
         state.error = null;
       })

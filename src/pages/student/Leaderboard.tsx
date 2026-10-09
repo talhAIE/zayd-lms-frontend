@@ -94,10 +94,12 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { leaderboard, currentUser, isLoading, error } = useAppSelector(
+  const { leaderboard, currentUser, scope, isLoading, error } = useAppSelector(
     (state) => state.leaderboard
   );
-  const currentUserLevel = resolveLeaderboardLevel(currentUser, parsedUser);
+  const currentUserLevel = scope === 'general' ? null : resolveLeaderboardLevel(currentUser, parsedUser);
+  const isGeneralLeaderboard = scope === 'general' || Boolean(currentUser && !currentUserLevel);
+  const assessmentNotice = isGeneralLeaderboard ? <LeaderboardAssessmentNotice /> : null;
 
   const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth < 768 : false);
   
@@ -231,10 +233,11 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   if (!leaderboard || leaderboard.length === 0) {
     return (
       <div className="mx-auto p-6 text-center">
+        {assessmentNotice}
         {/* <h1 className="text-3xl font-bold mb-8 text-center text-gray-700">Leaderboard</h1> */}
         <div className="bg-white p-4 md:p-6 rounded-xl shadow-xl text-gray-500 py-10">
-          {currentUser && !currentUserLevel
-            ? 'Your language level has not been assessed yet. Complete a speaking activity to receive an assessment and join your level’s leaderboard.'
+          {isGeneralLeaderboard
+            ? 'No rankings are available this week. Keep learning and check back soon.'
             : 'No rankings are available for your level this week. Keep learning and check back soon.'}
         </div>
       </div>
@@ -307,6 +310,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
 
   return (
     <div className="mx-auto pb-20">
+      {assessmentNotice}
+      {isGeneralLeaderboard && <p className="mb-3 text-sm font-semibold text-slate-600">General weekly leaderboard</p>}
       {/* <h1 className="relative text-3xl font-bold mb-8 text-center text-gray-700">Leaderboard</h1> */}
 
       <div id="tour-leaderboard-main" className="bg-white p-4 md:p-6 rounded-xl shadow-xl">
@@ -909,3 +914,12 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
 };
 
 export default Leaderboard;
+
+function LeaderboardAssessmentNotice() {
+  return (
+    <div role="status" className="mb-4 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-slate-600">
+      Your language level has not been assessed yet. You can view the general weekly leaderboard.
+      Complete a speaking activity to receive an assessment and join your level’s leaderboard. Your personal rank is unavailable until then.
+    </div>
+  );
+}
