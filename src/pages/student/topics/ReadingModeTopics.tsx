@@ -291,6 +291,11 @@ export default function ReadingModeTopics() {
     window.speechSynthesis.speak(utterance);
   };
 
+  const togglePracticeAudio = (messageId: string, audioUrl?: string | null) => {
+    if (audioUrl) toggleStoredAudio(messageId, audioUrl);
+    else toast.error('Tony Hopeful audio is unavailable. Reload this activity to retry.');
+  };
+
   const getProgressPercentage = () => {
     if (isCompleted) return 100;
 
@@ -667,7 +672,7 @@ export default function ReadingModeTopics() {
                     <div className="mt-3 flex items-center gap-4 border-t border-[#E5E7EB] pt-2.5">
                       <button
                         type="button"
-                        onClick={() => toggleInitialReadingPromptSpeech('reading-initial-prompt', initialReadingSentence)}
+                        onClick={() => togglePracticeAudio('reading-initial-prompt')}
                         className="flex items-center text-[#0F1450] hover:text-[#5C9DFF] transition-colors"
                         aria-label={fallbackSpeechMessageId === 'reading-initial-prompt' && !isFallbackSpeechPaused ? 'Pause initial reading prompt' : 'Play initial reading prompt'}
                       >
@@ -784,9 +789,7 @@ export default function ReadingModeTopics() {
                       {(practiceAudioUrl || hasSpeechFallback) && (
                         <button
                           type="button"
-                          onClick={() => practiceAudioUrl
-                            ? toggleStoredAudio(msg.id, practiceAudioUrl)
-                            : toggleInitialReadingPromptSpeech(msg.id, practiceSpeechText!)}
+                          onClick={() => togglePracticeAudio(msg.id, practiceAudioUrl)}
                           className="flex items-center text-[#0F1450] hover:text-[#5C9DFF] transition-colors"
                           aria-label={
                             (practiceAudioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || (isFallbackSpeechPlaying && !isFallbackSpeechPaused)
