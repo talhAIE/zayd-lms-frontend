@@ -108,6 +108,7 @@ const Rewards = (): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [certificatesError, setCertificatesError] = useState<string | null>(null);
+  const [certificatesSyncWarning, setCertificatesSyncWarning] = useState<string | null>(null);
   const [_totalPoints, _setTotalPoints] = useState<number>(0);
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [claimingReward, setClaimingReward] = useState<string | null>(null);
@@ -172,13 +173,21 @@ const Rewards = (): JSX.Element => {
 
   const fetchCertificates = useCallback(async () => {
     try {
+      if (owner.current !== userId) return;
       setCertificatesError(null);
+      setCertificatesSyncWarning(null);
       if (!userId) {
         setCertificatesError("User not found. Please log in again.");
         setCertificatesLoading(false);
         return;
       }
-      await apiClient.post('/courses/certificates/sync', {});
+      try {
+        await apiClient.post('/learning/courses/certificates/sync', {});
+      } catch {
+        if (owner.current !== userId) return;
+        // A sync failure must not hide certificates already saved for this user.
+        setCertificatesSyncWarning("We couldn't check for newly earned certificates. Showing saved certificates. Please retry.");
+      }
       if (owner.current !== userId) return;
       const response = await apiClient.get<{
         status: string;
@@ -777,7 +786,8 @@ const Rewards = (): JSX.Element => {
             </TabsContent>
             <TabsContent value="certifications">
               {certificatesError && <div role="alert" className="mb-4 rounded-xl bg-red-50 p-4 text-red-700">{certificatesError} <button className="underline" onClick={() => void fetchCertificates()}>Retry</button></div>}
-              {!certificatesLoading && !certificatesError && certificates.length === 0 && <p className="rounded-xl bg-white p-6 text-gray-600">No certificates earned yet. Complete a course or a certificate milestone to earn one.</p>}
+              {certificatesSyncWarning && !certificatesError && <div role="status" className="mb-4 rounded-xl bg-amber-50 p-4 text-amber-800">{certificatesSyncWarning} <button className="underline" onClick={() => void fetchCertificates()}>Retry sync</button></div>}
+              {!certificatesLoading && !certificatesError && certificates.length === 0 && <p className="rounded-xl bg-white p-6 text-gray-600">{certificatesSyncWarning ? 'No saved certificates are available. Retry sync to check for newly earned certificates.' : 'No certificates earned yet. Complete a course or a certificate milestone to earn one.'}</p>}
               {certificatesLoading ? (
                 <div className="flex items-center justify-center h-64">
                   <div className="text-center">

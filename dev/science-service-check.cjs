@@ -43,6 +43,20 @@ const tick = () => new Promise(r => setImmediate(r));
 async function until(check) { for (let i = 0; i < 100; i++) { if (check()) return; await tick(); } throw new Error('Expected request did not arrive'); }
 async function test(name, run) { await run(); results.push({ name, passed: true }); }
 async function main() {
+  await test('Missing optional Science course API is unavailable, while activity 404s remain errors', async () => {
+    const env = setup(c => Promise.reject(new axios.AxiosError('Not Found', 'ERR_BAD_REQUEST', c, undefined, { ...ok(c), status: 404 })));
+    const result = await env.service.courses(env.owner, new AbortController().signal);
+    assert.equal(result.data.available, false);
+    assert.equal(result.data.courses.length, 0);
+    assert.equal(env.cleared(), 0);
+    await assert.rejects(env.service.content(env.owner, new AbortController().signal, 'unit', 'activity'));
+  });
+  await test('Optional discovery still reports server, access and network failures for retry', async () => {
+    for (const status of [403, 500, 503, undefined]) {
+      const env = setup(c => Promise.reject(new axios.AxiosError('Unavailable', 'ERR_NETWORK', c, undefined, status ? { ...ok(c), status } : undefined)));
+      await assert.rejects(env.service.courses(env.owner, new AbortController().signal));
+    }
+  });
   await test('Science mutations send only empty body, authenticated path and bounded timeout', async () => {
     let sent; const env = setup(async c => { sent = c; return ok(c); });
     await env.service.open(env.owner, new AbortController().signal, 'nature-of-science-unit-1', 'lesson-1');

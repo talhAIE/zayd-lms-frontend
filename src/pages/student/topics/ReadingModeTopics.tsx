@@ -1,4 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { readingFeedbackAction, loadViewedReadingFeedback, saveViewedReadingFeedback } from '@/utils/readingVocabularyFeedback';
+import { readingPracticeSpeechText, readingPracticeAudioUrl } from '@/utils/readingPracticeAudio';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BarChart3, ChevronLeft, Mic, Square, Trash2, Check, MessageCircle, Pause, Play, LoaderCircle, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
@@ -11,8 +13,8 @@ import FeedbackModal from '@/components/ui/FeedbackModal';
 import { ContentPolicyWarningModal } from '@/components/ui/ContentPolicyWarningModal';
 import { useLearningProgressRefresh } from '@/hooks/useLearningProgressRefresh';
 import { useAudioPlayback } from '@/hooks/useAudioPlayback';
-import { fetchUnitLessons } from '@/services/learningService';
-import { getNextLessonPath } from '@/utils/learning-navigation';
+import { fetchLessonModes, fetchUnitLessons } from '@/services/learningService';
+import { getLearningModePath, getNextLessonPath, isLockedLearningItem } from '@/utils/learning-navigation';
 import SpeechAssessmentModal, { isSpeechAssessment, SpeechAssessment } from '@/components/ui/SpeechAssessmentModal';
 import ReactMarkdown from 'react-markdown';
 
@@ -114,6 +116,15 @@ export default function ReadingModeTopics() {
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [isJustCompleted, setIsJustCompleted] = useState(false);
   const [activeFeedback, setActiveFeedback] = useState<string | null>(null);
+  const [viewedFeedbackIds, setViewedFeedbackIds] = useState(() => loadViewedReadingFeedback(lessonModeId));
+  const openReadingFeedback = useCallback((id: string, feedback: string) => {
+    setActiveFeedback(feedback);
+    setViewedFeedbackIds(previous => {
+      const next = new Set(previous).add(id);
+      saveViewedReadingFeedback(lessonModeId, next);
+      return next;
+    });
+  }, [lessonModeId]);
   const [activeAssessment, setActiveAssessment] = useState<SpeechAssessment | null>(null);
   const [activeVocabularyCard, setActiveVocabularyCard] = useState<ReadingVocabularyCard | null>(null);
   const [hasStartedShadowReading, setHasStartedShadowReading] = useState(false);
@@ -184,7 +195,15 @@ export default function ReadingModeTopics() {
 
   useEffect(() => {
     setHasStartedShadowReading(false);
+    setViewedFeedbackIds(loadViewedReadingFeedback(lessonModeId));
   }, [lessonModeId]);
+
+  useEffect(() => {
+    const latest = [...chatHistory].reverse().find(message => message.role === 'assistant');
+    if (latest?.feedback && readingFeedbackAction(latest.readingVocabularyFeedback, viewedFeedbackIds.has(latest.id)) === 'open') {
+      openReadingFeedback(latest.id, latest.feedback);
+    }
+  }, [chatHistory, viewedFeedbackIds, openReadingFeedback]);
 
   useEffect(() => {
     setCurrentMcqIndex(0);
@@ -250,9 +269,8 @@ export default function ReadingModeTopics() {
     window.speechSynthesis.cancel();
     setIsFallbackSpeechPaused(false);
 
-    // Read the sentence itself, rather than the surrounding instruction.
-    const sentence = content.match(/"([^"\n]+)"/)?.[1] || content;
-    const utterance = new SpeechSynthesisUtterance(sentence);
+    // Callers supply the full target directly, preserving dialogue quotes.
+    const utterance = new SpeechSynthesisUtterance(content);
     utterance.onend = () => {
       if (fallbackSpeechRef.current === utterance) {
         fallbackSpeechRef.current = null;
@@ -360,8 +378,19 @@ export default function ReadingModeTopics() {
     setShowCompletionModal(false);
     if (courseId && unitId && lessonId) {
       try {
+        const context = { courseId, unitId, lessonId };
+        const modes = await fetchLessonModes(lessonId);
+        const currentIndex = modes.findIndex((mode) => mode.id === lessonModeId);
+        const nextMode = currentIndex >= 0
+          ? modes.slice(currentIndex + 1).find((mode) =>
+            !isLockedLearningItem(mode) && mode.status !== 'completed')
+          : undefined;
+        if (nextMode) {
+          navigate(getLearningModePath(context, nextMode), { replace: true });
+          return;
+        }
         const lessons = await fetchUnitLessons(unitId);
-        navigate(getNextLessonPath({ courseId, unitId, lessonId }, lessons), { replace: true });
+        navigate(getNextLessonPath(context, lessons), { replace: true });
         return;
       } catch {
         // The learner can still safely return to the refreshed lesson list.
@@ -654,8 +683,9 @@ export default function ReadingModeTopics() {
               )}
               {chatHistory.map((msg, index) => (
                 (() => {
-                  const hasSpeechFallback =
-                    msg.role === 'assistant' && !msg.audioUrl && Boolean(msg.content.trim());
+                  const practiceSpeechText = msg.role === 'assistant' ? readingPracticeSpeechText(msg) : null;
+                  const practiceAudioUrl = msg.role === 'assistant' ? readingPracticeAudioUrl(msg) : null;
+                  const hasSpeechFallback = Boolean(practiceSpeechText && !practiceAudioUrl);
                   const isFallbackSpeechPlaying = fallbackSpeechMessageId === msg.id;
                   const hasSavedSpeechAssessment = isSpeechAssessment(msg.assessments);
                   // Browser object URLs are available only for the live
@@ -749,24 +779,24 @@ export default function ReadingModeTopics() {
                       )}
                     </div>
                   )}
-                  {msg.role === 'assistant' && (msg.audioUrl || msg.feedback || hasSpeechFallback) && (
+                  {msg.role === 'assistant' && (practiceAudioUrl || msg.feedback || hasSpeechFallback) && (
                     <div className="mt-3 flex items-center gap-4 border-t border-[#E5E7EB] pt-2.5">
-                      {(msg.audioUrl || hasSpeechFallback) && (
+                      {(practiceAudioUrl || hasSpeechFallback) && (
                         <button
                           type="button"
-                          onClick={() => msg.audioUrl
-                            ? toggleStoredAudio(msg.id, msg.audioUrl)
-                            : toggleInitialReadingPromptSpeech(msg.id, msg.content)}
+                          onClick={() => practiceAudioUrl
+                            ? toggleStoredAudio(msg.id, practiceAudioUrl)
+                            : toggleInitialReadingPromptSpeech(msg.id, practiceSpeechText!)}
                           className="flex items-center text-[#0F1450] hover:text-[#5C9DFF] transition-colors"
                           aria-label={
-                            (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || (isFallbackSpeechPlaying && !isFallbackSpeechPaused)
+                            (practiceAudioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || (isFallbackSpeechPlaying && !isFallbackSpeechPaused)
                               ? 'Pause AI response'
                               : 'Play AI response'
                           }
                         >
                           {loadingAudioId === msg.id ? (
                             <LoaderCircle className="w-5 h-5 animate-spin" />
-                          ) : (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || (isFallbackSpeechPlaying && !isFallbackSpeechPaused) ? (
+                          ) : (practiceAudioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || (isFallbackSpeechPlaying && !isFallbackSpeechPaused) ? (
                             <Pause className="w-5 h-5" />
                           ) : (
                             <Play className="w-5 h-5" />
@@ -776,8 +806,9 @@ export default function ReadingModeTopics() {
                       {msg.feedback && (
                         <button
                           type="button"
-                          onClick={() => setActiveFeedback(msg.feedback || null)}
-                          className="flex items-center gap-1.5 text-[#5C9DFF] hover:text-[#4A8BEB] transition-colors font-semibold text-[12px] leading-[15px]"
+                          onClick={() => openReadingFeedback(msg.id, msg.feedback!)}
+                          className={`flex items-center gap-1.5 text-[#5C9DFF] hover:text-[#4A8BEB] transition-colors font-semibold text-[12px] leading-[15px] ${readingFeedbackAction(msg.readingVocabularyFeedback, viewedFeedbackIds.has(msg.id)) === 'glow' ? 'reading-vocabulary-feedback-glow' : ''}`}
+                          aria-label={readingFeedbackAction(msg.readingVocabularyFeedback, viewedFeedbackIds.has(msg.id)) === 'glow' ? 'View feedback to correct your vocabulary reading' : 'View feedback'}
                         >
                           <MessageCircle className="w-3.5 h-3.5" />
                           <span>View Feedback</span>

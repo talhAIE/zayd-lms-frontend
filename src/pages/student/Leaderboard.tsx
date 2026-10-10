@@ -10,6 +10,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { resolveLeaderboardLevel } from "@/utils/leaderboardLevel";
 import InteractiveTour, { TourStep } from "@/components/ui/InteractiveTour";
 
 import leaderboardImg1 from "@/assets/user-guide/leaderboard/1.png";
@@ -93,9 +94,12 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { leaderboard, currentUser, isLoading, error } = useAppSelector(
+  const { leaderboard, currentUser, scope, isLoading, error } = useAppSelector(
     (state) => state.leaderboard
   );
+  const currentUserLevel = scope === 'general' ? null : resolveLeaderboardLevel(currentUser, parsedUser);
+  const isGeneralLeaderboard = scope === 'general' || Boolean(currentUser && !currentUserLevel);
+  const assessmentNotice = isGeneralLeaderboard ? <LeaderboardAssessmentNotice /> : null;
 
   const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth < 768 : false);
   
@@ -229,10 +233,11 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   if (!leaderboard || leaderboard.length === 0) {
     return (
       <div className="mx-auto p-6 text-center">
+        {assessmentNotice}
         {/* <h1 className="text-3xl font-bold mb-8 text-center text-gray-700">Leaderboard</h1> */}
         <div className="bg-white p-4 md:p-6 rounded-xl shadow-xl text-gray-500 py-10">
-          {currentUser && !currentUser.aiCefrLevel
-            ? 'Your language level has not been assessed yet. Complete a speaking activity to receive an assessment and join your level’s leaderboard.'
+          {isGeneralLeaderboard
+            ? 'No rankings are available this week. Keep learning and check back soon.'
             : 'No rankings are available for your level this week. Keep learning and check back soon.'}
         </div>
       </div>
@@ -283,7 +288,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     return "bg-gray-100 border-gray-300";
   };
 
-  const getLevelBadgeColor = (level?: string) => {
+  const getLevelBadgeColor = (level?: string | null) => {
     if (!level) return "bg-gray-100 text-gray-800";
     const levels: Record<string, string> = {
       A1: "bg-green-100 text-green-800",
@@ -305,6 +310,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
 
   return (
     <div className="mx-auto pb-20">
+      {assessmentNotice}
+      {isGeneralLeaderboard && <p className="mb-3 text-sm font-semibold text-slate-600">General weekly leaderboard</p>}
       {/* <h1 className="relative text-3xl font-bold mb-8 text-center text-gray-700">Leaderboard</h1> */}
 
       <div id="tour-leaderboard-main" className="bg-white p-4 md:p-6 rounded-xl shadow-xl">
@@ -660,10 +667,10 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                     <div className="text-xs text-gray-500 mb-1">Level</div>
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${getLevelBadgeColor(
-                        currentUser.aiCefrLevel
+                        currentUserLevel
                       )} border border-blue-300`}
                     >
-                      {currentUser.aiCefrLevel || "N/A"}
+                      {currentUserLevel || "N/A"}
                     </span>
                   </div>
                   <div>
@@ -719,10 +726,10 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                     <td className="py-4 px-3">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${getLevelBadgeColor(
-                          currentUser.aiCefrLevel
+                          currentUserLevel
                         )} border border-blue-300`}
                       >
-                        {currentUser.aiCefrLevel || "N/A"}
+                        {currentUserLevel || "N/A"}
                       </span>
                     </td>
                     <td className="py-4 px-3">
@@ -810,8 +817,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                   </td>
                   <td className="py-3 px-3 text-sm text-blue-600 max-w-[120px]">{currentUser.schoolName || '-'}</td>
                   <td className="py-3 px-3">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getLevelBadgeColor(currentUser.aiCefrLevel)} border border-blue-300`}>
-                      {currentUser.aiCefrLevel || 'N/A'}
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getLevelBadgeColor(currentUserLevel)} border border-blue-300`}>
+                      {currentUserLevel || 'N/A'}
                     </span>
                   </td>
                   <td className="py-3 px-3">
@@ -870,10 +877,10 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                     <td className="py-3 px-3" style={{ width: "120px" }}>
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${getLevelBadgeColor(
-                          currentUser.aiCefrLevel
+                          currentUserLevel
                         )} border border-blue-300`}
                       >
-                        {currentUser.aiCefrLevel || "N/A"}
+                        {currentUserLevel || "N/A"}
                       </span>
                     </td>
                     <td className="py-3 px-3" style={{ width: "120px" }}>
@@ -907,3 +914,12 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
 };
 
 export default Leaderboard;
+
+function LeaderboardAssessmentNotice() {
+  return (
+    <div role="status" className="mb-4 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-slate-600">
+      Your language level has not been assessed yet. You can view the general weekly leaderboard.
+      Complete a speaking activity to receive an assessment and join your level’s leaderboard. Your personal rank is unavailable until then.
+    </div>
+  );
+}
