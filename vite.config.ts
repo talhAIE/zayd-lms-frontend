@@ -1,10 +1,10 @@
 import * as  path from 'path';
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import { defineConfig, type ProxyOptions } from 'vite';
 import { readFile } from 'node:fs/promises';
 
 export default defineConfig(({ command }) => ({
-  define: command === 'serve' && process.env.SCIENCE_SPARK_JOURNEY_HARNESS === 'true'
+  define: command === 'serve' && (process.env.SCIENCE_SPARK_JOURNEY_HARNESS === 'true' || process.env.SPARK_SCIENCE_MOTION_HARNESS === 'true')
     ? { 'import.meta.env.VITE_API_BASE_URL': JSON.stringify('') } : {},
   plugins: [react(), {
     name: 'science-spark-development-harness',
@@ -25,11 +25,15 @@ export default defineConfig(({ command }) => ({
     },
   }],
   server: {
+    ...(command === 'serve' && process.env.SPARK_SCIENCE_MOTION_HARNESS === 'true' ? { proxy: {
+      '/api/v1': { target: 'http://127.0.0.1:5016', changeOrigin: true },
+      '/__motion-test': { target: 'http://127.0.0.1:5016', changeOrigin: true },
+    } as Record<string, ProxyOptions> } : {}),
     // Opt-in local verification only; no test API exists in the production app.
     ...(process.env.SCIENCE_SPARK_JOURNEY_HARNESS === 'true' ? { proxy: {
       '/api/v1': { target: 'http://127.0.0.1:5015', changeOrigin: true },
       '/__science-spark-test': { target: 'http://127.0.0.1:5015', changeOrigin: true },
-    } } : {}),
+    } as Record<string, ProxyOptions> } : {}),
     watch: {
       usePolling: false,
       interval: 1000,
