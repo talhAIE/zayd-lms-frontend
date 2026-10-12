@@ -159,7 +159,7 @@ export function SparkScienceCoursePage() {
             </span>
           </div>
           <div className="mt-4">
-            <p className="text-[13px] text-gray-500">Unit 1</p>
+            <p className="text-[13px] text-gray-500">Unit 2</p>
             <h3 className="text-lg font-bold">{course.unitTitle}</h3>
             <p className="text-[13px] text-[#949494]">
               5 available activities · {course.status.replace(/_/g, " ")}
@@ -262,7 +262,7 @@ function Activity({
     return (
       <section className="space-y-6">
         <Link className="underline" to={SPARK_UNIT_PATH}>
-          Back to Unit 1
+          Back to Unit 2
         </Link>
         <h1 className="text-3xl font-bold">{activity.title}</h1>
         <button
@@ -289,7 +289,6 @@ function Activity({
       activityKey={activity.key}
       title={activity.title}
       onReturn={() => navigate(SPARK_UNIT_PATH)}
-      onNavigate={(key) => navigate(activityPath(key))}
     />
   );
 }
@@ -299,20 +298,19 @@ function Viewer({
   activityKey,
   title,
   onReturn,
-  onNavigate,
 }: {
   owner: ScienceOwner;
   activityKey: SparkActivityKey;
   title: string;
   onReturn: () => void;
-  onNavigate: (key: SparkActivityKey) => void;
 }) {
   const [viewer, setViewer] = useState<SparkViewer>(),
     [error, setError] = useState(""),
     [attempt, setAttempt] = useState(0),
     [loaded, setLoaded] = useState(false),
     [saving, setSaving] = useState(false),
-    [saveError, setSaveError] = useState("");
+    [saveError, setSaveError] = useState(""),
+    [navigationBlocked, setNavigationBlocked] = useState(false);
   const iframe = useRef<HTMLIFrameElement>(null),
     life = useRef<AbortController>(),
     busy = useRef(false);
@@ -322,6 +320,7 @@ function Viewer({
     setViewer(undefined);
     setError("");
     setLoaded(false);
+    setNavigationBlocked(false);
     void api
       .viewer(owner, controller.signal, activityKey)
       .then((result) => {
@@ -338,8 +337,6 @@ function Viewer({
       });
     return () => controller.abort();
   }, [owner, activityKey, attempt]);
-  const navigateRef = useRef(onNavigate);
-  navigateRef.current = onNavigate;
   useEffect(() => {
     const listener = (event: MessageEvent) => {
       const data = event.data;
@@ -348,21 +345,12 @@ function Viewer({
         event.source !== iframe.current?.contentWindow ||
         event.origin !== "null" ||
         !data ||
-        data.type !== "spark-science-navigation" ||
+        data.type !== "spark-science-navigation-blocked" ||
         data.nonce !== viewer.nonce ||
-        Object.keys(data).sort().join(",") !== "activityKey,nonce,type"
+        Object.keys(data).sort().join(",") !== "nonce,type"
       )
         return;
-      if (
-        [
-          "introduction",
-          "lesson-1",
-          "lesson-2",
-          "lesson-3",
-          "module-review",
-        ].includes(data.activityKey)
-      )
-        navigateRef.current(data.activityKey);
+      setNavigationBlocked(true);
     };
     window.addEventListener("message", listener);
     return () => window.removeEventListener("message", listener);
@@ -393,11 +381,18 @@ function Viewer({
     }
   }, [owner, activityKey, loaded, onReturn]);
   return (
-    <section className="space-y-4">
-      <Link className="underline" to={SPARK_UNIT_PATH}>
-        Back to Unit 1
-      </Link>
-      <h1 className="text-xl font-bold">{title}</h1>
+    <section className="space-y-2">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+        <Link className="underline text-sm" to={SPARK_UNIT_PATH}>
+          Back to Unit 2
+        </Link>
+        <h1 className="text-lg font-bold">{title}</h1>
+      </div>
+      {navigationBlocked && (
+        <p role="status" className="text-sm text-gray-600">
+          Use the blue Next activity button to finish this activity and return to Unit 2.
+        </p>
+      )}
       {error ? (
         <ErrorBox error={error} retry={() => setAttempt((n) => n + 1)} />
       ) : !viewer ? (
@@ -413,11 +408,11 @@ function Viewer({
             title={title}
             onLoad={() => setLoaded(true)}
             className="block w-full border-0 rounded-lg"
-            style={{ height: "max(560px, 78dvh)" }}
+            style={{ height: "max(420px, calc(100dvh - 184px))" }}
           />
-          <div className="sticky bottom-0 z-20 bg-white border rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+          <div className="sticky bottom-0 z-20 bg-white border rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 shadow-sm">
             <p className="text-sm text-gray-500">
-              When you finish, save this activity and return to Unit 1.
+              When you finish, save this activity and return to Unit 2.
             </p>
             <button
               disabled={!loaded || saving}
