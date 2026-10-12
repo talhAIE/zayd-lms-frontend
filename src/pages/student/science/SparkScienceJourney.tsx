@@ -159,7 +159,7 @@ export function SparkScienceCoursePage() {
             </span>
           </div>
           <div className="mt-4">
-            <p className="text-[13px] text-gray-500">Unit 1</p>
+            <p className="text-[13px] text-gray-500">Unit 2</p>
             <h3 className="text-lg font-bold">{course.unitTitle}</h3>
             <p className="text-[13px] text-[#949494]">
               5 available activities · {course.status.replace(/_/g, " ")}
@@ -262,7 +262,7 @@ function Activity({
     return (
       <section className="space-y-6">
         <Link className="underline" to={SPARK_UNIT_PATH}>
-          Back to Unit 1
+          Back to Unit 2
         </Link>
         <h1 className="text-3xl font-bold">{activity.title}</h1>
         <button
@@ -383,12 +383,12 @@ function Viewer({
   return (
     <section className="space-y-4">
       <Link className="underline" to={SPARK_UNIT_PATH}>
-        Back to Unit 1
+        Back to Unit 2
       </Link>
       <h1 className="text-xl font-bold">{title}</h1>
       {navigationBlocked && (
         <p role="status" className="text-sm text-gray-600">
-          Use the blue Next activity button to finish this activity and return to Unit 1.
+          Use the blue Next activity button to finish this activity and return to Unit 2.
         </p>
       )}
       {error ? (
@@ -410,7 +410,7 @@ function Viewer({
           />
           <div className="sticky bottom-0 z-20 bg-white border rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 shadow-sm">
             <p className="text-sm text-gray-500">
-              When you finish, save this activity and return to Unit 1.
+              When you finish, save this activity and return to Unit 2.
             </p>
             <button
               disabled={!loaded || saving}
