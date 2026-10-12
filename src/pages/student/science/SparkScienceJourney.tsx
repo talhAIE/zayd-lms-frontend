@@ -310,7 +310,8 @@ function Viewer({
     [loaded, setLoaded] = useState(false),
     [saving, setSaving] = useState(false),
     [saveError, setSaveError] = useState(""),
-    [navigationBlocked, setNavigationBlocked] = useState(false);
+    [navigationBlocked, setNavigationBlocked] = useState(false),
+    [frameRevision, setFrameRevision] = useState(0);
   const iframe = useRef<HTMLIFrameElement>(null),
     life = useRef<AbortController>(),
     busy = useRef(false);
@@ -345,12 +346,20 @@ function Viewer({
         event.source !== iframe.current?.contentWindow ||
         event.origin !== "null" ||
         !data ||
-        data.type !== "spark-science-navigation-blocked" ||
-        data.nonce !== viewer.nonce ||
-        Object.keys(data).sort().join(",") !== "nonce,type"
+        typeof data !== "object" ||
+        data.nonce !== viewer.nonce
       )
         return;
+      const fields = Object.keys(data).sort().join(",");
+      const blocked = data.type === "spark-science-navigation-blocked" && fields === "nonce,type";
+      // Older deployed backends send a navigation request. Restore the current
+      // viewer instead of following that request or leaving its bridge visible.
+      const legacy = data.type === "spark-science-navigation" && fields === "activityKey,nonce,type" &&
+        ["introduction", "lesson-1", "lesson-2", "lesson-3", "module-review"].includes(data.activityKey);
+      if (!blocked && !legacy) return;
       setNavigationBlocked(true);
+      setLoaded(false);
+      setFrameRevision((revision) => revision + 1);
     };
     window.addEventListener("message", listener);
     return () => window.removeEventListener("message", listener);
@@ -400,7 +409,7 @@ function Viewer({
       ) : (
         <>
           <iframe
-            key={viewer.nonce}
+            key={`${viewer.nonce}:${frameRevision}`}
             ref={iframe}
             src={sparkViewerUrl(viewer)}
             sandbox="allow-scripts"
