@@ -30,6 +30,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   const location = useLocation();
   const isScienceRoute = location.pathname === '/student/science' || location.pathname.startsWith('/student/science/');
   const isScienceActivity = isScienceRoute && location.pathname.includes('/activities/');
+  const isSparkScienceActivity = location.pathname.startsWith('/student/science/spark-science/') && isScienceActivity;
   const previousSidebar = useRef(false);
   useEffect(() => {
     if (!isScienceActivity) return;
@@ -321,7 +322,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
       {/* Main content */}
       <div className={`flex flex-col flex-1 w-full max-w-full overflow-x-hidden transition-all duration-300 ${isDesktopCollapsed ? 'xl:pl-0' : 'xl:pl-64'}`}>
         {/* Top header */}
-        <header className="sticky top-0 z-40 flex xl:hidden items-center justify-between h-16 px-4 bg-background xl:px-8">
+        <header className={`sticky top-0 z-40 flex xl:hidden items-center justify-between ${isSparkScienceActivity ? 'h-12' : 'h-16'} px-4 bg-background xl:px-8`}>
           <Button
             variant="ghost"
             size="icon"
@@ -366,7 +367,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
             </svg>
           </Button>
         </header>
-        <header className="sticky top-0 z-40 hidden xl:flex items-center justify-between h-16 bg-background py-10 px-8 ">
+        <header className={`sticky top-0 z-40 hidden xl:flex items-center justify-between bg-background px-8 ${isSparkScienceActivity ? 'h-12 py-2' : 'h-16 py-10'}`}>
           <div className="flex items-center">
             <Button
               variant="ghost"
@@ -417,7 +418,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
 
         {/* Main Content */}
         <main className="flex-1 w-full max-w-full overflow-x-hidden">
-          <div className="p-4 w-full max-w-full overflow-x-hidden">{children}</div>
+          <div className={`${isSparkScienceActivity ? 'px-4 py-2' : 'p-4'} w-full max-w-full overflow-x-hidden`}>{children}</div>
         </main>
       </div>
 
