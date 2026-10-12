@@ -289,7 +289,6 @@ function Activity({
       activityKey={activity.key}
       title={activity.title}
       onReturn={() => navigate(SPARK_UNIT_PATH)}
-      onNavigate={(key) => navigate(activityPath(key))}
     />
   );
 }
@@ -299,20 +298,19 @@ function Viewer({
   activityKey,
   title,
   onReturn,
-  onNavigate,
 }: {
   owner: ScienceOwner;
   activityKey: SparkActivityKey;
   title: string;
   onReturn: () => void;
-  onNavigate: (key: SparkActivityKey) => void;
 }) {
   const [viewer, setViewer] = useState<SparkViewer>(),
     [error, setError] = useState(""),
     [attempt, setAttempt] = useState(0),
     [loaded, setLoaded] = useState(false),
     [saving, setSaving] = useState(false),
-    [saveError, setSaveError] = useState("");
+    [saveError, setSaveError] = useState(""),
+    [navigationBlocked, setNavigationBlocked] = useState(false);
   const iframe = useRef<HTMLIFrameElement>(null),
     life = useRef<AbortController>(),
     busy = useRef(false);
@@ -322,6 +320,7 @@ function Viewer({
     setViewer(undefined);
     setError("");
     setLoaded(false);
+    setNavigationBlocked(false);
     void api
       .viewer(owner, controller.signal, activityKey)
       .then((result) => {
@@ -338,8 +337,6 @@ function Viewer({
       });
     return () => controller.abort();
   }, [owner, activityKey, attempt]);
-  const navigateRef = useRef(onNavigate);
-  navigateRef.current = onNavigate;
   useEffect(() => {
     const listener = (event: MessageEvent) => {
       const data = event.data;
@@ -348,21 +345,12 @@ function Viewer({
         event.source !== iframe.current?.contentWindow ||
         event.origin !== "null" ||
         !data ||
-        data.type !== "spark-science-navigation" ||
+        data.type !== "spark-science-navigation-blocked" ||
         data.nonce !== viewer.nonce ||
-        Object.keys(data).sort().join(",") !== "activityKey,nonce,type"
+        Object.keys(data).sort().join(",") !== "nonce,type"
       )
         return;
-      if (
-        [
-          "introduction",
-          "lesson-1",
-          "lesson-2",
-          "lesson-3",
-          "module-review",
-        ].includes(data.activityKey)
-      )
-        navigateRef.current(data.activityKey);
+      setNavigationBlocked(true);
     };
     window.addEventListener("message", listener);
     return () => window.removeEventListener("message", listener);
@@ -398,6 +386,11 @@ function Viewer({
         Back to Unit 1
       </Link>
       <h1 className="text-xl font-bold">{title}</h1>
+      {navigationBlocked && (
+        <p role="status" className="text-sm text-gray-600">
+          Use the blue Next activity button to finish this activity and return to Unit 1.
+        </p>
+      )}
       {error ? (
         <ErrorBox error={error} retry={() => setAttempt((n) => n + 1)} />
       ) : !viewer ? (
