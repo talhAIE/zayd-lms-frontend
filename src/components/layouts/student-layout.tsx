@@ -33,14 +33,14 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   const isSparkScienceActivity = location.pathname.startsWith('/student/science/spark-science/') && isScienceActivity;
   const previousSidebar = useRef(false);
   useEffect(() => {
-    if (!isScienceActivity) return;
+    if (!isScienceActivity || isSparkScienceActivity) return;
     previousSidebar.current = isDesktopCollapsed;
     setIsDesktopCollapsed(true);
     return () => setIsDesktopCollapsed(previousSidebar.current);
-    // Collapse when entering an activity, but allow the learner to reopen it.
+    // Keep Spark Science's sidebar open; retain the older Science viewer behavior.
     // Restore their prior preference on leaving; toggling is not a route change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isScienceActivity]);
+  }, [isScienceActivity, isSparkScienceActivity]);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
