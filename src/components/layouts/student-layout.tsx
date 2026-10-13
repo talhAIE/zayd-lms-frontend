@@ -8,7 +8,7 @@ import achievementsIcon from "@/assets/sidebar/achievements.svg";
 import leaderboardIcon from "@/assets/sidebar/leaderboard.svg";
 import learningModeIcon from "@/assets/sidebar/learningMode.svg";
 import supporticon from "@/assets/sidebar/support.svg";
-import Logo from "@/assets/sidebar/Logo.png";
+import Logo from "@/assets/zayd-logo.png";
 
 import { Menu, X, ChevronLeft, ChevronRight } from "lucide-react";
 // import { ThemeToggle } from '@/components/theme-toggle';

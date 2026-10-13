@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import navLogoPng from "@/assets/images/chinese-landingpage/zayd-mascot-orange.png";
+import navLogoPng from "@/assets/zayd-logo.png";
 import { useLanguage } from "@/components/language-provider";
 
 const menuItems = [
@@ -109,9 +109,7 @@ export default function ChineseNavbar() {
           <img
             src={navLogoPng}
             alt="Zayd AI Logo"
-            width={100}
-            height={100}
-            style={{ objectFit: "contain" }}
+            className="w-full h-full object-contain"
           />
         </div>
 
@@ -246,9 +244,7 @@ export default function ChineseNavbar() {
               <img
                 src={navLogoPng}
                 alt="Zayd AI Logo"
-                width={50}
-                height={50}
-                style={{ objectFit: "contain" }}
+                className="w-full h-full object-contain"
               />
             </div>
             <button

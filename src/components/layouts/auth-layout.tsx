@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import backdrop from "@/assets/images/backdrop.png";
-import logo from "@/assets/aITutor.svg";
+import logo from "@/assets/zayd-logo.png";
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -22,7 +22,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
                 to="/"
                 className="font-semibold text-xl text-[var(--font-dark)]"
               >
-                <img src={logo} alt="AI Tutor Logo" />
+                <img src={logo} alt="ZAYD Logo" className="h-12 w-auto object-contain" />
               </Link>
             </div>
           </div>

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import dashboardIcon from "@/assets/sidebar/dashboard.svg";
-import Logo from "@/assets/sidebar/Logo.png";
+import Logo from "@/assets/zayd-logo.png";
 import { Menu, X, ChevronLeft } from "lucide-react";
 // import { ThemeToggle } from '@/components/theme-toggle';
 import { ScrollArea } from "@/components/ui/scroll-area";

@@ -1,5 +1,5 @@
 import { ChevronRight, Play } from "lucide-react";
-import Logo from "@/assets/sidebar/Logo.png";
+import Logo from "@/assets/zayd-logo.png";
 import DashboardBadge from "@/assets/svgs/dashboard_badge.svg";
 import TeachBird from "@/assets/svgs/dashboardTeach.svg";
 import dashboardIcon from "@/assets/sidebar/dashboard.svg";
