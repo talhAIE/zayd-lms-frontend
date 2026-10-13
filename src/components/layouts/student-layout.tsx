@@ -3,11 +3,6 @@ import { useNavigate } from "react-router-dom";
 // import { useAppSelector } from '@/redux/hooks';
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import dashboardIcon from "@/assets/sidebar/dashboard.svg";
-import achievementsIcon from "@/assets/sidebar/achievements.svg";
-import leaderboardIcon from "@/assets/sidebar/leaderboard.svg";
-import learningModeIcon from "@/assets/sidebar/learningMode.svg";
-import supporticon from "@/assets/sidebar/support.svg";
 import Logo from "@/assets/zayd-logo.png";
 
 import { Menu, X, ChevronLeft, ChevronRight } from "lucide-react";
@@ -18,6 +13,7 @@ import { logout } from "@/redux/slices/authSlice";
 import apiClient from "@/config/ApiConfig";
 import { toast } from "sonner";
 import StudentReportModal from "../ui/StudentReportModal";
+import { SidebarNavLink, type SidebarLabel } from "./SidebarNavLink";
 import { sparkScienceBackTarget } from "@/utils/sparkScienceNavigation";
 
 interface StudentLayoutProps {
@@ -26,7 +22,14 @@ interface StudentLayoutProps {
 
 export function StudentLayout({ children }: StudentLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
+  const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(() => {
+    try { return sessionStorage.getItem("zayd.sidebar.collapsed") === "true"; }
+    catch { return false; }
+  });
+  useEffect(() => {
+    try { sessionStorage.setItem("zayd.sidebar.collapsed", String(isDesktopCollapsed)); }
+    catch { /* The sidebar still works when browser storage is unavailable. */ }
+  }, [isDesktopCollapsed]);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const location = useLocation();
   const isScienceRoute = location.pathname === '/student/science' || location.pathname.startsWith('/student/science/');
@@ -182,7 +185,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   }, [user?.id, user?.role, isScienceRoute]);
 
   const isActive = (path: string) => {
-    return location.pathname === path;
+    return location.pathname === path || location.pathname.startsWith(`${path}/`) || (path === "/student/courses" && isScienceRoute);
   };
 
   const handleLogout = async () => {
@@ -199,24 +202,21 @@ export function StudentLayout({ children }: StudentLayoutProps) {
     setIsReportModalOpen(false);
   };
 
-  const sidebarItems = [
-    { path: "/student/dashboard", icon: dashboardIcon, label: "Dashboard" },
+  const sidebarItems: { path: string; label: SidebarLabel }[] = [
+    { path: "/student/dashboard", label: "Dashboard" },
     {
       path: "/student/courses",
-      icon: learningModeIcon,
       label: "Courses",
     },
     {
       path: "/student/achievements",
-      icon: achievementsIcon,
       label: "Achievements",
     },
     {
       path: "/student/leaderboard",
-      icon: leaderboardIcon,
       label: "Leaderboard",
     },
-    { path: "/student/support", icon: supporticon, label: "Support" },
+    { path: "/student/support", label: "Support" },
   ];
 
   return (
@@ -259,22 +259,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
           <ScrollArea className="flex-1">
             <div className="space-y-2 pr-4">
               {sidebarItems.map((item) => (
-                <Link
-                  key={item.path}
-                  id={`mobile-sidebar-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
-                  to={item.path}
-                  className={`flex items-center gap-3 py-3 px-4 rounded-lg font-medium transition-colors ${
-                    isActive(item.path)
-                      ? "bg-[#CCEAFF] text-black font-bold"
-                      : "text-black hover:bg-gray-50"
-                  }`}
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  <div className="w-6 h-5 flex-shrink-0">
-                    <img src={item.icon} alt={item.label} className="h-5 w-5" />
-                  </div>
-                  <span className="text-lg">{item.label}</span>
-                </Link>
+                <SidebarNavLink key={item.path} to={item.path} label={item.label} active={isActive(item.path)} onClick={() => setSidebarOpen(false)} />
               ))}
             </div>
           </ScrollArea>
@@ -283,16 +268,18 @@ export function StudentLayout({ children }: StudentLayoutProps) {
       {/* )} */}
 
       {/* Sidebar for desktop */}
-      <nav className={`hidden xl:flex xl:flex-col xl:w-64 xl:fixed xl:inset-y-0 my-6 rounded-3xl mr-2 transition-all duration-300 z-30 bg-white shadow-sm ${isDesktopCollapsed ? 'xl:-translate-x-full' : 'xl:translate-x-0'}`}>
+      <nav className={`hidden xl:flex xl:flex-col xl:fixed xl:inset-y-0 my-6 rounded-3xl mr-2 transition-all duration-300 z-50 bg-white shadow-sm ${isDesktopCollapsed ? 'xl:w-20' : 'xl:w-64'}`}>
         <Button
           variant="ghost"
           size="icon"
           onClick={() => setIsDesktopCollapsed(!isDesktopCollapsed)}
-          className={`absolute top-20 bg-white border border-gray-200 shadow-md rounded-full w-8 h-8 z-50 hidden xl:flex items-center justify-center hover:bg-gray-50 transition-all duration-300 ${isDesktopCollapsed ? '-right-8' : '-right-4'}`}
+          aria-label={isDesktopCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-expanded={!isDesktopCollapsed}
+          className="absolute top-20 -right-4 bg-white border border-gray-200 shadow-md rounded-full w-8 h-8 z-50 hidden xl:flex items-center justify-center hover:bg-gray-50 transition-all duration-300"
         >
           {isDesktopCollapsed ? <ChevronRight className="w-5 h-5 text-gray-600" /> : <ChevronLeft className="w-5 h-5 text-gray-600" />}
         </Button>
-        <div className="p-6">
+        <div className={isDesktopCollapsed ? "p-3" : "p-6"}>
           <Link
             to="/student/dashboard"
             className="flex items-center justify-center gap-2 text-2xl font-bold text-black h-12"
@@ -301,32 +288,16 @@ export function StudentLayout({ children }: StudentLayoutProps) {
           </Link>
         </div>
         <ScrollArea className="flex-1 mt-16 overflow-hidden">
-          <div className={`space-y-6 flex flex-col items-center transition-all duration-300 ${isDesktopCollapsed ? 'px-4' : 'pl-8 pr-4'}`}>
+          <div className={`space-y-3 flex flex-col items-center transition-all duration-300 ${isDesktopCollapsed ? 'px-3' : 'px-4'}`}>
             {sidebarItems.map((item) => (
-              <div key={item.path} className="flex items-center w-full">
-                <Link
-                  id={`sidebar-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
-                  to={item.path}
-                  title={isDesktopCollapsed ? item.label : undefined}
-                  className={`flex items-center ${isDesktopCollapsed ? 'justify-center p-3' : 'justify-start gap-3 py-3 px-4'} rounded-xl font-medium transition-colors w-full ${
-                    isActive(item.path)
-                      ? "bg-[#CCEAFF] text-black font-bold"
-                      : "text-black hover:bg-gray-100/50 hover:text-black"
-                  }`}
-                >
-                  <div className="w-6 h-6 flex-shrink-0 flex items-center justify-center">
-                    <img src={item.icon} alt={item.label} className="h-5 w-5" />
-                  </div>
-                  {!isDesktopCollapsed && <span className="text-xl whitespace-nowrap">{item.label}</span>}
-                </Link>
-              </div>
+              <SidebarNavLink key={item.path} to={item.path} label={item.label} active={isActive(item.path)} collapsed={isDesktopCollapsed} />
             ))}
           </div>
         </ScrollArea>
       </nav>
 
       {/* Main content */}
-      <div className={`flex flex-col flex-1 w-full max-w-full overflow-x-hidden transition-all duration-300 ${isDesktopCollapsed ? 'xl:pl-0' : 'xl:pl-64'}`}>
+      <div className={`flex flex-col flex-1 w-full max-w-full overflow-x-hidden transition-all duration-300 ${isDesktopCollapsed ? 'xl:pl-20' : 'xl:pl-64'}`}>
         {/* Top header */}
         <header className={`sticky top-0 z-40 flex xl:hidden items-center justify-between ${isSparkScienceActivity ? 'h-12' : 'h-16'} px-4 bg-background xl:px-8`}>
           <div className="flex items-center">
