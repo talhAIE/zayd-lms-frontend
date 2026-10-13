@@ -1,5 +1,5 @@
 import footerImageImg from "@/assets/images/landingpage/footer-image.png";
-import logoImg from "@/assets/images/landingpage/logo.png";
+import logoImg from "@/assets/zayd-logo.png";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/components/language-provider";
 
@@ -194,7 +194,7 @@ export default function Footer() {
                 alt="ZAYD Logo"
                 width={96}
                 height={96}
-                className="mr-2"
+                className="mr-2 w-20 h-auto object-contain"
               />
             </div>
 

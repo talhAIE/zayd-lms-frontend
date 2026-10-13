@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 
 const FAVICON_SETS = {
   english: [
-    { id: "favicon-ico", size: "any", href: "/favicons/favicon.ico" },
+    { id: "favicon-logo", size: "any", href: "/favicons/zayd-logo.png" },
   ],
 } as const;
 
@@ -15,7 +15,7 @@ const ensureFaviconLink = (id: string) => {
     link = document.createElement("link");
     link.id = id;
     link.rel = "icon";
-    link.type = "image/x-icon";
+    link.type = "image/png";
     document.head.appendChild(link);
   }
   return link;

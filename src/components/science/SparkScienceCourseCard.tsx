@@ -7,8 +7,8 @@ import {
 } from "@/services/sparkScienceService";
 import type { ScienceOwner } from "@/services/scienceSparkService";
 
-export const SPARK_COURSE_PATH = "/student/science/spark-science";
-export const SPARK_UNIT_PATH = `${SPARK_COURSE_PATH}/unit-1`;
+import { SPARK_COURSE_PATH } from "@/utils/sparkScienceNavigation";
+export { SPARK_COURSE_PATH, SPARK_UNIT_PATH } from "@/utils/sparkScienceNavigation";
 export const SPARK_COURSE_IMAGE =
   "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80";
 

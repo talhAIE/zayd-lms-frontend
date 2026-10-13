@@ -17,7 +17,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { login, addPhoneNumber, clearError } from "@/redux/slices/authSlice";
 import { useEffect, useState } from "react";
 import charactersImg from "@/assets/images/characters.png";
-import zaydLogo from "@/assets/images/zaydLogo.png";
+import zaydLogo from "@/assets/zayd-logo.png";
 // import { ArrowLeft } from 'lucide-react';
 
 // Username form schema

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import navLogoPng from "@/assets/images/landingpage/nav-logo.png";
+import navLogoPng from "@/assets/zayd-logo.png";
 import { useLanguage } from "@/components/language-provider";
 
 const menuItems = [
@@ -110,9 +110,7 @@ export default function Navbar() {
           <img
             src={navLogoPng}
             alt="Zayd AI Logo"
-            width={50}
-            height={50}
-            style={{ objectFit: "contain" }}
+            className="w-full h-full object-contain"
           />
         </div>
 
@@ -227,9 +225,7 @@ export default function Navbar() {
               <img
                 src={navLogoPng}
                 alt="Zayd AI Logo"
-                width={50}
-                height={50}
-                style={{ objectFit: "contain" }}
+                className="w-full h-full object-contain"
               />
             </div>
             <button

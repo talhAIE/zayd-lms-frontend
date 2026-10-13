@@ -1,6 +1,6 @@
 import { Mail, Twitter, Instagram } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
-import logoImg from "@/assets/images/landingpage/logo.png";
+import logoImg from "@/assets/zayd-logo.png";
 import { motion } from "framer-motion";
 
 export default function Footer() {
