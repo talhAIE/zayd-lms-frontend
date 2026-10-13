@@ -18,6 +18,7 @@ import { logout } from "@/redux/slices/authSlice";
 import apiClient from "@/config/ApiConfig";
 import { toast } from "sonner";
 import StudentReportModal from "../ui/StudentReportModal";
+import { sparkScienceBackTarget } from "@/utils/sparkScienceNavigation";
 
 interface StudentLayoutProps {
   children: ReactNode;
@@ -42,6 +43,11 @@ export function StudentLayout({ children }: StudentLayoutProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isScienceActivity, isSparkScienceActivity]);
   const navigate = useNavigate();
+  const scienceBackTarget = sparkScienceBackTarget(location.pathname, location.search);
+  const handleBack = () => {
+    if (scienceBackTarget) navigate(scienceBackTarget);
+    else navigate(-1);
+  };
   const dispatch = useAppDispatch();
 
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
@@ -323,14 +329,21 @@ export function StudentLayout({ children }: StudentLayoutProps) {
       <div className={`flex flex-col flex-1 w-full max-w-full overflow-x-hidden transition-all duration-300 ${isDesktopCollapsed ? 'xl:pl-0' : 'xl:pl-64'}`}>
         {/* Top header */}
         <header className={`sticky top-0 z-40 flex xl:hidden items-center justify-between ${isSparkScienceActivity ? 'h-12' : 'h-16'} px-4 bg-background xl:px-8`}>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="xl:hidden"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <Menu className="h-6 w-6" />
-          </Button>
+          <div className="flex items-center">
+            {scienceBackTarget && (
+              <Button variant="ghost" size="icon" onClick={handleBack} aria-label="Back">
+                <ChevronLeft className="h-5 w-5" />
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="xl:hidden"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <Menu className="h-6 w-6" />
+            </Button>
+          </div>
           <h1 className="text-md font-medium tracking-tight">
             {formattedTitle}
           </h1>
@@ -372,7 +385,8 @@ export function StudentLayout({ children }: StudentLayoutProps) {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate(-1)}
+              onClick={handleBack}
+              aria-label="Back"
               className="mr-2"
             >
               <ChevronLeft className="h-5 w-5" />
