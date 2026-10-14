@@ -21,18 +21,20 @@ function visit(node) {
 }
 visit(page);
 assert.ok(effect, 'Reading must consume structured vocabulary feedback');
-for (let count = 1; count <= 6; count++) {
-  const attention = { words: ['forestall'], attemptCount: count, action: count % 3 === 0 ? 'open' : 'glow' };
+for (let count = 1; count <= 2; count++) {
+  const attention = { words: ['forestall'], attemptCount: count, action: count === 2 ? 'open' : 'glow' };
   assert.equal(readingFeedbackAction(attention, false), attention.action);
   assert.equal(readingFeedbackAction(attention, true), undefined);
   const calls = [];
-  const message = { id: `attempt-${count}`, role: 'assistant', feedback: 'Correct forestall.', readingVocabularyFeedback: attention };
+  const target = { sentenceIndex: 4, text: 'We forestall delays.', words: ['forestall'], status: 'retry' };
+  const message = { id: `attempt-${count}`, role: 'assistant', feedback: 'Correct forestall.', readingVocabularyFeedback: attention, readingFeedbackTarget: target };
   const run = (chatHistory, viewedFeedbackIds = new Set()) => vm.runInNewContext(compile(`(${effect})();`), {
     chatHistory, viewedFeedbackIds, readingFeedbackAction,
     openReadingFeedback: (...args) => calls.push(args),
   });
   run([message]);
-  assert.equal(calls.length, count % 3 === 0 ? 1 : 0);
+  assert.equal(calls.length, count === 2 ? 1 : 0);
+  if (count === 2) assert.deepEqual(calls[0], [message.id, message.feedback, target], 'Popup must carry this attempt’s text rather than an earlier or next sentence');
   calls.length = 0;
   run([message], new Set([message.id]));
   assert.equal(calls.length, 0, 'Viewed feedback must not reopen');
@@ -43,4 +45,4 @@ assert.equal(readingFeedbackAction(undefined, false), undefined);
 saveViewedReadingFeedback('lesson', new Set(['attempt-3']));
 assert.ok(loadViewedReadingFeedback('lesson').has('attempt-3'), 'Reload must remember opened feedback');
 assert.equal(loadViewedReadingFeedback('another-lesson').size, 0);
-console.log('Reading vocabulary feedback: six-attempt cycle, vocabulary-only behavior and reload acknowledgment passed.');
+console.log('Reading vocabulary feedback: first glow, second popup, attempt-bound target and reload acknowledgment passed.');
