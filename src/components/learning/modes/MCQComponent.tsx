@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Check, X } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { LearningComponent } from '@/services/learningService';
 
 function emphasizedText(value: string, terms: unknown) {
@@ -27,6 +28,7 @@ interface MCQComponentProps {
   onSubmit?: (selectedOptionValue: string) => void;
   isSubmitted?: boolean;
   disabled?: boolean;
+  approvedAnswers?: Array<{ id: string; value: string }>;
 }
 
 const CONCRETE_NOUN_PROMPT = 'Which bold noun is a concrete noun?';
@@ -43,7 +45,9 @@ export default function MCQComponent({
   onSubmit,
   isSubmitted = false,
   disabled = false,
+  approvedAnswers = [],
 }: MCQComponentProps) {
+  const reducedMotion = useReducedMotion();
   const prompt = component.content?.prompt || component.title || component.description || '';
   
   const rawOptions = component.options || component.content?.options || [];
@@ -74,48 +78,37 @@ export default function MCQComponent({
     };
   });
 
-  const hasIncorrectSubmittedAttempt =
-    !isSubmitted &&
-    component.attempt?.status === 'submitted' &&
-    component.attempt?.isCorrect === false;
-
-  const [selectedValue, setSelectedValue] = useState<string>(() => {
-    if (hasIncorrectSubmittedAttempt) return '';
-    if (component.attempt?.response?.optionId) {
-      return String(component.attempt.response.optionId);
-    }
-    if (component.attempt?.response?.selectedOption) {
-      return String(component.attempt.response.selectedOption);
-    }
-    if (component.attempt?.response?.value) {
-      return String(component.attempt.response.value);
-    }
-    return '';
-  });
-  const submittedAtRef = useRef(component.attempt?.submittedAt ?? null);
-
-  useEffect(() => {
-    const submittedAt = component.attempt?.submittedAt ?? null;
-    const isNewIncorrectSubmission =
-      submittedAt !== null &&
-      submittedAt !== submittedAtRef.current &&
-      component.attempt?.isCorrect === false;
-
-    if (isNewIncorrectSubmission) setSelectedValue('');
-    submittedAtRef.current = submittedAt;
-  }, [component.attempt?.isCorrect, component.attempt?.submittedAt]);
-
   const attemptResponseId = String(
     component.attempt?.response?.optionId ||
     component.attempt?.response?.selectedOption ||
     component.attempt?.response?.value || ''
   );
-  
-  const locallySubmitted = isSubmitted || (component.attempt?.feedback?.submitted && attemptResponseId === selectedValue);
+  const [selectedValue, setSelectedValue] = useState(attemptResponseId);
+  const [hasNewSelection, setHasNewSelection] = useState(false);
+  const submissionKey = component.attempt?.submittedAt && component.attempt?.isCorrect !== null
+    ? `${component.attempt.id}:${component.attempt.attemptNumber}:${component.attempt.submittedAt}:${component.attempt.status}`
+    : null;
+  const lastSubmission = useRef(submissionKey);
+  const [animatedSubmission, setAnimatedSubmission] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!submissionKey || submissionKey === lastSubmission.current) return;
+    // Preserve the submitted choice for immediate feedback, including the final
+    // incorrect attempt. Only a deliberate selection starts the next retry.
+    setSelectedValue(attemptResponseId);
+    setHasNewSelection(false);
+    setAnimatedSubmission(submissionKey);
+    lastSubmission.current = submissionKey;
+  }, [submissionKey, attemptResponseId]);
+
+  const locallySubmitted = !hasNewSelection && attemptResponseId === selectedValue &&
+    (component.attempt?.isCorrect === true || component.attempt?.isCorrect === false);
+  const animateResult = !reducedMotion && animatedSubmission === submissionKey && locallySubmitted;
 
   const handleSelect = (val: string) => {
     if (disabled || isSubmitted) return;
     setSelectedValue(val);
+    setHasNewSelection(true);
     onAnswerChange?.(val);
   };
 
@@ -134,11 +127,19 @@ export default function MCQComponent({
       <div className="flex flex-col gap-3.5">
         {options.map((opt: { prefix: string; label: string; value: string; id: string; emphasisTerms: unknown }) => {
           const isSelected = selectedValue === opt.value;
+          const isRevealedCorrect = approvedAnswers.some((answer) =>
+            answer.value.replace(/^[A-Za-z][.)]\s*/, '').trim() === opt.label.trim(),
+          );
+          const correct = isRevealedCorrect || (isSelected && locallySubmitted && component.attempt?.isCorrect === true);
+          const incorrect = isSelected && locallySubmitted && component.attempt?.isCorrect === false;
           
           let containerStyle = 'border-[#E2E8F0] bg-white text-[#64748B] hover:border-[#94A3B8] hover:bg-[#F8FAFC]';
           let textStyle = 'text-[#64748B] font-medium';
 
-          if (isSelected) {
+          if (isRevealedCorrect) {
+            containerStyle = 'border-2 border-[#10B981] bg-[#ECFDF5] text-[#065F46] shadow-sm';
+            textStyle = 'text-[#065F46] font-bold';
+          } else if (isSelected) {
             if (locallySubmitted) {
               if (component.attempt?.isCorrect === true) {
                 containerStyle = 'border-2 border-[#10B981] bg-[#ECFDF5] text-[#065F46] shadow-sm';
@@ -157,11 +158,16 @@ export default function MCQComponent({
           }
 
           return (
-            <button
+            <motion.button
               key={opt.value}
               type="button"
               onClick={() => handleSelect(opt.value)}
               disabled={disabled || isSubmitted}
+              animate={animateResult && incorrect ? { x: [0, -5, 5, -3, 3, 0] } : { x: 0 }}
+              transition={{ duration: 0.35 }}
+              onAnimationComplete={() => { if (incorrect) setAnimatedSubmission(null); }}
+              aria-label={`${opt.prefix}. ${opt.label}${correct ? ' — Correct answer' : incorrect ? ' — Incorrect answer' : ''}`}
+              aria-pressed={isSelected}
               className={`w-full text-left rounded-[14px] border p-4 md:p-5 flex items-center justify-between gap-4 transition-all duration-150 cursor-pointer disabled:cursor-not-allowed ${containerStyle}`}
             >
               <div className="flex items-center gap-3">
@@ -170,25 +176,25 @@ export default function MCQComponent({
                 </span>
               </div>
 
-              {isSelected && locallySubmitted && component.attempt?.isCorrect === true && (
-                <div className="w-6 h-6 rounded-full bg-[#10B981] text-white flex items-center justify-center flex-shrink-0">
+              {correct && (
+                <motion.div key={animatedSubmission ?? 'saved-correct'} animate={animateResult && !isRevealedCorrect ? { scale: [1, 1.35, 1] } : { scale: 1 }} transition={{ duration: 0.4 }} onAnimationComplete={() => setAnimatedSubmission(null)} className="w-6 h-6 rounded-full bg-[#10B981] text-white flex items-center justify-center flex-shrink-0">
                   <Check className="w-4 h-4" />
-                </div>
+                </motion.div>
               )}
 
-              {isSelected && locallySubmitted && component.attempt?.isCorrect === false && (
+              {incorrect && (
                 <div className="w-6 h-6 rounded-full bg-[#EF4444] text-white flex items-center justify-center flex-shrink-0">
                   <X className="w-4 h-4" />
                 </div>
               )}
-            </button>
+            </motion.button>
           );
         })}
       </div>
 
-      {hasIncorrectSubmittedAttempt && !selectedValue && (
-        <div className="rounded-[12px] border border-amber-200 bg-amber-50 px-4 py-3 text-[13px] font-semibold text-amber-900">
-          That answer was not correct. Select another option to try again.
+      {locallySubmitted && component.attempt?.isCorrect === false && (
+        <div role="status" className="rounded-[12px] border border-red-200 bg-red-50 px-4 py-3 text-[13px] font-semibold text-red-800">
+          {component.attempt.status === 'exhausted' ? 'No attempts remaining. Review the correct answer, then continue.' : 'That answer was not correct. Select an option to try again.'}
         </div>
       )}
 

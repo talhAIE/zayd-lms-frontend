@@ -347,6 +347,8 @@ export default function ComponentModePlay() {
       const formattedResponse =
         typeof response === 'object' && response !== null ? response : { value: response };
 
+      // A late draft response must not replace the just-graded submission.
+      await draftSaves.current.get(componentId);
       const result = await submitComponentAttempt(componentId, {
         response: formattedResponse,
         finalResponse: formattedResponse,
@@ -373,7 +375,11 @@ export default function ComponentModePlay() {
         }
         return nextIds;
       });
-      toast.success(result.isComplete ? 'Activity completed!' : 'Response submitted.');
+      if (result.attempt?.isCorrect === false) {
+        toast.error(result.attempt.status === 'exhausted' ? 'No attempts remaining. You can review the answer and continue.' : 'Not quite. Review your answer and try again.');
+      } else {
+        toast.success(result.isComplete ? 'Activity completed!' : 'Response submitted.');
+      }
       return result;
     } catch (err: any) {
       console.error('Failed to submit component response:', err);
@@ -779,7 +785,7 @@ export default function ComponentModePlay() {
             const comp = currentComp;
             const isCompleted = comp.isComplete || Boolean(comp.attempt?.completedAt);
             const isTerminal = isCompleted || comp.attempt?.status === 'exhausted';
-            const isDisabled = !comp.canSubmit || isTerminal;
+            const isDisabled = !comp.canSubmit || isTerminal || isSubmittingMode;
             const overviewVariations = components.filter((item) => item.componentType === 'text_variation' && item.content?.presentation === 'unit_overview');
 
             switch (comp.componentType) {
@@ -799,6 +805,7 @@ export default function ComponentModePlay() {
                   <MCQComponent
                     key={comp.id}
                     component={comp}
+                    approvedAnswers={revealedAnswers[comp.id] ?? []}
                     onAnswerChange={(val) => handleComponentChange(comp.id, { optionId: val })}
                     isSubmitted={isTerminal}
                     disabled={isDisabled}
@@ -1138,15 +1145,17 @@ function ComponentAttemptFeedback({
 
   if (!attempt || (!feedback && !answers.length)) return null;
 
-  const successful = component.isComplete || Boolean(attempt.completedAt);
+  const incorrect = attempt.isCorrect === false || attempt.status === 'exhausted';
+  const successful = !incorrect && (attempt.isCorrect === true || component.isComplete || Boolean(attempt.completedAt));
   return (
-    <section className={`rounded-[14px] border p-4 text-sm ${successful ? 'border-emerald-200 bg-emerald-50' : attempt.status === 'exhausted' ? 'border-amber-200 bg-amber-50' : 'border-blue-200 bg-blue-50'}`}>
+    <section aria-live="polite" className={`rounded-[14px] border p-4 text-sm ${incorrect ? 'border-red-200 bg-red-50' : successful ? 'border-emerald-200 bg-emerald-50' : 'border-blue-200 bg-blue-50'}`}>
       <div className="flex items-start gap-2">
-        {successful ? <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" /> : <CircleAlert className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />}
+        {successful ? <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" /> : <CircleAlert className={`mt-0.5 h-5 w-5 shrink-0 ${incorrect ? 'text-red-600' : 'text-amber-600'}`} />}
         <div className="min-w-0">
           <p className="font-bold text-[#0F172A]">{component.title || 'Activity feedback'}</p>
           <p className="mt-1 text-[#475569]">Attempt {attempt.attemptNumber}{component.maxAttempts ? ` of ${component.maxAttempts}` : ''} · {attempt.status.replace('_', ' ')}</p>
-          {message && <p className="mt-2 text-[#166534]">{message}</p>}
+          {attempt.status === 'exhausted' && <p className="mt-2 font-semibold text-red-800">No attempts remaining. Review the answer, then continue.</p>}
+          {message && <p className={`mt-2 ${incorrect ? 'text-red-800' : successful ? 'text-[#166534]' : 'text-[#475569]'}`}>{message}</p>}
           {hint && <p className="mt-2 text-[#92400E]">Hint: {hint}</p>}
           {fieldFeedbackRows.length > 0 && <ul className="mt-3 space-y-1">{fieldFeedbackRows.map((field) => (
             <li key={field.id} className="text-xs text-[#475569]">{field.isCorrect ? 'Correct' : 'Review'}: {field.explanation}</li>
