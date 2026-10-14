@@ -20,6 +20,14 @@ export interface HistoryItem {
   deliveryStatus?: 'sending' | 'failed';
   readingVocabularyFeedback?: ReadingVocabularyFeedback;
   readingSpeechText?: string | null;
+  readingFeedbackTarget?: ReadingFeedbackTarget;
+}
+
+export interface ReadingFeedbackTarget {
+  sentenceIndex: number;
+  text: string;
+  words: string[];
+  status: 'correct' | 'retry' | 'incorrect';
 }
 
 export interface Mcq {
@@ -373,7 +381,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       if (payload.roleplayProgress) setRoleplayProgress(payload.roleplayProgress);
     });
 
-    newSocket.on('streaming_complete', (payload: { ai_response: string, feedback: string, ai_cefr_level: string, isCompleted: boolean, ttsAudioUrl?: string, hint?: string, readingProgress?: ReadingProgress, roleplayProgress?: RoleplayProgress, roleplayProgressEarned?: boolean, messageId?: string, readingVocabularyFeedback?: ReadingVocabularyFeedback, readingSpeechText?: string | null }) => {
+    newSocket.on('streaming_complete', (payload: { ai_response: string, feedback: string, ai_cefr_level: string, isCompleted: boolean, ttsAudioUrl?: string, hint?: string, readingProgress?: ReadingProgress, roleplayProgress?: RoleplayProgress, roleplayProgressEarned?: boolean, messageId?: string, readingVocabularyFeedback?: ReadingVocabularyFeedback, readingSpeechText?: string | null, readingFeedbackTarget?: ReadingFeedbackTarget }) => {
       modeRequestInFlightRef.current = false;
       setIsTyping(false);
       const completedAudio = modeKeyRef.current === 'reading-mode' ? pendingAudioRef.current : null;
@@ -403,6 +411,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
           feedback: payload.feedback,
           readingVocabularyFeedback: payload.readingVocabularyFeedback,
           readingSpeechText: payload.readingSpeechText,
+          readingFeedbackTarget: payload.readingFeedbackTarget,
           hint: payload.hint || null,
           assessments:
             payload.roleplayProgressEarned === undefined

@@ -5,12 +5,14 @@ interface FeedbackModalProps {
   isOpen: boolean;
   feedbackText: string;
   onClose: () => void;
+  responseContext?: React.ReactNode;
 }
 
 export const FeedbackModal: React.FC<FeedbackModalProps> = ({
   isOpen,
   feedbackText,
-  onClose
+  onClose,
+  responseContext
 }) => {
   if (!isOpen) return null;
 
@@ -48,6 +50,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
         </div>
 
         {/* Feedback Content Box */}
+        {responseContext}
         <div className="p-4 bg-[#F8F9FA] border border-[#E5E7EB] rounded-[16px] text-[14px] leading-[22px] text-[#0F1450] whitespace-pre-wrap max-h-[260px] overflow-y-auto">
           {feedbackText || 'Great effort! Keep practicing to improve your fluency.'}
         </div>
