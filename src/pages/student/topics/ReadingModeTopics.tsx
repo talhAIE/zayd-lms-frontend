@@ -725,8 +725,11 @@ export default function ReadingModeTopics() {
                     <div className="text-[13px] leading-[18px] text-[#0F1450] whitespace-pre-wrap break-words">
                       {practiceSpeechText && msg.content.endsWith(`"${practiceSpeechText}"`) ? (
                         <>
-                          <p className="mb-2">{msg.content.slice(0, -practiceSpeechText.length - 2).trim()}</p>
-                          <p>"<HighlightedReadingSentence text={practiceSpeechText} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={setActiveVocabularyCard} />"</p>
+                          <p className="mb-2 text-xs text-[#6E748F]">{msg.content.slice(0, -practiceSpeechText.length - 2).trim()}</p>
+                          <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-3">
+                            <p className="mb-1 text-[11px] font-semibold text-[#526078]">Read only this text aloud</p>
+                            <p>"<HighlightedReadingSentence text={practiceSpeechText} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={setActiveVocabularyCard} />"</p>
+                          </div>
                         </>
                       ) : <ReactMarkdown
                         components={{
@@ -1042,7 +1045,7 @@ export default function ReadingModeTopics() {
                   <div className="flex items-center gap-2">
                     <span className="w-3 h-3 bg-[#F97316] rounded-full animate-pulse" />
                     <span className="text-[13px] font-semibold text-[#F97316]">
-                      Recording... {Math.floor(recordTime / 60)}:{(recordTime % 60).toString().padStart(2, '0')}
+                      Recording... {Math.floor(recordTime / 60)}:{(recordTime % 60).toString().padStart(2, '0')} / 3:00
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -1066,7 +1069,7 @@ export default function ReadingModeTopics() {
                 <>
                   <input
                     type="text"
-                    placeholder={isProcessingRecording ? "Checking recording..." : cooldown ? "Please wait..." : "Record the displayed sentence aloud..."}
+                    placeholder={isProcessingRecording ? "Checking recording..." : cooldown ? "Please wait..." : "Record the sentence (up to 3 minutes)..."}
                     value=""
                     readOnly
                     aria-label="Reading responses must be recorded with the microphone"
