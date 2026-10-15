@@ -1042,7 +1042,7 @@ export default function ReadingModeTopics() {
                   <div className="flex items-center gap-2">
                     <span className="w-3 h-3 bg-[#F97316] rounded-full animate-pulse" />
                     <span className="text-[13px] font-semibold text-[#F97316]">
-                      Recording... {Math.floor(recordTime / 60)}:{(recordTime % 60).toString().padStart(2, '0')}
+                      Recording... {Math.floor(recordTime / 60)}:{(recordTime % 60).toString().padStart(2, '0')} / 3:00
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -1066,7 +1066,7 @@ export default function ReadingModeTopics() {
                 <>
                   <input
                     type="text"
-                    placeholder={isProcessingRecording ? "Checking recording..." : cooldown ? "Please wait..." : "Record the displayed sentence aloud..."}
+                    placeholder={isProcessingRecording ? "Checking recording..." : cooldown ? "Please wait..." : "Record the sentence (up to 3 minutes)..."}
                     value=""
                     readOnly
                     aria-label="Reading responses must be recorded with the microphone"

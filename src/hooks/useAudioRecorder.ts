@@ -101,7 +101,10 @@ export function useAudioRecorder({ detectSilence = false }: { detectSilence?: bo
         return;
       }
 
-      const recorder = new MediaRecorder(stream, { mimeType });
+      const recorder = new MediaRecorder(stream, {
+        mimeType,
+        ...(detectSilence ? { audioBitsPerSecond: 64_000 } : {}),
+      });
       mediaRecorderRef.current = recorder;
       audioChunksRef.current = [];
       isCanceledRef.current = false;
@@ -135,7 +138,7 @@ export function useAudioRecorder({ detectSilence = false }: { detectSilence?: bo
       toast.error(errorMessage);
       cleanup();
     }
-  }, [cleanup, isProcessingRecording]);
+  }, [cleanup, isProcessingRecording, detectSilence]);
 
   const stopRecording = useCallback((): Promise<AudioRecordResult | null> => {
     return new Promise((resolve) => {
