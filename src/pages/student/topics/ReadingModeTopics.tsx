@@ -725,11 +725,8 @@ export default function ReadingModeTopics() {
                     <div className="text-[13px] leading-[18px] text-[#0F1450] whitespace-pre-wrap break-words">
                       {practiceSpeechText && msg.content.endsWith(`"${practiceSpeechText}"`) ? (
                         <>
-                          <p className="mb-2 text-xs text-[#6E748F]">{msg.content.slice(0, -practiceSpeechText.length - 2).trim()}</p>
-                          <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-3">
-                            <p className="mb-1 text-[11px] font-semibold text-[#526078]">Read only this text aloud</p>
-                            <p>"<HighlightedReadingSentence text={practiceSpeechText} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={setActiveVocabularyCard} />"</p>
-                          </div>
+                          <p className="mb-2">{msg.content.slice(0, -practiceSpeechText.length - 2).trim()}</p>
+                          <p>"<HighlightedReadingSentence text={practiceSpeechText} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={setActiveVocabularyCard} />"</p>
                         </>
                       ) : <ReactMarkdown
                         components={{
