@@ -138,6 +138,7 @@ export default function ReadingModeTopics() {
   const {
     isRecording,
     isProcessingRecording,
+    recordTime,
     startRecording,
     stopRecording,
     cancelRecording
@@ -1041,7 +1042,7 @@ export default function ReadingModeTopics() {
                   <div className="flex items-center gap-2">
                     <span className="w-3 h-3 bg-[#F97316] rounded-full animate-pulse" />
                     <span className="text-[13px] font-semibold text-[#F97316]">
-                      Recording...
+                      Recording... {recordTime}s
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
