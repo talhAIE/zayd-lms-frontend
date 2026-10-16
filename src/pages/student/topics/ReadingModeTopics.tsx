@@ -4,7 +4,7 @@ import { readingPracticeSpeechText, readingPracticeAudioUrl } from '@/utils/read
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BarChart3, ChevronLeft, Mic, Square, Trash2, Check, MessageCircle, Pause, Play, LoaderCircle, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
-import { useModeSession } from '@/hooks/useModeSession';
+import { useModeSession, type ReadingFeedbackTarget } from '@/hooks/useModeSession';
 import { useAudioRecorder } from '@/hooks/useAudioRecorder';
 import ReadingPassageCard from '@/components/ui/ReadingPassageCard';
 import ReadingVocabularyFlashcardModal, { type ReadingVocabularyCard } from '@/components/ui/ReadingVocabularyFlashcardModal';
@@ -116,9 +116,11 @@ export default function ReadingModeTopics() {
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [isJustCompleted, setIsJustCompleted] = useState(false);
   const [activeFeedback, setActiveFeedback] = useState<string | null>(null);
+  const [activeFeedbackTarget, setActiveFeedbackTarget] = useState<ReadingFeedbackTarget | undefined>();
   const [viewedFeedbackIds, setViewedFeedbackIds] = useState(() => loadViewedReadingFeedback(lessonModeId));
-  const openReadingFeedback = useCallback((id: string, feedback: string) => {
+  const openReadingFeedback = useCallback((id: string, feedback: string, target?: ReadingFeedbackTarget) => {
     setActiveFeedback(feedback);
+    setActiveFeedbackTarget(target);
     setViewedFeedbackIds(previous => {
       const next = new Set(previous).add(id);
       saveViewedReadingFeedback(lessonModeId, next);
@@ -201,7 +203,7 @@ export default function ReadingModeTopics() {
   useEffect(() => {
     const latest = [...chatHistory].reverse().find(message => message.role === 'assistant');
     if (latest?.feedback && readingFeedbackAction(latest.readingVocabularyFeedback, viewedFeedbackIds.has(latest.id)) === 'open') {
-      openReadingFeedback(latest.id, latest.feedback);
+      openReadingFeedback(latest.id, latest.feedback, latest.readingFeedbackTarget);
     }
   }, [chatHistory, viewedFeedbackIds, openReadingFeedback]);
 
@@ -453,6 +455,12 @@ export default function ReadingModeTopics() {
       <FeedbackModal 
         isOpen={!!activeFeedback}
         feedbackText={activeFeedback || ''}
+        responseContext={activeFeedbackTarget && (
+          <div className="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-[#0F1450] whitespace-pre-wrap">
+            <p className="mb-2 text-xs font-semibold text-[#526078]">Your attempted reading · {activeFeedbackTarget.status === 'incorrect' ? 'Incorrect' : activeFeedbackTarget.status === 'correct' ? 'Correct' : 'Try again'}</p>
+            <HighlightedReadingSentence text={activeFeedbackTarget.text} vocabularyTerms={activeFeedbackTarget.words} vocabularyCards={[]} onVocabularyClick={setActiveVocabularyCard} />
+          </div>
+        )}
         onClose={() => setActiveFeedback(null)}
       />
       <SpeechAssessmentModal
@@ -711,8 +719,16 @@ export default function ReadingModeTopics() {
                         : 'bg-white border border-[#E5E7EB] shadow-sm rounded-tr-xl rounded-br-xl rounded-bl-xl rounded-tl-sm'
                     }`}
                   >
+                    {msg.readingFeedbackTarget?.status === 'incorrect' && (
+                      <p className="mb-2 text-xs font-semibold text-red-700" role="status">Sentence {msg.readingFeedbackTarget.sentenceIndex + 1}: Incorrect</p>
+                    )}
                     <div className="text-[13px] leading-[18px] text-[#0F1450] whitespace-pre-wrap break-words">
-                      <ReactMarkdown
+                      {practiceSpeechText && msg.content.endsWith(`"${practiceSpeechText}"`) ? (
+                        <>
+                          <p className="mb-2">{msg.content.slice(0, -practiceSpeechText.length - 2).trim()}</p>
+                          <p>"<HighlightedReadingSentence text={practiceSpeechText} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={setActiveVocabularyCard} />"</p>
+                        </>
+                      ) : <ReactMarkdown
                         components={{
                           p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
                           ul: ({node, ...props}) => <ul className="list-disc pl-4 mb-2 last:mb-0" {...props} />,
@@ -723,7 +739,7 @@ export default function ReadingModeTopics() {
                         }}
                       >
                         {msg.content}
-                      </ReactMarkdown>
+                      </ReactMarkdown>}
                     </div>
                   {msg.role === 'user' && hasSavedSpeechAssessment && (
                     <p className="mt-1 text-[11px] text-[#526078]">Speech service transcript</p>
@@ -809,7 +825,7 @@ export default function ReadingModeTopics() {
                       {msg.feedback && (
                         <button
                           type="button"
-                          onClick={() => openReadingFeedback(msg.id, msg.feedback!)}
+                          onClick={() => openReadingFeedback(msg.id, msg.feedback!, msg.readingFeedbackTarget)}
                           className={`flex items-center gap-1.5 text-[#5C9DFF] hover:text-[#4A8BEB] transition-colors font-semibold text-[12px] leading-[15px] ${readingFeedbackAction(msg.readingVocabularyFeedback, viewedFeedbackIds.has(msg.id)) === 'glow' ? 'reading-vocabulary-feedback-glow' : ''}`}
                           aria-label={readingFeedbackAction(msg.readingVocabularyFeedback, viewedFeedbackIds.has(msg.id)) === 'glow' ? 'View feedback to correct your vocabulary reading' : 'View feedback'}
                         >
@@ -1026,7 +1042,7 @@ export default function ReadingModeTopics() {
                   <div className="flex items-center gap-2">
                     <span className="w-3 h-3 bg-[#F97316] rounded-full animate-pulse" />
                     <span className="text-[13px] font-semibold text-[#F97316]">
-                      Recording... {Math.floor(recordTime / 60)}:{(recordTime % 60).toString().padStart(2, '0')}
+                      Recording... {recordTime}s
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -1050,7 +1066,7 @@ export default function ReadingModeTopics() {
                 <>
                   <input
                     type="text"
-                    placeholder={isProcessingRecording ? "Checking recording..." : cooldown ? "Please wait..." : "Record the displayed sentence aloud..."}
+                    placeholder={isProcessingRecording ? "Checking recording..." : cooldown ? "Please wait..." : "Record the sentence (up to 3 minutes)..."}
                     value=""
                     readOnly
                     aria-label="Reading responses must be recorded with the microphone"

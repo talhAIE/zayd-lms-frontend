@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 // import { useAppSelector } from '@/redux/hooks';
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import dashboardIcon from "@/assets/sidebar/dashboard.svg";
-import Logo from "@/assets/sidebar/Logo.png";
+import Logo from "@/assets/zayd-logo.png";
 import { Menu, X, ChevronLeft } from "lucide-react";
 // import { ThemeToggle } from '@/components/theme-toggle';
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -12,6 +11,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logout } from "@/redux/slices/authSlice";
 import { toast } from "sonner";
 import StudentReportModal from "../ui/StudentReportModal";
+import { SidebarNavLink, type SidebarLabel } from "./SidebarNavLink";
 // import {
 //   DropdownMenu,
 //   DropdownMenuContent,
@@ -90,8 +90,8 @@ export function TeacherLayout({ children }: TeacherLayoutProps) {
     setIsReportModalOpen(false);
   };
 
-  const sidebarItems = [
-    { path: "/teacher/dashboard", icon: dashboardIcon, label: "Dashboard" },
+  const sidebarItems: { path: string; label: SidebarLabel }[] = [
+    { path: "/teacher/dashboard", label: "Dashboard" },
   ];
 
   return (
@@ -132,21 +132,7 @@ export function TeacherLayout({ children }: TeacherLayoutProps) {
           <ScrollArea className="flex-1">
             <div className="space-y-2 pr-4">
               {sidebarItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center gap-3 py-3 px-4 rounded-lg font-medium transition-colors ${
-                    isActive(item.path)
-                      ? "bg-[#CCEAFF] text-black font-bold"
-                      : "text-black hover:bg-gray-50"
-                  }`}
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  <div className="w-6 h-5 flex-shrink-0">
-                    <img src={item.icon} alt={item.label} className="h-5 w-5" />
-                  </div>
-                  <span className="text-lg">{item.label}</span>
-                </Link>
+                <SidebarNavLink key={item.path} to={item.path} label={item.label} active={isActive(item.path)} onClick={() => setSidebarOpen(false)} />
               ))}
             </div>
           </ScrollArea>
@@ -164,23 +150,9 @@ export function TeacherLayout({ children }: TeacherLayoutProps) {
           </Link>
         </div>
         <ScrollArea className="flex-1 mt-16">
-          <div className="space-y-8 flex flex-col items-center pl-8">
+          <div className="space-y-6 flex flex-col items-center px-4">
             {sidebarItems.map((item) => (
-              <div key={item.path} className="flex items-center w-full">
-                <Link
-                  to={item.path}
-                  className={`flex items-center justify-start gap-3 py-2 px-4 rounded-md font-medium transition-colors flex-1 ${
-                    isActive(item.path)
-                      ? "bg-[#CCEAFF] text-black font-bold"
-                      : "text-black hover:bg-white/10 hover:text-black"
-                  }`}
-                >
-                  <div className="w-6 h-5 flex-shrink-0">
-                    <img src={item.icon} alt={item.label} className="h-5 w-5" />
-                  </div>
-                  <span className="text-xl">{item.label}</span>
-                </Link>
-              </div>
+              <SidebarNavLink key={item.path} to={item.path} label={item.label} active={isActive(item.path)} />
             ))}
           </div>
         </ScrollArea>

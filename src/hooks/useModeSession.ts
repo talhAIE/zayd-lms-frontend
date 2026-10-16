@@ -4,8 +4,7 @@ import { toast } from 'sonner';
 import { ContentFilterWarningData } from '@/components/ui/ContentPolicyWarningModal';
 import { createPendingAudioUrl, loadPendingReadingAudio, removePendingReadingAudio, savePendingReadingAudio } from '@/utils/pendingReadingAudio';
 import { type ReadingVocabularyFeedback } from '@/utils/readingVocabularyFeedback';
-
-const MAX_READING_SOCKET_AUDIO_BASE64_LENGTH = 900_000;
+import { uploadReadingAudio } from '@/utils/readingAudioUpload';
 
 export interface HistoryItem {
   id: string;
@@ -20,6 +19,14 @@ export interface HistoryItem {
   deliveryStatus?: 'sending' | 'failed';
   readingVocabularyFeedback?: ReadingVocabularyFeedback;
   readingSpeechText?: string | null;
+  readingFeedbackTarget?: ReadingFeedbackTarget;
+}
+
+export interface ReadingFeedbackTarget {
+  sentenceIndex: number;
+  text: string;
+  words: string[];
+  status: 'correct' | 'retry' | 'incorrect';
 }
 
 export interface Mcq {
@@ -140,6 +147,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
   const modeRequestInFlightRef = useRef(false);
   const reconcilingAudioRef = useRef(false);
   const audioConnectionWarningShownRef = useRef(false);
+  const readingUploadRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     onCompletedRef.current = onCompleted;
@@ -373,7 +381,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       if (payload.roleplayProgress) setRoleplayProgress(payload.roleplayProgress);
     });
 
-    newSocket.on('streaming_complete', (payload: { ai_response: string, feedback: string, ai_cefr_level: string, isCompleted: boolean, ttsAudioUrl?: string, hint?: string, readingProgress?: ReadingProgress, roleplayProgress?: RoleplayProgress, roleplayProgressEarned?: boolean, messageId?: string, readingVocabularyFeedback?: ReadingVocabularyFeedback, readingSpeechText?: string | null }) => {
+    newSocket.on('streaming_complete', (payload: { ai_response: string, feedback: string, ai_cefr_level: string, isCompleted: boolean, ttsAudioUrl?: string, hint?: string, readingProgress?: ReadingProgress, roleplayProgress?: RoleplayProgress, roleplayProgressEarned?: boolean, messageId?: string, readingVocabularyFeedback?: ReadingVocabularyFeedback, readingSpeechText?: string | null, readingFeedbackTarget?: ReadingFeedbackTarget }) => {
       modeRequestInFlightRef.current = false;
       setIsTyping(false);
       const completedAudio = modeKeyRef.current === 'reading-mode' ? pendingAudioRef.current : null;
@@ -403,6 +411,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
           feedback: payload.feedback,
           readingVocabularyFeedback: payload.readingVocabularyFeedback,
           readingSpeechText: payload.readingSpeechText,
+          readingFeedbackTarget: payload.readingFeedbackTarget,
           hint: payload.hint || null,
           assessments:
             payload.roleplayProgressEarned === undefined
@@ -575,6 +584,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     });
 
     return () => {
+      readingUploadRef.current?.abort();
       if (pendingAudioTimeoutRef.current) clearTimeout(pendingAudioTimeoutRef.current);
       pendingAudioTimeoutRef.current = null;
       if (reconciliationTimeoutRef.current) clearTimeout(reconciliationTimeoutRef.current);
@@ -610,19 +620,38 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     socket.emit('text', { modeSessionId: modeSessionIdRef.current, textMessage: text });
   }, [socket, isAccountBlocked]);
 
+  const dispatchAudio = useCallback((id: string, base64: string, format: string, sessionId: string) => {
+    if (!socket) return;
+    if (modeKeyRef.current !== 'reading-mode') {
+      socket.emit('audio', { modeSessionId: sessionId, audioBuffer: base64, format, clientAttemptId: id });
+      return;
+    }
+    const controller = new AbortController();
+    readingUploadRef.current = controller;
+    void uploadReadingAudio({ sessionId, attemptId: id, base64, format, signal: controller.signal }).then(events => {
+      if (controller.signal.aborted || modeSessionIdRef.current !== sessionId || pendingAudioRef.current?.id !== id) return;
+      // Reuse the same state handlers as socket audio, without sending the file
+      // through a size-limited socket or depending on server-instance affinity.
+      for (const { event, payload } of events) {
+        for (const listener of socket.listeners(event)) listener(payload);
+      }
+    }).catch(error => {
+      if (controller.signal.aborted || modeSessionIdRef.current !== sessionId || pendingAudioRef.current?.id !== id) return;
+      const body = error.response?.data;
+      const message = Array.isArray(body?.message) ? body.message.join(' ') : body?.message;
+      const payload = { clientAttemptId: id, code: body?.code, message: message || error.message || 'Upload failed. Your recording is saved and can be sent again.' };
+      for (const listener of socket.listeners('error')) listener(payload);
+    }).finally(() => {
+      if (readingUploadRef.current === controller) readingUploadRef.current = null;
+    });
+  }, [socket]);
+
   const sendAudio = useCallback(async (base64Audio: string, format: string = 'wav', localAudioUrl?: string): Promise<boolean> => {
     if (pendingAudioRef.current) {
       toast.error('Please finish or retry the previous recording first.');
       return false;
     }
-    // Socket.IO's default message limit is 1 MB. Base64 audio is larger than
-    // the original blob, so reject an oversized Reading upload before it can
-    // disconnect the socket and strand the recording in the pending state.
-    if (modeKeyRef.current === 'reading-mode' && base64Audio.length > MAX_READING_SOCKET_AUDIO_BASE64_LENGTH) {
-      if (localAudioUrl?.startsWith('blob:')) URL.revokeObjectURL(localAudioUrl);
-      toast.error('This recording is too long to send. Please record the sentence again.');
-      return false;
-    }
+    if (!localAudioUrl && modeKeyRef.current === 'reading-mode') localAudioUrl = createPendingAudioUrl(base64Audio, format);
     const id = crypto.randomUUID();
     if (localAudioUrl && modeSessionIdRef.current) {
       pendingAudioMessageIdRef.current = id;
@@ -657,7 +686,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     }
     modeRequestInFlightRef.current = true;
     setIsTyping(true);
-    socket.emit('audio', { modeSessionId: modeSessionIdRef.current, audioBuffer: base64Audio, format, clientAttemptId: id });
+    dispatchAudio(id, base64Audio, format, modeSessionIdRef.current);
     pendingAudioTimeoutRef.current = setTimeout(() => {
       if (pendingAudioRef.current?.id !== id) return;
       modeRequestInFlightRef.current = false;
@@ -666,15 +695,11 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       toast.error('Recording is taking too long. Please retry it.');
     }, 180_000);
     return true;
-  }, [socket, isAccountBlocked, lessonModeId]);
+  }, [socket, isAccountBlocked, lessonModeId, dispatchAudio]);
 
   const retryAudio = useCallback(() => {
     const pending = pendingAudioRef.current;
     if (!pending) return;
-    if (modeKeyRef.current === 'reading-mode' && pending.base64.length > MAX_READING_SOCKET_AUDIO_BASE64_LENGTH) {
-      toast.error('This recording is too long to send. Discard it and record the sentence again.');
-      return;
-    }
     if (!socket?.connected) {
       toast.error('Your recording is still here. Please reconnect before sending it again.');
       return;
@@ -692,7 +717,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     setChatHistory(prev => prev.map(message => message.id === pending.id
       ? { ...message, deliveryStatus: 'sending' }
       : message));
-    socket.emit('audio', { modeSessionId: pending.sessionId, audioBuffer: pending.base64, format: pending.format, clientAttemptId: pending.id });
+    dispatchAudio(pending.id, pending.base64, pending.format, pending.sessionId);
     pendingAudioTimeoutRef.current = setTimeout(() => {
       if (pendingAudioRef.current?.id !== pending.id) return;
       modeRequestInFlightRef.current = false;
@@ -700,7 +725,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       setChatHistory(prev => prev.map(message => message.id === pending.id ? { ...message, deliveryStatus: 'failed' } : message));
       toast.error('Recording is taking too long. Please retry it.');
     }, 180_000);
-  }, [socket]);
+  }, [socket, dispatchAudio]);
 
   const discardAudio = useCallback(async (attemptId: string) => {
     const pending = pendingAudioRef.current;

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import navLogoPng from "@/assets/images/landingpage/zayd-logo.png";
+import navLogoPng from "@/assets/zayd-logo.png";
 import { useLanguage } from "@/components/language-provider";
 
 const menuItems = [

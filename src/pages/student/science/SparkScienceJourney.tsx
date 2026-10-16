@@ -4,6 +4,7 @@ import {
   useNavigate,
   useOutletContext,
   useParams,
+  useSearchParams,
 } from "react-router-dom";
 import { BookOpen, ChevronLeft, ChevronRight, Play, Star } from "lucide-react";
 import type { ScienceOwner } from "@/services/scienceSparkService";
@@ -15,7 +16,6 @@ import {
   type SparkViewer,
 } from "@/services/sparkScienceService";
 import {
-  SPARK_COURSE_PATH,
   SPARK_UNIT_PATH,
 } from "@/components/science/SparkScienceCourseCard";
 
@@ -185,9 +185,6 @@ export function SparkScienceUnitPage() {
   if (!course) return <Empty course={course} />;
   return (
     <section className="max-w-5xl mx-auto space-y-6">
-      <Link className="text-sm underline" to={SPARK_COURSE_PATH}>
-        Back to Spark Science
-      </Link>
       <div className="flex flex-wrap justify-between items-center gap-3">
         <h1 className="text-3xl font-bold">{course.unitTitle}</h1>
         <p className="text-sm text-gray-500">
@@ -253,7 +250,8 @@ function Activity({
   const navigate = useNavigate(),
     { course, error, retry } = useCourse(owner);
   const activity = course?.activities.find((item) => item.key === activityKey);
-  const [showLesson, setShowLesson] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const showLesson = searchParams.get("view") === "interactive";
   if (error) return <ErrorBox error={error} retry={retry} />;
   if (!course) return <Empty course={course} />;
   if (!activity)
@@ -261,12 +259,9 @@ function Activity({
   if (activity.kind === "lesson" && !showLesson)
     return (
       <section className="space-y-6">
-        <Link className="underline" to={SPARK_UNIT_PATH}>
-          Back to Unit 2
-        </Link>
         <h1 className="text-3xl font-bold">{activity.title}</h1>
         <button
-          onClick={() => setShowLesson(true)}
+          onClick={() => setSearchParams({ view: "interactive" })}
           className="text-left flex flex-col justify-between border-2 border-[#4F8DFB] rounded-[16px] p-6 w-full max-w-[300px] min-h-[220px] bg-white hover:shadow-md"
         >
           <BookOpen className="text-[#4F8DFB] h-10 w-10" />
@@ -392,9 +387,6 @@ function Viewer({
   return (
     <section className="space-y-2">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-        <Link className="underline text-sm" to={SPARK_UNIT_PATH}>
-          Back to Unit 2
-        </Link>
         <h1 className="text-lg font-bold">{title}</h1>
       </div>
       {navigationBlocked && (
