@@ -1065,18 +1065,17 @@ export default function ReadingModeTopics() {
                 </div>
               ) : (
                 <>
-                  <input
-                    type="text"
-                    placeholder={isProcessingRecording ? "Checking recording..." : cooldown ? "Please wait..." : "Record the sentence (up to 3 minutes)..."}
-                    value=""
-                    readOnly
-                    aria-label="Reading responses must be recorded with the microphone"
-                    className="flex-1 px-4 py-3 bg-white border border-[#E5E7EB] rounded-[10px] text-[14px] text-[#282828] placeholder-[#6E748F]/60 focus:outline-none focus:border-[#5C9DFF] focus:ring-1 focus:ring-[#5C9DFF] transition-all"
-                  />
+                  <div className="min-w-0 flex-1 px-4 py-3 bg-white border border-[#E5E7EB] rounded-[10px]">
+                    <p id="reading-recording-instruction" aria-live="polite" className="whitespace-normal break-words text-[14px] leading-5 text-[#6E748F]">
+                      {isProcessingRecording ? "Checking recording..." : cooldown ? "Please wait..." : "Record the sentence (up to 3 minutes)..."}
+                    </p>
+                  </div>
                   <button
                     onClick={startRecording}
                     disabled={!modeSessionId || cooldown || isProcessingRecording || isTyping || isAccountBlocked || hasPendingAudio}
-                    className="flex justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    aria-label="Record your reading response"
+                    aria-describedby="reading-recording-instruction"
+                    className="flex shrink-0 justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Mic className="w-5 h-5" />
                   </button>
