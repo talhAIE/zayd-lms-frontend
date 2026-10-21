@@ -52,14 +52,18 @@ assert.equal(readingFeedbackNeedsAttention({ words: ['forestall'], attemptCount:
 assert.equal(readingFeedbackNeedsAttention({ words: ['forestall'], attemptCount: 1, action: 'glow' }, undefined, true), false);
 const pageText = page.getFullText();
 assert.match(pageText, /const feedbackNeedsAttention = readingFeedbackNeedsAttention\(msg\.readingVocabularyFeedback, msg\.readingFeedbackTarget, viewedFeedbackIds\.has\(msg\.id\)\)/);
-assert.match(pageText, /feedbackNeedsAttention \? 'reading-vocabulary-feedback-glow' : ''/, 'The shared desktop/mobile button must consume the attention state');
+assert.match(pageText, /<span className=\{feedbackNeedsAttention \? 'reading-feedback-text-pulse' : undefined\}>View Feedback<\/span>/, 'Only the feedback text must pulse on desktop and mobile');
 const css = require('postcss').parse(fs.readFileSync(path.join(root, 'src/index.css'), 'utf8'));
-const animation = css.nodes.find(node => node.type === 'atrule' && node.name === 'keyframes' && node.params === 'reading-vocabulary-feedback-glow');
+const animation = css.nodes.find(node => node.type === 'atrule' && node.name === 'keyframes' && node.params === 'reading-feedback-text-pulse');
 assert.ok(animation);
-const backgrounds = animation.nodes.map(frame => frame.nodes.find(declaration => declaration.prop === 'background-color')?.value);
-assert.equal(new Set(backgrounds).size, 2, 'The button background must visibly pulse, not only its shadow');
-const attentionRule = css.nodes.find(node => node.type === 'rule' && node.selector === '.reading-vocabulary-feedback-glow');
+const opacities = animation.nodes.map(frame => frame.nodes.find(declaration => declaration.prop === 'opacity')?.value);
+assert.deepEqual(opacities, ['1', '0.45'], 'Text must fade and return without disappearing entirely');
+const attentionRule = css.nodes.find(node => node.type === 'rule' && node.selector === '.reading-feedback-text-pulse');
 assert.ok(attentionRule?.nodes.some(declaration => declaration.prop === 'animation' && declaration.value.includes('infinite')), 'Animation must be available at every viewport width');
+for (const rule of [...animation.nodes, attentionRule]) {
+  assert.ok(rule.nodes.every(declaration => !['box-shadow', 'background-color', 'outline', 'border-radius', 'padding'].includes(declaration.prop)), 'Attention must not add a pulsing halo, circle, or button decoration');
+}
+assert.ok(!pageText.includes('reading-vocabulary-feedback-glow'), 'The previous halo must be removed');
 const reducedMotion = css.nodes.find(node => node.type === 'atrule' && node.params === '(prefers-reduced-motion: reduce)');
 assert.ok(reducedMotion?.nodes.some(rule => rule.nodes?.some(declaration => declaration.prop === 'animation' && declaration.value === 'none')), 'Reduced motion must retain a static highlight');
 saveViewedReadingFeedback('lesson', new Set(['attempt-3']));

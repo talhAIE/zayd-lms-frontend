@@ -827,11 +827,11 @@ export default function ReadingModeTopics() {
                         <button
                           type="button"
                           onClick={() => openReadingFeedback(msg.id, msg.feedback!, msg.readingFeedbackTarget)}
-                          className={`flex items-center gap-1.5 text-[#5C9DFF] hover:text-[#4A8BEB] transition-colors font-semibold text-[12px] leading-[15px] ${feedbackNeedsAttention ? 'reading-vocabulary-feedback-glow' : ''}`}
+                          className="flex items-center gap-1.5 text-[#5C9DFF] hover:text-[#4A8BEB] transition-colors font-semibold text-[12px] leading-[15px]"
                           aria-label={feedbackNeedsAttention ? 'View feedback to correct your reading' : 'View feedback'}
                         >
                           <MessageCircle className="w-3.5 h-3.5" />
-                          <span>View Feedback</span>
+                          <span className={feedbackNeedsAttention ? 'reading-feedback-text-pulse' : undefined}>View Feedback</span>
                         </button>
                       )}
                     </div>
