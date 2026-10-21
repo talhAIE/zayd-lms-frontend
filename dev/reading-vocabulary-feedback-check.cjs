@@ -12,7 +12,7 @@ vm.runInNewContext(compile(fs.readFileSync(path.join(root, 'src/utils/readingVoc
   exports: helpers.exports, module: helpers,
   sessionStorage: { getItem: key => storage.get(key), setItem: (key, value) => storage.set(key, value) },
 });
-const { readingFeedbackAction, loadViewedReadingFeedback, saveViewedReadingFeedback } = helpers.exports;
+const { readingFeedbackAction, readingFeedbackNeedsAttention, loadViewedReadingFeedback, saveViewedReadingFeedback } = helpers.exports;
 const page = ts.createSourceFile('ReadingModeTopics.tsx', fs.readFileSync(path.join(root, 'src/pages/student/topics/ReadingModeTopics.tsx'), 'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
 let effect;
 function visit(node) {
@@ -42,7 +42,27 @@ for (let count = 1; count <= 2; count++) {
   assert.equal(calls.length, 0, 'Historical vocabulary feedback must not open on a newer ordinary response');
 }
 assert.equal(readingFeedbackAction(undefined, false), undefined);
+for (const status of ['retry', 'incorrect']) {
+  assert.equal(readingFeedbackNeedsAttention(undefined, { status }, false), true, `${status} feedback needs attention without vocabulary metadata`);
+  assert.equal(readingFeedbackNeedsAttention(undefined, { status }, true), false, 'Opening feedback stops its pulse');
+}
+assert.equal(readingFeedbackNeedsAttention(undefined, { status: 'correct' }, false), false);
+assert.equal(readingFeedbackNeedsAttention(undefined, undefined, false), false);
+assert.equal(readingFeedbackNeedsAttention({ words: ['forestall'], attemptCount: 1, action: 'glow' }, undefined, false), true);
+assert.equal(readingFeedbackNeedsAttention({ words: ['forestall'], attemptCount: 1, action: 'glow' }, undefined, true), false);
+const pageText = page.getFullText();
+assert.match(pageText, /const feedbackNeedsAttention = readingFeedbackNeedsAttention\(msg\.readingVocabularyFeedback, msg\.readingFeedbackTarget, viewedFeedbackIds\.has\(msg\.id\)\)/);
+assert.match(pageText, /feedbackNeedsAttention \? 'reading-vocabulary-feedback-glow' : ''/, 'The shared desktop/mobile button must consume the attention state');
+const css = require('postcss').parse(fs.readFileSync(path.join(root, 'src/index.css'), 'utf8'));
+const animation = css.nodes.find(node => node.type === 'atrule' && node.name === 'keyframes' && node.params === 'reading-vocabulary-feedback-glow');
+assert.ok(animation);
+const backgrounds = animation.nodes.map(frame => frame.nodes.find(declaration => declaration.prop === 'background-color')?.value);
+assert.equal(new Set(backgrounds).size, 2, 'The button background must visibly pulse, not only its shadow');
+const attentionRule = css.nodes.find(node => node.type === 'rule' && node.selector === '.reading-vocabulary-feedback-glow');
+assert.ok(attentionRule?.nodes.some(declaration => declaration.prop === 'animation' && declaration.value.includes('infinite')), 'Animation must be available at every viewport width');
+const reducedMotion = css.nodes.find(node => node.type === 'atrule' && node.params === '(prefers-reduced-motion: reduce)');
+assert.ok(reducedMotion?.nodes.some(rule => rule.nodes?.some(declaration => declaration.prop === 'animation' && declaration.value === 'none')), 'Reduced motion must retain a static highlight');
 saveViewedReadingFeedback('lesson', new Set(['attempt-3']));
 assert.ok(loadViewedReadingFeedback('lesson').has('attempt-3'), 'Reload must remember opened feedback');
 assert.equal(loadViewedReadingFeedback('another-lesson').size, 0);
-console.log('Reading vocabulary feedback: first glow, second popup, attempt-bound target and reload acknowledgment passed.');
+console.log('Reading feedback: sentence corrections pulse, opening stops attention, visible all-width styling, reduced motion, vocabulary popup, attempt target and reload acknowledgment passed.');

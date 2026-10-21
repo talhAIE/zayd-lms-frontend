@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { readingFeedbackAction, loadViewedReadingFeedback, saveViewedReadingFeedback } from '@/utils/readingVocabularyFeedback';
+import { readingFeedbackAction, readingFeedbackNeedsAttention, loadViewedReadingFeedback, saveViewedReadingFeedback } from '@/utils/readingVocabularyFeedback';
 import { readingPracticeSpeechText, readingPracticeAudioUrl } from '@/utils/readingPracticeAudio';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BarChart3, ChevronLeft, Mic, Square, Trash2, Check, MessageCircle, Pause, Play, LoaderCircle, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
@@ -701,6 +701,7 @@ export default function ReadingModeTopics() {
                   const hasSpeechFallback = Boolean(practiceSpeechText && !practiceAudioUrl);
                   const isFallbackSpeechPlaying = fallbackSpeechMessageId === msg.id;
                   const hasSavedSpeechAssessment = isSpeechAssessment(msg.assessments);
+                  const feedbackNeedsAttention = readingFeedbackNeedsAttention(msg.readingVocabularyFeedback, msg.readingFeedbackTarget, viewedFeedbackIds.has(msg.id));
                   // Browser object URLs are available only for the live
                   // attempt. On resume, use the stored recording when it is
                   // available and retain a transcript-to-speech fallback when
@@ -826,8 +827,8 @@ export default function ReadingModeTopics() {
                         <button
                           type="button"
                           onClick={() => openReadingFeedback(msg.id, msg.feedback!, msg.readingFeedbackTarget)}
-                          className={`flex items-center gap-1.5 text-[#5C9DFF] hover:text-[#4A8BEB] transition-colors font-semibold text-[12px] leading-[15px] ${readingFeedbackAction(msg.readingVocabularyFeedback, viewedFeedbackIds.has(msg.id)) === 'glow' ? 'reading-vocabulary-feedback-glow' : ''}`}
-                          aria-label={readingFeedbackAction(msg.readingVocabularyFeedback, viewedFeedbackIds.has(msg.id)) === 'glow' ? 'View feedback to correct your vocabulary reading' : 'View feedback'}
+                          className={`flex items-center gap-1.5 text-[#5C9DFF] hover:text-[#4A8BEB] transition-colors font-semibold text-[12px] leading-[15px] ${feedbackNeedsAttention ? 'reading-vocabulary-feedback-glow' : ''}`}
+                          aria-label={feedbackNeedsAttention ? 'View feedback to correct your reading' : 'View feedback'}
                         >
                           <MessageCircle className="w-3.5 h-3.5" />
                           <span>View Feedback</span>
