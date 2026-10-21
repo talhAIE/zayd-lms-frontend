@@ -26,9 +26,11 @@ export default function RolePlayModeTopics() {
   const allLessonsPath = courseId && unitId
     ? '/student/courses/' + courseId + '/units/' + unitId
     : '/student/courses';
-  const { playingAudioId, isCurrentlyPlaying, loadingAudioId, toggleAudio, stopAudio } = useAudioPlayback();
+  const { playingAudioId, isCurrentlyPlaying, loadingAudioId, failedAudioId, toggleAudio, stopAudio } = useAudioPlayback();
   const [fallbackSpeechMessageId, setFallbackSpeechMessageId] = useState<string | null>(null);
+  const [pendingSpeechMessageId, setPendingSpeechMessageId] = useState<string | null>(null);
   const fallbackSpeechRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const fallbackSpeechTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   
   const [inputValue, setInputValue] = useState('');
   const [isScenarioExpanded, setIsScenarioExpanded] = useState(false);
@@ -83,6 +85,8 @@ export default function RolePlayModeTopics() {
 
   useEffect(() => {
     return () => {
+      fallbackSpeechRef.current = null;
+      if (fallbackSpeechTimerRef.current) clearTimeout(fallbackSpeechTimerRef.current);
       window.speechSynthesis?.cancel();
     };
   }, []);
@@ -104,30 +108,59 @@ export default function RolePlayModeTopics() {
       return;
     }
 
-    if (fallbackSpeechMessageId === messageId) {
-      window.speechSynthesis.cancel();
-      fallbackSpeechRef.current = null;
-      setFallbackSpeechMessageId(null);
-      return;
-    }
-
+    const isSameMessage = fallbackSpeechMessageId === messageId || pendingSpeechMessageId === messageId;
+    fallbackSpeechRef.current = null;
+    if (fallbackSpeechTimerRef.current) clearTimeout(fallbackSpeechTimerRef.current);
+    fallbackSpeechTimerRef.current = null;
+    setFallbackSpeechMessageId(null);
+    setPendingSpeechMessageId(null);
     stopAudio();
     window.speechSynthesis.cancel();
+    if (isSameMessage) return;
 
     const utterance = new SpeechSynthesisUtterance(content);
     utterance.rate = 0.9;
-    utterance.onend = () => {
+    utterance.lang = 'en-US';
+    const finish = (failed: boolean) => {
+      if (fallbackSpeechRef.current !== utterance) return;
+      if (fallbackSpeechTimerRef.current) clearTimeout(fallbackSpeechTimerRef.current);
+      fallbackSpeechTimerRef.current = null;
       fallbackSpeechRef.current = null;
-      setFallbackSpeechMessageId((current) => (current === messageId ? null : current));
+      setFallbackSpeechMessageId(null);
+      setPendingSpeechMessageId(null);
+      if (failed) toast.error('Audio could not start. Please try playing the message again.');
     };
-    utterance.onerror = () => {
-      fallbackSpeechRef.current = null;
-      setFallbackSpeechMessageId((current) => (current === messageId ? null : current));
+    utterance.onstart = () => {
+      if (fallbackSpeechRef.current !== utterance) return;
+      if (fallbackSpeechTimerRef.current) clearTimeout(fallbackSpeechTimerRef.current);
+      fallbackSpeechTimerRef.current = null;
+      setPendingSpeechMessageId(null);
+      setFallbackSpeechMessageId(messageId);
     };
+    utterance.onend = () => finish(false);
+    utterance.onerror = () => finish(true);
 
     fallbackSpeechRef.current = utterance;
-    setFallbackSpeechMessageId(messageId);
-    window.speechSynthesis.speak(utterance);
+    setPendingSpeechMessageId(messageId);
+    fallbackSpeechTimerRef.current = setTimeout(() => {
+      if (fallbackSpeechRef.current !== utterance) return;
+      finish(true);
+      window.speechSynthesis.cancel();
+    }, 10000);
+    try {
+      window.speechSynthesis.resume();
+      window.speechSynthesis.speak(utterance);
+    } catch { finish(true); }
+  };
+
+  const toggleStoredAudio = (messageId: string, audioUrl: string) => {
+    fallbackSpeechRef.current = null;
+    if (fallbackSpeechTimerRef.current) clearTimeout(fallbackSpeechTimerRef.current);
+    fallbackSpeechTimerRef.current = null;
+    window.speechSynthesis?.cancel();
+    setFallbackSpeechMessageId(null);
+    setPendingSpeechMessageId(null);
+    toggleAudio(messageId, audioUrl);
   };
 
   const finishMode = async () => {
@@ -450,7 +483,7 @@ export default function RolePlayModeTopics() {
                     <div className="mt-3 flex items-center justify-end gap-4 border-t border-[#BFDBFE] pt-2.5">
                       <button
                         type="button"
-                        onClick={() => toggleAudio(msg.id, msg.audioUrl || undefined)}
+                        onClick={() => toggleStoredAudio(msg.id, msg.audioUrl!)}
                         className="flex items-center text-[#0F1450] hover:text-[#2563EB] transition-colors"
                         aria-label={playingAudioId === msg.id && isCurrentlyPlaying ? 'Pause your recording' : 'Play your recording'}
                       >
@@ -480,12 +513,12 @@ export default function RolePlayModeTopics() {
                         <button
                           type="button"
                           onClick={() => msg.audioUrl
-                            ? toggleAudio(msg.id, msg.audioUrl)
+                            ? toggleStoredAudio(msg.id, msg.audioUrl)
                             : toggleMessageSpeech(msg.id, msg.content)}
                           className="flex items-center text-[#0F1450] hover:text-[#5C9DFF] transition-colors"
                           aria-label={(msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || fallbackSpeechMessageId === msg.id ? 'Stop AI response' : 'Play AI response'}
                         >
-                          {loadingAudioId === msg.id ? (
+                          {loadingAudioId === msg.id || pendingSpeechMessageId === msg.id ? (
                             <LoaderCircle className="w-5 h-5 animate-spin" />
                           ) : (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || fallbackSpeechMessageId === msg.id ? (
                             <Pause className="w-5 h-5" />
@@ -493,6 +526,9 @@ export default function RolePlayModeTopics() {
                             <Play className="w-5 h-5" />
                           )}
                         </button>
+                      )}
+                      {failedAudioId === msg.id && (
+                        <span role="status" className="text-xs text-red-600">Audio could not play. Press play to retry.</span>
                       )}
                       {msg.feedback && (
                         <button
@@ -584,13 +620,13 @@ export default function RolePlayModeTopics() {
                   onKeyDown={handleKeyDown}
                   onFocus={() => setIsComposerFocused(true)}
                   onBlur={() => setIsComposerFocused(false)}
-                  className="flex-1 px-4 py-3 bg-white border border-[#E5E7EB] rounded-[10px] text-[14px] text-[#282828] placeholder-[#6E748F]/60 focus:outline-none focus:border-[#5C9DFF] focus:ring-1 focus:ring-[#5C9DFF] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
+                  className="min-w-0 flex-1 px-4 py-3 bg-white border border-[#E5E7EB] rounded-[10px] text-[16px] md:text-[14px] text-[#282828] placeholder-[#6E748F]/60 focus:outline-none focus:border-[#5C9DFF] focus:ring-1 focus:ring-[#5C9DFF] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
                 />
                 {inputValue.trim() ? (
                   <button 
                     onClick={handleSend}
                     disabled={cooldown || isTyping || isAccountBlocked}
-                    className="flex justify-center items-center w-11 h-11 bg-[#5C9DFF] rounded-full text-white hover:bg-[#4A8BEB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex shrink-0 justify-center items-center w-11 h-11 bg-[#5C9DFF] rounded-full text-white hover:bg-[#4A8BEB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Send className="w-5 h-5" />
                   </button>
@@ -598,7 +634,7 @@ export default function RolePlayModeTopics() {
                   <button 
                     onClick={startRecording}
                     disabled={cooldown || isTyping || isAccountBlocked}
-                    className="flex justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex shrink-0 justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Mic className="w-5 h-5" />
                   </button>

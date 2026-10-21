@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { readingFeedbackAction, loadViewedReadingFeedback, saveViewedReadingFeedback } from '@/utils/readingVocabularyFeedback';
+import { readingFeedbackAction, readingFeedbackNeedsAttention, loadViewedReadingFeedback, saveViewedReadingFeedback } from '@/utils/readingVocabularyFeedback';
 import { readingPracticeSpeechText, readingPracticeAudioUrl } from '@/utils/readingPracticeAudio';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BarChart3, ChevronLeft, Mic, Square, Trash2, Check, MessageCircle, Pause, Play, LoaderCircle, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
@@ -701,6 +701,7 @@ export default function ReadingModeTopics() {
                   const hasSpeechFallback = Boolean(practiceSpeechText && !practiceAudioUrl);
                   const isFallbackSpeechPlaying = fallbackSpeechMessageId === msg.id;
                   const hasSavedSpeechAssessment = isSpeechAssessment(msg.assessments);
+                  const feedbackNeedsAttention = readingFeedbackNeedsAttention(msg.readingVocabularyFeedback, msg.readingFeedbackTarget, viewedFeedbackIds.has(msg.id));
                   // Browser object URLs are available only for the live
                   // attempt. On resume, use the stored recording when it is
                   // available and retain a transcript-to-speech fallback when
@@ -826,11 +827,11 @@ export default function ReadingModeTopics() {
                         <button
                           type="button"
                           onClick={() => openReadingFeedback(msg.id, msg.feedback!, msg.readingFeedbackTarget)}
-                          className={`flex items-center gap-1.5 text-[#5C9DFF] hover:text-[#4A8BEB] transition-colors font-semibold text-[12px] leading-[15px] ${readingFeedbackAction(msg.readingVocabularyFeedback, viewedFeedbackIds.has(msg.id)) === 'glow' ? 'reading-vocabulary-feedback-glow' : ''}`}
-                          aria-label={readingFeedbackAction(msg.readingVocabularyFeedback, viewedFeedbackIds.has(msg.id)) === 'glow' ? 'View feedback to correct your vocabulary reading' : 'View feedback'}
+                          className="flex items-center gap-1.5 text-[#5C9DFF] hover:text-[#4A8BEB] transition-colors font-semibold text-[12px] leading-[15px]"
+                          aria-label={feedbackNeedsAttention ? 'View feedback to correct your reading' : 'View feedback'}
                         >
                           <MessageCircle className="w-3.5 h-3.5" />
-                          <span>View Feedback</span>
+                          <span className={feedbackNeedsAttention ? 'reading-feedback-text-pulse' : undefined}>View Feedback</span>
                         </button>
                       )}
                     </div>
@@ -1064,18 +1065,17 @@ export default function ReadingModeTopics() {
                 </div>
               ) : (
                 <>
-                  <input
-                    type="text"
-                    placeholder={isProcessingRecording ? "Checking recording..." : cooldown ? "Please wait..." : "Record the sentence (up to 3 minutes)..."}
-                    value=""
-                    readOnly
-                    aria-label="Reading responses must be recorded with the microphone"
-                    className="flex-1 px-4 py-3 bg-white border border-[#E5E7EB] rounded-[10px] text-[14px] text-[#282828] placeholder-[#6E748F]/60 focus:outline-none focus:border-[#5C9DFF] focus:ring-1 focus:ring-[#5C9DFF] transition-all"
-                  />
+                  <div className="min-w-0 flex-1 px-4 py-3 bg-white border border-[#E5E7EB] rounded-[10px]">
+                    <p id="reading-recording-instruction" aria-live="polite" className="whitespace-normal break-words text-[14px] leading-5 text-[#6E748F]">
+                      {isProcessingRecording ? "Checking recording..." : cooldown ? "Please wait..." : "Record the sentence (up to 3 minutes)..."}
+                    </p>
+                  </div>
                   <button
                     onClick={startRecording}
                     disabled={!modeSessionId || cooldown || isProcessingRecording || isTyping || isAccountBlocked || hasPendingAudio}
-                    className="flex justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    aria-label="Record your reading response"
+                    aria-describedby="reading-recording-instruction"
+                    className="flex shrink-0 justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Mic className="w-5 h-5" />
                   </button>

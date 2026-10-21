@@ -291,21 +291,27 @@ html.lenis body {
   transform: scaleX(-1);
 }
 
-@keyframes reading-vocabulary-feedback-glow {
-  0%, 100% { box-shadow: 0 0 4px 2px rgb(59 130 246 / 25%); }
-  50% { box-shadow: 0 0 12px 4px rgb(59 130 246 / 55%); }
+@keyframes reading-feedback-text-pulse {
+  0%, 100% {
+    opacity: 1;
+    color: #2563eb;
+  }
+  50% {
+    opacity: 0.45;
+    color: #5c9dff;
+  }
 }
 
-.reading-vocabulary-feedback-glow {
-  border-radius: 6px;
-  background-color: #eff6ff;
-  outline: 1px solid #93c5fd;
-  animation: reading-vocabulary-feedback-glow 1.5s ease-in-out infinite;
+.reading-feedback-text-pulse {
+  color: #2563eb;
+  animation: reading-feedback-text-pulse 1.5s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reading-vocabulary-feedback-glow {
+  .reading-feedback-text-pulse {
     animation: none;
-    box-shadow: 0 0 6px 2px rgb(59 130 246 / 40%);
+    opacity: 1;
+    color: #1e3a8a;
+    text-decoration: underline;
   }
 }
