@@ -614,11 +614,19 @@ export default function ComponentModePlay() {
   };
 
   // Complete the entire mode and progress to next mode or lesson roadmap
-  const handleCompleteMode = async () => {
+  const handleCompleteMode = async (acknowledgedComponent?: LearningComponent) => {
     if (!modeId || !lessonId) return;
     const isModeAlreadyCompletedOnBackend = currentMode?.status === 'completed';
     
-    if (!isModeAlreadyCompletedOnBackend && !requiredComponentsComplete) {
+    // The final on-view acknowledgement can finish before React renders its
+    // state update. Validate the returned result rather than the old render.
+    const completionComponents = visibleComponents.map((component) =>
+      component.id === acknowledgedComponent?.id ? acknowledgedComponent : component,
+    );
+    const requiredActivitiesComplete = completionComponents
+      .filter((component) => component.isRequired)
+      .every(isComponentComplete);
+    if (!isModeAlreadyCompletedOnBackend && !requiredActivitiesComplete) {
       toast.error('Complete the required activities before moving on.');
       return;
     }
@@ -987,7 +995,7 @@ export default function ComponentModePlay() {
                       if (currentIndex < totalCount - 1) {
                         setCurrentIndex((index) => index + 1);
                       } else {
-                        await handleCompleteMode();
+                        await handleCompleteMode(result);
                       }
                     } catch (startError: any) {
                       toast.error(
