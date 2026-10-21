@@ -620,13 +620,13 @@ export default function RolePlayModeTopics() {
                   onKeyDown={handleKeyDown}
                   onFocus={() => setIsComposerFocused(true)}
                   onBlur={() => setIsComposerFocused(false)}
-                  className="flex-1 px-4 py-3 bg-white border border-[#E5E7EB] rounded-[10px] text-[14px] text-[#282828] placeholder-[#6E748F]/60 focus:outline-none focus:border-[#5C9DFF] focus:ring-1 focus:ring-[#5C9DFF] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
+                  className="min-w-0 flex-1 px-4 py-3 bg-white border border-[#E5E7EB] rounded-[10px] text-[16px] md:text-[14px] text-[#282828] placeholder-[#6E748F]/60 focus:outline-none focus:border-[#5C9DFF] focus:ring-1 focus:ring-[#5C9DFF] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
                 />
                 {inputValue.trim() ? (
                   <button 
                     onClick={handleSend}
                     disabled={cooldown || isTyping || isAccountBlocked}
-                    className="flex justify-center items-center w-11 h-11 bg-[#5C9DFF] rounded-full text-white hover:bg-[#4A8BEB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex shrink-0 justify-center items-center w-11 h-11 bg-[#5C9DFF] rounded-full text-white hover:bg-[#4A8BEB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Send className="w-5 h-5" />
                   </button>
@@ -634,7 +634,7 @@ export default function RolePlayModeTopics() {
                   <button 
                     onClick={startRecording}
                     disabled={cooldown || isTyping || isAccountBlocked}
-                    className="flex justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex shrink-0 justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Mic className="w-5 h-5" />
                   </button>
