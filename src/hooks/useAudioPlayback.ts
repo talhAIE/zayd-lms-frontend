@@ -18,6 +18,7 @@ export function useAudioPlayback() {
   const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
   const [isCurrentlyPlaying, setIsCurrentlyPlaying] = useState(false);
   const [loadingAudioId, setLoadingAudioId] = useState<string | null>(null);
+  const [failedAudioId, setFailedAudioId] = useState<string | null>(null);
   const [audioProgress, setAudioProgress] = useState(0);
   const [audioDuration, setAudioDuration] = useState(0);
 
@@ -27,6 +28,8 @@ export function useAudioPlayback() {
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const onEndCalledRef = useRef(false);
   const pausedPositionRef = useRef(0);
+  const playbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const failureHandlerRef = useRef<(() => void) | null>(null);
 
   // Keep a ref of the current playing ID to access inside callbacks
   const currentPlayingIdRef = useRef<string | null>(null);
@@ -35,6 +38,8 @@ export function useAudioPlayback() {
   }, [playingAudioId]);
 
   const clearAudioProgress = useCallback(() => {
+    if (playbackTimeoutRef.current) clearTimeout(playbackTimeoutRef.current);
+    playbackTimeoutRef.current = null;
     if (progressIntervalRef.current) {
       clearInterval(progressIntervalRef.current as unknown as number);
       progressIntervalRef.current = null;
@@ -45,6 +50,7 @@ export function useAudioPlayback() {
 
   useEffect(() => {
     return () => {
+      if (playbackTimeoutRef.current) clearTimeout(playbackTimeoutRef.current);
       if (soundRef.current) {
         soundRef.current.unload();
         loadedAudioUrlRef.current = null;
@@ -67,8 +73,10 @@ export function useAudioPlayback() {
 
       if (
         soundRef.current &&
-        currentPlayingIdRef.current === id
+        currentPlayingIdRef.current === id &&
+        loadedAudioUrlRef.current === audioUrl
       ) {
+        if (soundRef.current.state() === 'loading') return;
         const isPlayingNow = playbackIdRef.current 
           ? soundRef.current.playing(playbackIdRef.current)
           : soundRef.current.playing();
@@ -86,6 +94,9 @@ export function useAudioPlayback() {
           }
           setIsCurrentlyPlaying(false);
         } else {
+          setFailedAudioId(null);
+          setLoadingAudioId(id);
+          playbackTimeoutRef.current = setTimeout(() => failureHandlerRef.current?.(), 15000);
           const playbackId = playbackIdRef.current
             ? soundRef.current.play(playbackIdRef.current)
             : soundRef.current.play();
@@ -93,7 +104,6 @@ export function useAudioPlayback() {
           if (pausedPositionRef.current > 0) {
             soundRef.current.seek(pausedPositionRef.current, playbackId);
           }
-          setIsCurrentlyPlaying(true);
           // if it resumes, we reset onEndCalled just in case
           onEndCalledRef.current = false;
         }
@@ -112,6 +122,7 @@ export function useAudioPlayback() {
       setPlayingAudioId(id);
       setIsCurrentlyPlaying(false);
       setLoadingAudioId(id);
+      setFailedAudioId(null);
       clearAudioProgress();
       onEndCalledRef.current = false;
       pausedPositionRef.current = 0;
@@ -133,6 +144,9 @@ export function useAudioPlayback() {
         html5: true,
         ...(format ? { format: [format] } : {}),
         onplay: (playbackId) => {
+          if (soundRef.current !== sound) return;
+          if (playbackTimeoutRef.current) clearTimeout(playbackTimeoutRef.current);
+          playbackTimeoutRef.current = null;
           playbackIdRef.current = playbackId;
           currentPlayingIdRef.current = id;
           setPlayingAudioId(id);
@@ -186,17 +200,30 @@ export function useAudioPlayback() {
             onEnd();
           }
         },
-        onloaderror: () => {
-          setLoadingAudioId(null);
-        },
-        onplayerror: () => {
-          setLoadingAudioId(null);
-          setIsCurrentlyPlaying(false);
-        }
+        onloaderror: () => failPlayback(),
+        onplayerror: () => failPlayback(),
       });
+
+      const failPlayback = () => {
+        if (soundRef.current !== sound) return;
+        sound.off();
+        sound.unload();
+        soundRef.current = null;
+        playbackIdRef.current = null;
+        loadedAudioUrlRef.current = null;
+        currentPlayingIdRef.current = null;
+        pausedPositionRef.current = 0;
+        setPlayingAudioId(null);
+        setLoadingAudioId(null);
+        setIsCurrentlyPlaying(false);
+        setFailedAudioId(id);
+        clearAudioProgress();
+      };
 
       soundRef.current = sound;
       loadedAudioUrlRef.current = audioUrl;
+      failureHandlerRef.current = failPlayback;
+      playbackTimeoutRef.current = setTimeout(failPlayback, 15000);
       playbackIdRef.current = sound.play();
     },
     [playingAudioId, clearAudioProgress]
@@ -216,6 +243,7 @@ export function useAudioPlayback() {
     setPlayingAudioId(null);
     setIsCurrentlyPlaying(false);
     setLoadingAudioId(null);
+    setFailedAudioId(null);
     clearAudioProgress();
     onEndCalledRef.current = false;
   }, [clearAudioProgress]);
@@ -235,6 +263,7 @@ export function useAudioPlayback() {
     playingAudioId,
     isCurrentlyPlaying,
     loadingAudioId,
+    failedAudioId,
     audioProgress,
     audioDuration,
     toggleAudio,
