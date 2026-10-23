@@ -462,7 +462,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
   }
 
   return (
-    <div className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'max-w-[1200px] h-auto min-w-0' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
+    <div className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'max-w-[1440px] h-auto min-w-0' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
       
       <TopicCompletionModal 
         isOpen={showCompletionModal}
@@ -553,7 +553,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
       </div>
 
       {/* Main Split Content */}
-      <div className={`flex flex-col min-h-0 pb-6 ${avatar ? 'gap-4 px-3 sm:gap-5 sm:px-6' : 'md:flex-row px-4 md:px-8 gap-4 flex-1'}`}>
+      <div className={`flex flex-col min-h-0 pb-6 ${avatar ? 'gap-4 px-2 sm:gap-5 sm:px-4' : 'md:flex-row px-4 md:px-8 gap-4 flex-1'}`}>
         
         {/* Mode Sidebar */}
         {!avatar && <div className="flex flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0">
@@ -657,9 +657,9 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
         }
         {avatar && (
           <aside className="flex w-full min-w-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]" aria-label="3D Reading avatar">
-            <div className="relative h-[240px] overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#F0F7FF] sm:h-[300px] lg:h-[360px]">
+            <div className="relative h-[300px] overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#F0F7FF] sm:h-[380px] lg:h-[460px]">
             <video ref={avatarPassage.videoRef} src={contentPayload?.narrationVideoUrl} muted playsInline preload="metadata"
-              className="absolute left-1/2 top-0 aspect-video h-[232%] w-auto max-w-none -translate-x-1/2"
+              className="absolute left-1/2 -top-[6%] aspect-video h-[260%] w-auto max-w-none -translate-x-1/2"
               aria-label={`${avatar.title} avatar narration`}
               onLoadedMetadata={avatarPassage.synchronize}
               onError={() => { avatarPassage.pause(); toast.error('The avatar video could not be loaded.'); }} />
