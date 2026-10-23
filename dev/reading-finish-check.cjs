@@ -26,6 +26,7 @@ async function finish(modes, lessons = [], extra = {}) {
   const paths = [], requests = [];
   const dependencies = {
     ...navigation.exports,
+    avatar: undefined,
     courseId: 'course', unitId: 'unit', lessonId: 'lesson', lessonModeId: 'reading',
     allLessonsPath: '/student/courses/course/units/unit',
     setShowCompletionModal: () => {}, navigate: value => paths.push(value),
@@ -50,5 +51,8 @@ async function finish(modes, lessons = [], extra = {}) {
   assert.equal((await finish([current])).path, '/student/courses/course/units/unit');
   assert.equal((await finish([current], [], { fetchLessonModes: async () => { throw new Error('Unavailable'); } })).path, '/student/courses/course/units/unit');
   assert.equal((await finish([current], [], { courseId: undefined, allLessonsPath: '/student/courses' })).path, '/student/courses');
+  const avatarResult = await finish([current], [], { avatar: { topicId: 'test' }, allLessonsPath: '/student/3d-avatar/reading' });
+  assert.equal(avatarResult.path, '/student/3d-avatar/reading');
+  assert.deepEqual(avatarResult.requests, [], '3D Finish must not query curriculum progress');
   console.log('Reading Finish checks passed: component, legacy and direct activity routes; completed/locked filtering; final activity; failures and missing context.');
 })().catch(error => { console.error(error); process.exitCode = 1; });

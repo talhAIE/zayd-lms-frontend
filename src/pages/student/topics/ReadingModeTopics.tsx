@@ -1,4 +1,6 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useContext } from 'react';
+import { AvatarReadingContext } from '@/components/avatar-reading/AvatarReadingContext';
+import { useAvatarPassage } from '@/components/avatar-reading/useAvatarPassage';
 import { readingFeedbackAction, readingFeedbackNeedsAttention, loadViewedReadingFeedback, saveViewedReadingFeedback } from '@/utils/readingVocabularyFeedback';
 import { readingPracticeSpeechText, readingPracticeAudioUrl } from '@/utils/readingPracticeAudio';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -98,15 +100,17 @@ function HighlightedReadingSentence({ text, vocabularyTerms, vocabularyCards, on
   )}</>;
 }
 
-export default function ReadingModeTopics() {
+export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: string; title: string } } = {}) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const lessonModeId = searchParams.get('modeId') || '';
+  const lessonModeId = avatar?.topicId || searchParams.get('modeId') || '';
+  const avatarTransport = useContext(AvatarReadingContext);
+  const feedbackStorageKey = `${avatarTransport?.storagePrefix ?? ''}${lessonModeId}`;
   const lessonId = searchParams.get('lessonId') || '';
   const courseId = searchParams.get('courseId') || undefined;
   const unitId = searchParams.get('unitId') || undefined;
   const refreshLearningProgress = useLearningProgressRefresh();
-  const allLessonsPath = courseId && unitId
+  const allLessonsPath = avatar ? '/student/3d-avatar/reading' : courseId && unitId
     ? '/student/courses/' + courseId + '/units/' + unitId
     : '/student/courses';
   
@@ -117,16 +121,16 @@ export default function ReadingModeTopics() {
   const [isJustCompleted, setIsJustCompleted] = useState(false);
   const [activeFeedback, setActiveFeedback] = useState<string | null>(null);
   const [activeFeedbackTarget, setActiveFeedbackTarget] = useState<ReadingFeedbackTarget | undefined>();
-  const [viewedFeedbackIds, setViewedFeedbackIds] = useState(() => loadViewedReadingFeedback(lessonModeId));
+  const [viewedFeedbackIds, setViewedFeedbackIds] = useState(() => loadViewedReadingFeedback(feedbackStorageKey));
   const openReadingFeedback = useCallback((id: string, feedback: string, target?: ReadingFeedbackTarget) => {
     setActiveFeedback(feedback);
     setActiveFeedbackTarget(target);
     setViewedFeedbackIds(previous => {
       const next = new Set(previous).add(id);
-      saveViewedReadingFeedback(lessonModeId, next);
+      saveViewedReadingFeedback(feedbackStorageKey, next);
       return next;
     });
-  }, [lessonModeId]);
+  }, [feedbackStorageKey]);
   const [activeAssessment, setActiveAssessment] = useState<SpeechAssessment | null>(null);
   const [activeVocabularyCard, setActiveVocabularyCard] = useState<ReadingVocabularyCard | null>(null);
   const [hasStartedShadowReading, setHasStartedShadowReading] = useState(false);
@@ -175,11 +179,17 @@ export default function ReadingModeTopics() {
   } = useModeSession({ 
     lessonModeId,
     onCompleted: async () => {
-      await refreshLearningProgress(lessonId, { courseId, unitId });
+      if (!avatar) await refreshLearningProgress(lessonId, { courseId, unitId });
       setIsJustCompleted(true);
       setShowCompletionModal(true);
     }
   });
+
+  const avatarPassage = useAvatarPassage(
+    avatar ? contentPayload?.contentAudioUrl : undefined,
+    avatar ? contentPayload?.narrationVideoUrl : undefined,
+    markReadingPassageListened,
+  );
 
   useEffect(() => {
     // A generic completed flag alone is not enough to show the revisit
@@ -197,8 +207,8 @@ export default function ReadingModeTopics() {
 
   useEffect(() => {
     setHasStartedShadowReading(false);
-    setViewedFeedbackIds(loadViewedReadingFeedback(lessonModeId));
-  }, [lessonModeId]);
+    setViewedFeedbackIds(loadViewedReadingFeedback(feedbackStorageKey));
+  }, [lessonModeId, feedbackStorageKey]);
 
   useEffect(() => {
     const latest = [...chatHistory].reverse().find(message => message.role === 'assistant');
@@ -294,6 +304,7 @@ export default function ReadingModeTopics() {
   };
 
   const togglePracticeAudio = (messageId: string, audioUrl?: string | null) => {
+    if (avatar) avatarPassage.pause();
     if (audioUrl) toggleStoredAudio(messageId, audioUrl);
     else toast.error('Tony Hopeful audio is unavailable. Reload this activity to retry.');
   };
@@ -327,6 +338,9 @@ export default function ReadingModeTopics() {
   );
   const step1Completed = initialPassComplete;
   const step1Active = !step1Completed;
+  useEffect(() => {
+    if (avatar && !step1Active) avatarPassage.pause();
+  }, [avatar, step1Active, avatarPassage.pause]);
   const step2Completed = (mcqList && mcqList.length > 0) || isCompleted;
   const step2Active = step1Completed && !step2Completed;
   const step3Completed = isCompleted;
@@ -354,6 +368,14 @@ export default function ReadingModeTopics() {
   })();
 
   const togglePassageAudio = () => {
+    if (avatar) {
+      stopAudio();
+      window.speechSynthesis?.cancel();
+      setFallbackSpeechMessageId(null);
+      setIsFallbackSpeechPaused(false);
+      void avatarPassage.toggle();
+      return;
+    }
     const audioUrl = contentPayload?.contentAudioUrl;
     if (audioUrl) {
       if (fallbackSpeechMessageId) {
@@ -372,6 +394,7 @@ export default function ReadingModeTopics() {
   };
 
   const toggleStoredAudio = (messageId: string, audioUrl: string, onEnd?: () => void) => {
+    if (avatar) avatarPassage.pause();
     if (fallbackSpeechMessageId) {
       window.speechSynthesis.cancel();
       fallbackSpeechRef.current = null;
@@ -383,6 +406,7 @@ export default function ReadingModeTopics() {
 
   const finishMode = async () => {
     setShowCompletionModal(false);
+    if (avatar) { navigate(allLessonsPath, { replace: true }); return; }
     if (courseId && unitId && lessonId) {
       try {
         const context = { courseId, unitId, lessonId };
@@ -425,18 +449,27 @@ export default function ReadingModeTopics() {
   ].filter((card, index, cards) =>
     cards.findIndex((candidate) => candidate.word.toLowerCase() === card.word.toLowerCase()) === index,
   );
+  const cleanAvatarText = (text: string) => avatar ? text.replace(/\*\*([\s\S]*?)\*\*/g, '$1') : text;
+  const passageContent = cleanAvatarText(contentPayload?.passage || contentPayload?.content || (contentPayload?.sentences ? contentPayload.sentences.join('\n\n') : ''));
   const readingPresentation = contentPayload?.readingPresentation
     ? { ...contentPayload.readingPresentation, vocabularyCards }
     : undefined;
+  if (avatar && readingPresentation?.blocks) {
+    readingPresentation.blocks = readingPresentation.blocks.map((block: { text?: string; heading?: string; speaker?: string }) => ({
+      ...block,
+      text: block.text ? cleanAvatarText(block.text) : block.text,
+    }));
+  }
 
   return (
-    <div className="w-full max-w-[1207px] mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)] border border-gray-100 shadow-sm relative">
+    <div className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'max-w-[1440px] h-auto min-w-0' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
       
       <TopicCompletionModal 
         isOpen={showCompletionModal}
         isJustCompleted={isJustCompleted}
         onFinish={() => { void finishMode(); }}
         onRetake={() => {
+          if (avatar) avatarPassage.restart();
           setShowCompletionModal(false);
           setCurrentMcqIndex(0);
           setSelectedAnswers({});
@@ -479,7 +512,7 @@ export default function ReadingModeTopics() {
         {/* Top Bar */}
         <div className="flex flex-row justify-between items-center px-4 md:px-6 py-4 bg-white border-b border-[#E5E7EB]">
           
-          <div className="flex-1 flex justify-start">
+          <div className={`${avatar ? 'shrink-0' : 'flex-1'} flex justify-start`}>
             <button 
               onClick={() => navigate(allLessonsPath, { replace: true })}
               className="flex justify-center items-center w-10 h-10 bg-white border border-[#E5E7EB] shadow-[0px_1px_4px_rgba(0,0,0,0.06)] rounded-full hover:bg-gray-50 transition-colors"
@@ -488,13 +521,13 @@ export default function ReadingModeTopics() {
             </button>
           </div>
           
-          <div className="flex-1 flex justify-center">
-            <h1 className="text-[20px] font-bold leading-[20px] tracking-[-0.3px] text-[#282828]">
-              Reading Mode
+          <div className={`flex-1 flex ${avatar ? 'min-w-0 px-3 sm:px-4' : 'justify-center'}`}>
+            <h1 className={`${avatar ? 'text-base leading-6 sm:text-xl' : 'text-[20px] leading-[20px]'} font-bold tracking-[-0.3px] text-[#282828]`}>
+              {avatar ? avatar.title : 'Reading Mode'}
             </h1>
           </div>
           
-          <div className="flex-1 flex justify-end items-center gap-3">
+          <div className={`${avatar ? 'shrink-0' : 'flex-1'} flex justify-end items-center gap-3`}>
             {sessionStatus.remainingSeconds !== null && (
               <div className="flex flex-row items-center px-4 py-2 gap-2 bg-[#FEF1E8] rounded-full h-[42px]">
                 <span className="font-semibold text-[13px] leading-[16px] text-[#F97316]">
@@ -520,10 +553,10 @@ export default function ReadingModeTopics() {
       </div>
 
       {/* Main Split Content */}
-      <div className="flex flex-col md:flex-row px-4 md:px-8 gap-4 flex-1 min-h-0 pb-6">
+      <div className={`flex flex-col min-h-0 pb-6 ${avatar ? 'gap-4 px-2 sm:gap-5 sm:px-4' : 'md:flex-row px-4 md:px-8 gap-4 flex-1'}`}>
         
         {/* Mode Sidebar */}
-        <div className="flex flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0">
+        {!avatar && <div className="flex flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0">
           <div 
             className="px-4 pb-2 md:pb-2.5 flex justify-between items-center cursor-pointer md:cursor-default"
             onClick={() => window.innerWidth < 768 && setIsStepsExpanded(!isStepsExpanded)}
@@ -621,8 +654,27 @@ export default function ReadingModeTopics() {
 
         </div>
 
+        }
+        {avatar && (
+          <aside className="flex w-full min-w-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]" aria-label="3D Reading avatar">
+            <div className="relative h-[340px] overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#F0F7FF] sm:h-[440px] lg:h-[540px]">
+            <video ref={avatarPassage.videoRef} src={contentPayload?.narrationVideoUrl} muted playsInline preload="metadata"
+              className="absolute left-1/2 top-0 aspect-video h-[145%] w-auto max-w-none -translate-x-1/2"
+              aria-label={`${avatar.title} avatar narration`}
+              onLoadedMetadata={avatarPassage.synchronize}
+              onError={() => { avatarPassage.pause(); toast.error('The avatar video could not be loaded.'); }} />
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t bg-white px-3 py-2.5 sm:px-4">
+              <button type="button" disabled={!contentPayload?.contentAudioUrl || isAccountBlocked}
+                onClick={togglePassageAudio} className="rounded-full bg-[#3B82F6] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
+                {avatarPassage.loading ? 'Loading…' : avatarPassage.playing ? 'Pause passage' : 'Play passage'}
+              </button>
+              <button type="button" onClick={avatarPassage.restart} className="text-sm text-[#475569]">Restart passage</button>
+            </div>
+          </aside>
+        )}
         {/* Workspace Main */}
-        <div className={`flex flex-col flex-1 gap-4 min-h-0 pr-1 ${(isChatActive || step1Active) ? '' : 'overflow-y-auto'}`}>
+        <div className={`flex flex-col gap-4 min-h-0 ${avatar ? 'h-[560px] min-w-0 shrink-0 rounded-2xl border border-[#E5E7EB] bg-white p-3 sm:h-[620px] sm:p-5 lg:h-[640px]' : 'flex-1 pr-1'} ${(isChatActive || step1Active) ? '' : 'overflow-y-auto'}`}>
           
           {/* Reading Passage Card */}
           {contentPayload && (
@@ -633,12 +685,12 @@ export default function ReadingModeTopics() {
           ) && (
             <div className={`flex flex-col gap-4 min-h-0 ${step1Active ? 'flex-1' : 'flex-shrink-0'}`}>
               <ReadingPassageCard 
-                content={contentPayload.passage || contentPayload.content || (contentPayload.sentences ? contentPayload.sentences.join('\n\n') : '')}
+                content={passageContent}
                 audioUrl={contentPayload.contentAudioUrl}
                 readingPresentation={readingPresentation}
                 onVocabularyClick={setActiveVocabularyCard}
                 showAudioControl={Boolean(readingPassageText)}
-                isPlaying={playingAudioId === 'reading-passage' && isCurrentlyPlaying}
+                isPlaying={avatar ? avatarPassage.playing : playingAudioId === 'reading-passage' && isCurrentlyPlaying}
                 onToggleAudio={togglePassageAudio}
                 forceExpanded={step1Active}
                 collapsibleMode="accordion"
@@ -1071,7 +1123,7 @@ export default function ReadingModeTopics() {
                     </p>
                   </div>
                   <button
-                    onClick={startRecording}
+                    onClick={() => { if (avatar) { avatarPassage.pause(); stopAudio(); } startRecording(); }}
                     disabled={!modeSessionId || cooldown || isProcessingRecording || isTyping || isAccountBlocked || hasPendingAudio}
                     aria-label="Record your reading response"
                     aria-describedby="reading-recording-instruction"

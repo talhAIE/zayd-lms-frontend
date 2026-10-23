@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useContext } from 'react';
+import { AvatarReadingContext } from '@/components/avatar-reading/AvatarReadingContext';
 import { io, Socket } from 'socket.io-client';
 import { toast } from 'sonner';
 import { ContentFilterWarningData } from '@/components/ui/ContentPolicyWarningModal';
@@ -111,6 +112,8 @@ function showPendingAudioInHistory(history: HistoryItem[], pending: HistoryItem)
 }
 
 export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: UseModeSessionOptions) {
+  const avatarTransport = useContext(AvatarReadingContext);
+  const recordingStorageKey = `${avatarTransport?.storagePrefix ?? ''}${lessonModeId}`;
   const [socket, setSocket] = useState<Socket | null>(null);
   const [modeSessionId, setModeSessionId] = useState<string | null>(null);
   const [chatHistory, setChatHistory] = useState<HistoryItem[]>([]);
@@ -195,7 +198,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     }
 
     const socketUrl = import.meta.env.VITE_SOCKET_URL || 'http://localhost:4000';
-    const newSocket = io(socketUrl, {
+    const newSocket = avatarTransport ? avatarTransport.connect() : io(socketUrl, {
       auth: { token: accessToken },
       transports: ['polling', 'websocket'],
       reconnection: true,
@@ -298,7 +301,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
         modeRequestInFlightRef.current = false;
         if (pendingAudioTimeoutRef.current) clearTimeout(pendingAudioTimeoutRef.current);
         pendingAudioTimeoutRef.current = null;
-        void removePendingReadingAudio(lessonModeId, acknowledgedId).catch(() => undefined);
+        void removePendingReadingAudio(recordingStorageKey, acknowledgedId).catch(() => undefined);
       }
       if (session.chatHistory) {
         setChatHistory(prev => {
@@ -307,18 +310,18 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
         });
       }
       if (!pendingAudioRef.current) {
-        void loadPendingReadingAudio(lessonModeId).then((draft) => {
+        void loadPendingReadingAudio(recordingStorageKey).then((draft) => {
           if (!draft) {
             if (!pendingAudioRef.current) setHasPendingAudio(false);
             return;
           }
           if (discardedAudioAttemptIdsRef.current.has(draft.id)) {
-            void removePendingReadingAudio(lessonModeId, draft.id).catch(() => undefined);
+            void removePendingReadingAudio(recordingStorageKey, draft.id).catch(() => undefined);
             if (!pendingAudioRef.current) setHasPendingAudio(false);
             return;
           }
           if (draft.sessionId !== session.modeSessionId || (session.chatHistory && hasCompletedAudioAttempt(session.chatHistory, draft.id))) {
-            void removePendingReadingAudio(lessonModeId, draft.id);
+            void removePendingReadingAudio(recordingStorageKey, draft.id);
             if (!pendingAudioRef.current) setHasPendingAudio(false);
             return;
           }
@@ -367,7 +370,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
         modeRequestInFlightRef.current = false;
         if (pendingAudioTimeoutRef.current) clearTimeout(pendingAudioTimeoutRef.current);
         pendingAudioTimeoutRef.current = null;
-        void removePendingReadingAudio(lessonModeId, acknowledgedId).catch(() => undefined);
+        void removePendingReadingAudio(recordingStorageKey, acknowledgedId).catch(() => undefined);
       }
       setChatHistory(prev => {
         const pending = pendingAudioRef.current && prev.find(message => message.id === pendingAudioRef.current?.id);
@@ -391,7 +394,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
         pendingAudioRef.current = null;
         pendingAudioMessageIdRef.current = null;
         setHasPendingAudio(false);
-        void removePendingReadingAudio(lessonModeId, completedAudio.id).catch(() => undefined);
+        void removePendingReadingAudio(recordingStorageKey, completedAudio.id).catch(() => undefined);
       }
       if (payload.readingProgress) {
         setReadingProgress(payload.readingProgress);
@@ -477,7 +480,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
         pendingAudioMessageIdRef.current = null;
         pendingAudioRef.current = null;
         setHasPendingAudio(false);
-        void removePendingReadingAudio(lessonModeId, pendingAudioMessageId).catch(() => undefined);
+        void removePendingReadingAudio(recordingStorageKey, pendingAudioMessageId).catch(() => undefined);
       }
       setChatHistory(prev => {
         if (pendingAudioMessageId) {
@@ -542,6 +545,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       setIsTyping(false);
       toast.error(payload.message || 'Your account has been blocked.');
       newSocket.disconnect();
+      if (avatarTransport) return;
       window.setTimeout(() => {
         window.location.assign('/login');
       }, 2000);
@@ -561,7 +565,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
           setLastNewRecordingAttemptId(pending.id);
           setChatHistory(prev => prev.filter(message => message.id !== pending.id));
           if (pending.audioUrl.startsWith('blob:')) URL.revokeObjectURL(pending.audioUrl);
-          void removePendingReadingAudio(lessonModeId, pending.id).catch(() => undefined);
+          void removePendingReadingAudio(recordingStorageKey, pending.id).catch(() => undefined);
         }
       } else if (pending && (!payload.clientAttemptId || payload.clientAttemptId === pending.id)) {
         if (pendingAudioTimeoutRef.current) clearTimeout(pendingAudioTimeoutRef.current);
@@ -592,7 +596,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       newSocket.disconnect();
       setSocket((currentSocket) => currentSocket === newSocket ? null : currentSocket);
     };
-  }, [lessonModeId]);
+  }, [lessonModeId, avatarTransport, recordingStorageKey]);
 
   const sendMessage = useCallback((text: string) => {
     if (
@@ -628,7 +632,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     }
     const controller = new AbortController();
     readingUploadRef.current = controller;
-    void uploadReadingAudio({ sessionId, attemptId: id, base64, format, signal: controller.signal }).then(events => {
+    void (avatarTransport?.upload ?? uploadReadingAudio)({ sessionId, attemptId: id, base64, format, signal: controller.signal }).then(events => {
       if (controller.signal.aborted || modeSessionIdRef.current !== sessionId || pendingAudioRef.current?.id !== id) return;
       // Reuse the same state handlers as socket audio, without sending the file
       // through a size-limited socket or depending on server-instance affinity.
@@ -644,7 +648,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     }).finally(() => {
       if (readingUploadRef.current === controller) readingUploadRef.current = null;
     });
-  }, [socket]);
+  }, [socket, avatarTransport]);
 
   const sendAudio = useCallback(async (base64Audio: string, format: string = 'wav', localAudioUrl?: string): Promise<boolean> => {
     if (pendingAudioRef.current) {
@@ -664,7 +668,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       }]);
       try {
         await savePendingReadingAudio({
-          lessonModeId, sessionId: modeSessionIdRef.current, id,
+          lessonModeId: recordingStorageKey, sessionId: modeSessionIdRef.current, id,
           base64: base64Audio, format, createdAt: new Date().toISOString(),
         });
       } catch {
@@ -695,7 +699,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       toast.error('Recording is taking too long. Please retry it.');
     }, 180_000);
     return true;
-  }, [socket, isAccountBlocked, lessonModeId, dispatchAudio]);
+  }, [socket, isAccountBlocked, lessonModeId, dispatchAudio, recordingStorageKey]);
 
   const retryAudio = useCallback(() => {
     const pending = pendingAudioRef.current;
@@ -735,7 +739,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       return;
     }
     try {
-      await removePendingReadingAudio(lessonModeId, attemptId);
+      await removePendingReadingAudio(recordingStorageKey, attemptId);
     } catch {
       toast.error('The saved copy could not be removed. It may reappear after a refresh.');
     }
@@ -758,7 +762,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       }];
     }));
     if (pending.audioUrl.startsWith('blob:')) URL.revokeObjectURL(pending.audioUrl);
-  }, [lessonModeId]);
+  }, [lessonModeId, recordingStorageKey]);
 
   const submitMcqs = useCallback((answers: Array<number | string>) => {
     if (!socket || !modeSessionIdRef.current || isAccountBlocked) return;
@@ -809,7 +813,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
   const restartSession = useCallback(() => {
     if (!socket || !lessonModeId || isAccountBlocked) return;
     if (pendingAudioRef.current) {
-      void removePendingReadingAudio(lessonModeId, pendingAudioRef.current.id).catch(() => undefined);
+      void removePendingReadingAudio(recordingStorageKey, pendingAudioRef.current.id).catch(() => undefined);
       pendingAudioRef.current = null;
       pendingAudioMessageIdRef.current = null;
       setHasPendingAudio(false);
@@ -824,7 +828,7 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     setRoleplayProgress(null);
     setIsCompleted(false);
     socket.emit('restart_mode_session', { lessonModeId });
-  }, [socket, lessonModeId, isAccountBlocked]);
+  }, [socket, lessonModeId, isAccountBlocked, recordingStorageKey]);
 
   const resetActivityTimer = useCallback(() => {
     if (!socket || !modeSessionIdRef.current) return;
