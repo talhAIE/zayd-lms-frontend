@@ -36,7 +36,7 @@ vm.runInNewContext(compile(fs.readFileSync(path.join(root, 'src/utils/readingAud
   visit(hook);
   const pendingAudioRef = { current: null }, timeline = [];
   const sandbox = {
-    useCallback: callback => callback, socket: { connected: true }, isAccountBlocked: false, lessonModeId: 'mode', dispatchAudio: () => timeline.push('dispatch'),
+    useCallback: callback => callback, socket: { connected: true }, isAccountBlocked: false, lessonModeId: 'mode', recordingStorageKey: 'mode', dispatchAudio: () => timeline.push('dispatch'),
     pendingAudioRef, modeKeyRef: { current: 'reading-mode' }, modeSessionIdRef: { current: 'session' }, pendingAudioMessageIdRef: { current: null },
     modeRequestInFlightRef: { current: false }, pendingAudioTimeoutRef: { current: null },
     setHasPendingAudio() {}, setChatHistory() {}, setIsTyping() {},
