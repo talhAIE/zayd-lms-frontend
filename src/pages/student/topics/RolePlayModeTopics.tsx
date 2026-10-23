@@ -14,16 +14,17 @@ import SpeechAssessmentModal, { isSpeechAssessment, SpeechAssessment } from '@/c
 import { toast } from 'sonner';
 import { fetchUnitLessons } from '@/services/learningService';
 import { getNextLessonPath } from '@/utils/learning-navigation';
+import { useAvatarSpeakingVideo } from '@/components/avatar-reading/useAvatarSpeakingVideo';
 
-export default function RolePlayModeTopics() {
+export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;title:string}}={}) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const lessonModeId = searchParams.get('modeId') || '';
+  const lessonModeId = avatar?.topicId || searchParams.get('modeId') || '';
   const lessonId = searchParams.get('lessonId') || '';
   const courseId = searchParams.get('courseId') || undefined;
   const unitId = searchParams.get('unitId') || undefined;
   const refreshLearningProgress = useLearningProgressRefresh();
-  const allLessonsPath = courseId && unitId
+  const allLessonsPath = avatar ? '/student/3d-avatar/roleplay' : courseId && unitId
     ? '/student/courses/' + courseId + '/units/' + unitId
     : '/student/courses';
   const { playingAudioId, isCurrentlyPlaying, loadingAudioId, failedAudioId, toggleAudio, stopAudio } = useAudioPlayback();
@@ -71,11 +72,25 @@ export default function RolePlayModeTopics() {
   } = useModeSession({ 
     lessonModeId,
     onCompleted: async () => {
-      await refreshLearningProgress(lessonId, { courseId, unitId });
+      if (!avatar) await refreshLearningProgress(lessonId, { courseId, unitId });
       setIsJustCompleted(true);
       setShowCompletionModal(true);
     }
   });
+
+  const stopRoleplayMedia = () => {
+    stopAudio();fallbackSpeechRef.current=null;
+    if(fallbackSpeechTimerRef.current)clearTimeout(fallbackSpeechTimerRef.current);
+    fallbackSpeechTimerRef.current=null;
+    window.speechSynthesis?.cancel();setFallbackSpeechMessageId(null);setPendingSpeechMessageId(null);
+  };
+  const avatarSpeaking=Boolean(avatar&&!isRecording&&!isAccountBlocked&&!showCompletionModal&&(
+    fallbackSpeechMessageId || (isCurrentlyPlaying && (playingAudioId==='roleplay-scenario'||chatHistory.some(m=>m.id===playingAudioId&&m.role==='assistant')))
+  ));
+  const avatarVideoRef=useAvatarSpeakingVideo(avatar?contentPayload?.narrationVideoUrl:undefined,avatarSpeaking,stopRoleplayMedia);
+  useEffect(()=>{
+    if(avatar&&(isRecording||isAccountBlocked||showCompletionModal))stopRoleplayMedia();
+  },[avatar,isRecording,isAccountBlocked,showCompletionModal]);
 
   useEffect(() => {
     if (isCompleted && !isJustCompleted) {
@@ -165,6 +180,7 @@ export default function RolePlayModeTopics() {
 
   const finishMode = async () => {
     setShowCompletionModal(false);
+    if(avatar){stopRoleplayMedia();navigate(allLessonsPath,{replace:true});return;}
     if (courseId && unitId && lessonId) {
       try {
         const lessons = await fetchUnitLessons(unitId);
@@ -191,6 +207,7 @@ export default function RolePlayModeTopics() {
 
   const handleSend = () => {
     if (!inputValue.trim() || cooldown || isTyping || isAccountBlocked) return;
+    if(avatar)stopRoleplayMedia();
     sendMessage(inputValue);
     setInputValue('');
     triggerCooldown();
@@ -225,7 +242,7 @@ export default function RolePlayModeTopics() {
 
   return (
     <div
-      className="w-full max-w-[1207px] mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden h-[calc(var(--roleplay-viewport-height)-6rem)] md:h-[794px] md:max-h-[calc(100dvh-7rem)] border border-gray-100 shadow-sm relative"
+      className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar?'max-w-[1440px] h-auto min-w-0':'max-w-[1207px] h-[calc(var(--roleplay-viewport-height)-6rem)] md:h-[794px] md:max-h-[calc(100dvh-7rem)]'}`}
       style={{ '--roleplay-viewport-height': `${visibleViewportHeight}px` } as React.CSSProperties}
     >
       
@@ -234,6 +251,7 @@ export default function RolePlayModeTopics() {
         isJustCompleted={isJustCompleted}
         onFinish={() => { void finishMode(); }}
         onRetake={() => {
+          if(avatar)stopRoleplayMedia();
           setShowCompletionModal(false);
           setIsScenarioExpanded(false);
           setIsJustCompleted(false);
@@ -264,7 +282,7 @@ export default function RolePlayModeTopics() {
         {/* Top Bar */}
         <div className="flex flex-row justify-between items-center px-4 md:px-6 py-4 bg-white border-b border-[#E5E7EB]">
           
-          <div className="flex-1 flex justify-start">
+          <div className={`${avatar?'shrink-0':'flex-1'} flex justify-start`}>
             <button 
               onClick={() => navigate(allLessonsPath, { replace: true })}
               className="flex justify-center items-center w-10 h-10 bg-white border border-[#E5E7EB] shadow-[0px_1px_4px_rgba(0,0,0,0.06)] rounded-full hover:bg-gray-50 transition-colors"
@@ -273,13 +291,13 @@ export default function RolePlayModeTopics() {
             </button>
           </div>
           
-          <div className="flex-1 flex justify-center items-center gap-4">
-            <h1 className="text-[20px] font-bold leading-[20px] tracking-[-0.3px] text-[#282828]">
-              Roleplay Mode
+          <div className={`flex-1 flex items-center gap-4 ${avatar?'min-w-0 px-3 sm:px-4':'justify-center'}`}>
+            <h1 className={`${avatar?'text-base leading-6 sm:text-xl':'text-[20px] leading-[20px]'} font-bold tracking-[-0.3px] text-[#282828]`}>
+              {avatar?avatar.title:'Roleplay Mode'}
             </h1>
           </div>
           
-          <div className="flex-1 flex justify-end items-center gap-3">
+          <div className={`${avatar?'shrink-0':'flex-1'} flex justify-end items-center gap-3`}>
             {sessionStatus.remainingSeconds !== null && (
               <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FEF1E8] rounded-full">
                 <Clock className="w-3.5 h-3.5 text-[#F97316]" />
@@ -289,7 +307,7 @@ export default function RolePlayModeTopics() {
               </div>
             )}
           </div>
-          <div className="flex-1 flex justify-end items-center gap-2">
+          <div className={`${avatar?'hidden':'flex-1 flex'} justify-end items-center gap-2`}>
             {/* Optional placeholders */}
           </div>
         </div>
@@ -311,10 +329,10 @@ export default function RolePlayModeTopics() {
       </div>
 
       {/* Main Split Content */}
-      <div className="flex flex-col md:flex-row px-3 md:px-8 gap-3 md:gap-4 flex-1 min-h-0 pb-3 md:pb-6">
+      <div className={`flex flex-col min-h-0 ${avatar?'gap-4 px-2 pb-6 sm:gap-5 sm:px-4':'md:flex-row px-3 md:px-8 gap-3 md:gap-4 flex-1 pb-3 md:pb-6'}`}>
         
         {/* Mode Sidebar */}
-        <div className={`${isComposerFocused ? 'hidden md:flex' : 'flex'} flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0`}>
+        {!avatar && <div className={`${isComposerFocused ? 'hidden md:flex' : 'flex'} flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0`}>
           <div 
             className="px-4 pb-2 md:pb-2.5 flex justify-between items-center cursor-pointer md:cursor-default"
             onClick={() => window.innerWidth < 768 && setIsStepsExpanded(!isStepsExpanded)}
@@ -408,8 +426,15 @@ export default function RolePlayModeTopics() {
 
         </div>
 
+        }
+        {avatar&&<aside className="flex w-full min-w-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]" aria-label="3D Roleplay avatar">
+          <div className="relative h-[340px] overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#F0F7FF] sm:h-[440px] lg:h-[540px]">
+            <video ref={avatarVideoRef} src={contentPayload?.narrationVideoUrl} muted loop playsInline preload="auto"
+              className="absolute left-1/2 top-0 aspect-video h-[145%] w-auto max-w-none -translate-x-1/2" aria-label={`${avatar.title} avatar animation`} />
+          </div>
+        </aside>}
         {/* Workspace Main */}
-        <div className={`flex flex-col flex-1 gap-3 md:gap-4 min-h-0 pr-1 ${step1Active ? 'overflow-y-auto' : 'overflow-hidden'}`}>
+        <div className={`flex flex-col gap-3 md:gap-4 min-h-0 ${avatar?'h-[560px] min-w-0 shrink-0 rounded-2xl border border-[#E5E7EB] bg-white p-3 sm:h-[620px] sm:p-5':'flex-1 pr-1'} ${step1Active ? 'overflow-y-auto' : 'overflow-hidden'}`}>
           
           {/* Scenario Card */}
           {contentPayload && (contentPayload.passage || contentPayload.content || contentPayload.scenario) && (
@@ -421,7 +446,7 @@ export default function RolePlayModeTopics() {
                 readingPresentation={contentPayload.readingPresentation}
                 isPlaying={playingAudioId === 'roleplay-scenario' && isCurrentlyPlaying}
                 onToggleAudio={() =>
-                  toggleAudio(
+                  (avatar?toggleStoredAudio:toggleAudio)(
                     'roleplay-scenario',
                     contentPayload.contentAudioUrl || contentPayload.narrationAudioUrl || contentPayload.attachmentUrl,
                   )
@@ -435,6 +460,7 @@ export default function RolePlayModeTopics() {
                   <button
                     onClick={() => {
                       stopAudio();
+                      if(avatar)stopRoleplayMedia();
                       setIsScenarioExpanded(true);
                     }}
                     className="px-6 py-2.5 bg-[#3B82F6] text-white rounded-full font-['Outfit'] font-semibold text-[14px] hover:bg-[#2563EB] transition-colors shadow-sm"
@@ -632,7 +658,7 @@ export default function RolePlayModeTopics() {
                   </button>
                 ) : (
                   <button 
-                    onClick={startRecording}
+                    onClick={() => {if(avatar){stopRoleplayMedia();avatarVideoRef.current?.pause();}startRecording();}}
                     disabled={cooldown || isTyping || isAccountBlocked}
                     className="flex shrink-0 justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >

@@ -51,8 +51,8 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   const handleBack = () => {
     if (isAvatarRoute) {
       navigate(location.pathname === '/student/3d-avatar' ? '/student/courses' :
-        /^\/student\/3d-avatar\/(reading|listening)$/.test(location.pathname) ? '/student/3d-avatar' :
-          location.pathname.startsWith('/student/3d-avatar/listening/') ? '/student/3d-avatar/listening' : '/student/3d-avatar/reading');
+        /^\/student\/3d-avatar\/(reading|listening|roleplay)$/.test(location.pathname) ? '/student/3d-avatar' :
+          location.pathname.startsWith('/student/3d-avatar/roleplay/') ? '/student/3d-avatar/roleplay' : location.pathname.startsWith('/student/3d-avatar/listening/') ? '/student/3d-avatar/listening' : '/student/3d-avatar/reading');
       return;
     }
     if (scienceBackTarget) navigate(scienceBackTarget);
@@ -78,7 +78,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
 
   let formattedTitle;
   if (isAvatarRoute) {
-    formattedTitle = location.pathname === '/student/3d-avatar' ? '3D Avatar Mode' : location.pathname.includes('/listening') ? '3D Listening' : '3D Reading';
+    formattedTitle = location.pathname === '/student/3d-avatar' ? '3D Avatar Mode' : location.pathname.includes('/roleplay') ? '3D Roleplay' : location.pathname.includes('/listening') ? '3D Listening' : '3D Reading';
   } else if (isScienceRoute) {
     formattedTitle = 'Science';
   } else if (location.pathname.startsWith("/teacher/student-profile/")) {

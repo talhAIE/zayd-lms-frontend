@@ -8,6 +8,9 @@ import { avatarAvailability, avatarReadingTopics, createAvatarReadingTransport, 
 import ReadingModeTopics from '@/pages/student/topics/ReadingModeTopics';
 import ListeningModeTopics from '@/pages/student/topics/ListeningModeTopics';
 import listeningAvatar from '@/assets/svgs/listening-mode.png';
+import roleplayAvatar from '@/assets/svgs/roleplay-mode.png';
+import RolePlayModeTopics from '@/pages/student/topics/RolePlayModeTopics';
+import type { AvatarMode } from '@/services/avatarReadingService';
 
 function AvatarAccess({ children }: { children: ReactNode }) {
   const user = useAppSelector(state => state.auth.user);
@@ -35,6 +38,11 @@ export function AvatarModePage() {
       <div className="flex-1"><h2 className="text-xl font-bold">3D Reading</h2><p className="mt-2 text-sm text-slate-600">Reading practice with avatar playback.</p></div>
       <span className="rounded-xl bg-[#1689DD] px-10 py-3 font-semibold text-white">Start</span>
     </Link>
+    <Link to="/student/3d-avatar/roleplay" className="flex flex-wrap items-center gap-5 rounded-3xl bg-gradient-to-r from-[#D5ECFF] to-[#EDE9FE] p-6 md:p-10">
+      <img src={roleplayAvatar} alt="" className="h-28 w-28 rounded-2xl object-contain" />
+      <div className="flex-1"><h2 className="text-xl font-bold">3D Roleplay</h2><p className="mt-2 text-sm text-slate-600">Conversation practice with avatar playback.</p></div>
+      <span className="rounded-xl bg-[#1689DD] px-10 py-3 font-semibold text-white">Start</span>
+    </Link>
     <Link to="/student/3d-avatar/listening" className="flex flex-wrap items-center gap-5 rounded-3xl bg-gradient-to-r from-[#D5ECFF] to-[#EDE9FE] p-6 md:p-10">
       <img src={listeningAvatar} alt="" className="h-28 w-28 rounded-2xl object-contain" />
       <div className="flex-1"><h2 className="text-xl font-bold">3D Listening</h2><p className="mt-2 text-sm text-slate-600">Listening practice with avatar playback.</p></div>
@@ -43,7 +51,7 @@ export function AvatarModePage() {
   </div></AvatarAccess>;
 }
 
-function useTopics(mode: 'reading' | 'listening' = 'reading') {
+function useTopics(mode: AvatarMode = 'reading') {
   const user = useAppSelector(state => state.auth.user);
   const [topics, setTopics] = useState<AvatarReadingTopic[] | null>(null);
   const [error, setError] = useState(false);
@@ -56,14 +64,14 @@ function useTopics(mode: 'reading' | 'listening' = 'reading') {
   return { topics, error };
 }
 
-export function AvatarTopicsPage({ mode = 'reading' }: { mode?: 'reading' | 'listening' } = {}) {
+export function AvatarTopicsPage({ mode = 'reading' }: { mode?: AvatarMode } = {}) {
   const { topics, error } = useTopics(mode);
   return <AvatarAccess><div className="mx-auto w-full max-w-[1200px] space-y-8">
     <Link to="/student/3d-avatar" className="flex items-center gap-2 text-sm"><ChevronLeft /> Back to 3D Avatar Mode</Link>
-    <h1 className="text-2xl font-bold">3D {mode === 'listening' ? 'Listening' : 'Reading'}</h1>
+    <h1 className="text-2xl font-bold">3D {mode === 'roleplay' ? 'Roleplay' : mode === 'listening' ? 'Listening' : 'Reading'}</h1>
     {error && <p role="alert">Unable to load topics. Please reload to try again.</p>}
     {!topics && !error && <p role="status">Loading topics…</p>}
-    {topics?.length === 0 && <p>No 3D {mode === 'listening' ? 'Listening' : 'Reading'} topics are available.</p>}
+    {topics?.length === 0 && <p>No 3D {mode === 'roleplay' ? 'Roleplay' : mode === 'listening' ? 'Listening' : 'Reading'} topics are available.</p>}
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {topics?.map(topic => <Link key={topic.id} to={`/student/3d-avatar/${mode}/${topic.id}`} className="overflow-hidden rounded-3xl border border-slate-100 bg-white p-4 shadow-sm transition hover:shadow-md">
         <div className="relative h-56 overflow-hidden rounded-2xl bg-blue-50">
@@ -103,4 +111,15 @@ export function AvatarListeningPage() {
         <ListeningModeTopics key={`${user?.id}:${topic.id}`} avatar={{ topicId:topic.id,title:topic.title }} />
       </AvatarReadingContext.Provider>}
   </AvatarAccess>;
+}
+
+export function AvatarRoleplayPage() {
+  const {topicId}=useParams();
+  const user=useAppSelector(state=>state.auth.user);
+  const {topics,error}=useTopics('roleplay');
+  const transport=useMemo(()=>createAvatarReadingTransport(user?.id??'','roleplay'),[user?.id]);
+  const topic=topics?.find(t=>t.id===topicId);
+  return <AvatarAccess>{!topic?<p role="status">{error?'Unable to load this topic. Please reload to try again.':topics?'Topic not found.':'Loading topic…'}</p>:
+    <AvatarReadingContext.Provider value={transport}><RolePlayModeTopics key={`${user?.id}:${topic.id}`} avatar={{topicId:topic.id,title:topic.title}} /></AvatarReadingContext.Provider>
+  }</AvatarAccess>;
 }

@@ -4,7 +4,7 @@ Routes: `/student/3d-avatar` → `/student/3d-avatar/reading` → `/student/3d-a
 
 The card is discovered through the backend's authorized availability endpoint. Enable the backend testing flag and exact username allowlist described in its `AVATAR_READING.md`; set the existing frontend `VITE_API_BASE_URL` to the local backend and sign in with that test account. The existing login mechanism is unchanged. Unenabled accounts do not receive the card and direct feature URLs deny access.
 
-3D Reading and 3D Listening are exposed. Each mode has two backend-driven topic cards. Reading reuses `ReadingModeTopics` with an optional `avatar` presentation: Activity Steps are hidden, the avatar appears above the workspace on all screen sizes with head and hands visible, and the current passage, recording, feedback, quiz and completion components remain in use. See `3D_AVATAR_LISTENING.md` for Listening.
+3D Reading, Listening and Roleplay are exposed. Each mode has two backend-driven topic cards. Reading reuses `ReadingModeTopics` with an optional `avatar` presentation: Activity Steps are hidden, the avatar appears above the workspace on all screen sizes with head and hands visible, and the current passage, recording, feedback, quiz and completion components remain in use. See `3D_AVATAR_LISTENING.md` and `3D_AVATAR_ROLEPLAY.md` for the other modes.
 
 `AvatarReadingContext` scopes the event transport, HTTP upload endpoint and per-user recording/feedback recovery keys. Without the context, the existing Socket.IO and `/mode-sessions` upload path remain the defaults. Completion returns to the 3D topic list without querying curriculum progress. The layout excludes 3D routes from ordinary engagement heartbeats.
 
