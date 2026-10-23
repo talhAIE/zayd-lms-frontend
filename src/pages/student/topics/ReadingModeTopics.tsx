@@ -449,9 +449,17 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
   ].filter((card, index, cards) =>
     cards.findIndex((candidate) => candidate.word.toLowerCase() === card.word.toLowerCase()) === index,
   );
+  const cleanAvatarText = (text: string) => avatar ? text.replace(/\*\*([\s\S]*?)\*\*/g, '$1') : text;
+  const passageContent = cleanAvatarText(contentPayload?.passage || contentPayload?.content || (contentPayload?.sentences ? contentPayload.sentences.join('\n\n') : ''));
   const readingPresentation = contentPayload?.readingPresentation
     ? { ...contentPayload.readingPresentation, vocabularyCards }
     : undefined;
+  if (avatar && readingPresentation?.blocks) {
+    readingPresentation.blocks = readingPresentation.blocks.map((block: { text?: string; heading?: string; speaker?: string }) => ({
+      ...block,
+      text: block.text ? cleanAvatarText(block.text) : block.text,
+    }));
+  }
 
   return (
     <div className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'max-w-[1500px] h-auto md:h-[794px] md:max-h-[calc(100vh-40px)]' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
@@ -676,7 +684,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
           ) && (
             <div className={`flex flex-col gap-4 min-h-0 ${step1Active ? 'flex-1' : 'flex-shrink-0'}`}>
               <ReadingPassageCard 
-                content={contentPayload.passage || contentPayload.content || (contentPayload.sentences ? contentPayload.sentences.join('\n\n') : '')}
+                content={passageContent}
                 audioUrl={contentPayload.contentAudioUrl}
                 readingPresentation={readingPresentation}
                 onVocabularyClick={setActiveVocabularyCard}

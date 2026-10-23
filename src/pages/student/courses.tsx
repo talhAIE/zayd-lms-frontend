@@ -14,6 +14,7 @@ export default function StudentCourses() {
   const { courses, loading, error } = useSelector((state: RootState) => state.learning);
   const { user } = useSelector((state: RootState) => state.auth);
   const [sparkCourse, setSparkCourse] = useState<SparkCourse | null>(null);
+  const [avatarAvailable, setAvatarAvailable] = useState(false);
   const studentName = [user?.firstName, user?.lastName]
     .filter((name): name is string => typeof name === 'string' && name.trim().length > 0)
     .join(' ')
@@ -48,11 +49,11 @@ export default function StudentCourses() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <ScienceCourseCard />
-          <AvatarCourseCard />
+          <AvatarCourseCard onAvailabilityChange={setAvatarAvailable} />
           <SparkScienceCourseCard onCourseChange={setSparkCourse} />
           {loading && <p className="text-gray-500">Loading courses...</p>}
           {error && <p className="text-red-500">{error}</p>}
-          {!loading && !error && courses.length === 0 && !sparkCourse && (
+          {!loading && !error && courses.length === 0 && !sparkCourse && !avatarAvailable && (
             <p className="text-gray-500">No curriculum courses available.</p>
           )}
           {!loading && courses.map((course) => (
