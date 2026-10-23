@@ -15,19 +15,19 @@ export async function avatarAvailability(signal?: AbortSignal) {
   });
   return response.data.available;
 }
-export async function avatarReadingTopics(signal?: AbortSignal) {
+export async function avatarReadingTopics(signal?: AbortSignal, mode: 'reading' | 'listening' = 'reading') {
   const owner = identity();
-  const response = await apiClient.get<{ topics: AvatarReadingTopic[] }>('/3d-avatar/reading/topics', {
+  const response = await apiClient.get<{ topics: AvatarReadingTopic[] }>(`/3d-avatar/${mode}/topics`, {
     signal, ...{ scienceSession: () => identity() === owner },
   });
   return response.data.topics;
 }
 
 /** Event adapter lets the current Reading hook use isolated HTTP endpoints. */
-export function createAvatarReadingTransport(userId: string): AvatarReadingTransport {
+export function createAvatarReadingTransport(userId: string, mode: 'reading' | 'listening' = 'reading'): AvatarReadingTransport {
   const uploadOwner = identity();
   return {
-    storagePrefix: `3d-avatar:${userId}:`,
+    storagePrefix: `3d-avatar:${userId}:${mode === 'listening' ? 'listening:' : ''}`,
     upload: params => uploadReadingAudio({ ...params, apiPrefix: '/3d-avatar/reading', isCurrent: () => identity() === uploadOwner }),
     connect: () => {
       const handlers = new Map<string, Listener[]>();
@@ -49,12 +49,12 @@ export function createAvatarReadingTransport(userId: string): AvatarReadingTrans
           if (event === 'session_status' || event === 'reset_activity_timer') {
             deliver('session_status', { remainingSeconds: null }); return transport;
           }
-          void apiClient.post<{ events: Event[] }>('/3d-avatar/reading/actions', { action: event, ...body }, {
+          void apiClient.post<{ events: Event[] }>(`/3d-avatar/${mode}/actions`, { action: event, ...body }, {
             signal: controller.signal, timeout: 180_000, ...{ scienceSession: active },
           }).then(response => {
             for (const item of response.data.events) deliver(item.event, item.payload);
           }).catch(error => {
-            if (active()) deliver('error', { message: error.response?.data?.message || 'Unable to load this 3D Reading activity. Please try again.' });
+            if (active()) deliver('error', { message: error.response?.data?.message || 'Unable to load this 3D activity. Please try again.' });
           });
           return transport;
         },

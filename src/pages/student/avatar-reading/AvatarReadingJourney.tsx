@@ -6,6 +6,8 @@ import { useAppSelector } from '@/redux/hooks';
 import { AvatarReadingContext } from '@/components/avatar-reading/AvatarReadingContext';
 import { avatarAvailability, avatarReadingTopics, createAvatarReadingTransport, type AvatarReadingTopic } from '@/services/avatarReadingService';
 import ReadingModeTopics from '@/pages/student/topics/ReadingModeTopics';
+import ListeningModeTopics from '@/pages/student/topics/ListeningModeTopics';
+import listeningAvatar from '@/assets/svgs/listening-mode.png';
 
 function AvatarAccess({ children }: { children: ReactNode }) {
   const user = useAppSelector(state => state.auth.user);
@@ -33,32 +35,37 @@ export function AvatarModePage() {
       <div className="flex-1"><h2 className="text-xl font-bold">3D Reading</h2><p className="mt-2 text-sm text-slate-600">Reading practice with avatar playback.</p></div>
       <span className="rounded-xl bg-[#1689DD] px-10 py-3 font-semibold text-white">Start</span>
     </Link>
+    <Link to="/student/3d-avatar/listening" className="flex flex-wrap items-center gap-5 rounded-3xl bg-gradient-to-r from-[#D5ECFF] to-[#EDE9FE] p-6 md:p-10">
+      <img src={listeningAvatar} alt="" className="h-28 w-28 rounded-2xl object-contain" />
+      <div className="flex-1"><h2 className="text-xl font-bold">3D Listening</h2><p className="mt-2 text-sm text-slate-600">Listening practice with avatar playback.</p></div>
+      <span className="rounded-xl bg-[#1689DD] px-10 py-3 font-semibold text-white">Start</span>
+    </Link>
   </div></AvatarAccess>;
 }
 
-function useTopics() {
+function useTopics(mode: 'reading' | 'listening' = 'reading') {
   const user = useAppSelector(state => state.auth.user);
   const [topics, setTopics] = useState<AvatarReadingTopic[] | null>(null);
   const [error, setError] = useState(false);
   useEffect(() => {
     const controller = new AbortController();
     setTopics(null); setError(false);
-    void avatarReadingTopics(controller.signal).then(setTopics).catch(() => { if (!controller.signal.aborted) setError(true); });
+    void avatarReadingTopics(controller.signal, mode).then(value => { if (!controller.signal.aborted) setTopics(value); }).catch(() => { if (!controller.signal.aborted) setError(true); });
     return () => controller.abort();
-  }, [user?.id]);
+  }, [user?.id, mode]);
   return { topics, error };
 }
 
-export function AvatarTopicsPage() {
-  const { topics, error } = useTopics();
+export function AvatarTopicsPage({ mode = 'reading' }: { mode?: 'reading' | 'listening' } = {}) {
+  const { topics, error } = useTopics(mode);
   return <AvatarAccess><div className="mx-auto w-full max-w-[1200px] space-y-8">
     <Link to="/student/3d-avatar" className="flex items-center gap-2 text-sm"><ChevronLeft /> Back to 3D Avatar Mode</Link>
-    <h1 className="text-2xl font-bold">3D Reading</h1>
+    <h1 className="text-2xl font-bold">3D {mode === 'listening' ? 'Listening' : 'Reading'}</h1>
     {error && <p role="alert">Unable to load topics. Please reload to try again.</p>}
     {!topics && !error && <p role="status">Loading topics…</p>}
-    {topics?.length === 0 && <p>No 3D Reading topics are available.</p>}
+    {topics?.length === 0 && <p>No 3D {mode === 'listening' ? 'Listening' : 'Reading'} topics are available.</p>}
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {topics?.map(topic => <Link key={topic.id} to={`/student/3d-avatar/reading/${topic.id}`} className="overflow-hidden rounded-3xl border border-slate-100 bg-white p-4 shadow-sm transition hover:shadow-md">
+      {topics?.map(topic => <Link key={topic.id} to={`/student/3d-avatar/${mode}/${topic.id}`} className="overflow-hidden rounded-3xl border border-slate-100 bg-white p-4 shadow-sm transition hover:shadow-md">
         <div className="relative h-56 overflow-hidden rounded-2xl bg-blue-50">
           {topic.imageUrl && <img src={topic.imageUrl} alt="" className="h-full w-full object-cover" />}
           <span className="absolute left-3 top-3 rounded-xl bg-slate-700/75 px-3 py-2 text-xs font-semibold text-white">{topic.completed ? 'Completed' : 'Incomplete'}</span>
@@ -80,6 +87,20 @@ export function AvatarReadingPage() {
     {!topic ? <p role="status">{error ? 'Unable to load this topic. Please reload to try again.' : topics ? 'Topic not found.' : 'Loading topic…'}</p> :
       <AvatarReadingContext.Provider value={transport}>
         <ReadingModeTopics key={`${user?.id}:${topic.id}`} avatar={{ topicId: topic.id, title: topic.title }} />
+      </AvatarReadingContext.Provider>}
+  </AvatarAccess>;
+}
+
+export function AvatarListeningPage() {
+  const { topicId } = useParams();
+  const user = useAppSelector(state => state.auth.user);
+  const { topics, error } = useTopics('listening');
+  const transport = useMemo(() => createAvatarReadingTransport(user?.id ?? '', 'listening'), [user?.id]);
+  const topic = topics?.find(t => t.id === topicId);
+  return <AvatarAccess>
+    {!topic ? <p role="status">{error ? 'Unable to load this topic. Please reload to try again.' : topics ? 'Topic not found.' : 'Loading topic…'}</p> :
+      <AvatarReadingContext.Provider value={transport}>
+        <ListeningModeTopics key={`${user?.id}:${topic.id}`} avatar={{ topicId:topic.id,title:topic.title }} />
       </AvatarReadingContext.Provider>}
   </AvatarAccess>;
 }

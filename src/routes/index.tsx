@@ -22,7 +22,7 @@ import UnitOverview from "@/pages/student/unit-overview";
 import Lesson from "@/pages/student/lesson";
 import ComponentModePlay from "@/pages/student/ComponentModePlay";
 import DirectActivityPlay from "@/pages/student/DirectActivityPlay";
-import { AvatarModePage, AvatarTopicsPage, AvatarReadingPage } from '@/pages/student/avatar-reading/AvatarReadingJourney';
+import { AvatarModePage, AvatarTopicsPage, AvatarReadingPage, AvatarListeningPage } from '@/pages/student/avatar-reading/AvatarReadingJourney';
 import StudentDashboard from "@/pages/student/dashboard";
 import DebateModeTopics from "@/pages/student/topics/DebateModeTopics";
 import ReadingModeTopics from "@/pages/student/topics/ReadingModeTopics";
@@ -116,6 +116,8 @@ const AppRoutes = () => {
       <Route path="/student/3d-avatar" element={<StudentLayout><AvatarModePage /></StudentLayout>} />
       <Route path="/student/3d-avatar/reading" element={<StudentLayout><AvatarTopicsPage /></StudentLayout>} />
       <Route path="/student/3d-avatar/reading/:topicId" element={<StudentLayout><AvatarReadingPage /></StudentLayout>} />
+      <Route path="/student/3d-avatar/listening" element={<StudentLayout><AvatarTopicsPage mode="listening" /></StudentLayout>} />
+      <Route path="/student/3d-avatar/listening/:topicId" element={<StudentLayout><AvatarListeningPage /></StudentLayout>} />
       <Route path="/student/science" element={<ScienceSession />}>
         <Route path="spark-science" element={<SparkScienceCoursePage />} />
         <Route path="spark-science/unit-1" element={<SparkScienceUnitPage />} />

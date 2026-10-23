@@ -8,6 +8,7 @@ import { ContentPolicyWarningModal } from '@/components/ui/ContentPolicyWarningM
 import { useLearningProgressRefresh } from '@/hooks/useLearningProgressRefresh';
 import { useAudioPlayback } from '@/hooks/useAudioPlayback';
 import AudioPlayer from '../AudioPlayer';
+import { useAvatarListeningPlayback } from '@/components/avatar-reading/useAvatarListeningPlayback';
 
 function isOptionCorrect(mcq: any, answer: number | string | undefined) {
   if (answer === undefined || answer === null || answer === -1) {
@@ -54,10 +55,11 @@ function isOptionCorrect(mcq: any, answer: number | string | undefined) {
   return true;
 }
 
-export default function ListeningModeTopics() {
+export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:string;title:string}} = {}) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const lessonModeId = searchParams.get('modeId') || '';
+  const lessonModeId = avatar?.topicId || searchParams.get('modeId') || '';
+  const backToTopics = () => avatar ? navigate('/student/3d-avatar/listening', {replace:true}) : navigate(-1);
   const lessonId = searchParams.get('lessonId') || '';
   const courseId = searchParams.get('courseId') || undefined;
   const unitId = searchParams.get('unitId') || undefined;
@@ -99,7 +101,7 @@ export default function ListeningModeTopics() {
   } = useModeSession({ 
     lessonModeId,
     onCompleted: async () => {
-      await refreshLearningProgress(lessonId, { courseId, unitId });
+      if (!avatar) await refreshLearningProgress(lessonId, { courseId, unitId });
       setIsJustCompleted(true);
       setShowCompletionModal(true);
     }
@@ -114,11 +116,12 @@ export default function ListeningModeTopics() {
   const hasStartedRef = useRef(false);
 
   useEffect(() => {
-    if (modeSessionId && !listeningPayload && !hasStartedRef.current) {
+    // The isolated HTTP start/restart response already includes listening_payload.
+    if (!avatar && modeSessionId && !listeningPayload && !hasStartedRef.current) {
       hasStartedRef.current = true;
       startListening();
     }
-  }, [modeSessionId, listeningPayload, startListening]);
+  }, [modeSessionId, listeningPayload, startListening, avatar]);
 
   useEffect(() => {
     // A full topic-audio play is required at both listening stages. Entering
@@ -184,6 +187,21 @@ export default function ListeningModeTopics() {
   const isQuestionStage = listeningPayload?.stage === 'question';
   const isTranscriptStage = listeningPayload?.stage === 'transcript';
   const topicAudioUrl = listeningPayload?.kbAudioUrl;
+  const narratorAudioUrl = isTranscriptStage ? listeningPayload?.transcriptAudioUrl : isQuestionStage ? listeningPayload?.questionAudioUrl : listeningPayload?.narrationAudioUrl;
+  const avatarPlayback = useAvatarListeningPlayback(
+    avatar ? topicAudioUrl : undefined,
+    avatar ? narratorAudioUrl : undefined,
+    avatar ? listeningPayload?.narrationVideoUrl : undefined,
+    listeningPayload?.stage,
+    () => setHasListenedToAudio(true),
+  );
+  const topicPlaying = avatar ? avatarPlayback.track === 'topic' && avatarPlayback.playing : isTopicPlaying;
+  const narratorPlaying = avatar ? avatarPlayback.track === 'narrator' && avatarPlayback.playing : isNarratorTextPlaying;
+  useEffect(() => {
+    if (!avatar) return;
+    if (avatarPlayback.playing || avatarPlayback.loading) setHasStartedAudio(true);
+    if (isCompleted || isAccountBlocked || listeningPayload?.stage === 'quiz') avatarPlayback.pause();
+  }, [avatar, avatarPlayback.playing, avatarPlayback.loading, avatarPlayback.pause, isCompleted, isAccountBlocked, listeningPayload?.stage]);
   const narratorText = isTranscriptStage
     ? listeningPayload?.transcript
     : isQuestionStage ? listeningPayload?.questionText : listeningPayload?.narrationText;
@@ -199,6 +217,7 @@ export default function ListeningModeTopics() {
 
   const toggleNarratorTextSpeech = () => {
     if (!narratorText) return;
+    if (avatar) { void avatarPlayback.toggle('narrator'); return; }
 
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
       toast.error('Narrator text playback is not available in this browser.');
@@ -239,16 +258,17 @@ export default function ListeningModeTopics() {
   };
 
   return (
-    <div className="w-full max-w-[1207px] mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)] border border-gray-100 shadow-sm relative">
+    <div className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'max-w-[1440px] h-auto min-w-0' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
       
       <TopicCompletionModal 
         isOpen={showCompletionModal}
         isJustCompleted={isJustCompleted}
         onFinish={() => {
           setShowCompletionModal(false);
-          navigate(-1);
+          backToTopics();
         }}
         onRetake={() => {
+          if (avatar) avatarPlayback.restart();
           setShowCompletionModal(false);
           setCurrentMcqIndex(0);
           setSelectedAnswers({});
@@ -271,22 +291,22 @@ export default function ListeningModeTopics() {
         {/* Top Bar */}
         <div className="flex flex-row justify-between items-center px-4 md:px-6 py-4 bg-white border-b border-[#E5E7EB]">
           
-          <div className="flex-1 flex justify-start">
+          <div className={`${avatar ? 'shrink-0' : 'flex-1'} flex justify-start`}>
             <button 
-              onClick={() => navigate(-1)}
+              onClick={backToTopics}
               className="flex justify-center items-center w-10 h-10 bg-white border border-[#E5E7EB] shadow-[0px_1px_4px_rgba(0,0,0,0.06)] rounded-full hover:bg-gray-50 transition-colors"
             >
               <ChevronLeft className="w-5 h-5 text-[#282828]" />
             </button>
           </div>
           
-          <div className="flex-1 flex justify-center items-center gap-4">
-            <h1 className="text-[20px] font-bold leading-[20px] tracking-[-0.3px] text-[#282828]">
-              Listening Mode
+          <div className={`flex-1 flex items-center gap-4 ${avatar ? 'min-w-0 px-3 sm:px-4' : 'justify-center'}`}>
+            <h1 className={`${avatar ? 'text-base leading-6 sm:text-xl' : 'text-[20px] leading-[20px]'} font-bold tracking-[-0.3px] text-[#282828]`}>
+              {avatar ? avatar.title : 'Listening Mode'}
             </h1>
           </div>
           
-          <div className="flex-1 flex justify-end items-center gap-3">
+          <div className={`${avatar ? 'shrink-0' : 'flex-1'} flex justify-end items-center gap-3`}>
             {sessionStatus.remainingSeconds !== null && (
               <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#F97316]/30 rounded-full">
                 <Clock className="w-3.5 h-3.5 text-[#F97316]" />
@@ -313,10 +333,10 @@ export default function ListeningModeTopics() {
       </div>
 
       {/* Main Split Content */}
-      <div className="flex flex-col md:flex-row px-4 md:px-8 gap-4 flex-1 min-h-0 pb-6">
+      <div className={`flex flex-col min-h-0 pb-6 ${avatar ? 'gap-4 px-2 sm:gap-5 sm:px-4' : 'md:flex-row px-4 md:px-8 gap-4 flex-1'}`}>
         
         {/* Mode Sidebar */}
-        <div className="flex flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0">
+        {!avatar && <div className="flex flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0">
           <div 
             className="px-4 pb-2 md:pb-2.5 flex justify-between items-center cursor-pointer md:cursor-default"
             onClick={() => window.innerWidth < 768 && setIsStepsExpanded(!isStepsExpanded)}
@@ -406,10 +426,26 @@ export default function ListeningModeTopics() {
           <div className="w-full h-[1px] bg-[#E5E7EB]/70" />
           </div>
 
-        </div>
+        </div>}
 
+        {avatar && (
+          <aside className="flex w-full min-w-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]" aria-label="3D Listening avatar">
+            <div className="relative h-[340px] overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#F0F7FF] sm:h-[440px] lg:h-[540px]">
+              <video ref={avatarPlayback.videoRef} src={listeningPayload?.narrationVideoUrl} muted playsInline preload="metadata"
+                className="absolute left-1/2 top-0 aspect-video h-[145%] w-auto max-w-none -translate-x-1/2"
+                aria-label={`${avatar.title} avatar narration`} onLoadedMetadata={avatarPlayback.synchronize} />
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t bg-white px-3 py-2.5 sm:px-4">
+              <button type="button" disabled={!topicAudioUrl || isAccountBlocked || isCompleted || listeningPayload?.stage === 'quiz'}
+                onClick={() => { void avatarPlayback.toggle('topic'); }} className="rounded-full bg-[#3B82F6] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
+                {avatarPlayback.track === 'topic' && avatarPlayback.loading ? 'Loading…' : topicPlaying ? 'Pause audio' : 'Play audio'}
+              </button>
+              <button type="button" onClick={avatarPlayback.restart} className="text-sm text-[#475569]">Restart audio</button>
+            </div>
+          </aside>
+        )}
         {/* Workspace Main */}
-        <div className="flex flex-col flex-1 gap-4 min-h-0 overflow-y-auto">
+        <div className={`flex flex-col gap-4 min-h-0 overflow-y-auto ${avatar ? 'min-w-0 rounded-2xl border border-[#E5E7EB] bg-white p-3 sm:p-5' : 'flex-1'}`}>
           
           {/* Audio Player Card */}
           {topicAudioUrl && listeningPayload?.stage !== 'quiz' && (
@@ -421,13 +457,14 @@ export default function ListeningModeTopics() {
               </div>
               <AudioPlayer
                 audioSrc={topicAudioUrl}
-                isPlaying={isTopicPlaying}
-                isLoading={!!topicLoadingId}
-                progress={topicProgress}
-                duration={topicDuration}
+                isPlaying={topicPlaying}
+                isLoading={avatar ? avatarPlayback.track === 'topic' && avatarPlayback.loading : !!topicLoadingId}
+                progress={avatar ? avatarPlayback.position : topicProgress}
+                duration={avatar ? avatarPlayback.duration : topicDuration}
                 onTogglePlay={() => {
                   stopNarratorTextSpeech();
-                  toggleTopic('listening_topic_audio', topicAudioUrl, () => setHasListenedToAudio(true));
+                  if (avatar) { void avatarPlayback.toggle('topic'); }
+                  else toggleTopic('listening_topic_audio', topicAudioUrl, () => setHasListenedToAudio(true));
                 }}
                 variant="gradient"
                 className="max-w-full"
@@ -458,10 +495,10 @@ export default function ListeningModeTopics() {
                 <button
                   type="button"
                   onClick={toggleNarratorTextSpeech}
-                  aria-label={isNarratorTextPlaying ? 'Pause narrator text' : 'Play narrator text'}
+                  aria-label={narratorPlaying ? 'Pause narrator text' : 'Play narrator text'}
                   className="mt-3 flex items-center text-[#0F1450] transition-colors hover:text-[#2563EB]"
                 >
-                  {isNarratorTextPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+                  {narratorPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
                 </button>
             </div>
               </div>
@@ -584,7 +621,7 @@ export default function ListeningModeTopics() {
             <div className="flex justify-center items-center pt-2 mt-auto">
               {nextStageUnlocked ? (
                 <button
-                  onClick={() => nextListeningStage()}
+                  onClick={() => { if (avatar) avatarPlayback.pause(); nextListeningStage(); }}
                   disabled={isAccountBlocked}
                   className="flex justify-center items-center w-full max-w-[200px] h-[52px] bg-[#3B82F6] hover:bg-[#2563EB] disabled:bg-[#E5E7EB] disabled:text-[#9CA3AF] transition-colors rounded-full font-bold text-[16px] leading-[20px] text-white"
                 >

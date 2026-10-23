@@ -27,7 +27,7 @@ export function AvatarCourseCard({ onAvailabilityChange }: { onAvailabilityChang
   return <Link to="/student/3d-avatar" className="flex flex-col rounded-[24px] border border-blue-100 bg-gradient-to-br from-[#D5ECFF] to-[#EDE9FE] p-6 shadow-sm transition hover:shadow-md">
     <img src={readingAvatar} alt="" className="mb-5 h-24 w-24 rounded-2xl object-contain" />
     <h3 className="text-xl font-bold text-[#232E43]">3D Avatar Mode</h3>
-    <p className="mt-2 text-sm text-[#526078]">Practise reading with a 3D avatar.</p>
+    <p className="mt-2 text-sm text-[#526078]">Practise reading and listening with a 3D avatar.</p>
     <span className="mt-6 rounded-lg bg-[#3B82F6] px-4 py-3 text-center text-sm font-semibold text-white">Start</span>
   </Link>;
 }
