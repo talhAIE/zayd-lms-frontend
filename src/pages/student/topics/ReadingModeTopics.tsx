@@ -462,7 +462,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
   }
 
   return (
-    <div className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'max-w-[1500px] h-auto md:h-[794px] md:max-h-[calc(100vh-40px)]' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
+    <div className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'max-w-[1200px] h-auto min-w-0' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
       
       <TopicCompletionModal 
         isOpen={showCompletionModal}
@@ -512,7 +512,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
         {/* Top Bar */}
         <div className="flex flex-row justify-between items-center px-4 md:px-6 py-4 bg-white border-b border-[#E5E7EB]">
           
-          <div className="flex-1 flex justify-start">
+          <div className={`${avatar ? 'shrink-0' : 'flex-1'} flex justify-start`}>
             <button 
               onClick={() => navigate(allLessonsPath, { replace: true })}
               className="flex justify-center items-center w-10 h-10 bg-white border border-[#E5E7EB] shadow-[0px_1px_4px_rgba(0,0,0,0.06)] rounded-full hover:bg-gray-50 transition-colors"
@@ -521,13 +521,13 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
             </button>
           </div>
           
-          <div className="flex-1 flex justify-center">
-            <h1 className="text-[20px] font-bold leading-[20px] tracking-[-0.3px] text-[#282828]">
-              {avatar ? '3D Reading' : 'Reading Mode'}
+          <div className={`flex-1 flex ${avatar ? 'min-w-0 px-3 sm:px-4' : 'justify-center'}`}>
+            <h1 className={`${avatar ? 'text-base leading-6 sm:text-xl' : 'text-[20px] leading-[20px]'} font-bold tracking-[-0.3px] text-[#282828]`}>
+              {avatar ? avatar.title : 'Reading Mode'}
             </h1>
           </div>
           
-          <div className="flex-1 flex justify-end items-center gap-3">
+          <div className={`${avatar ? 'shrink-0' : 'flex-1'} flex justify-end items-center gap-3`}>
             {sessionStatus.remainingSeconds !== null && (
               <div className="flex flex-row items-center px-4 py-2 gap-2 bg-[#FEF1E8] rounded-full h-[42px]">
                 <span className="font-semibold text-[13px] leading-[16px] text-[#F97316]">
@@ -553,7 +553,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
       </div>
 
       {/* Main Split Content */}
-      <div className="flex flex-col md:flex-row px-4 md:px-8 gap-4 flex-1 min-h-0 pb-6">
+      <div className={`flex flex-col min-h-0 pb-6 ${avatar ? 'gap-4 px-3 sm:gap-5 sm:px-6' : 'md:flex-row px-4 md:px-8 gap-4 flex-1'}`}>
         
         {/* Mode Sidebar */}
         {!avatar && <div className="flex flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0">
@@ -656,14 +656,15 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
 
         }
         {avatar && (
-          <aside className="flex w-full md:w-[42%] shrink-0 flex-col overflow-hidden rounded-xl border border-[#E5E7EB] bg-[#F8FAFC]" aria-label="3D Reading avatar">
-            <div className="border-b bg-white px-4 py-3 text-sm font-semibold">{avatar.title}</div>
+          <aside className="flex w-full min-w-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]" aria-label="3D Reading avatar">
+            <div className="relative h-[240px] overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#F0F7FF] sm:h-[300px] lg:h-[360px]">
             <video ref={avatarPassage.videoRef} src={contentPayload?.narrationVideoUrl} muted playsInline preload="metadata"
-              className="h-[240px] md:h-0 md:min-h-0 md:flex-1 w-full object-contain"
+              className="mx-auto h-full w-full max-w-[900px] origin-top scale-[1.65] object-cover object-top"
               aria-label={`${avatar.title} avatar narration`}
               onLoadedMetadata={avatarPassage.synchronize}
               onError={() => { avatarPassage.pause(); toast.error('The avatar video could not be loaded.'); }} />
-            <div className="flex items-center justify-between gap-3 border-t bg-white px-4 py-3">
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t bg-white px-3 py-2.5 sm:px-4">
               <button type="button" disabled={!contentPayload?.contentAudioUrl || isAccountBlocked}
                 onClick={togglePassageAudio} className="rounded-full bg-[#3B82F6] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
                 {avatarPassage.loading ? 'Loading…' : avatarPassage.playing ? 'Pause passage' : 'Play passage'}
@@ -673,7 +674,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
           </aside>
         )}
         {/* Workspace Main */}
-        <div className={`flex flex-col flex-1 gap-4 min-h-0 pr-1 ${(isChatActive || step1Active) ? '' : 'overflow-y-auto'}`}>
+        <div className={`flex flex-col gap-4 min-h-0 ${avatar ? 'h-[560px] min-w-0 shrink-0 rounded-2xl border border-[#E5E7EB] bg-white p-3 sm:h-[620px] sm:p-5 lg:h-[640px]' : 'flex-1 pr-1'} ${(isChatActive || step1Active) ? '' : 'overflow-y-auto'}`}>
           
           {/* Reading Passage Card */}
           {contentPayload && (
