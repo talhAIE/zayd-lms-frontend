@@ -659,7 +659,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
           <aside className="flex w-full min-w-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]" aria-label="3D Reading avatar">
             <div className="relative h-[240px] overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#F0F7FF] sm:h-[300px] lg:h-[360px]">
             <video ref={avatarPassage.videoRef} src={contentPayload?.narrationVideoUrl} muted playsInline preload="metadata"
-              className="mx-auto h-full w-full max-w-[900px] origin-top scale-[1.65] object-cover object-top"
+              className="absolute left-1/2 top-0 aspect-video h-[232%] w-auto max-w-none -translate-x-1/2"
               aria-label={`${avatar.title} avatar narration`}
               onLoadedMetadata={avatarPassage.synchronize}
               onError={() => { avatarPassage.pause(); toast.error('The avatar video could not be loaded.'); }} />
