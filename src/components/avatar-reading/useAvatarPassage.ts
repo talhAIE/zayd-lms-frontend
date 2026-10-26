@@ -1,12 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-/** The authored WAV is the clock; the muted video follows its position. */
-export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string | undefined, onEnded: () => void) {
+/** One video owner: authored passage timing, or muted gestures during practice speech. */
+export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string | undefined, onEnded: () => void,
+  practice?: { id: string | null; stop: () => void }) {
   const audio = useRef<HTMLAudioElement | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const generation = useRef(0);
   const requested = useRef(false);
+  const practiceRef = useRef(practice);
+  practiceRef.current = practice;
+  const wasPracticing = useRef(false);
   const callback = useRef(onEnded);
   callback.current = onEnded;
   const [playing, setPlaying] = useState(false);
@@ -23,6 +27,7 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
     if (a && Number.isFinite(a.duration)) { setPosition(a.currentTime); setDuration(a.duration); }
     if (!a || !v || !Number.isFinite(a.duration) || !a.duration || !Number.isFinite(v.duration) || !v.duration) return;
     const ratio = v.duration / a.duration;
+    if (practiceRef.current?.id && !requested.current) return;
     v.playbackRate = Math.min(4, Math.max(0.25, ratio));
     const target = Math.min(v.duration, a.currentTime * ratio);
     if (Math.abs(v.currentTime - target) > 0.15) v.currentTime = target;
@@ -33,6 +38,7 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
     const update = () => synchronize();
     const ended = () => { pause(); synchronize(); callback.current(); };
     const error = () => { pause(); toast.error('Passage media could not be loaded. Please try again.'); };
+    const videoError = () => { pause(); practiceRef.current?.stop(); };
     const waiting = () => { videoRef.current?.pause(); setLoading(true); };
     const resumed = () => {
       if (!requested.current) return;
@@ -47,13 +53,16 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
     a.addEventListener('ended', ended); a.addEventListener('error', error); a.addEventListener('waiting', waiting);
     a.addEventListener('playing', resumed);
     video?.addEventListener('waiting', videoWaiting); video?.addEventListener('canplay', videoReady);
+    video?.addEventListener('error', videoError);
     setPosition(0); setDuration(0);
     return () => {
       pause();
+      practiceRef.current?.stop();
       a.removeEventListener('timeupdate', update); a.removeEventListener('loadedmetadata', update);
       a.removeEventListener('seeked', update);
       a.removeEventListener('ended', ended); a.removeEventListener('error', error); a.removeEventListener('waiting', waiting);
       a.removeEventListener('playing', resumed); video?.removeEventListener('waiting', videoWaiting); video?.removeEventListener('canplay', videoReady);
+      video?.removeEventListener('error', videoError);
       a.removeAttribute('src'); a.load(); audio.current = null;
     };
   }, [audioUrl, videoUrl, pause, synchronize]);
@@ -64,6 +73,7 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
     if (!a.paused || loading) { pause(); return; }
     const request = ++generation.current;
     requested.current = true;
+    v.loop = false;
     if (a.ended) { a.currentTime = 0; v.currentTime = 0; }
     setLoading(true);
     try {
@@ -83,9 +93,34 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
   }, [pause]);
   useEffect(() => {
     if (!audioUrl || !videoUrl) return;
-    const hide = () => { if (document.hidden) pause(); };
+    const hide = () => { if (document.hidden) { pause(); practiceRef.current?.stop(); } };
     document.addEventListener('visibilitychange', hide);
     return () => document.removeEventListener('visibilitychange', hide);
   }, [audioUrl, videoUrl, pause]);
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!videoUrl || !video) return;
+    if (practice?.id) {
+      requested.current = false;
+      const request = ++generation.current;
+      audio.current?.pause();
+      setPlaying(false); setLoading(false);
+      wasPracticing.current = true;
+      video.muted = true; video.loop = true; video.playbackRate = 1;
+      if (document.hidden) { video.pause(); practiceRef.current?.stop(); return; }
+      void video.play().then(() => {
+        if (request !== generation.current && !requested.current && !practiceRef.current?.id) video.pause();
+      }).catch(reason => {
+        if (request !== generation.current || reason?.name === 'AbortError') return;
+        video.pause(); practiceRef.current?.stop();
+        toast.error('The avatar could not play. Please try the sentence again.');
+      });
+    } else if (wasPracticing.current) {
+      wasPracticing.current = false;
+      video.loop = false;
+      // Passage playback may have taken ownership in the same user gesture.
+      if (!requested.current) { generation.current++; video.pause(); }
+    }
+  }, [practice?.id, videoUrl]);
   return { videoRef, playing, loading, position, duration, toggle, pause, restart, synchronize };
 }

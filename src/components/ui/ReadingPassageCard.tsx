@@ -3,6 +3,7 @@ import { Play, Pause, ChevronDown, BookOpen } from 'lucide-react';
 import type { ReadingVocabularyCard } from './ReadingVocabularyFlashcardModal';
 import { AvatarNarratedPassage } from '@/components/avatar-reading/AvatarNarratedPassage';
 import type { PassageNarration } from '@/components/avatar-reading/readingNarration';
+import { AvatarSpeechHighlight } from '@/components/avatar-reading/AvatarSpeechHighlight';
 
 type ReadingPassageBlock = {
   heading?: string;
@@ -33,6 +34,7 @@ interface ReadingPassageCardProps {
   showAudioControl?: boolean;
   onVocabularyClick?: (card: ReadingVocabularyCard) => void;
   narration?: PassageNarration;
+  highlightText?: boolean;
 }
 
 const inferConversationBlocks = (content: string): ReadingPassageBlock[] | null => {
@@ -100,6 +102,7 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
   showAudioControl = Boolean(audioUrl),
   onVocabularyClick,
   narration,
+  highlightText = false,
 }) => {
   const [isExpanded, setIsExpanded] = React.useState(collapsibleMode === 'accordion' ? false : false);
   const [shouldShowExpandButton, setShouldShowExpandButton] = React.useState(false);
@@ -149,6 +152,9 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
     : content.split(/\n{2,}/).map((paragraph) => paragraph.trim()).filter((text): text is string => Boolean(text));
   const vocabularyTerms = readingPresentation?.vocabularyTerms ?? [];
   const vocabularyCards = readingPresentation?.vocabularyCards ?? [];
+  const renderPassageText = (text: string) => <AvatarSpeechHighlight active={highlightText}>
+    <HighlightedReadingText text={text} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={onVocabularyClick} />
+  </AvatarSpeechHighlight>;
 
   return (
     <div data-avatar-passage-card={narration ? '' : undefined} className="w-full bg-white border border-[#E5E7EB] rounded-[12px] p-[16px_20px] flex flex-col gap-3 font-['Outfit',sans-serif] min-h-0 flex-shrink overflow-hidden">
@@ -234,7 +240,7 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
                 {blocks.map((block, index) => (
                   <p key={`${block.speaker ?? 'line'}-${index}`}>
                     {block.speaker && <strong>{block.speaker}: </strong>}
-                    <HighlightedReadingText text={block.text ?? ''} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={onVocabularyClick} />
+                    {renderPassageText(block.text ?? '')}
                   </p>
                 ))}
               </div>
@@ -247,13 +253,13 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
                         <h4 className="mb-1 font-semibold text-[#8B0000]">{block.heading}</h4>
                       )}
                       <p>
-                        <HighlightedReadingText text={block.text ?? ''} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={onVocabularyClick} />
+                        {renderPassageText(block.text ?? '')}
                       </p>
                     </div>
                   ))
                   : paragraphContent.map((paragraph, index) => (
                     <p key={index}>
-                      <HighlightedReadingText text={paragraph} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={onVocabularyClick} />
+                      {renderPassageText(paragraph)}
                     </p>
                   ))}
               </div>

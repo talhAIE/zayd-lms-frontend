@@ -11,6 +11,7 @@
 
 /* Opt-in 3D presentation: the avatar never shares the workspace's scroll area. */
 .avatar-workspace {
+  max-width: 480px;
   height: var(--avatar-workspace-height, calc(100dvh - 72px));
   min-height: 0;
 }
@@ -18,7 +19,9 @@
 .avatar-workspace > div:not(.avatar-workspace-body) { flex-shrink: 0; }
 .avatar-workspace-body { overflow: hidden; padding-bottom: 8px; }
 .avatar-workspace-stage {
-  height: clamp(90px, calc(var(--avatar-workspace-height, 600px) * .32), 300px);
+  aspect-ratio: 1.42;
+  height: auto;
+  max-height: min(330px, calc(var(--avatar-workspace-height, 600px) * .4));
 }
 .avatar-workspace-panel { overscroll-behavior: contain; }
 .avatar-workspace .avatar-workspace-header { gap: 4px; padding-bottom: 8px; }
@@ -26,7 +29,7 @@
 .avatar-workspace-header > div:nth-child(2) { padding-top: 4px; gap: 4px; }
 .avatar-workspace [data-avatar-passage-scroll] { overscroll-behavior: contain; }
 @media (max-height: 500px) {
-  .avatar-workspace-stage { height: clamp(48px, 14dvh, 72px); }
+  .avatar-workspace-stage { aspect-ratio: auto; height: clamp(48px, 14dvh, 72px); }
   .avatar-workspace .avatar-workspace-header { padding-bottom: 4px; }
   .avatar-workspace-header > div:nth-child(2) { display: none; }
   .avatar-workspace-panel { padding: 8px; }
