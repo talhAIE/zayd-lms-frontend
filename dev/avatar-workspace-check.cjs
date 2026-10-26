@@ -48,10 +48,13 @@ const out=path.resolve(process.env.AVATAR_QA_OUTPUT||'../outputs/avatar-workspac
           return{avatar:rect('.avatar-workspace-avatar'),panel:rect('.avatar-workspace-panel'),height:innerHeight,overflow:document.documentElement.scrollWidth>innerWidth,scrollHeight:document.documentElement.scrollHeight};
         });
         assert(!geometry.overflow,`${mode} horizontal overflow`);
-        if(viewport.height>500) {
+        if(viewport.width<768 && viewport.height>500) {
           const framing=await page.locator('.avatar-workspace-stage').evaluate(node=>{const r=node.getBoundingClientRect();return r.width/r.height;});
           assert(Math.abs(framing-1.42)<0.05,`${mode} framing changed between desktop and mobile: ${framing}`);
         }
+        const layout=await page.locator('.avatar-workspace').evaluate(node=>({width:node.getBoundingClientRect().width,available:node.closest('main').clientWidth}));
+        if(viewport.width>=768)assert(layout.width>=layout.available*.85,`${mode} desktop/tablet must use a wide web workspace`);
+        else assert(layout.width<=480,`${mode} mobile portrait layout changed`);
         assert(geometry.avatar.bottom<=geometry.panel.top+1,`${mode} avatar moved from above`);
         assert(geometry.panel.height>=65,`${mode} panel too short ${JSON.stringify(geometry)}`);
         assert(geometry.panel.bottom<=viewport.height+1,`${mode} below viewport ${JSON.stringify(geometry)}`);
@@ -62,6 +65,7 @@ const out=path.resolve(process.env.AVATAR_QA_OUTPUT||'../outputs/avatar-workspac
           if(fs.existsSync(cachedVideo))await page.locator('video').evaluate(video=>new Promise(resolve=>{if(video.readyState>=2)resolve();else video.addEventListener('loadeddata',resolve,{once:true});}));
           await page.screenshot({path:path.join(out,`${mode}-mobile.png`)});
         }
+        if(viewport.width===1440)await page.screenshot({path:path.join(out,`${mode}-desktop.png`)});
         if(mode==='reading'){
           await page.waitForFunction(()=>window.__avatarAudio.some(a=>Number.isFinite(a.duration)&&a.duration>1));
           await page.evaluate(async()=>{const a=window.__avatarAudio.find(a=>a.src.includes('topic-audio'));await a.play();a.pause();a.currentTime=52;});
