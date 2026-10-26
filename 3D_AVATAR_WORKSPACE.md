@@ -26,6 +26,8 @@ Reading practice now animates the same muted video while an AI sentence recordin
 
 Listening topics still have no authored passage transcript. No transcript is generated or revealed. The existing instruction/narrator text is marked while its recording plays and is brought into the lower panel's view. This is a playing-text indicator, not sentence-level timing for the main listening audio.
 
+Listening instructions, Roleplay scenarios and AI reply paragraphs use inline `AvatarSpeechHighlight` marks. The background follows text line boxes only; the enclosing cards, empty space, borders and play/Next controls are not highlighted. Marks disappear when their playback stops. ReadingPassageCard exposes this through an optional, default-off `highlightText` prop for 3D Roleplay scenarios.
+
 Roleplay marks and follows the currently playing AI message, or the scenario during its playback. Student recording playback is not marked as avatar speech. Dynamic AI replies use message-level indicators, not invented sentence timestamps. Existing stop, recording, completion, visibility and navigation cleanup remain in force.
 
 ## Validation

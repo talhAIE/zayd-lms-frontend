@@ -1,4 +1,5 @@
 import { useAvatarWorkspace } from '@/components/avatar-reading/useAvatarWorkspace';
+import { AvatarSpeechHighlight } from '@/components/avatar-reading/AvatarSpeechHighlight';
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BarChart3, ChevronLeft, Mic, Clock, Lightbulb, MessageCircle, Send, Square, Trash2, Pause, Play, LoaderCircle, ChevronDown, ChevronUp } from 'lucide-react';
@@ -451,9 +452,10 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
           
           {/* Scenario Card */}
           {contentPayload && (contentPayload.passage || contentPayload.content || contentPayload.scenario) && (
-            <div className={`flex flex-col gap-3 min-h-0 pl-1 md:pl-2 ${step1Active ? 'flex-1 mt-2' : 'flex-shrink-0'} ${avatar && activeAvatarMessage === 'roleplay-scenario' ? 'rounded-xl ring-2 ring-amber-300' : ''}`}>
+            <div className={`flex flex-col gap-3 min-h-0 pl-1 md:pl-2 ${step1Active ? 'flex-1 mt-2' : 'flex-shrink-0'}`}>
               <ReadingPassageCard 
                 title="Roleplay Scenario"
+                highlightText={Boolean(avatar && activeAvatarMessage === 'roleplay-scenario')}
                 content={contentPayload.passage || contentPayload.content || contentPayload.scenario || ''}
                 audioUrl={contentPayload.contentAudioUrl || contentPayload.narrationAudioUrl || contentPayload.attachmentUrl}
                 readingPresentation={contentPayload.readingPresentation}
@@ -500,7 +502,7 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
                 className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} gap-1 w-full mt-2`}
               >
                 <div 
-                  className={`px-4 py-3 max-w-[85%] text-left ${avatar && msg.id === activeAvatarMessage ? 'ring-2 ring-amber-300 !bg-amber-50' : ''} ${
+                  className={`px-4 py-3 max-w-[85%] text-left ${
                     msg.role === 'user' 
                       ? 'bg-[#DBEAFE] rounded-tl-xl rounded-bl-xl rounded-br-sm rounded-tr-xl' 
                       : 'bg-white border border-[#E5E7EB] shadow-sm rounded-tr-xl rounded-br-xl rounded-bl-xl rounded-tl-sm'
@@ -509,7 +511,7 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
                   <div className="text-[13px] leading-[18px] text-[#0F1450] whitespace-pre-wrap break-words">
                     <ReactMarkdown
                       components={{
-                        p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
+                        p: ({node, children, ...props}) => <p className="mb-2 last:mb-0" {...props}><AvatarSpeechHighlight active={Boolean(avatar && msg.id === activeAvatarMessage)}>{children}</AvatarSpeechHighlight></p>,
                         ul: ({node, ...props}) => <ul className="list-disc pl-4 mb-2 last:mb-0" {...props} />,
                         ol: ({node, ...props}) => <ol className="list-decimal pl-4 mb-2 last:mb-0" {...props} />,
                         li: ({node, ...props}) => <li className="mb-1 last:mb-0" {...props} />,

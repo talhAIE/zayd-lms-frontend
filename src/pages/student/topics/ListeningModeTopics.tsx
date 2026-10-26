@@ -1,4 +1,5 @@
 import { useAvatarWorkspace } from '@/components/avatar-reading/useAvatarWorkspace';
+import { AvatarSpeechHighlight } from '@/components/avatar-reading/AvatarSpeechHighlight';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ChevronLeft, Clock, Check, Pause, Play, ChevronDown, ChevronUp } from 'lucide-react';
@@ -499,9 +500,9 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
               </div>
               
               <div ref={narratorTextRef} aria-current={avatar && narratorPlaying ? 'true' : undefined}
-                className={`p-3.5 px-4 bg-white border-[1.5px] border-[#DBEAFE] shadow-[0px_2px_8px_rgba(0,0,0,0.06)] rounded-tr-xl rounded-br-xl rounded-bl-xl rounded-tl-sm w-full ${avatar && narratorPlaying ? 'ring-2 ring-amber-300 !bg-amber-50' : ''}`}>
+                className="p-3.5 px-4 bg-white border-[1.5px] border-[#DBEAFE] shadow-[0px_2px_8px_rgba(0,0,0,0.06)] rounded-tr-xl rounded-br-xl rounded-bl-xl rounded-tl-sm w-full">
                 <p className="font-normal text-[14px] leading-[22px] text-[#0F1450]">
-                  {narratorText}
+                  <AvatarSpeechHighlight active={Boolean(avatar && narratorPlaying)}>{narratorText}</AvatarSpeechHighlight>
                 </p>
                 <button
                   type="button"

@@ -15,6 +15,15 @@ const out=path.resolve(process.env.AVATAR_QA_OUTPUT||'../outputs/avatar-workspac
       window.Audio.prototype=Audio.prototype;
     });
     const page=await context.newPage();const errors=[];
+    const assertTextHighlight=async()=>{
+      await page.locator('mark[data-avatar-speaking-text]').first().waitFor();
+      const state=await page.evaluate(()=>({
+        marks:Array.from(document.querySelectorAll('mark[data-avatar-speaking-text]')).map(node=>({display:getComputedStyle(node).display,controls:node.querySelectorAll('button').length,text:node.textContent.trim()})),
+        paintedContainers:document.querySelectorAll('.avatar-workspace-panel [class*="ring-amber"], .avatar-workspace-panel [class*="!bg-amber"]').length,
+      }));
+      assert.equal(state.paintedContainers,0,'Highlight must not paint a container');
+      assert(state.marks.every(mark=>mark.display==='inline'&&mark.controls===0&&mark.text),'Only inline spoken text should be highlighted');
+    };
     page.on('pageerror',error=>errors.push(error.message));
     // Use the same authored recordings downloaded for offline alignment when available.
     await page.route('**/topic-audio/*.wav',async route=>{
@@ -73,19 +82,31 @@ const out=path.resolve(process.env.AVATAR_QA_OUTPUT||'../outputs/avatar-workspac
         if(mode==='roleplay'){
           await page.getByRole('button',{name:'Play AI response',exact:true}).last().click();
           await page.locator('[data-avatar-message][aria-current="true"]').waitFor();
+          await assertTextHighlight();
           assert.deepEqual(await page.locator('.avatar-workspace-avatar').boundingBox(),before,'Roleplay speech moved avatar');
           await page.getByRole('button',{name:'Stop AI response',exact:true}).click();
           await page.waitForFunction(()=>!document.querySelector('[data-avatar-message][aria-current="true"]'));
+          assert.equal(await page.locator('mark[data-avatar-speaking-text]').count(),0);
         }
         if(mode==='listening'){
           await page.getByRole('button',{name:'Play narrator text',exact:true}).click();
           await page.locator('.avatar-workspace-panel [aria-current="true"]').waitFor();
+          await assertTextHighlight();
           assert.deepEqual(await page.locator('.avatar-workspace-avatar').boundingBox(),before,'Listening instruction moved avatar');
           await page.getByRole('button',{name:'Pause narrator text',exact:true}).click();
+          await page.waitForFunction(()=>!document.querySelector('mark[data-avatar-speaking-text]'));
         }
         console.log(`${mode} ${viewport.width}x${viewport.height}: visible avatar + internal workspace passed`);
       }
     }
+    // Scenario playback paints only passage text, not its card or Next control.
+    await page.setViewportSize({width:390,height:844});
+    await page.goto(`${base}/avatar-workspace-harness.html?mode=roleplay&stage=scenario`);
+    await page.getByRole('button',{name:'Play roleplay scenario audio',exact:true}).click();
+    await assertTextHighlight();
+    await page.screenshot({path:path.join(out,'roleplay-scenario-text-highlight.png')});
+    await page.getByRole('button',{name:'Pause roleplay scenario audio',exact:true}).click();
+    await page.waitForFunction(()=>!document.querySelector('mark[data-avatar-speaking-text]'));
     // Check the independently aligned second passage too.
     await page.goto(`${base}/avatar-workspace-harness.html?mode=reading&topic=second`);
     await page.waitForFunction(()=>window.__avatarAudio.some(a=>Number.isFinite(a.duration)&&a.duration>1));
