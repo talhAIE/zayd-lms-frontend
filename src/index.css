@@ -32,7 +32,9 @@
   .avatar-workspace { max-width: 1440px; }
   .avatar-workspace-stage {
     aspect-ratio: auto;
-    height: clamp(90px, calc(var(--avatar-workspace-height, 600px) * .4), 330px);
+    height: clamp(90px, calc(var(--avatar-workspace-height, 600px) * .46), 420px);
+    max-height: none;
+    background: #f4f4f4;
   }
 }
 @media (max-height: 500px) {
