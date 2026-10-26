@@ -21,7 +21,7 @@ client.defaults.adapter = async config => {
   else if(url.endsWith('/topics')) data={topics:[{id,title,imageUrl:null,questionCount:0,completed:false}]};
   else if(url.endsWith('/actions')) {
     const history=mode==='roleplay'?(query.get('stage')==='scenario'?[]:Array.from({length:18},(_,i)=>({id:`message-${i}`,sender:i%2?'user':'ai',role:i%2?'user':'assistant',content:`Conversation turn ${i+1}. ${source.text.slice(0,180)}`,audioUrl:source.audioUrl,createdAt:new Date().toISOString()}))):
-      practice ? [0,1].map(i=>({id:`practice-${i}`,sender:i?'user':'ai',role:i?'user':'assistant',content:i?'My recorded attempt.':`Please read the following sentence aloud: "${source.text.slice(0,source.text.indexOf('.')+1)}"`,readingSpeechText:source.text.slice(0,source.text.indexOf('.')+1),audioUrl:source.audioUrl,createdAt:new Date().toISOString()})) : [];
+      practice ? [0,1].map(i=>({id:`practice-${i}`,sender:i?'user':'ai',role:i?'user':'assistant',content:i?'My recorded attempt.':`Please read the following sentence aloud:\n\n“${source.text.slice(0,source.text.indexOf('.')+1)}”\n`,readingSpeechText:source.text.slice(0,source.text.indexOf('.')+1),audioUrl:source.audioUrl,createdAt:new Date().toISOString()})) : [];
     const session={modeSessionId:id,lessonModeId:id,modeKey:`${mode}-mode`,isCompleted:false,chatHistory:history,
       roleplayProgress:{completedTurns:0,requiredTurns:7,remainingTurns:7},
       readingProgress:{phase:'reading',hasListenedToPassage:practice,isRetrying:practice,currentSentenceIndex:0,totalSentences:13,attemptedSentenceIndexes:[],acceptedSentenceIndexes:[],percentComplete:0},

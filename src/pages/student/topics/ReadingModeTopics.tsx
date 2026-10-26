@@ -1,5 +1,6 @@
 import { useAvatarWorkspace } from '@/components/avatar-reading/useAvatarWorkspace';
 import { readingNarration } from '@/components/avatar-reading/readingNarration';
+import { readingPracticePresentation } from '@/utils/readingPracticePresentation';
 import { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import { AvatarReadingContext } from '@/components/avatar-reading/AvatarReadingContext';
 import { useAvatarPassage } from '@/components/avatar-reading/useAvatarPassage';
@@ -781,9 +782,13 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
               {chatHistory.map((msg, index) => (
                 (() => {
                   const practiceSpeechText = msg.role === 'assistant' ? readingPracticeSpeechText(msg) : null;
+                  const practiceDisplay = avatar && msg.role === 'assistant' ? readingPracticePresentation(msg.content, practiceSpeechText) : null;
                   const practiceAudioUrl = msg.role === 'assistant' ? readingPracticeAudioUrl(msg) : null;
                   const hasSpeechFallback = Boolean(practiceSpeechText && !practiceAudioUrl);
                   const isFallbackSpeechPlaying = fallbackSpeechMessageId === msg.id;
+                  const practiceTextPlaying = Boolean(avatar && msg.role === 'assistant' && (
+                    (playingAudioId === msg.id && isCurrentlyPlaying) || (isFallbackSpeechPlaying && !isFallbackSpeechPaused)
+                  ));
                   const hasSavedSpeechAssessment = isSpeechAssessment(msg.assessments);
                   const feedbackNeedsAttention = readingFeedbackNeedsAttention(msg.readingVocabularyFeedback, msg.readingFeedbackTarget, viewedFeedbackIds.has(msg.id));
                   // Browser object URLs are available only for the live
@@ -808,7 +813,16 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
                       <p className="mb-2 text-xs font-semibold text-red-700" role="status">Sentence {msg.readingFeedbackTarget.sentenceIndex + 1}: Incorrect</p>
                     )}
                     <div className="text-[13px] leading-[18px] text-[#0F1450] whitespace-pre-wrap break-words">
-                      {practiceSpeechText && msg.content.endsWith(`"${practiceSpeechText}"`) ? (
+                      {practiceDisplay ? (
+                        <>
+                          <p className="mb-2">{practiceDisplay.instruction}</p>
+                          <p>"<span data-avatar-practice-sentence={msg.id}
+                            aria-current={practiceTextPlaying ? 'true' : undefined}
+                            className={practiceTextPlaying ? 'avatar-reading-highlight' : undefined}>
+                            <HighlightedReadingSentence text={practiceDisplay.sentence} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={setActiveVocabularyCard} />
+                          </span>"</p>
+                        </>
+                      ) : practiceSpeechText && msg.content.endsWith(`"${practiceSpeechText}"`) ? (
                         <>
                           <p className="mb-2">{msg.content.slice(0, -practiceSpeechText.length - 2).trim()}</p>
                           <p>"<span data-avatar-practice-sentence={avatar ? msg.id : undefined}
