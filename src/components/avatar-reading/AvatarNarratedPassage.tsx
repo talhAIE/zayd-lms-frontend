@@ -47,7 +47,7 @@ export function AvatarNarratedPassage({ text, narration, scrollRef, renderText, 
         const gap = text.slice(previous, cue.from); previous = cue.to;
         return <span key={cue.from}>{gap}<span ref={index === active ? activeRef : undefined}
           aria-current={index === active ? 'true' : undefined} data-narration-sentence={index}
-          className={index === active ? 'rounded bg-amber-100 text-slate-950 ring-2 ring-amber-200' : undefined}>
+          className={index === active ? 'avatar-reading-highlight' : undefined}>
           {renderText(text.slice(cue.from, cue.to))}
         </span></span>;
       })}

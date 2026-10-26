@@ -21,6 +21,7 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
     requested.current = false;
     generation.current++;
     audio.current?.pause(); videoRef.current?.pause(); setPlaying(false); setLoading(false);
+    if (audio.current && Number.isFinite(audio.current.duration)) setPosition(audio.current.currentTime);
   }, []);
   const synchronize = useCallback(() => {
     const a = audio.current, v = videoRef.current;
@@ -122,5 +123,16 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
       if (!requested.current) { generation.current++; video.pause(); }
     }
   }, [practice?.id, videoUrl]);
+  useEffect(() => {
+    if (!playing || typeof requestAnimationFrame !== 'function') return;
+    let frame: number, previous = -Infinity;
+    const tick = (now: number) => {
+      // Sample the audible clock; browser timeupdate events alone can lag by 250ms.
+      if (now - previous >= 50) { synchronize(); previous = now; }
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [playing, synchronize]);
   return { videoRef, playing, loading, position, duration, toggle, pause, restart, synchronize };
 }

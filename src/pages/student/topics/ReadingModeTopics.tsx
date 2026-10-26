@@ -370,6 +370,17 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
     : `${getProgressPercentage()}% Complete`;
 
   const isChatActive = !step1Active && (!mcqList || mcqList.length === 0);
+  const replayingAvatarPassage = Boolean(avatar && !step1Active && avatarPassage.playing);
+  useEffect(() => {
+    const panel = chatContainerRef.current;
+    if (!avatarPracticeId || !panel) return;
+    const sentence = Array.from(panel.querySelectorAll<HTMLElement>('[data-avatar-practice-sentence]'))
+      .find(node => node.dataset.avatarPracticeSentence === avatarPracticeId);
+    if (!sentence) return;
+    const parent = panel.getBoundingClientRect(), child = sentence.getBoundingClientRect();
+    if (child.top < parent.top + 12 || child.bottom > parent.bottom - 12)
+      panel.scrollTo({ top: panel.scrollTop + child.top - parent.top - 16, behavior: 'auto' });
+  }, [avatarPracticeId]);
   const readingPassageText = (() => {
     const blocks = contentPayload?.readingPresentation?.blocks;
     if (Array.isArray(blocks) && blocks.length > 0) {
@@ -703,17 +714,17 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
             (contentPayload.sentences && contentPayload.sentences.length > 0) ||
             (contentPayload.readingPresentation?.blocks?.length > 0)
           ) && (
-            <div className={`flex flex-col gap-4 min-h-0 ${step1Active ? 'flex-1' : 'flex-shrink-0'}`}>
+            <div className={`flex flex-col gap-4 min-h-0 ${step1Active || replayingAvatarPassage ? 'flex-1' : 'flex-shrink-0'}`}>
               <ReadingPassageCard 
                 content={passageContent}
-                narration={avatar && step1Active ? readingNarration(avatar.topicId, contentPayload.contentAudioUrl, passageContent, avatarPassage.duration, avatarPassage.position) : undefined}
+                narration={avatar ? readingNarration(avatar.topicId, contentPayload.contentAudioUrl, passageContent, avatarPassage.duration, avatarPracticeId ? -1 : avatarPassage.position) : undefined}
                 audioUrl={contentPayload.contentAudioUrl}
                 readingPresentation={readingPresentation}
                 onVocabularyClick={setActiveVocabularyCard}
                 showAudioControl={!avatar && Boolean(readingPassageText)}
                 isPlaying={avatar ? avatarPassage.playing : playingAudioId === 'reading-passage' && isCurrentlyPlaying}
                 onToggleAudio={togglePassageAudio}
-                forceExpanded={step1Active}
+                forceExpanded={step1Active || replayingAvatarPassage}
                 collapsibleMode="accordion"
               />
               {step1Active && (
@@ -731,7 +742,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
           )}
 
           {/* Chat History Area (Shown during Chatting stage, hidden during Quiz stage to prevent squishing) */}
-          {!step1Active && (!mcqList || mcqList.length === 0) && (
+          {!step1Active && !replayingAvatarPassage && (!mcqList || mcqList.length === 0) && (
             <div 
               ref={chatContainerRef}
               className="flex flex-col p-5 px-6 gap-3 flex-1 min-h-[150px] bg-[#F8F9FA] rounded-2xl overflow-y-auto"
@@ -800,7 +811,11 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
                       {practiceSpeechText && msg.content.endsWith(`"${practiceSpeechText}"`) ? (
                         <>
                           <p className="mb-2">{msg.content.slice(0, -practiceSpeechText.length - 2).trim()}</p>
-                          <p>"<HighlightedReadingSentence text={practiceSpeechText} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={setActiveVocabularyCard} />"</p>
+                          <p>"<span data-avatar-practice-sentence={avatar ? msg.id : undefined}
+                            aria-current={avatarPracticeId === msg.id ? 'true' : undefined}
+                            className={avatarPracticeId === msg.id ? 'avatar-reading-highlight' : undefined}>
+                            <HighlightedReadingSentence text={practiceSpeechText} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={setActiveVocabularyCard} />
+                          </span>"</p>
                         </>
                       ) : <ReactMarkdown
                         components={{
@@ -1109,7 +1124,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
           )}
 
           {/* Input Bar (Shown only during Chatting stage) */}
-          {!step1Active && (!mcqList || mcqList.length === 0) && (
+          {!step1Active && !replayingAvatarPassage && (!mcqList || mcqList.length === 0) && (
             <div className="flex flex-row items-center px-5 py-4 gap-3 bg-white border border-[#E5E7EB] rounded-2xl flex-shrink-0">
               {isRecording ? (
                 <div className="flex-1 flex items-center justify-between px-4 py-2 bg-[#FEF1E8] border border-[#F97316]/30 rounded-[10px]">
