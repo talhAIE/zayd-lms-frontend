@@ -8,7 +8,7 @@ The avatar remains above the learning workspace on every screen size. `useAvatar
 
 Shared `.avatar-workspace-*` styles are opt-in. Very short landscape screens use a smaller avatar and compact header to preserve usable text space. The same centered video crop is retained so head and hands remain visible. Normal curriculum routes retain their original dimensions, header, step list and media behavior.
 
-The workspace is capped at 480px on larger displays. Its avatar stage uses the same 1.42 aspect ratio on desktop and mobile (subject to short-viewport limits), preserving the portrait framing and readable line length instead of stretching into a wide desktop strip.
+Phones retain the current portrait workspace, capped at 480px, with a 1.42 avatar-stage aspect ratio subject to short-viewport limits. At 768px and wider the workspace expands to the available web/tablet width (up to 1440px), with a wide avatar banner above the reading/conversation panel. The viewport-bound height and internal scrolling remain enabled in both presentations.
 
 ## Reading sentence cues
 
@@ -39,6 +39,6 @@ Roleplay marks and follows the currently playing AI message, or the scenario dur
 
 Browser checks cover 390x844, 768x1024, 1440x900 and 844x390, all three modes, both Reading recordings, internal scrolling, unchanged avatar coordinates, narration-follow control and active speech indicators. Existing downloaded WAVs under the backend's `outputs/avatar-timings/` may be used for byte-range media fixtures; otherwise public authored WAVs are fetched. Cached public avatar video may be supplied as `avatar.mp4` in the QA output folder. These private/local downloads and model dependencies are not committed.
 
-The same browser check also asserts portrait aspect-ratio parity and exercises Reading practice play/pause/resume, learner-audio exclusion and passage/practice handoff on mobile and desktop using synthetic API responses.
+The same browser check also asserts mobile portrait framing and a wide desktop/tablet workspace, and exercises Reading practice play/pause/resume, learner-audio exclusion and passage/practice handoff on mobile and desktop using synthetic API responses.
 
 Only `index.html` is a production entry. Never use the harness on the same browser origin as a real user login: it sets synthetic localStorage authentication.
