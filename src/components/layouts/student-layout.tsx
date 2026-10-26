@@ -34,6 +34,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   const location = useLocation();
   const isScienceRoute = location.pathname === '/student/science' || location.pathname.startsWith('/student/science/');
   const isAvatarRoute = location.pathname === '/student/3d-avatar' || location.pathname.startsWith('/student/3d-avatar/');
+  const isAvatarActivity = /^\/student\/3d-avatar\/(reading|listening|roleplay)\/[^/]+$/.test(location.pathname);
   const isScienceActivity = isScienceRoute && location.pathname.includes('/activities/');
   const isSparkScienceActivity = location.pathname.startsWith('/student/science/spark-science/') && isScienceActivity;
   const previousSidebar = useRef(false);
@@ -308,7 +309,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
       {/* Main content */}
       <div className={`flex flex-col flex-1 w-full max-w-full overflow-x-hidden transition-all duration-300 ${isDesktopCollapsed ? 'xl:pl-20' : 'xl:pl-64'}`}>
         {/* Top header */}
-        <header className={`sticky top-0 z-40 flex xl:hidden items-center justify-between ${isSparkScienceActivity ? 'h-12' : 'h-16'} px-4 bg-background xl:px-8`}>
+        <header className={`sticky top-0 z-40 flex xl:hidden items-center justify-between ${isSparkScienceActivity || isAvatarActivity ? 'h-12 shrink-0' : 'h-16'} px-4 bg-background xl:px-8`}>
           <div className="flex items-center">
             {scienceBackTarget && (
               <Button variant="ghost" size="icon" onClick={handleBack} aria-label="Back">
@@ -360,7 +361,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
             </svg>
           </Button>
         </header>
-        <header className={`sticky top-0 z-40 hidden xl:flex items-center justify-between bg-background px-8 ${isSparkScienceActivity ? 'h-12 py-2' : 'h-16 py-10'}`}>
+        <header className={`sticky top-0 z-40 hidden xl:flex items-center justify-between bg-background px-8 ${isSparkScienceActivity || isAvatarActivity ? 'h-12 shrink-0 py-2' : 'h-16 py-10'}`}>
           <div className="flex items-center">
             <Button
               variant="ghost"
@@ -412,7 +413,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
 
         {/* Main Content */}
         <main className="flex-1 w-full max-w-full overflow-x-hidden">
-          <div className={`${isSparkScienceActivity ? 'px-4 py-2' : 'p-4'} w-full max-w-full overflow-x-hidden`}>{children}</div>
+          <div className={`${isAvatarActivity ? 'px-2 py-2 sm:px-4' : isSparkScienceActivity ? 'px-4 py-2' : 'p-4'} w-full max-w-full overflow-x-hidden`}>{children}</div>
         </main>
       </div>
 

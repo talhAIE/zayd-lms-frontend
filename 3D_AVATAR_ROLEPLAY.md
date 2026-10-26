@@ -22,3 +22,5 @@ npm run build
 ```
 
 Backend tests cover content validation, actual engine text/assessed-recording flows, duplicate recording retries, rejected responses, seven-turn completion, resume/retake, ownership and separate persistent namespaces. `scripts/avatar-reading/verify-roleplay-content.cjs` verifies both production topic mappings with SELECTs only; it does not bootstrap the application or call AI services.
+
+See [3D_AVATAR_WORKSPACE.md](3D_AVATAR_WORKSPACE.md) for the current viewport-contained avatar layout and narration-follow behavior (2026-10-26).

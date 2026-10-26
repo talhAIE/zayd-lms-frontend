@@ -1,3 +1,5 @@
+import { useAvatarWorkspace } from '@/components/avatar-reading/useAvatarWorkspace';
+import { readingNarration } from '@/components/avatar-reading/readingNarration';
 import { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import { AvatarReadingContext } from '@/components/avatar-reading/AvatarReadingContext';
 import { useAvatarPassage } from '@/components/avatar-reading/useAvatarPassage';
@@ -103,6 +105,7 @@ function HighlightedReadingSentence({ text, vocabularyTerms, vocabularyCards, on
 export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: string; title: string } } = {}) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const avatarWorkspaceRef = useAvatarWorkspace(Boolean(avatar));
   const lessonModeId = avatar?.topicId || searchParams.get('modeId') || '';
   const avatarTransport = useContext(AvatarReadingContext);
   const feedbackStorageKey = `${avatarTransport?.storagePrefix ?? ''}${lessonModeId}`;
@@ -462,7 +465,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
   }
 
   return (
-    <div className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'max-w-[1440px] h-auto min-w-0' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
+    <div ref={avatarWorkspaceRef} className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'avatar-workspace max-w-[1440px] min-w-0' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
       
       <TopicCompletionModal 
         isOpen={showCompletionModal}
@@ -507,7 +510,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
       />
 
       {/* Header Progress Group */}
-      <div className="flex flex-col gap-2.5 pb-3">
+      <div className={`flex flex-col shrink-0 gap-2.5 pb-3 ${avatar ? 'avatar-workspace-header' : ''}`}>
         
         {/* Top Bar */}
         <div className="flex flex-row justify-between items-center px-4 md:px-6 py-4 bg-white border-b border-[#E5E7EB]">
@@ -553,7 +556,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
       </div>
 
       {/* Main Split Content */}
-      <div className={`flex flex-col min-h-0 pb-6 ${avatar ? 'gap-4 px-2 sm:gap-5 sm:px-4' : 'md:flex-row px-4 md:px-8 gap-4 flex-1'}`}>
+      <div className={`flex flex-col min-h-0 pb-6 ${avatar ? 'avatar-workspace-body flex-1 gap-2 px-2 sm:px-4' : 'md:flex-row px-4 md:px-8 gap-4 flex-1'}`}>
         
         {/* Mode Sidebar */}
         {!avatar && <div className="flex flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0">
@@ -656,8 +659,8 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
 
         }
         {avatar && (
-          <aside className="flex w-full min-w-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]" aria-label="3D Reading avatar">
-            <div className="relative h-[340px] overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#F0F7FF] sm:h-[440px] lg:h-[540px]">
+          <aside className="avatar-workspace-avatar flex w-full min-w-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]" aria-label="3D Reading avatar">
+            <div className="avatar-workspace-stage relative overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#F0F7FF]">
             <video ref={avatarPassage.videoRef} src={contentPayload?.narrationVideoUrl} muted playsInline preload="metadata"
               className="absolute left-1/2 top-0 aspect-video h-[145%] w-auto max-w-none -translate-x-1/2"
               aria-label={`${avatar.title} avatar narration`}
@@ -674,7 +677,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
           </aside>
         )}
         {/* Workspace Main */}
-        <div className={`flex flex-col gap-4 min-h-0 ${avatar ? 'h-[560px] min-w-0 shrink-0 rounded-2xl border border-[#E5E7EB] bg-white p-3 sm:h-[620px] sm:p-5 lg:h-[640px]' : 'flex-1 pr-1'} ${(isChatActive || step1Active) ? '' : 'overflow-y-auto'}`}>
+        <div className={`flex flex-col gap-4 min-h-0 ${avatar ? 'avatar-workspace-panel flex-1 min-w-0 rounded-2xl border border-[#E5E7EB] bg-white p-3 sm:p-4' : 'flex-1 pr-1'} ${(isChatActive || step1Active) ? '' : 'overflow-y-auto'}`}>
           
           {/* Reading Passage Card */}
           {contentPayload && (
@@ -686,10 +689,11 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
             <div className={`flex flex-col gap-4 min-h-0 ${step1Active ? 'flex-1' : 'flex-shrink-0'}`}>
               <ReadingPassageCard 
                 content={passageContent}
+                narration={avatar && step1Active ? readingNarration(avatar.topicId, contentPayload.contentAudioUrl, passageContent, avatarPassage.duration, avatarPassage.position) : undefined}
                 audioUrl={contentPayload.contentAudioUrl}
                 readingPresentation={readingPresentation}
                 onVocabularyClick={setActiveVocabularyCard}
-                showAudioControl={Boolean(readingPassageText)}
+                showAudioControl={!avatar && Boolean(readingPassageText)}
                 isPlaying={avatar ? avatarPassage.playing : playingAudioId === 'reading-passage' && isCurrentlyPlaying}
                 onToggleAudio={togglePassageAudio}
                 forceExpanded={step1Active}

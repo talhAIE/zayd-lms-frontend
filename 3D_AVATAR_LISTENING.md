@@ -22,3 +22,5 @@ npm run build
 ```
 
 The dedicated playback check exercises the actual hook with controlled media, including audio/video timing, track exclusivity, pause/resume, completion, visibility cleanup and media failure. Backend engine/controller tests cover stages, failed and passed quizzes, resumed attempts, completed revisits, retakes, content validation and separate persisted state.
+
+See [3D_AVATAR_WORKSPACE.md](3D_AVATAR_WORKSPACE.md) for the current viewport-contained avatar layout and narration-follow behavior (2026-10-26).

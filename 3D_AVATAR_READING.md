@@ -22,3 +22,5 @@ npm run build
 ```
 
 For controlled browser verification, run Vite on a separate loopback port and open `/avatar-reading-harness.html`. This development-only entry uses synthetic account/API fixtures, the real app routes and authored media URLs. It never calls the backend, AI or database. Its visible passage is a short fixture, not a production-content preview. Add `?route=/student/3d-avatar/reading/<topicId>&stage=quiz` to inspect the existing quiz/completion UI, or `?disabled=true` to verify discovery denial. Do not use the harness on the same origin as an active real login: it sets synthetic localStorage auth on its dedicated local origin. Only `index.html` is part of the normal production build; this test entry is not imported by the product.
+
+See [3D_AVATAR_WORKSPACE.md](3D_AVATAR_WORKSPACE.md) for the current viewport-contained avatar layout and narration-follow behavior (2026-10-26).
