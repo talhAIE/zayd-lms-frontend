@@ -124,6 +124,7 @@ const out=path.resolve(process.env.AVATAR_QA_OUTPUT||'../outputs/avatar-workspac
       await page.getByRole('button',{name:'Play AI response',exact:true}).click();
       await page.waitForFunction(()=>{const v=document.querySelector('video');return !v.paused&&v.loop&&v.playbackRate===1;});
       await page.locator('[data-avatar-practice-sentence][aria-current="true"]').waitFor();
+      await page.screenshot({path:path.join(out,`practice-active-highlight-${viewport.width}.png`)});
       assert.equal(await page.locator('[data-avatar-practice-sentence][aria-current="true"]').textContent().then(text=>text.trim()),cues['e6d4bc7d-6be1-4f01-9d45-1b94f90e0827'].text.split('.')[0]+'.');
       await page.getByRole('button',{name:'Pause AI response',exact:true}).click();
       await page.waitForFunction(()=>document.querySelector('video').paused);
