@@ -20,12 +20,12 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
   }, []);
   const synchronize = useCallback(() => {
     const a = audio.current, v = videoRef.current;
+    if (a && Number.isFinite(a.duration)) { setPosition(a.currentTime); setDuration(a.duration); }
     if (!a || !v || !Number.isFinite(a.duration) || !a.duration || !Number.isFinite(v.duration) || !v.duration) return;
     const ratio = v.duration / a.duration;
     v.playbackRate = Math.min(4, Math.max(0.25, ratio));
     const target = Math.min(v.duration, a.currentTime * ratio);
     if (Math.abs(v.currentTime - target) > 0.15) v.currentTime = target;
-    setPosition(a.currentTime); setDuration(a.duration);
   }, []);
   useEffect(() => {
     if (!audioUrl || !videoUrl) return;
@@ -43,6 +43,7 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
     const videoWaiting = () => { if (requested.current) { a.pause(); setLoading(true); } };
     const videoReady = () => { if (requested.current && a.paused && !a.ended) void a.play().catch(error); };
     a.addEventListener('timeupdate', update); a.addEventListener('loadedmetadata', update);
+    a.addEventListener('seeked', update);
     a.addEventListener('ended', ended); a.addEventListener('error', error); a.addEventListener('waiting', waiting);
     a.addEventListener('playing', resumed);
     video?.addEventListener('waiting', videoWaiting); video?.addEventListener('canplay', videoReady);
@@ -50,6 +51,7 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
     return () => {
       pause();
       a.removeEventListener('timeupdate', update); a.removeEventListener('loadedmetadata', update);
+      a.removeEventListener('seeked', update);
       a.removeEventListener('ended', ended); a.removeEventListener('error', error); a.removeEventListener('waiting', waiting);
       a.removeEventListener('playing', resumed); video?.removeEventListener('waiting', videoWaiting); video?.removeEventListener('canplay', videoReady);
       a.removeAttribute('src'); a.load(); audio.current = null;

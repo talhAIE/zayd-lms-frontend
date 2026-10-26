@@ -1,3 +1,4 @@
+import { useAvatarWorkspace } from '@/components/avatar-reading/useAvatarWorkspace';
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BarChart3, ChevronLeft, Mic, Clock, Lightbulb, MessageCircle, Send, Square, Trash2, Pause, Play, LoaderCircle, ChevronDown, ChevronUp } from 'lucide-react';
@@ -19,6 +20,7 @@ import { useAvatarSpeakingVideo } from '@/components/avatar-reading/useAvatarSpe
 export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;title:string}}={}) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const avatarWorkspaceRef = useAvatarWorkspace(Boolean(avatar));
   const lessonModeId = avatar?.topicId || searchParams.get('modeId') || '';
   const lessonId = searchParams.get('lessonId') || '';
   const courseId = searchParams.get('courseId') || undefined;
@@ -88,6 +90,17 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
     fallbackSpeechMessageId || (isCurrentlyPlaying && (playingAudioId==='roleplay-scenario'||chatHistory.some(m=>m.id===playingAudioId&&m.role==='assistant')))
   ));
   const avatarVideoRef=useAvatarSpeakingVideo(avatar?contentPayload?.narrationVideoUrl:undefined,avatarSpeaking,stopRoleplayMedia);
+  const activeAvatarMessage = avatarSpeaking ? fallbackSpeechMessageId || playingAudioId : null;
+  useEffect(() => {
+    const panel = chatContainerRef.current;
+    if (!avatar || !panel || !activeAvatarMessage) return;
+    const message = Array.from(panel.querySelectorAll<HTMLElement>('[data-avatar-message]'))
+      .find(node => node.dataset.avatarMessage === activeAvatarMessage);
+    if (!message) return;
+    const parent = panel.getBoundingClientRect(), child = message.getBoundingClientRect();
+    if (child.top < parent.top || child.bottom > parent.bottom)
+      panel.scrollTo({ top: panel.scrollTop + child.top - parent.top - 12, behavior: 'auto' });
+  }, [avatar?.topicId, activeAvatarMessage]);
   useEffect(()=>{
     if(avatar&&(isRecording||isAccountBlocked||showCompletionModal))stopRoleplayMedia();
   },[avatar,isRecording,isAccountBlocked,showCompletionModal]);
@@ -241,8 +254,8 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
   };
 
   return (
-    <div
-      className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar?'max-w-[1440px] h-auto min-w-0':'max-w-[1207px] h-[calc(var(--roleplay-viewport-height)-6rem)] md:h-[794px] md:max-h-[calc(100dvh-7rem)]'}`}
+    <div ref={avatarWorkspaceRef}
+      className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar?'avatar-workspace max-w-[1440px] min-w-0':'max-w-[1207px] h-[calc(var(--roleplay-viewport-height)-6rem)] md:h-[794px] md:max-h-[calc(100dvh-7rem)]'}`}
       style={{ '--roleplay-viewport-height': `${visibleViewportHeight}px` } as React.CSSProperties}
     >
       
@@ -277,7 +290,7 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
       />
 
       {/* Header Progress Group */}
-      <div className="flex flex-col flex-shrink-0 gap-2.5 pb-3">
+      <div className={`flex flex-col shrink-0 gap-2.5 pb-3 ${avatar ? 'avatar-workspace-header' : ''}`}>
         
         {/* Top Bar */}
         <div className="flex flex-row justify-between items-center px-4 md:px-6 py-4 bg-white border-b border-[#E5E7EB]">
@@ -329,7 +342,7 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
       </div>
 
       {/* Main Split Content */}
-      <div className={`flex flex-col min-h-0 ${avatar?'gap-4 px-2 pb-6 sm:gap-5 sm:px-4':'md:flex-row px-3 md:px-8 gap-3 md:gap-4 flex-1 pb-3 md:pb-6'}`}>
+      <div className={`flex flex-col min-h-0 ${avatar?'avatar-workspace-body flex-1 gap-2 px-2 pb-2 sm:px-4':'md:flex-row px-3 md:px-8 gap-3 md:gap-4 flex-1 pb-3 md:pb-6'}`}>
         
         {/* Mode Sidebar */}
         {!avatar && <div className={`${isComposerFocused ? 'hidden md:flex' : 'flex'} flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0`}>
@@ -427,18 +440,18 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
         </div>
 
         }
-        {avatar&&<aside className="flex w-full min-w-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]" aria-label="3D Roleplay avatar">
-          <div className="relative h-[340px] overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#F0F7FF] sm:h-[440px] lg:h-[540px]">
+        {avatar&&<aside className="avatar-workspace-avatar flex w-full min-w-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]" aria-label="3D Roleplay avatar">
+          <div className="avatar-workspace-stage relative overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#F0F7FF]">
             <video ref={avatarVideoRef} src={contentPayload?.narrationVideoUrl} muted loop playsInline preload="auto"
               className="absolute left-1/2 top-0 aspect-video h-[145%] w-auto max-w-none -translate-x-1/2" aria-label={`${avatar.title} avatar animation`} />
           </div>
         </aside>}
         {/* Workspace Main */}
-        <div className={`flex flex-col gap-3 md:gap-4 min-h-0 ${avatar?'h-[560px] min-w-0 shrink-0 rounded-2xl border border-[#E5E7EB] bg-white p-3 sm:h-[620px] sm:p-5':'flex-1 pr-1'} ${step1Active ? 'overflow-y-auto' : 'overflow-hidden'}`}>
+        <div className={`flex flex-col gap-3 md:gap-4 min-h-0 ${avatar?'avatar-workspace-panel flex-1 min-w-0 rounded-2xl border border-[#E5E7EB] bg-white p-3 sm:p-4':'flex-1 pr-1'} ${step1Active ? 'overflow-y-auto' : 'overflow-hidden'}`}>
           
           {/* Scenario Card */}
           {contentPayload && (contentPayload.passage || contentPayload.content || contentPayload.scenario) && (
-            <div className={`flex flex-col gap-3 min-h-0 pl-1 md:pl-2 ${step1Active ? 'flex-1 mt-2' : 'flex-shrink-0'}`}>
+            <div className={`flex flex-col gap-3 min-h-0 pl-1 md:pl-2 ${step1Active ? 'flex-1 mt-2' : 'flex-shrink-0'} ${avatar && activeAvatarMessage === 'roleplay-scenario' ? 'rounded-xl ring-2 ring-amber-300' : ''}`}>
               <ReadingPassageCard 
                 title="Roleplay Scenario"
                 content={contentPayload.passage || contentPayload.content || contentPayload.scenario || ''}
@@ -480,12 +493,14 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
               className="flex flex-col p-3 sm:p-5 md:px-6 gap-3 flex-1 min-h-0 bg-[#F8F9FA] overflow-y-auto overscroll-contain"
             >
             {chatHistory.map((msg, index) => (
-              <div 
-                key={msg.id || index} 
+              <div
+                key={msg.id || index}
+                data-avatar-message={avatar && msg.role === 'assistant' ? msg.id : undefined}
+                aria-current={avatar && msg.id === activeAvatarMessage ? 'true' : undefined}
                 className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} gap-1 w-full mt-2`}
               >
                 <div 
-                  className={`px-4 py-3 max-w-[85%] text-left ${
+                  className={`px-4 py-3 max-w-[85%] text-left ${avatar && msg.id === activeAvatarMessage ? 'ring-2 ring-amber-300 !bg-amber-50' : ''} ${
                     msg.role === 'user' 
                       ? 'bg-[#DBEAFE] rounded-tl-xl rounded-bl-xl rounded-br-sm rounded-tr-xl' 
                       : 'bg-white border border-[#E5E7EB] shadow-sm rounded-tr-xl rounded-br-xl rounded-bl-xl rounded-tl-sm'

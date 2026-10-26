@@ -1,6 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import { Play, Pause, ChevronDown, BookOpen } from 'lucide-react';
 import type { ReadingVocabularyCard } from './ReadingVocabularyFlashcardModal';
+import { AvatarNarratedPassage } from '@/components/avatar-reading/AvatarNarratedPassage';
+import type { PassageNarration } from '@/components/avatar-reading/readingNarration';
 
 type ReadingPassageBlock = {
   heading?: string;
@@ -30,6 +32,7 @@ interface ReadingPassageCardProps {
   readingPresentation?: ReadingPassagePresentation;
   showAudioControl?: boolean;
   onVocabularyClick?: (card: ReadingVocabularyCard) => void;
+  narration?: PassageNarration;
 }
 
 const inferConversationBlocks = (content: string): ReadingPassageBlock[] | null => {
@@ -96,11 +99,16 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
   readingPresentation,
   showAudioControl = Boolean(audioUrl),
   onVocabularyClick,
+  narration,
 }) => {
   const [isExpanded, setIsExpanded] = React.useState(collapsibleMode === 'accordion' ? false : false);
   const [shouldShowExpandButton, setShouldShowExpandButton] = React.useState(false);
   const contentId = React.useId();
   const contentRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [followingNarration, setFollowingNarration] = React.useState(true);
+  const stopFollowing = React.useCallback(() => setFollowingNarration(false), []);
+  useEffect(() => setFollowingNarration(true), [content]);
 
   // Check if content needs expansion button
   useEffect(() => {
@@ -143,7 +151,7 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
   const vocabularyCards = readingPresentation?.vocabularyCards ?? [];
 
   return (
-    <div className="w-full bg-white border border-[#E5E7EB] rounded-[12px] p-[16px_20px] flex flex-col gap-3 font-['Outfit',sans-serif] min-h-0 flex-shrink overflow-hidden">
+    <div data-avatar-passage-card={narration ? '' : undefined} className="w-full bg-white border border-[#E5E7EB] rounded-[12px] p-[16px_20px] flex flex-col gap-3 font-['Outfit',sans-serif] min-h-0 flex-shrink overflow-hidden">
       {/* Header Row: Badge & Audio */}
       <div className="flex flex-row justify-between items-center w-full">
         {collapsibleMode === 'accordion' && !forceExpanded ? (
@@ -180,6 +188,8 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
           </div>
         )}
 
+        {narration && !followingNarration && <button type="button" onClick={() => setFollowingNarration(true)}
+          className="ml-2 rounded-full border border-blue-200 bg-white px-2 py-1 text-xs font-semibold text-blue-700">Follow narration</button>}
         {showAudioControl && onToggleAudio && (
           <button
             type="button"
@@ -202,6 +212,9 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
       {/* Content */}
       <div
         id={contentId}
+        ref={scrollRef}
+        data-avatar-passage-scroll={narration ? '' : undefined}
+        tabIndex={narration ? 0 : undefined}
         hidden={collapsibleMode === 'accordion' && !forceExpanded && !isExpanded}
         className={`min-h-0 flex-shrink overflow-y-auto pr-2 custom-scrollbar ${collapsibleMode === 'accordion' && !forceExpanded ? 'max-h-[120px]' : ''}`}
       >
@@ -214,7 +227,9 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
             {readingPresentation?.title && (
               <h3 className="mb-0.5 text-[16px] font-bold leading-6">{readingPresentation.title}</h3>
             )}
-            {isConversation ? (
+            {narration ? <AvatarNarratedPassage text={content} narration={narration} scrollRef={scrollRef}
+              following={followingNarration} onManualScroll={stopFollowing}
+              renderText={text => <HighlightedReadingText text={text} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={onVocabularyClick} />} /> : isConversation ? (
               <div className="space-y-1">
                 {blocks.map((block, index) => (
                   <p key={`${block.speaker ?? 'line'}-${index}`}>
