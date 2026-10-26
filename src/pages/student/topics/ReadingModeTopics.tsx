@@ -188,11 +188,28 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
     }
   });
 
+  const stopAvatarPracticeAudio = () => {
+    stopAudio();
+    fallbackSpeechRef.current = null;
+    window.speechSynthesis?.cancel();
+    setFallbackSpeechMessageId(null);
+    setIsFallbackSpeechPaused(false);
+  };
+  const avatarPracticeId = avatar && !isRecording && !isAccountBlocked && !showCompletionModal && !isCompleted
+    ? fallbackSpeechMessageId && !isFallbackSpeechPaused ? fallbackSpeechMessageId
+      : isCurrentlyPlaying && chatHistory.some(message => message.id === playingAudioId && message.role === 'assistant') ? playingAudioId : null
+    : null;
   const avatarPassage = useAvatarPassage(
     avatar ? contentPayload?.contentAudioUrl : undefined,
     avatar ? contentPayload?.narrationVideoUrl : undefined,
     markReadingPassageListened,
+    { id: avatarPracticeId, stop: stopAvatarPracticeAudio },
   );
+  useEffect(() => {
+    if (avatar && (isRecording || isAccountBlocked || showCompletionModal || isCompleted)) {
+      avatarPassage.pause(); stopAvatarPracticeAudio();
+    }
+  }, [avatar?.topicId, isRecording, isAccountBlocked, showCompletionModal, isCompleted]);
 
   useEffect(() => {
     // A generic completed flag alone is not enough to show the revisit

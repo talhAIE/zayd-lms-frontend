@@ -39,6 +39,10 @@ const out=path.resolve(process.env.AVATAR_QA_OUTPUT||'../outputs/avatar-workspac
           return{avatar:rect('.avatar-workspace-avatar'),panel:rect('.avatar-workspace-panel'),height:innerHeight,overflow:document.documentElement.scrollWidth>innerWidth,scrollHeight:document.documentElement.scrollHeight};
         });
         assert(!geometry.overflow,`${mode} horizontal overflow`);
+        if(viewport.height>500) {
+          const framing=await page.locator('.avatar-workspace-stage').evaluate(node=>{const r=node.getBoundingClientRect();return r.width/r.height;});
+          assert(Math.abs(framing-1.42)<0.05,`${mode} framing changed between desktop and mobile: ${framing}`);
+        }
         assert(geometry.avatar.bottom<=geometry.panel.top+1,`${mode} avatar moved from above`);
         assert(geometry.panel.height>=65,`${mode} panel too short ${JSON.stringify(geometry)}`);
         assert(geometry.panel.bottom<=viewport.height+1,`${mode} below viewport ${JSON.stringify(geometry)}`);
@@ -87,6 +91,29 @@ const out=path.resolve(process.env.AVATAR_QA_OUTPUT||'../outputs/avatar-workspac
     await page.waitForFunction(()=>window.__avatarAudio.some(a=>Number.isFinite(a.duration)&&a.duration>1));
     await page.evaluate(async()=>{const a=window.__avatarAudio.find(a=>a.src.includes('topic-audio'));await a.play();a.pause();a.currentTime=22;});
     await page.waitForFunction(()=>document.querySelector('[data-narration-sentence="5"][aria-current="true"]'));
+    // Practice uses the same video element, with exclusive passage/AI ownership.
+    for(const viewport of [{width:390,height:844},{width:1440,height:900}]){
+      await page.setViewportSize(viewport);
+      await page.goto(`${base}/avatar-workspace-harness.html?mode=reading&stage=practice`);
+      await page.getByRole('button',{name:'Play AI response',exact:true}).waitFor();
+      await page.getByRole('button',{name:'Play AI response',exact:true}).click();
+      await page.waitForFunction(()=>{const v=document.querySelector('video');return !v.paused&&v.loop&&v.playbackRate===1;});
+      await page.getByRole('button',{name:'Pause AI response',exact:true}).click();
+      await page.waitForFunction(()=>document.querySelector('video').paused);
+      await page.getByRole('button',{name:'Play AI response',exact:true}).click();
+      await page.waitForFunction(()=>!document.querySelector('video').paused);
+      // A learner's recording must not animate the avatar.
+      await page.getByRole('button',{name:'Play your spoken response',exact:true}).click();
+      await page.waitForFunction(()=>document.querySelector('video').paused);
+      await page.getByRole('button',{name:'Play passage',exact:true}).click();
+      await page.waitForFunction(()=>{const v=document.querySelector('video');return !v.paused&&!v.loop;});
+      await page.getByRole('button',{name:'Play AI response',exact:true}).click();
+      await page.waitForFunction(()=>{const v=document.querySelector('video');return !v.paused&&v.loop&&v.playbackRate===1;});
+      await page.getByRole('button',{name:'Pause AI response',exact:true}).click();
+      await page.waitForFunction(()=>document.querySelector('video').paused);
+      if(viewport.width===1440)await page.screenshot({path:path.join(out,'reading-practice-desktop.png')});
+      console.log(`Reading practice ${viewport.width}: sentence play/pause/resume, learner exclusion and passage handoff passed`);
+    }
     assert.deepEqual(errors,[]);
     console.log('Both authored passages: actual audio duration, cue selection, restart, panel-only scrolling and follow control passed.');
   }finally{await browser.close();}
