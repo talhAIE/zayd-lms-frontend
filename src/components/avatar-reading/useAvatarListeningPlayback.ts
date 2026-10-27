@@ -18,6 +18,16 @@ export function useAvatarListeningPlayback(topicUrl: string | undefined, narrato
   const [loading, setLoading] = useState(false);
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [videoState, setVideoState] = useState<'loading' | 'ready' | 'error'>('loading');
+  const videoUnavailable = useRef(false);
+
+  const showIdleFrame = useCallback(() => {
+    const video = videoRef.current;
+    if (!video || !Number.isFinite(video.duration) || video.duration <= 0) return;
+    // A small seek requests a decoded frame on mobile browsers without autoplay.
+    video.loop = false;
+    video.currentTime = Math.min(0.05, video.duration / 2);
+  }, []);
 
   const pause = useCallback(() => {
     requested.current = false;
@@ -30,6 +40,8 @@ export function useAvatarListeningPlayback(topicUrl: string | undefined, narrato
   const synchronize = useCallback(() => {
     const a = active.current ? tracks.current[active.current] : undefined;
     const v = videoRef.current;
+    if (a && active.current === 'topic') { setPosition(a.currentTime); setDuration(Number.isFinite(a.duration) ? a.duration : 0); }
+    if (videoUnavailable.current) return;
     if (!a || !v || !Number.isFinite(a.duration) || !a.duration || !Number.isFinite(v.duration) || !v.duration) return;
     // Passage and video recordings have different durations. Fit the complete
     // video to the passage timeline. Short instruction clips use natural gestures.
@@ -38,7 +50,6 @@ export function useAvatarListeningPlayback(topicUrl: string | undefined, narrato
     v.playbackRate = Math.min(4, Math.max(0.25, ratio));
     const target = active.current === 'topic' ? Math.min(v.duration, a.currentTime * ratio) : a.currentTime % v.duration;
     if (Math.abs(v.currentTime - target) > 0.15) v.currentTime = target;
-    if (active.current === 'topic') { setPosition(a.currentTime); setDuration(a.duration); }
   }, []);
 
   useEffect(() => {
@@ -55,6 +66,7 @@ export function useAvatarListeningPlayback(topicUrl: string | undefined, narrato
       const ended = () => {
         if (active.current !== key) return;
         pause(); synchronize();
+        active.current = null; setTrack(null); showIdleFrame();
         if (key === 'topic') endedCallback.current();
       };
       const waiting = () => { if (active.current === key && requested.current) { videoRef.current?.pause(); setLoading(true); } };
@@ -62,6 +74,7 @@ export function useAvatarListeningPlayback(topicUrl: string | undefined, narrato
         if (active.current !== key || !requested.current) return;
         const request = generation.current;
         synchronize();
+        if (videoUnavailable.current) { setPlaying(true); setLoading(false); return; }
         void videoRef.current?.play().then(() => {
           if (request === generation.current && requested.current) {setPlaying(true);setLoading(false);}
         }).catch(reason => {if (request === generation.current && reason?.name !== 'AbortError') error();});
@@ -79,20 +92,29 @@ export function useAvatarListeningPlayback(topicUrl: string | undefined, narrato
       tracks.current[active.current]?.pause(); setLoading(true);
     };
     const videoReady = () => {
+      if (video && video.readyState >= 2) { videoUnavailable.current = false; setVideoState('ready'); }
       const audio = active.current ? tracks.current[active.current] : undefined;
       if (requested.current && audio?.paused && !audio.ended) void audio.play().catch(reason => {
         if (requested.current && reason?.name !== 'AbortError') error();
       });
     };
+    const metadataReady = () => { if (!requested.current) showIdleFrame(); };
+    const videoFailed = () => { videoUnavailable.current = true; setVideoState('error'); error(); };
     video?.addEventListener('waiting',videoWaiting);
     video?.addEventListener('canplay',videoReady);
-    video?.addEventListener('error',error);
+    video?.addEventListener('loadeddata',videoReady);
+    video?.addEventListener('loadedmetadata',metadataReady);
+    video?.addEventListener('error',videoFailed);
     active.current = null; setTrack(null); setPosition(0); setDuration(0);
+    videoUnavailable.current = Boolean(video?.error);
+    setVideoState(video?.error ? 'error' : video && video.readyState >= 2 ? 'ready' : 'loading');
+    showIdleFrame();
     return () => {
       pause(); cleanup.forEach(fn=>fn()); tracks.current = {}; active.current = null;
-      video?.removeEventListener('waiting',videoWaiting); video?.removeEventListener('canplay',videoReady);video?.removeEventListener('error',error);
+      video?.removeEventListener('waiting',videoWaiting); video?.removeEventListener('canplay',videoReady);
+      video?.removeEventListener('loadeddata',videoReady); video?.removeEventListener('loadedmetadata',metadataReady); video?.removeEventListener('error',videoFailed);
     };
-  }, [topicUrl,narratorUrl,videoUrl,stage,pause,synchronize]);
+  }, [topicUrl,narratorUrl,videoUrl,stage,pause,synchronize,showIdleFrame]);
 
   const toggle = useCallback(async (name: Track) => {
     const audio = tracks.current[name], video = videoRef.current;
@@ -103,7 +125,9 @@ export function useAvatarListeningPlayback(topicUrl: string | undefined, narrato
     active.current=name;setTrack(name);requested.current=true;
     const request=++generation.current;setLoading(true);synchronize();
     try {
-      await Promise.all([audio.play(),video.play()]);
+      if (audio.error) audio.load();
+      // An unavailable avatar must not prevent the learner hearing the story.
+      await Promise.all([audio.play(),videoUnavailable.current ? Promise.resolve() : video.play()]);
       if (request !== generation.current) {
         // A newer track may already be playing on this same video element.
         if (active.current !== name) audio.pause();
@@ -122,14 +146,18 @@ export function useAvatarListeningPlayback(topicUrl: string | undefined, narrato
 
   const restart = useCallback(() => {
     pause();Object.values(tracks.current).forEach(audio=>{if(audio) audio.currentTime=0;});
-    if(videoRef.current) videoRef.current.currentTime=0;
+    active.current = null; setTrack(null); showIdleFrame();
     setPosition(0);
-  },[pause]);
+  },[pause,showIdleFrame]);
+  const retryVideo = useCallback(() => {
+    restart(); videoUnavailable.current = false; setVideoState('loading');
+    videoRef.current?.load();
+  },[restart]);
   useEffect(() => {
     if (!videoUrl) return;
     const hide=()=>{if(document.hidden) pause();};
     document.addEventListener('visibilitychange',hide);
     return ()=>document.removeEventListener('visibilitychange',hide);
   },[videoUrl,pause]);
-  return {videoRef,track,playing,loading,position,duration,pause,toggle,restart,synchronize};
+  return {videoRef,videoState,retryVideo,track,playing,loading,position,duration,pause,toggle,restart,synchronize};
 }

@@ -211,7 +211,7 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
   useEffect(() => {
     if (!avatar) return;
     if (avatarPlayback.playing || avatarPlayback.loading) setHasStartedAudio(true);
-    if (isCompleted || isAccountBlocked || listeningPayload?.stage === 'quiz') avatarPlayback.pause();
+    if (isCompleted || isAccountBlocked) avatarPlayback.pause();
   }, [avatar, avatarPlayback.playing, avatarPlayback.loading, avatarPlayback.pause, isCompleted, isAccountBlocked, listeningPayload?.stage]);
   const narratorText = isTranscriptStage
     ? listeningPayload?.transcript
@@ -442,12 +442,16 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
         {avatar && (
           <aside className="avatar-workspace-avatar flex w-full min-w-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]" aria-label="3D Listening avatar">
             <div className="avatar-workspace-stage relative overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#F0F7FF]">
-              <video ref={avatarPlayback.videoRef} src={listeningPayload?.narrationVideoUrl} muted playsInline preload="metadata"
+              <video ref={avatarPlayback.videoRef} src={listeningPayload?.narrationVideoUrl} muted playsInline preload="auto"
                 className="absolute left-1/2 top-0 aspect-video h-[145%] w-auto max-w-none -translate-x-1/2"
                 aria-label={`${avatar.title} avatar narration`} onLoadedMetadata={avatarPlayback.synchronize} />
+              {avatarPlayback.videoState !== 'ready' && <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#F8FAFC] p-4 text-center text-sm text-slate-600" role={avatarPlayback.videoState === 'error' ? 'alert' : 'status'}>
+                <p>{avatarPlayback.videoState === 'error' ? 'Avatar unavailable. You can still play the audio.' : 'Loading avatar…'}</p>
+                {avatarPlayback.videoState === 'error' && <button type="button" onClick={avatarPlayback.retryVideo} className="rounded-full border border-blue-300 bg-white px-4 py-2 font-semibold text-blue-600">Retry avatar</button>}
+              </div>}
             </div>
             <div className="flex flex-wrap items-center justify-between gap-2 border-t bg-white px-3 py-2.5 sm:px-4">
-              <button type="button" disabled={!topicAudioUrl || isAccountBlocked || isCompleted || listeningPayload?.stage === 'quiz'}
+              <button type="button" disabled={!topicAudioUrl || isAccountBlocked || isCompleted}
                 onClick={() => { void avatarPlayback.toggle('topic'); }} className="rounded-full bg-[#3B82F6] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
                 {avatarPlayback.track === 'topic' && avatarPlayback.loading ? 'Loading…' : topicPlaying ? 'Pause audio' : 'Play audio'}
               </button>
