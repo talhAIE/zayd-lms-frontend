@@ -87,14 +87,18 @@ function HighlightedReadingSentence({ text, vocabularyTerms, vocabularyCards, on
   vocabularyCards: ReadingVocabularyCard[];
   onVocabularyClick: (card: ReadingVocabularyCard) => void;
 }) {
-  const terms = [...new Set(vocabularyTerms.map((term) => term.trim()).filter(Boolean))]
+  // Authored sentences can carry emphasis independently of vocabulary metadata.
+  // Normalize here so initial, resumed and feedback prompts share one renderer.
+  const emphasizedTerms = [...text.matchAll(/\*\*([\s\S]+?)\*\*/g)].map(match => match[1]);
+  const displayText = text.replace(/\*\*([\s\S]+?)\*\*/g, '$1');
+  const terms = [...new Set([...vocabularyTerms, ...emphasizedTerms].map((term) => term.trim()).filter(Boolean))]
     .sort((left, right) => right.length - left.length);
-  if (terms.length === 0) return <>{text}</>;
+  if (terms.length === 0) return <>{displayText}</>;
 
   const pattern = new RegExp(`(${terms.map(escapeRegExp).join('|')})`, 'gi');
   const termSet = new Set(terms.map((term) => term.toLowerCase()));
   const cardByTerm = new Map(vocabularyCards.map((card) => [card.word.trim().toLowerCase(), card]));
-  return <>{text.split(pattern).map((part, index) =>
+  return <>{displayText.split(pattern).map((part, index) =>
     termSet.has(part.toLowerCase())
       ? cardByTerm.get(part.toLowerCase())
         ? <button key={index} type="button" onClick={() => onVocabularyClick(cardByTerm.get(part.toLowerCase())!)} className="cursor-pointer font-semibold text-[#3B82F6] underline decoration-[#93C5FD] decoration-2 underline-offset-2 transition-colors hover:text-[#2563EB] focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563EB]/40" aria-label={`Open vocabulary flashcard for ${part}`}>{part}</button>
