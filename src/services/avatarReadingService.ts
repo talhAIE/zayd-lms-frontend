@@ -12,7 +12,7 @@ const identity = () => localStorage.getItem('AiTutorUser');
 export async function avatarAvailability(signal?: AbortSignal) {
   const owner = identity();
   const response = await apiClient.get<{ available: boolean }>('/3d-avatar/availability', {
-    signal, ...{ scienceSession: () => identity() === owner },
+    signal, timeout: 30_000, ...{ scienceSession: () => identity() === owner },
   });
   return response.data.available;
 }
@@ -61,8 +61,18 @@ export function createAvatarReadingTransport(userId: string, mode: AvatarMode = 
           }
           void apiClient.post<{ events: Event[] }>(binaryAudio ? `/3d-avatar/roleplay/${encodeURIComponent(String(body.modeSessionId))}/audio` : `/3d-avatar/${mode}/actions`, payload, {
             ...(binaryAudio ? {headers:{'Content-Type':undefined}} : {}),
-            signal: controller.signal, timeout: 180_000, ...{ scienceSession: active },
+            signal: controller.signal,
+            timeout: mode === 'reading' && (event === 'start_mode_session' || event === 'restart_mode_session') ? 30_000 : 180_000,
+            ...{ scienceSession: active },
           }).then(response => {
+            if (mode === 'reading' && (event === 'start_mode_session' || event === 'restart_mode_session')) {
+              const session = response.data.events?.find(item => item.event === 'mode_session_started')?.payload as { modeSessionId?: string; contentPayload?: { content?: string; passage?: string; sentences?: string[]; readingPresentation?: { blocks?: unknown[] }; narrationVideoUrl?: string; contentAudioUrl?: string } } | undefined;
+              const content = session?.contentPayload;
+              if (!session?.modeSessionId || !content?.narrationVideoUrl || !content.contentAudioUrl ||
+                !(content.content?.trim() || content.passage?.trim() || content.sentences?.length || content.readingPresentation?.blocks?.length)) {
+                throw new Error('Reading session content is missing');
+              }
+            }
             for (const item of response.data.events) deliver(item.event, item.payload);
           }).catch(error => {
             if (active()) deliver('error', { message: error.response?.data?.message || 'Unable to load this 3D activity. Please try again.',code:error.response?.data?.code,clientAttemptId:body.clientAttemptId });
