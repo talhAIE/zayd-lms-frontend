@@ -145,6 +145,8 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
   const fallbackSpeechRef = useRef<SpeechSynthesisUtterance | null>(null);
   const {
     isRecording,
+    isStartingRecording,
+    recordingError,
     isProcessingRecording,
     recordTime,
     startRecording,
@@ -1188,18 +1190,29 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
                 <>
                   <div className="min-w-0 flex-1 px-4 py-3 bg-white border border-[#E5E7EB] rounded-[10px]">
                     <p id="reading-recording-instruction" aria-live="polite" className="whitespace-normal break-words text-[14px] leading-5 text-[#6E748F]">
-                      {isProcessingRecording ? "Checking recording..." : cooldown ? "Please wait..." : "Record the sentence (up to 3 minutes)..."}
+                      {isStartingRecording ? 'Opening microphone… Allow access if your browser asks.'
+                        : recordingError ? recordingError
+                        : isAccountBlocked ? 'Recording is unavailable for this account.'
+                        : !modeSessionId ? 'Connecting to reading practice…'
+                        : isProcessingRecording ? 'Checking recording…'
+                        : isReconcilingAudio ? 'Restoring your previous recording…'
+                        : isTyping ? 'Assessing your recording…'
+                        : hasPendingAudio ? 'Retry or discard your previous recording before recording again.'
+                        : cooldown ? 'Please wait…'
+                        : 'Record the sentence (up to 3 minutes)…'}
                     </p>
                   </div>
                   <button
                     onClick={() => { if (avatar) { avatarPassage.pause(); stopAudio(); } startRecording(); }}
-                    disabled={!modeSessionId || cooldown || isProcessingRecording || isTyping || isAccountBlocked || hasPendingAudio}
-                    aria-label="Record your reading response"
+                    disabled={isStartingRecording || !modeSessionId || cooldown || isProcessingRecording || isTyping || isAccountBlocked || hasPendingAudio}
+                    aria-label={isStartingRecording ? 'Opening microphone' : 'Record your reading response'}
+                    aria-busy={isStartingRecording}
                     aria-describedby="reading-recording-instruction"
                     className="flex shrink-0 justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Mic className="w-5 h-5" />
+                    {isStartingRecording ? <LoaderCircle className="w-5 h-5 animate-spin" aria-hidden="true" /> : <Mic className="w-5 h-5" />}
                   </button>
+                  {isStartingRecording && <button type="button" onClick={cancelRecording} className="text-sm font-semibold text-[#475569]" aria-label="Cancel microphone startup">Cancel</button>}
                 </>
               )}
             </div>
