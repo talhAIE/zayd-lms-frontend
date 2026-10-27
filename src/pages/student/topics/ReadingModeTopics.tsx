@@ -715,11 +715,14 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
         {avatar && (
           <aside className="avatar-workspace-avatar flex w-full min-w-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]" aria-label="3D Reading avatar">
             <div className="avatar-workspace-stage relative overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#F0F7FF]">
-            <video ref={avatarPassage.videoRef} src={contentPayload?.narrationVideoUrl} muted playsInline preload="metadata"
+            <video ref={avatarPassage.videoRef} src={contentPayload?.narrationVideoUrl} muted playsInline preload="auto"
               className="absolute left-1/2 top-0 aspect-video h-[145%] w-auto max-w-none -translate-x-1/2"
               aria-label={`${avatar.title} avatar narration`}
-              onLoadedMetadata={avatarPassage.synchronize}
-              onError={() => { avatarPassage.pause(); toast.error('The avatar video could not be loaded.'); }} />
+              onLoadedMetadata={avatarPassage.synchronize} />
+            {avatarPassage.videoState !== 'ready' && <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#F8FAFC] p-4 text-center text-sm text-slate-600" role={avatarPassage.videoState === 'error' ? 'alert' : 'status'}>
+              <p>{avatarPassage.videoState === 'error' ? 'The avatar could not load. Please try again.' : 'Loading avatar…'}</p>
+              {avatarPassage.videoState === 'error' && <button type="button" onClick={avatarPassage.retryVideo} className="rounded-full border border-blue-300 bg-white px-4 py-2 font-semibold text-blue-600">Retry avatar</button>}
+            </div>}
             </div>
             <div className="flex flex-wrap items-center justify-between gap-2 border-t bg-white px-3 py-2.5 sm:px-4">
               <button type="button" disabled={!contentPayload?.contentAudioUrl || isAccountBlocked}

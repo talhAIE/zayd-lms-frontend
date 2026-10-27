@@ -17,6 +17,14 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
   const [loading, setLoading] = useState(false);
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [videoState, setVideoState] = useState<'loading' | 'ready' | 'error'>('loading');
+  const showIdleFrame = useCallback(() => {
+    const video = videoRef.current;
+    if (!video || requested.current || practiceRef.current?.id || !Number.isFinite(video.duration) || video.duration <= 0) return;
+    video.loop = false;
+    // Decode a visible frame without starting either video or passage audio.
+    video.currentTime = Math.min(0.05, video.duration / 2);
+  }, []);
   const pause = useCallback(() => {
     requested.current = false;
     generation.current++;
@@ -29,6 +37,7 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
     if (!a || !v || !Number.isFinite(a.duration) || !a.duration || !Number.isFinite(v.duration) || !v.duration) return;
     const ratio = v.duration / a.duration;
     if (practiceRef.current?.id && !requested.current) return;
+    if (!requested.current && a.ended) return;
     v.playbackRate = Math.min(4, Math.max(0.25, ratio));
     const target = Math.min(v.duration, a.currentTime * ratio);
     if (Math.abs(v.currentTime - target) > 0.15) v.currentTime = target;
@@ -37,9 +46,8 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
     if (!audioUrl || !videoUrl) return;
     const a = new Audio(audioUrl); audio.current = a;
     const update = () => synchronize();
-    const ended = () => { pause(); synchronize(); callback.current(); };
+    const ended = () => { pause(); synchronize(); showIdleFrame(); callback.current(); };
     const error = () => { pause(); toast.error('Passage media could not be loaded. Please try again.'); };
-    const videoError = () => { pause(); practiceRef.current?.stop(); };
     const waiting = () => { videoRef.current?.pause(); setLoading(true); };
     const resumed = () => {
       if (!requested.current) return;
@@ -54,7 +62,6 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
     a.addEventListener('ended', ended); a.addEventListener('error', error); a.addEventListener('waiting', waiting);
     a.addEventListener('playing', resumed);
     video?.addEventListener('waiting', videoWaiting); video?.addEventListener('canplay', videoReady);
-    video?.addEventListener('error', videoError);
     setPosition(0); setDuration(0);
     return () => {
       pause();
@@ -63,10 +70,34 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
       a.removeEventListener('seeked', update);
       a.removeEventListener('ended', ended); a.removeEventListener('error', error); a.removeEventListener('waiting', waiting);
       a.removeEventListener('playing', resumed); video?.removeEventListener('waiting', videoWaiting); video?.removeEventListener('canplay', videoReady);
-      video?.removeEventListener('error', videoError);
       a.removeAttribute('src'); a.load(); audio.current = null;
     };
-  }, [audioUrl, videoUrl, pause, synchronize]);
+  }, [audioUrl, videoUrl, pause, synchronize, showIdleFrame]);
+
+  // Initialize the preview independently of passage-audio readiness. On mobile,
+  // metadata alone does not guarantee a decoded frame in a paused video.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!videoUrl || !video) return;
+    const metadataReady = () => { if (!audio.current?.currentTime) showIdleFrame(); };
+    const ready = () => { if (video.readyState >= 2) setVideoState('ready'); };
+    const failed = () => {
+      setVideoState('error'); pause(); practiceRef.current?.stop();
+      toast.error('The avatar video could not be loaded.');
+    };
+    setVideoState(video.error ? 'error' : video.readyState >= 2 ? 'ready' : 'loading');
+    metadataReady();
+    video.addEventListener('loadedmetadata', metadataReady);
+    video.addEventListener('loadeddata', ready);
+    video.addEventListener('canplay', ready);
+    video.addEventListener('error', failed);
+    return () => {
+      video.removeEventListener('loadedmetadata', metadataReady);
+      video.removeEventListener('loadeddata', ready);
+      video.removeEventListener('canplay', ready);
+      video.removeEventListener('error', failed);
+    };
+  }, [videoUrl, pause, showIdleFrame]);
 
   const toggle = useCallback(async () => {
     const a = audio.current, v = videoRef.current;
@@ -89,8 +120,12 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
   }, [loading, pause, synchronize]);
   const restart = useCallback(() => {
     pause(); if (audio.current) audio.current.currentTime = 0;
-    if (videoRef.current) videoRef.current.currentTime = 0;
+    showIdleFrame();
     setPosition(0);
+  }, [pause, showIdleFrame]);
+  const retryVideo = useCallback(() => {
+    pause(); practiceRef.current?.stop(); setVideoState('loading');
+    videoRef.current?.load();
   }, [pause]);
   useEffect(() => {
     if (!audioUrl || !videoUrl) return;
@@ -134,5 +169,5 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
   }, [playing, synchronize]);
-  return { videoRef, playing, loading, position, duration, toggle, pause, restart, synchronize };
+  return { videoRef, videoState, retryVideo, playing, loading, position, duration, toggle, pause, restart, synchronize };
 }

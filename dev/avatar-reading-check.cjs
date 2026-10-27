@@ -9,7 +9,7 @@ class Media extends EventTarget {
   constructor(url) { super(); this.src = url; this.currentTime = 0; this.duration = 10; this.paused = true; this.ended = false; this.playbackRate = 1; }
   async play() { this.paused = false; this.dispatchEvent(new Event('playing')); }
   pause() { this.paused = true; }
-  removeAttribute() {} load() {}
+  removeAttribute() {} load() { this.loads = (this.loads || 0) + 1; }
 }
 async function playback() {
   const effects = [], values = [], refs = [], errors = [];
@@ -28,6 +28,8 @@ async function playback() {
   const hook = module.exports.useAvatarPassage('audio', 'video', () => ended++);
   const cleanup = effects.map(fn => fn());
   const audio = refs[0].current;
+  assert(video.currentTime > 0 && video.currentTime < .1, 'Prepare a decoded idle frame');
+  assert.equal(video.paused, true); assert.equal(audio.paused, true); assert.equal(ended, 0);
   await hook.toggle(); await flush();
   assert.equal(audio.paused, false); assert.equal(video.paused, false); assert.equal(video.playbackRate, 2);
   audio.currentTime = 3; audio.dispatchEvent(new Event('timeupdate'));
@@ -40,15 +42,20 @@ async function playback() {
   await hook.toggle(); await flush();
   audio.currentTime = 10; audio.ended = true; audio.dispatchEvent(new Event('ended'));
   assert.equal(ended, 1); assert.equal(video.paused, true);
-  hook.restart(); assert.equal(audio.currentTime, 0); assert.equal(video.currentTime, 0);
+  hook.restart(); assert.equal(audio.currentTime, 0); assert(video.currentTime > 0 && video.currentTime < .1);
+  video.dispatchEvent(new Event('error')); assert.equal(errors.length, 1);
+  hook.retryVideo(); assert.equal(video.loads, 1); assert.equal(video.paused, true); assert.equal(audio.paused, true);
   for (const fn of cleanup) fn?.();
-  assert.equal(audio.paused, true); assert.deepEqual(errors, []);
+  assert.equal(audio.paused, true); assert.equal(errors.length, 1);
 }
 async function transport() {
   let account = 'first-user'; const calls = [], uploads = [], delivered = [];
   const client = {
     get: async () => ({ data: { available: true } }),
-    post: async (...args) => { calls.push(args); return { data: { events: [{ event: 'reading_progress', payload: { phase: 'reading' } }] } }; },
+    post: async (...args) => { calls.push(args); return { data: { events: [
+      { event: 'mode_session_started', payload: { modeSessionId: 'session-1', contentPayload: { content: 'Read this sentence.', contentAudioUrl: 'audio', narrationVideoUrl: 'video' } } },
+      { event: 'reading_progress', payload: { phase: 'reading' } },
+    ] } }; },
   };
   const module = { exports: {} };
   vm.runInNewContext(source('services/avatarReadingService.ts'), {
