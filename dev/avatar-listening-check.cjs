@@ -2,9 +2,9 @@ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),asse
 const source=name=>ts.transpileModule(fs.readFileSync(path.join(__dirname,'../src',name),'utf8'),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS}}).outputText;
 const flush=async()=>{for(let i=0;i<10;i++) await Promise.resolve();};
 class Media extends EventTarget {
-  constructor(url){super();this.src=url;this.duration=url==='video'?80:100;this.currentTime=0;this.paused=true;this.ended=false;this.playbackRate=1;}
+  constructor(url){super();this.src=url;this.duration=url==='video'?80:100;this.currentTime=0;this.paused=true;this.ended=false;this.playbackRate=1;this.readyState=2;this.loads=0;}
   async play(){this.paused=false;this.dispatchEvent(new Event('playing'));}
-  pause(){this.paused=true;}removeAttribute(){}load(){}
+  pause(){this.paused=true;}removeAttribute(){}load(){this.loads++;}
 }
 async function playback(){
   const effects=[],refs=[],values=[],errors=[],media=[];
@@ -16,6 +16,7 @@ async function playback(){
   let listened=0;
   const hook=module.exports.useAvatarListeningPlayback('topic','narrator','video','initial',()=>listened++);
   const cleanup=effects.map(fn=>fn());const [topic,narrator]=media;
+  assert(video.currentTime>0&&video.currentTime<.1,'Initialize a decoded idle frame');
   await hook.toggle('topic');await flush();
   assert.equal(topic.paused,false);assert.equal(video.paused,false);assert.equal(video.playbackRate,.8);
   topic.currentTime=40;topic.dispatchEvent(new Event('timeupdate'));assert.equal(video.currentTime,32);
@@ -25,7 +26,7 @@ async function playback(){
   narrator.ended=true;narrator.dispatchEvent(new Event('ended'));assert.equal(listened,0);assert.equal(video.paused,true);
   await hook.toggle('topic');await flush();topic.ended=true;topic.dispatchEvent(new Event('ended'));assert.equal(listened,1);assert.equal(video.paused,true);
   topic.ended=false;await hook.toggle('topic');await flush();document.hidden=true;document.dispatchEvent(new Event('visibilitychange'));assert.equal(topic.paused,true);assert.equal(video.paused,true);
-  hook.restart();assert.equal(topic.currentTime,0);assert.equal(narrator.currentTime,0);assert.equal(video.currentTime,0);
+  hook.restart();assert.equal(topic.currentTime,0);assert.equal(narrator.currentTime,0);assert(video.currentTime>0&&video.currentTime<.1);
   // A buffering pause can reject an in-flight play request. canplay must
   // recover it without clearing the user's playback request or showing errors.
   const play=topic.play.bind(topic);let bufferOnce=true;
@@ -34,6 +35,9 @@ async function playback(){
   assert.equal(topic.paused,false);assert.equal(video.paused,false);assert.equal(errors.length,0);
   hook.pause();
   document.hidden=false;await hook.toggle('topic');await flush();video.dispatchEvent(new Event('error'));assert.equal(topic.paused,true);assert.equal(video.paused,true);assert.equal(errors.length,1);
+  await hook.toggle('topic');await flush();assert.equal(topic.paused,false,'Keep story replay available after an avatar error');assert.equal(video.paused,true);
+  hook.retryVideo();assert.equal(topic.paused,true);assert.equal(video.loads,1);video.dispatchEvent(new Event('canplay'));
+  await hook.toggle('topic');await flush();assert.equal(video.paused,false,'Avatar playback recovers after retry');
   cleanup.forEach(fn=>fn?.());assert.equal(video.paused,true);
 }
 async function transport(){

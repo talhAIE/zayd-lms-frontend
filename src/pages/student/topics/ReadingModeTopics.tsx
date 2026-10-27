@@ -87,14 +87,18 @@ function HighlightedReadingSentence({ text, vocabularyTerms, vocabularyCards, on
   vocabularyCards: ReadingVocabularyCard[];
   onVocabularyClick: (card: ReadingVocabularyCard) => void;
 }) {
-  const terms = [...new Set(vocabularyTerms.map((term) => term.trim()).filter(Boolean))]
+  // Authored sentences can carry emphasis independently of vocabulary metadata.
+  // Normalize here so initial, resumed and feedback prompts share one renderer.
+  const emphasizedTerms = [...text.matchAll(/\*\*([\s\S]+?)\*\*/g)].map(match => match[1]);
+  const displayText = text.replace(/\*\*([\s\S]+?)\*\*/g, '$1');
+  const terms = [...new Set([...vocabularyTerms, ...emphasizedTerms].map((term) => term.trim()).filter(Boolean))]
     .sort((left, right) => right.length - left.length);
-  if (terms.length === 0) return <>{text}</>;
+  if (terms.length === 0) return <>{displayText}</>;
 
   const pattern = new RegExp(`(${terms.map(escapeRegExp).join('|')})`, 'gi');
   const termSet = new Set(terms.map((term) => term.toLowerCase()));
   const cardByTerm = new Map(vocabularyCards.map((card) => [card.word.trim().toLowerCase(), card]));
-  return <>{text.split(pattern).map((part, index) =>
+  return <>{displayText.split(pattern).map((part, index) =>
     termSet.has(part.toLowerCase())
       ? cardByTerm.get(part.toLowerCase())
         ? <button key={index} type="button" onClick={() => onVocabularyClick(cardByTerm.get(part.toLowerCase())!)} className="cursor-pointer font-semibold text-[#3B82F6] underline decoration-[#93C5FD] decoration-2 underline-offset-2 transition-colors hover:text-[#2563EB] focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563EB]/40" aria-label={`Open vocabulary flashcard for ${part}`}>{part}</button>
@@ -505,7 +509,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
   const showAvatarSessionState = Boolean(avatar && (isSessionLoading || sessionLoadError || !modeSessionId || !contentPayload));
 
   return (
-    <div ref={avatarWorkspaceRef} className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'avatar-workspace max-w-[1440px] min-w-0' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
+    <div ref={avatarWorkspaceRef} className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'avatar-workspace avatar-reading-workspace max-w-[1440px] min-w-0' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
       
       <TopicCompletionModal 
         isOpen={showCompletionModal}
@@ -711,11 +715,14 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
         {avatar && (
           <aside className="avatar-workspace-avatar flex w-full min-w-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]" aria-label="3D Reading avatar">
             <div className="avatar-workspace-stage relative overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#F0F7FF]">
-            <video ref={avatarPassage.videoRef} src={contentPayload?.narrationVideoUrl} muted playsInline preload="metadata"
+            <video ref={avatarPassage.videoRef} src={contentPayload?.narrationVideoUrl} muted playsInline preload="auto"
               className="absolute left-1/2 top-0 aspect-video h-[145%] w-auto max-w-none -translate-x-1/2"
               aria-label={`${avatar.title} avatar narration`}
-              onLoadedMetadata={avatarPassage.synchronize}
-              onError={() => { avatarPassage.pause(); toast.error('The avatar video could not be loaded.'); }} />
+              onLoadedMetadata={avatarPassage.synchronize} />
+            {avatarPassage.videoState !== 'ready' && <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#F8FAFC] p-4 text-center text-sm text-slate-600" role={avatarPassage.videoState === 'error' ? 'alert' : 'status'}>
+              <p>{avatarPassage.videoState === 'error' ? 'The avatar could not load. Please try again.' : 'Loading avatar…'}</p>
+              {avatarPassage.videoState === 'error' && <button type="button" onClick={avatarPassage.retryVideo} className="rounded-full border border-blue-300 bg-white px-4 py-2 font-semibold text-blue-600">Retry avatar</button>}
+            </div>}
             </div>
             <div className="flex flex-wrap items-center justify-between gap-2 border-t bg-white px-3 py-2.5 sm:px-4">
               <button type="button" disabled={!contentPayload?.contentAudioUrl || isAccountBlocked}
@@ -727,7 +734,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
           </aside>
         )}
         {/* Workspace Main */}
-        <div className={`flex flex-col gap-4 min-h-0 ${avatar ? 'avatar-workspace-panel flex-1 min-w-0 rounded-2xl border border-[#E5E7EB] bg-white p-3 sm:p-4' : 'flex-1 pr-1'} ${(isChatActive || step1Active) ? '' : 'overflow-y-auto'}`}>
+        <div className={`flex flex-col gap-4 min-h-0 ${avatar ? 'avatar-workspace-panel flex-1 min-w-0 rounded-2xl border border-[#E5E7EB] bg-white p-3 sm:p-4' : 'flex-1 pr-1'} ${(isChatActive || step1Active) ? avatar ? 'overflow-hidden' : '' : 'overflow-y-auto'}`}>
           
           {/* Reading Passage Card */}
           {contentPayload && (
@@ -767,7 +774,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
           {!step1Active && !replayingAvatarPassage && (!mcqList || mcqList.length === 0) && (
             <div 
               ref={chatContainerRef}
-              className="flex flex-col p-5 px-6 gap-3 flex-1 min-h-[150px] bg-[#F8F9FA] rounded-2xl overflow-y-auto"
+              className="reading-practice-history flex flex-col p-5 px-6 gap-3 flex-1 min-h-[150px] bg-[#F8F9FA] rounded-2xl overflow-y-auto"
             >
               <div className="w-full bg-[#EFF6FF] border border-[#BFDBFE] rounded-xl px-4 py-3 flex items-start gap-3 text-[#1E40AF] text-[13px] leading-relaxed font-medium shadow-sm flex-shrink-0">
                 <span className="text-lg leading-none">📖</span>
@@ -1160,7 +1167,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
 
           {/* Input Bar (Shown only during Chatting stage) */}
           {!step1Active && !replayingAvatarPassage && (!mcqList || mcqList.length === 0) && (
-            <div className="flex flex-row items-center px-5 py-4 gap-3 bg-white border border-[#E5E7EB] rounded-2xl flex-shrink-0">
+            <div className="reading-recorder flex flex-row items-center px-5 py-4 gap-3 bg-white border border-[#E5E7EB] rounded-2xl flex-shrink-0">
               {isRecording ? (
                 <div className="flex-1 flex items-center justify-between px-4 py-2 bg-[#FEF1E8] border border-[#F97316]/30 rounded-[10px]">
                   <div className="flex items-center gap-2">

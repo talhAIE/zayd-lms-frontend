@@ -95,6 +95,7 @@ export default function ComponentModePlay() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmittingMode, setIsSubmittingMode] = useState(false);
   const [localResponses, setLocalResponses] = useState<Record<string, any>>({});
+  const [fillInValidationComponentId, setFillInValidationComponentId] = useState<string | null>(null);
   const [writingReviewFeedback, setWritingReviewFeedback] = useState<Record<string, Record<string, unknown>>>({});
   const draftSaves = useRef(new Map<string, Promise<void>>());
   const draftRevisions = useRef(new Map<string, number>());
@@ -343,6 +344,21 @@ export default function ComponentModePlay() {
 
   // Handle component answer submissions
   const handleComponentSubmit = async (componentId: string, response: any) => {
+    const component = components.find(item => item.id === componentId);
+    if (component?.componentType === 'fill_in_the_blank') {
+      const fields = Array.isArray(component.content?.fields) ? component.content.fields : [];
+      const missingIds = fields.filter((field: any) => field && typeof field === 'object' && !Array.isArray(field))
+        .map((field: any, index: number) => typeof field.id === 'string' && field.id ? field.id : `field-${index}`)
+        .filter((id: string) => typeof response?.answers?.[id] !== 'string' || !response.answers[id].trim());
+      if (missingIds.length) {
+        setFillInValidationComponentId(componentId);
+        toast.error('Please fill in all blanks before submitting.');
+        Array.from(document.querySelectorAll<HTMLInputElement>('[data-fill-in-field]'))
+          .find(input => input.dataset.componentId === componentId && input.dataset.fillInField === missingIds[0])?.focus();
+        return;
+      }
+      setFillInValidationComponentId(null);
+    }
     try {
       const formattedResponse =
         typeof response === 'object' && response !== null ? response : { value: response };
@@ -905,7 +921,7 @@ export default function ComponentModePlay() {
                 return <TextVariationComponent key={comp.id} component={comp} groupedComponents={comp.content?.presentation === 'unit_overview' ? overviewVariations : undefined} />;
 
               case 'fill_in_the_blank':
-                return <FillInTheBlankComponent key={comp.id} component={comp} onAnswerChange={(response) => handleComponentChange(comp.id, response)} isSubmitted={isTerminal} />;
+                return <FillInTheBlankComponent key={comp.id} component={comp} onAnswerChange={(response) => handleComponentChange(comp.id, response)} isSubmitted={isTerminal} showValidation={fillInValidationComponentId === comp.id} />;
 
               case 'writing_table':
                 return <WritingTableComponent key={comp.id} component={comp} onAnswerChange={(response) => handleLocalComponentChange(comp.id, response)} onDraftSave={(response) => { void handleComponentChange(comp.id, response); }} onSubmit={(response) => handleComponentSubmit(comp.id, response)} onBusyChange={setIsSubmittingMode} isSubmitted={isTerminal} />;
@@ -1036,7 +1052,8 @@ export default function ComponentModePlay() {
                   const isInput = ['mcq', 'dropdown', 'open_input', 'true_false', 'fill_in_the_blank', 'match_column', 'writing_table', 'reflection'].includes(currentComp.componentType);
                   
                   if (isInput) {
-                    if (!currentResponse || (typeof currentResponse === 'object' && Object.keys(currentResponse).length === 0)) {
+                    if (currentComp.componentType === 'fill_in_the_blank') currentResponse = currentResponse || {};
+                    if (currentComp.componentType !== 'fill_in_the_blank' && (!currentResponse || (typeof currentResponse === 'object' && Object.keys(currentResponse).length === 0))) {
                       toast.error('Please answer the question before submitting.');
                       return;
                     }

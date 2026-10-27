@@ -194,8 +194,11 @@ const ReadingPassageCard: React.FC<ReadingPassageCardProps> = ({
           </div>
         )}
 
-        {narration && !followingNarration && <button type="button" onClick={() => setFollowingNarration(true)}
-          className="ml-2 rounded-full border border-blue-200 bg-white px-2 py-1 text-xs font-semibold text-blue-700">Follow narration</button>}
+        {narration && <button type="button" onClick={() => setFollowingNarration(following => !following)}
+          aria-pressed={followingNarration}
+          className={`ml-2 rounded-full border border-blue-200 px-2 py-1 text-xs font-semibold text-blue-700 ${followingNarration ? 'bg-blue-50' : 'bg-white'}`}>
+          {followingNarration ? 'Following narration' : 'Follow narration'}
+        </button>}
         {showAudioControl && onToggleAudio && (
           <button
             type="button"

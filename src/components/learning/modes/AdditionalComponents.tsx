@@ -46,7 +46,7 @@ export function TextComponent({ component }: { component: LearningComponent }) {
   );
 }
 
-export function FillInTheBlankComponent({ component, onAnswerChange, onSubmit, isSubmitted }: { component: LearningComponent; onAnswerChange?: (response: Record<string, unknown>) => void; onSubmit?: Submit; isSubmitted?: boolean }) {
+export function FillInTheBlankComponent({ component, onAnswerChange, onSubmit, isSubmitted, showValidation = false }: { component: LearningComponent; onAnswerChange?: (response: Record<string, unknown>) => void; onSubmit?: Submit; isSubmitted?: boolean; showValidation?: boolean }) {
   const content = component.content || {};
   const fields = Array.isArray(content.fields) ? content.fields.filter((field): field is Record<string, unknown> => !!field && typeof field === 'object' && !Array.isArray(field)) : [];
   const prior = component.attempt?.response?.answers;
@@ -80,8 +80,10 @@ export function FillInTheBlankComponent({ component, onAnswerChange, onSubmit, i
     if (locallySubmitted && fieldRes) {
       borderClass = fieldRes.isCorrect ? 'border-[#10B981] bg-[#ECFDF5] text-[#065F46]' : 'border-[#EF4444] bg-[#FEF2F2] text-[#991B1B]';
     }
+    const isMissing = showValidation && !answers[id]?.trim();
+    if (isMissing) borderClass = 'border-[#EF4444] bg-[#FEF2F2]';
     const sentence = text(field.sentence) || text(field.label) || text(field.prompt);
-    return <label key={id} className="block"><span className="text-sm text-[#334155]">{emphasizedText(sentence, field.boldTerms)}</span><input value={answers[id] || ''} onChange={(event) => update(id, event.target.value)} disabled={isSubmitted || isSubmittingLocal} className={`mt-2 w-full rounded-lg border p-3 text-sm outline-none focus:border-[#4F8DFB] disabled:bg-slate-50 disabled:opacity-80 transition-colors ${borderClass}`} /></label>;
+    return <label key={id} className="block"><span className="text-sm text-[#334155]">{emphasizedText(sentence, field.boldTerms)}</span><input data-component-id={component.id} data-fill-in-field={id} aria-invalid={isMissing || undefined} required value={answers[id] || ''} onChange={(event) => update(id, event.target.value)} disabled={isSubmitted || isSubmittingLocal} className={`mt-2 w-full rounded-lg border p-3 text-sm outline-none focus:border-[#4F8DFB] disabled:bg-slate-50 disabled:opacity-80 transition-colors ${borderClass}`} /></label>;
   })}</div>{onSubmit && !isSubmitted && <button type="button" onClick={handleSubmit} disabled={isSubmittingLocal || fields.some((field, index) => !answers[text(field.id) || `field-${index}`]?.trim())} className="mt-5 rounded-lg bg-[#4F8DFB] px-5 py-2.5 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#3B82F6]">{isSubmittingLocal ? 'Grading...' : text(content.submitLabel) || 'Submit answers'}</button>}
   </section>;
 }
