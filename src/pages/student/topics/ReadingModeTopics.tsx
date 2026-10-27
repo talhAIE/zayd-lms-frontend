@@ -505,7 +505,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
   const showAvatarSessionState = Boolean(avatar && (isSessionLoading || sessionLoadError || !modeSessionId || !contentPayload));
 
   return (
-    <div ref={avatarWorkspaceRef} className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'avatar-workspace max-w-[1440px] min-w-0' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
+    <div ref={avatarWorkspaceRef} className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'avatar-workspace avatar-reading-workspace max-w-[1440px] min-w-0' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
       
       <TopicCompletionModal 
         isOpen={showCompletionModal}
@@ -727,7 +727,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
           </aside>
         )}
         {/* Workspace Main */}
-        <div className={`flex flex-col gap-4 min-h-0 ${avatar ? 'avatar-workspace-panel flex-1 min-w-0 rounded-2xl border border-[#E5E7EB] bg-white p-3 sm:p-4' : 'flex-1 pr-1'} ${(isChatActive || step1Active) ? '' : 'overflow-y-auto'}`}>
+        <div className={`flex flex-col gap-4 min-h-0 ${avatar ? 'avatar-workspace-panel flex-1 min-w-0 rounded-2xl border border-[#E5E7EB] bg-white p-3 sm:p-4' : 'flex-1 pr-1'} ${(isChatActive || step1Active) ? avatar ? 'overflow-hidden' : '' : 'overflow-y-auto'}`}>
           
           {/* Reading Passage Card */}
           {contentPayload && (
@@ -767,7 +767,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
           {!step1Active && !replayingAvatarPassage && (!mcqList || mcqList.length === 0) && (
             <div 
               ref={chatContainerRef}
-              className="flex flex-col p-5 px-6 gap-3 flex-1 min-h-[150px] bg-[#F8F9FA] rounded-2xl overflow-y-auto"
+              className="reading-practice-history flex flex-col p-5 px-6 gap-3 flex-1 min-h-[150px] bg-[#F8F9FA] rounded-2xl overflow-y-auto"
             >
               <div className="w-full bg-[#EFF6FF] border border-[#BFDBFE] rounded-xl px-4 py-3 flex items-start gap-3 text-[#1E40AF] text-[13px] leading-relaxed font-medium shadow-sm flex-shrink-0">
                 <span className="text-lg leading-none">📖</span>
@@ -1160,7 +1160,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
 
           {/* Input Bar (Shown only during Chatting stage) */}
           {!step1Active && !replayingAvatarPassage && (!mcqList || mcqList.length === 0) && (
-            <div className="flex flex-row items-center px-5 py-4 gap-3 bg-white border border-[#E5E7EB] rounded-2xl flex-shrink-0">
+            <div className="reading-recorder flex flex-row items-center px-5 py-4 gap-3 bg-white border border-[#E5E7EB] rounded-2xl flex-shrink-0">
               {isRecording ? (
                 <div className="flex-1 flex items-center justify-between px-4 py-2 bg-[#FEF1E8] border border-[#F97316]/30 rounded-[10px]">
                   <div className="flex items-center gap-2">

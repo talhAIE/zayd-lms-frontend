@@ -56,6 +56,32 @@
   .avatar-workspace [data-avatar-passage-scroll] h3 { display: none; }
 }
 
+/* Reserve room for Reading controls; exceptionally short workspaces can scroll
+   the whole body instead of clipping a footer outside the conversation scroller. */
+.avatar-reading-workspace .avatar-workspace-body { overflow-y: auto; }
+.avatar-reading-workspace .avatar-workspace-stage {
+  max-height: min(330px, calc(var(--avatar-workspace-height, 600px) * .4), max(48px, calc(var(--avatar-workspace-height, 600px) - 440px)));
+}
+.avatar-reading-workspace .avatar-workspace-panel {
+  flex-shrink: 0;
+  min-height: 260px;
+  gap: 8px;
+  padding: 8px;
+  overscroll-behavior: auto;
+}
+.avatar-reading-workspace .reading-practice-history {
+  min-height: 44px;
+  padding: 12px;
+  overscroll-behavior: auto;
+}
+.avatar-reading-workspace [data-avatar-passage-scroll] { overscroll-behavior: auto; }
+.avatar-reading-workspace .reading-recorder { padding: 8px 12px; }
+@media (min-width: 768px) {
+  .avatar-reading-workspace .avatar-workspace-stage {
+    max-height: min(420px, max(48px, calc(var(--avatar-workspace-height, 600px) - 440px)));
+  }
+}
+
 /* Safari's keyboard resizes the visual viewport without changing CSS media queries. */
 .avatar-workspace[data-keyboard-open] {
   position: fixed;
