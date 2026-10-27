@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import readingAvatar from '@/assets/svgs/reading-mode.png';
 import { useAppSelector } from '@/redux/hooks';
@@ -73,7 +73,7 @@ export function AvatarTopicsPage({ mode = 'reading' }: { mode?: AvatarMode } = {
     {!topics && !error && <p role="status">Loading topics…</p>}
     {topics?.length === 0 && <p>No 3D {mode === 'roleplay' ? 'Roleplay' : mode === 'listening' ? 'Listening' : 'Reading'} topics are available.</p>}
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {topics?.map(topic => <Link key={topic.id} to={`/student/3d-avatar/${mode}/${topic.id}`} className="overflow-hidden rounded-3xl border border-slate-100 bg-white p-4 shadow-sm transition hover:shadow-md">
+      {topics?.map(topic => <Link key={topic.id} to={`/student/3d-avatar/${mode}/${topic.id}`} state={{ restartCompletedReading: mode === 'reading' && topic.completed }} className="overflow-hidden rounded-3xl border border-slate-100 bg-white p-4 shadow-sm transition hover:shadow-md">
         <div className="relative h-56 overflow-hidden rounded-2xl bg-blue-50">
           {topic.imageUrl && <img src={topic.imageUrl} alt="" className="h-full w-full object-cover" />}
           <span className="absolute left-3 top-3 rounded-xl bg-slate-700/75 px-3 py-2 text-xs font-semibold text-white">{topic.completed ? 'Completed' : 'Incomplete'}</span>
@@ -87,6 +87,8 @@ export function AvatarTopicsPage({ mode = 'reading' }: { mode?: AvatarMode } = {
 
 export function AvatarReadingPage() {
   const { topicId } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
   const user = useAppSelector(state => state.auth.user);
   const { topics, error } = useTopics();
   const transport = useMemo(() => createAvatarReadingTransport(user?.id ?? ''), [user?.id]);
@@ -94,7 +96,15 @@ export function AvatarReadingPage() {
   return <AvatarAccess>
     {!topic ? <p role="status">{error ? 'Unable to load this topic. Please reload to try again.' : topics ? 'Topic not found.' : 'Loading topic…'}</p> :
       <AvatarReadingContext.Provider value={transport}>
-        <ReadingModeTopics key={`${user?.id}:${topic.id}`} avatar={{ topicId: topic.id, title: topic.title }} />
+        <ReadingModeTopics key={`${user?.id}:${topic.id}`} avatar={{
+          topicId: topic.id, title: topic.title,
+          restartCompleted: location.state?.restartCompletedReading === true,
+          onSessionReady: () => {
+            if (location.state?.restartCompletedReading) {
+              navigate(location.pathname, { replace: true, state: { ...location.state, restartCompletedReading: false } });
+            }
+          },
+        }} />
       </AvatarReadingContext.Provider>}
   </AvatarAccess>;
 }

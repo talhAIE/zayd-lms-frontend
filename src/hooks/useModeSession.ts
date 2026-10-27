@@ -94,6 +94,7 @@ export interface SessionStatus {
 
 export interface UseModeSessionOptions {
   lessonModeId: string;
+  restartCompleted?: boolean;
   onCompleted?: () => void;
   onBadgeUnlocked?: (badge: any) => void;
 }
@@ -111,13 +112,17 @@ function showPendingAudioInHistory(history: HistoryItem[], pending: HistoryItem)
     : message);
 }
 
-export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: UseModeSessionOptions) {
+export function useModeSession({ lessonModeId, restartCompleted = false, onCompleted, onBadgeUnlocked }: UseModeSessionOptions) {
   const avatarTransport = useContext(AvatarReadingContext);
   const recordingStorageKey = `${avatarTransport?.storagePrefix ?? ''}${lessonModeId}`;
   const [socket, setSocket] = useState<Socket | null>(null);
   const [modeSessionId, setModeSessionId] = useState<string | null>(null);
   const [chatHistory, setChatHistory] = useState<HistoryItem[]>([]);
   const [contentPayload, setContentPayload] = useState<any>(null);
+  const [sessionLoadError, setSessionLoadError] = useState<string | null>(null);
+  const [isSessionLoading, setIsSessionLoading] = useState(true);
+  const [sessionLoadAttempt, setSessionLoadAttempt] = useState(0);
+  const restartCompletedRef = useRef(restartCompleted);
   const [mcqList, setMcqList] = useState<Mcq[]>([]);
   const [mcqResult, setMcqResult] = useState<McqResult | null>(null);
   const [mcqAnswerFeedback, setMcqAnswerFeedback] = useState<Record<string, McqAnswerFeedback>>({});
@@ -182,6 +187,8 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     setModeSessionId(null);
     setChatHistory([]);
     setContentPayload(null);
+    setSessionLoadError(null);
+    setIsSessionLoading(true);
     setMcqList([]);
     setMcqResult(null);
     setMcqAnswerFeedback({});
@@ -193,6 +200,8 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
 
     const accessToken = localStorage.getItem('accessToken');
     if (!accessToken) {
+      setSessionLoadError('Please sign in again to load this activity.');
+      setIsSessionLoading(false);
       toast.error('Authentication required');
       return;
     }
@@ -223,10 +232,14 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
           reconciliationTimeoutRef.current = null;
         }, 10_000);
       }
-      newSocket.emit('start_mode_session', { lessonModeId });
+      newSocket.emit('start_mode_session', { lessonModeId,
+        ...(avatarTransport && restartCompletedRef.current ? { restartCompleted: true } : {}),
+      });
     });
 
     newSocket.on('connect_error', (err) => {
+      setSessionLoadError('Unable to connect to this activity. Please try again.');
+      setIsSessionLoading(false);
       console.error('[Socket] Connect error:', err);
       setIsSocketConnected(false);
       if (reconciliationTimeoutRef.current) clearTimeout(reconciliationTimeoutRef.current);
@@ -287,6 +300,9 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
         completionHandledRef.current = false;
       }
       setModeSessionId(session.modeSessionId);
+      restartCompletedRef.current = false;
+      setSessionLoadError(null);
+      setIsSessionLoading(false);
       modeSessionIdRef.current = session.modeSessionId;
       modeKeyRef.current = session.modeKey ?? null;
       reconcilingAudioRef.current = false;
@@ -552,6 +568,10 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     });
 
     newSocket.on('error', (payload: { message: string, clientAttemptId?: string, code?: string }) => {
+      if (!modeSessionIdRef.current) {
+        setSessionLoadError(payload.message || 'Unable to load this activity. Please try again.');
+        setIsSessionLoading(false);
+      }
       const pending = pendingAudioRef.current;
       if (payload.code === 'NO_SPEECH' || payload.code === 'UNCLEAR_SPEECH') {
         if (payload.clientAttemptId && pending?.id !== payload.clientAttemptId) return;
@@ -596,7 +616,9 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
       newSocket.disconnect();
       setSocket((currentSocket) => currentSocket === newSocket ? null : currentSocket);
     };
-  }, [lessonModeId, avatarTransport, recordingStorageKey]);
+  }, [lessonModeId, avatarTransport, recordingStorageKey, sessionLoadAttempt]);
+
+  const reloadSession = useCallback(() => setSessionLoadAttempt(attempt => attempt + 1), []);
 
   const sendMessage = useCallback((text: string) => {
     if (
@@ -827,8 +849,15 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     setReadingProgress(null);
     setRoleplayProgress(null);
     setIsCompleted(false);
+    if (avatarTransport) {
+      modeSessionIdRef.current = null;
+      setModeSessionId(null);
+      setContentPayload(null);
+      setSessionLoadError(null);
+      setIsSessionLoading(true);
+    }
     socket.emit('restart_mode_session', { lessonModeId });
-  }, [socket, lessonModeId, isAccountBlocked, recordingStorageKey]);
+  }, [socket, lessonModeId, isAccountBlocked, recordingStorageKey, avatarTransport]);
 
   const resetActivityTimer = useCallback(() => {
     if (!socket || !modeSessionIdRef.current) return;
@@ -839,6 +868,9 @@ export function useModeSession({ lessonModeId, onCompleted, onBadgeUnlocked }: U
     modeSessionId,
     chatHistory,
     contentPayload,
+    sessionLoadError,
+    isSessionLoading,
+    reloadSession,
     mcqList,
     mcqResult,
     mcqAnswerFeedback,

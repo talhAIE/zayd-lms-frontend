@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 
 export interface AudioRecordResult {
@@ -31,6 +31,8 @@ async function isDefinitelySilent(blob: Blob): Promise<boolean> {
 
 export function useAudioRecorder({ detectSilence = false }: { detectSilence?: boolean } = {}) {
   const [isRecording, setIsRecording] = useState(false);
+  const [isStartingRecording, setIsStartingRecording] = useState(false);
+  const [recordingError, setRecordingError] = useState<string | null>(null);
   const [isProcessingRecording, setIsProcessingRecording] = useState(false);
   const [recordTime, setRecordTime] = useState(0);
 
@@ -39,6 +41,10 @@ export function useAudioRecorder({ detectSilence = false }: { detectSilence?: bo
   const audioChunksRef = useRef<Blob[]>([]);
   const isCanceledRef = useRef(false);
   const recordTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const startingRef = useRef(false);
+  const startupRequestRef = useRef(0);
+  const startupTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mountedRef = useRef(true);
 
   const getSupportedMimeType = (): string | undefined => {
     const types = [
@@ -53,7 +59,7 @@ export function useAudioRecorder({ detectSilence = false }: { detectSilence?: bo
     return undefined;
   };
 
-  const cleanup = useCallback(() => {
+  const releaseResources = useCallback(() => {
     if (recordTimerRef.current) {
       clearInterval(recordTimerRef.current);
       recordTimerRef.current = null;
@@ -62,10 +68,33 @@ export function useAudioRecorder({ detectSilence = false }: { detectSilence?: bo
       streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     }
+    const recorder = mediaRecorderRef.current;
     mediaRecorderRef.current = null;
+    if (recorder && recorder.state !== 'inactive') {
+      recorder.ondataavailable = null;
+      recorder.onstop = null;
+      recorder.onerror = null;
+      try { recorder.stop(); } catch { /* The browser may already have stopped it. */ }
+    }
+  }, []);
+
+  const cleanup = useCallback(() => {
+    releaseResources();
+    if (!mountedRef.current) return;
     setIsRecording(false);
     setRecordTime(0);
-  }, []);
+  }, [releaseResources]);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      startupRequestRef.current++;
+      startingRef.current = false;
+      if (startupTimerRef.current) clearTimeout(startupTimerRef.current);
+      releaseResources();
+    };
+  }, [releaseResources]);
 
   const blobToBase64 = (blob: Blob): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -81,9 +110,26 @@ export function useAudioRecorder({ detectSilence = false }: { detectSilence?: bo
   };
 
   const startRecording = useCallback(async () => {
-    if (isProcessingRecording) return;
+    if (startingRef.current || mediaRecorderRef.current || isProcessingRecording) return;
+    const request = ++startupRequestRef.current;
+    startingRef.current = true;
+    setIsStartingRecording(true);
+    setRecordingError(null);
+    const current = () => mountedRef.current && startupRequestRef.current === request;
+    startupTimerRef.current = setTimeout(() => {
+      if (!current()) return;
+      startupRequestRef.current++;
+      startingRef.current = false;
+      setIsStartingRecording(false);
+      const message = 'The microphone did not open. Check browser microphone permissions, then try again.';
+      setRecordingError(message);
+      toast.error(message);
+    }, 20_000);
     try {
       cleanup();
+      if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') {
+        throw new Error('Microphone recording is not supported in this browser.');
+      }
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           channelCount: 1,
@@ -92,13 +138,17 @@ export function useAudioRecorder({ detectSilence = false }: { detectSilence?: bo
           autoGainControl: true,
         },
       });
+      // Permission dialogs cannot be aborted. Release late streams after a
+      // cancel, timeout or navigation instead of starting a hidden recording.
+      if (!current()) {
+        stream.getTracks().forEach(track => track.stop());
+        return;
+      }
       streamRef.current = stream;
 
       const mimeType = getSupportedMimeType();
       if (!mimeType) {
-        toast.error('Your browser does not support any required audio formats.');
-        cleanup();
-        return;
+        throw new Error('Your browser does not support any required audio formats.');
       }
 
       const recorder = new MediaRecorder(stream, {
@@ -116,6 +166,8 @@ export function useAudioRecorder({ detectSilence = false }: { detectSilence?: bo
       };
 
       recorder.onerror = () => {
+        if (!current()) return;
+        setRecordingError('Recording failed. Please try again.');
         toast.error('Recording failed. Please try again.');
         cleanup();
       };
@@ -127,7 +179,8 @@ export function useAudioRecorder({ detectSilence = false }: { detectSilence?: bo
         setRecordTime((t) => t + 1);
       }, 1000);
     } catch (err: any) {
-      let errorMessage = 'An error occurred while accessing the microphone.';
+      if (!current()) return;
+      let errorMessage = err instanceof Error ? err.message : 'An error occurred while accessing the microphone.';
       if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
         errorMessage = 'Microphone access denied. Please allow microphone permissions.';
       } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
@@ -136,7 +189,15 @@ export function useAudioRecorder({ detectSilence = false }: { detectSilence?: bo
         errorMessage = 'Microphone is already in use by another application.';
       }
       toast.error(errorMessage);
+      setRecordingError(errorMessage);
       cleanup();
+    } finally {
+      if (current()) {
+        if (startupTimerRef.current) clearTimeout(startupTimerRef.current);
+        startupTimerRef.current = null;
+        startingRef.current = false;
+        setIsStartingRecording(false);
+      }
     }
   }, [cleanup, isProcessingRecording, detectSilence]);
 
@@ -202,8 +263,14 @@ export function useAudioRecorder({ detectSilence = false }: { detectSilence?: bo
   }, [cleanup, detectSilence]);
 
   const cancelRecording = useCallback(() => {
+    startupRequestRef.current++;
+    startingRef.current = false;
+    if (startupTimerRef.current) clearTimeout(startupTimerRef.current);
+    startupTimerRef.current = null;
+    setIsStartingRecording(false);
     isCanceledRef.current = true;
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.onstop = cleanup;
       mediaRecorderRef.current.stop();
     } else {
       cleanup();
@@ -212,6 +279,8 @@ export function useAudioRecorder({ detectSilence = false }: { detectSilence?: bo
 
   return {
     isRecording,
+    isStartingRecording,
+    recordingError,
     isProcessingRecording,
     recordTime,
     startRecording,

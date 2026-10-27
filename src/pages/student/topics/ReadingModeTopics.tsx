@@ -103,7 +103,7 @@ function HighlightedReadingSentence({ text, vocabularyTerms, vocabularyCards, on
   )}</>;
 }
 
-export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: string; title: string } } = {}) {
+export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: string; title: string; restartCompleted?: boolean; onSessionReady?: () => void } } = {}) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const avatarWorkspaceRef = useAvatarWorkspace(Boolean(avatar));
@@ -145,6 +145,8 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
   const fallbackSpeechRef = useRef<SpeechSynthesisUtterance | null>(null);
   const {
     isRecording,
+    isStartingRecording,
+    recordingError,
     isProcessingRecording,
     recordTime,
     startRecording,
@@ -156,6 +158,9 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
     modeSessionId,
     chatHistory,
     contentPayload,
+    sessionLoadError,
+    isSessionLoading,
+    reloadSession,
     mcqList,
     mcqAnswerFeedback,
     isCheckingMcqAnswer,
@@ -182,6 +187,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
     restartSession
   } = useModeSession({ 
     lessonModeId,
+    restartCompleted: avatar?.restartCompleted,
     onCompleted: async () => {
       if (!avatar) await refreshLearningProgress(lessonId, { courseId, unitId });
       setIsJustCompleted(true);
@@ -196,6 +202,9 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
     setFallbackSpeechMessageId(null);
     setIsFallbackSpeechPaused(false);
   };
+  useEffect(() => {
+    if (modeSessionId && contentPayload && !sessionLoadError) avatar?.onSessionReady?.();
+  }, [modeSessionId, contentPayload, sessionLoadError, avatar?.onSessionReady]);
   const avatarPracticeId = avatar && !isRecording && !isAccountBlocked && !showCompletionModal && !isCompleted
     ? fallbackSpeechMessageId && !isFallbackSpeechPaused ? fallbackSpeechMessageId
       : isCurrentlyPlaying && chatHistory.some(message => message.id === playingAudioId && message.role === 'assistant') ? playingAudioId : null
@@ -493,6 +502,8 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
     }));
   }
 
+  const showAvatarSessionState = Boolean(avatar && (isSessionLoading || sessionLoadError || !modeSessionId || !contentPayload));
+
   return (
     <div ref={avatarWorkspaceRef} className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'avatar-workspace max-w-[1440px] min-w-0' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
       
@@ -585,7 +596,17 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
       </div>
 
       {/* Main Split Content */}
-      <div className={`flex flex-col min-h-0 pb-6 ${avatar ? 'avatar-workspace-body flex-1 gap-2 px-2 sm:px-4' : 'md:flex-row px-4 md:px-8 gap-4 flex-1'}`}>
+      {showAvatarSessionState && (
+        <div className="flex flex-1 min-h-0 flex-col items-center justify-center gap-4 p-6 text-center" role={sessionLoadError ? 'alert' : 'status'}>
+          {!sessionLoadError && <LoaderCircle className="h-6 w-6 animate-spin text-blue-500" aria-hidden="true" />}
+          <p>{sessionLoadError || 'Loading reading practice…'}</p>
+          <div className="flex flex-wrap justify-center gap-3">
+            {sessionLoadError && <button type="button" onClick={reloadSession} className="rounded-full bg-blue-500 px-6 py-2 font-semibold text-white">Retry</button>}
+            <button type="button" onClick={() => navigate(allLessonsPath)} className="rounded-full border px-6 py-2">Back to topics</button>
+          </div>
+        </div>
+      )}
+      <div className={`${showAvatarSessionState ? 'hidden' : 'flex'} flex-col min-h-0 pb-6 ${avatar ? 'avatar-workspace-body flex-1 gap-2 px-2 sm:px-4' : 'md:flex-row px-4 md:px-8 gap-4 flex-1'}`}>
         
         {/* Mode Sidebar */}
         {!avatar && <div className="flex flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0">
@@ -1169,18 +1190,29 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
                 <>
                   <div className="min-w-0 flex-1 px-4 py-3 bg-white border border-[#E5E7EB] rounded-[10px]">
                     <p id="reading-recording-instruction" aria-live="polite" className="whitespace-normal break-words text-[14px] leading-5 text-[#6E748F]">
-                      {isProcessingRecording ? "Checking recording..." : cooldown ? "Please wait..." : "Record the sentence (up to 3 minutes)..."}
+                      {isStartingRecording ? 'Opening microphone… Allow access if your browser asks.'
+                        : recordingError ? recordingError
+                        : isAccountBlocked ? 'Recording is unavailable for this account.'
+                        : !modeSessionId ? 'Connecting to reading practice…'
+                        : isProcessingRecording ? 'Checking recording…'
+                        : isReconcilingAudio ? 'Restoring your previous recording…'
+                        : isTyping ? 'Assessing your recording…'
+                        : hasPendingAudio ? 'Retry or discard your previous recording before recording again.'
+                        : cooldown ? 'Please wait…'
+                        : 'Record the sentence (up to 3 minutes)…'}
                     </p>
                   </div>
                   <button
                     onClick={() => { if (avatar) { avatarPassage.pause(); stopAudio(); } startRecording(); }}
-                    disabled={!modeSessionId || cooldown || isProcessingRecording || isTyping || isAccountBlocked || hasPendingAudio}
-                    aria-label="Record your reading response"
+                    disabled={isStartingRecording || !modeSessionId || cooldown || isProcessingRecording || isTyping || isAccountBlocked || hasPendingAudio}
+                    aria-label={isStartingRecording ? 'Opening microphone' : 'Record your reading response'}
+                    aria-busy={isStartingRecording}
                     aria-describedby="reading-recording-instruction"
                     className="flex shrink-0 justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Mic className="w-5 h-5" />
+                    {isStartingRecording ? <LoaderCircle className="w-5 h-5 animate-spin" aria-hidden="true" /> : <Mic className="w-5 h-5" />}
                   </button>
+                  {isStartingRecording && <button type="button" onClick={cancelRecording} className="text-sm font-semibold text-[#475569]" aria-label="Cancel microphone startup">Cancel</button>}
                 </>
               )}
             </div>
