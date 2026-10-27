@@ -56,6 +56,32 @@
   .avatar-workspace [data-avatar-passage-scroll] h3 { display: none; }
 }
 
+/* Safari's keyboard resizes the visual viewport without changing CSS media queries. */
+.avatar-workspace[data-keyboard-open] {
+  position: fixed;
+  top: var(--avatar-keyboard-top);
+  left: var(--avatar-keyboard-left);
+  width: var(--avatar-keyboard-width);
+  max-width: none;
+  margin: 0;
+  z-index: 50;
+}
+.avatar-workspace[data-keyboard-open] .avatar-workspace-header { padding-bottom: 2px; }
+.avatar-workspace[data-keyboard-open] .avatar-workspace-header > div:nth-child(2) { display: none; }
+.avatar-workspace[data-keyboard-open] .avatar-workspace-stage {
+  aspect-ratio: auto;
+  height: clamp(36px, calc(var(--avatar-workspace-height) * .14), 64px);
+  max-height: none;
+}
+.avatar-workspace[data-keyboard-open] .avatar-workspace-body { gap: 4px; padding: 0 4px 4px; }
+.avatar-workspace[data-keyboard-open] .avatar-workspace-panel { gap: 4px; padding: 4px; }
+.avatar-workspace[data-keyboard-open] .roleplay-scenario { padding: 0; flex-shrink: 1; max-height: 35%; overflow-y: auto; }
+.avatar-workspace[data-keyboard-open] .roleplay-scenario > div { padding: 4px 8px; gap: 4px; }
+.avatar-workspace[data-keyboard-open] .roleplay-conversation { margin-left: 0; flex-shrink: 0; min-height: 100px; }
+.avatar-workspace[data-keyboard-open] .roleplay-history { padding: 6px; }
+.avatar-workspace[data-keyboard-open] .roleplay-composer { padding: 4px 6px; }
+.avatar-workspace[data-keyboard-open] .roleplay-composer input { padding: 8px; }
+
 /* Emoji support for consistent rendering across browsers */
 .emoji {
   font-family:

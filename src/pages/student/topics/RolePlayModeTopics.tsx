@@ -21,7 +21,7 @@ import { useAvatarSpeakingVideo } from '@/components/avatar-reading/useAvatarSpe
 export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;title:string}}={}) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const avatarWorkspaceRef = useAvatarWorkspace(Boolean(avatar));
+  const avatarWorkspaceRef = useAvatarWorkspace(Boolean(avatar), true);
   const lessonModeId = avatar?.topicId || searchParams.get('modeId') || '';
   const lessonId = searchParams.get('lessonId') || '';
   const courseId = searchParams.get('courseId') || undefined;
@@ -208,6 +208,20 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
   };
 
   const step1Completed = isScenarioExpanded || (chatHistory && chatHistory.some(m => m.role === 'user'));
+  useEffect(() => {
+    const history = chatContainerRef.current;
+    if (!avatar || !step1Completed || !history) return;
+    let followingLatest = history.scrollHeight - history.scrollTop - history.clientHeight < 24;
+    const onScroll = () => {
+      followingLatest = history.scrollHeight - history.scrollTop - history.clientHeight < 24;
+    };
+    const observer = new ResizeObserver(() => {
+      if (followingLatest) history.scrollTop = history.scrollHeight;
+    });
+    observer.observe(history);
+    history.addEventListener('scroll', onScroll, { passive: true });
+    return () => { observer.disconnect(); history.removeEventListener('scroll', onScroll); };
+  }, [avatar?.topicId, step1Completed]);
   const step1Active = !step1Completed;
 
   const [cooldown, setCooldown] = useState(false);
@@ -452,7 +466,7 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
           
           {/* Scenario Card */}
           {contentPayload && (contentPayload.passage || contentPayload.content || contentPayload.scenario) && (
-            <div className={`flex flex-col gap-3 min-h-0 pl-1 md:pl-2 ${step1Active ? 'flex-1 mt-2' : 'flex-shrink-0'}`}>
+            <div className={`roleplay-scenario flex flex-col gap-3 min-h-0 pl-1 md:pl-2 ${step1Active ? 'flex-1 mt-2' : 'flex-shrink-0'}`}>
               <ReadingPassageCard 
                 title="Roleplay Scenario"
                 highlightText={Boolean(avatar && activeAvatarMessage === 'roleplay-scenario')}
@@ -489,10 +503,10 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
 
           {/* Chat History Area */}
           {!step1Active && (
-          <div className="flex flex-col flex-1 border border-[#E5E7EB] bg-white rounded-xl min-h-0 overflow-hidden ml-1 md:ml-2">
+          <div className="roleplay-conversation flex flex-col flex-1 border border-[#E5E7EB] bg-white rounded-xl min-h-0 overflow-hidden ml-1 md:ml-2">
             <div 
               ref={chatContainerRef}
-              className="flex flex-col p-3 sm:p-5 md:px-6 gap-3 flex-1 min-h-0 bg-[#F8F9FA] overflow-y-auto overscroll-contain"
+              className="roleplay-history flex flex-col p-3 sm:p-5 md:px-6 gap-3 flex-1 min-h-0 bg-[#F8F9FA] overflow-y-auto overscroll-contain"
             >
             {chatHistory.map((msg, index) => (
               <div
@@ -626,7 +640,7 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
           </div>
 
           {/* Input Bar */}
-          <div className="flex flex-row items-center px-3 md:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] md:py-4 gap-3 bg-white border-t border-[#E5E7EB] flex-shrink-0">
+          <div className="roleplay-composer flex flex-row items-center px-3 md:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] md:py-4 gap-3 bg-white border-t border-[#E5E7EB] flex-shrink-0">
             {isRecording ? (
               <div className="flex-1 flex items-center justify-between px-4 py-2 bg-[#FEF1E8] border border-[#F97316]/30 rounded-[10px]">
                 <div className="flex items-center gap-2">
