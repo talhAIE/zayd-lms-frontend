@@ -1,339 +1,172 @@
-import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import navLogoPng from "@/assets/zayd-logo.png";
-import { useLanguage } from "@/components/language-provider";
+import { useState } from "react";
+import { ArrowLeft, Building2, Menu, X } from "lucide-react";
+import navLogoPng from "@/assets/landing-page/logo.png";
 
-const menuItems = [
-  { name: "Home", href: "#home", isRoute: false },
-  { name: "Features", href: "#features", isRoute: false },
-  { name: "How It Works", href: "#how-it-works", isRoute: false },
-  // { name: "Testimonials", href: "#testimonials", isRoute: false },
-  { name: "Pricing", href: "#pricing", isRoute: false },
-  { name: "FAQ", href: "#faq", isRoute: false },
-  { name: "Contact Us", href: "/contact-us", isRoute: true },
+interface NavItem {
+  name: string;
+  href: string;
+}
+
+const navItems: NavItem[] = [
+  { name: "الرئيسية", href: "#home" },
+  { name: "المنهج", href: "#curriculum" },
+  { name: "الحياة اليومية", href: "#life" },
+  { name: "للمدارس", href: "#schools" },
+  { name: "الأسئلة الشائعة", href: "#faq" },
+  { name: "الأسعار", href: "#pricing" },
 ];
 
 export default function Navbar() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
-  const { language, setLanguage } = useLanguage();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [activeItem, setActiveItem] = useState("الرئيسية");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const isMainPath = location.pathname === "/" || location.pathname === "/chinese";
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const scrollToSection = (href: string, isRoute: boolean = false) => {
-    if (isRoute) {
-      navigate(href);
-      setIsMobileMenuOpen(false);
-      return;
-    }
+  const handleScroll = (href: string, name: string) => {
+    setActiveItem(name);
+    setMobileMenuOpen(false);
     if (href === "#home") {
-      if (!isMainPath) {
-        navigate("/");
-        setTimeout(() => {
-          window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-          });
-        }, 100);
-      } else {
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        });
-      }
-    } else {
-      if (!isMainPath) {
-        navigate("/");
-        setTimeout(() => {
-          const element = document.querySelector(href);
-          if (element) {
-            element.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          }
-        }, 100);
-      } else {
-        const element = document.querySelector(href);
-        if (element) {
-          element.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        }
-      }
-    }
-    setIsMobileMenuOpen(false);
-  };
-
-  useEffect(() => {
-    if (!isMainPath) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-
-    const handleScroll = () => {
-      const sections = menuItems
-        .filter((item) => !item.isRoute)
-        .map((item) => item.href.substring(1));
-      const scrollPosition = window.scrollY + 100;
-
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = document.getElementById(sections[i]);
-        if (section && section.offsetTop <= scrollPosition) {
-          setActiveSection(sections[i]);
-          break;
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isMainPath]);
+    const target = document.querySelector(href);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   return (
-    <nav className="w-full md:py-4 py-8 shadow-sm sticky top-0 bg-white z-[9999]">
-      <div className="flex items-center w-full px-4 relative">
-        <div
-          className="absolute left-4 md:relative md:left-auto w-20 h-8 md:w-28 md:h-12 flex items-center cursor-pointer z-10"
-          dir="ltr"
-          onClick={() => scrollToSection("#home")}
+    <header className="sticky top-4 z-50 w-full px-4 md:px-6 flex justify-center font-ibm-plex" dir="rtl">
+      {/* Main Glassmorphic Container */}
+      <div className="w-full max-w-[1180px] h-[70px] bg-[rgba(255,255,255,0.84)] border border-[rgba(198,224,244,0.8)] shadow-[0px_12px_35px_rgba(10,72,126,0.1),inset_0px_1px_0px_#FFFFFF] backdrop-blur-[20px] rounded-[20px] px-3 md:px-[12px] flex items-center justify-between transition-all">
+        {/* Brand / Logo Area */}
+        <a
+          href="#home"
+          onClick={(e) => {
+            e.preventDefault();
+            handleScroll("#home", "الرئيسية");
+          }}
+          className="flex items-center gap-[10px] pl-[16px] md:pl-[19px] border-l border-[#DCE9F4] select-none cursor-pointer"
         >
           <img
             src={navLogoPng}
-            alt="Zayd AI Logo"
-            className="w-full h-full object-contain"
+            alt="شعار زيـــد"
+            className="w-[46px] h-[42px] md:w-[52px] md:h-[48px] object-contain"
           />
-        </div>
+        </a>
 
-        {/* Mobile/Tablet language toggle centered between logo and menu */}
-        <div className="lg:hidden absolute left-1/2 -translate-x-1/2">
-          <button
-            onClick={() => setLanguage(language === "ar" ? "en" : "ar")}
-            className="text-sm text-gray-700 hover:text-[#058BF4] transition-colors px-2 py-1"
-          >
-            العربية | English
-          </button>
-        </div>
-
-        {/* Centered blue background menu */}
-        <ul className="hidden lg:flex gap-6 bg-[#E1EEFF] px-6 py-2 rounded-full text-gray-700 font-medium mx-auto">
-          {menuItems.map((item) => {
-            const sectionId = item.href.substring(1);
-            const isActive = item.isRoute 
-              ? location.pathname === item.href
-              : isMainPath && activeSection === sectionId;
-            
-            if (item.isRoute) {
-              return (
-                <li key={item.name}>
-                  <Link
-                    to={item.href}
-                    className={`cursor-pointer px-3 py-1 rounded-full transition-colors block ${
-                      isActive ? "bg-[#058BF4] text-white" : "hover:text-blue-800"
-                    }`}
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              );
-            }
-            
+        {/* Desktop Navigation Links */}
+        <nav
+          aria-label="التنقل الرئيسي"
+          className="hidden lg:flex items-center bg-[#F5F9FC] rounded-[13px] p-[5px] gap-[3px]"
+        >
+          {navItems.map((item) => {
+            const isActive = activeItem === item.name;
             return (
-              <li
+              <a
                 key={item.name}
-                className={`cursor-pointer px-3 py-1 rounded-full transition-colors ${
-                  isActive ? "bg-[#058BF4] text-white" : "hover:text-blue-800"
+                href={item.href}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleScroll(item.href, item.name);
+                }}
+                className={`relative px-[13px] py-[10px] text-[13px] leading-[20px] font-medium rounded-[9px] transition-all cursor-pointer ${
+                  isActive
+                    ? "bg-white text-[#0862C1] shadow-[0px_4px_14px_rgba(18,91,154,0.1)] font-semibold"
+                    : "text-[#496176] hover:text-[#0862C1] hover:bg-white/50"
                 }`}
-                onClick={() => scrollToSection(item.href, item.isRoute)}
               >
                 {item.name}
-              </li>
+                {isActive && (
+                  <span className="absolute bottom-[3px] left-1/2 -translate-x-1/2 w-[4px] h-[4px] bg-[#48D3BF] rounded-full" />
+                )}
+              </a>
             );
           })}
-        </ul>
+        </nav>
 
-        {/* Desktop buttons - far right */}
-        <div className="hidden lg:flex gap-2 items-center">
-          <button
-            onClick={() => setLanguage(language === "ar" ? "en" : "ar")}
-            className="text-sm text-gray-700 hover:text-[#058BF4] transition-colors px-2 py-1"
+        {/* CTA Actions */}
+        <div className="hidden sm:flex items-center gap-2">
+          {/* Schools Link */}
+          <a
+            href="#schools"
+            onClick={(e) => {
+              e.preventDefault();
+              handleScroll("#schools", "للمدارس");
+            }}
+            className="h-[43px] px-[13px] bg-[rgba(244,250,255,0.8)] hover:bg-[#EBF4FC] border border-[#D4E5F2] rounded-[12px] text-[#0862C1] text-[13px] font-bold flex items-center gap-[7px] transition-all cursor-pointer"
           >
-            العربية | English
-          </button>
-          <Link to="/login">
-            <Button
-              variant="outline"
-              className="rounded-full text-black border-[#058BF4]"
-            >
-              Sign In
-            </Button>
-          </Link>
-          {/* <Button className="rounded-full bg-[#058BF4]">Sign Up</Button> */}
+            <Building2 className="w-[17px] h-[17px] text-[#0862C1]" />
+            <span>للمدارس</span>
+          </a>
+
+          {/* Primary CTA */}
+          <a
+            href="/auth/register"
+            className="h-[48px] px-5 bg-gradient-to-r from-[#2681E9] to-[#0862C1] hover:from-[#1F73D4] hover:to-[#0753A6] shadow-[0px_10px_26px_rgba(38,129,233,0.22)] rounded-[13px] text-white text-[14px] font-bold flex items-center gap-[7px] transition-all transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+          >
+            <span>جرّب زيــــد</span>
+            <ArrowLeft className="w-[18px] h-[18px]" />
+          </a>
         </div>
 
-        {/* Mobile/Tablet hamburger menu button */}
-        <button
-          className="lg:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1 shrink-0 absolute right-4"
-          onClick={toggleMobileMenu}
-          aria-label="Toggle mobile menu"
-        >
-          <span
-            className={`block w-6 h-0.5 bg-gray-700 transition-all duration-300 ${
-              isMobileMenuOpen ? "rotate-45 translate-y-1.5" : ""
-            }`}
-          />
-          <span
-            className={`block w-6 h-0.5 bg-gray-700 transition-all duration-300 ${
-              isMobileMenuOpen ? "opacity-0" : ""
-            }`}
-          />
-          <span
-            className={`block w-6 h-0.5 bg-gray-700 transition-all duration-300 ${
-              isMobileMenuOpen ? "-rotate-45 -translate-y-1.5" : ""
-            }`}
-          />
-        </button>
+        {/* Mobile Hamburger Toggle */}
+        <div className="flex items-center gap-2 lg:hidden">
+          <a
+            href="/auth/register"
+            className="sm:hidden h-[40px] px-3 bg-gradient-to-r from-[#2681E9] to-[#0862C1] shadow-sm rounded-[10px] text-white text-[13px] font-bold flex items-center gap-1"
+          >
+            <span>جرّب</span>
+            <ArrowLeft className="w-3.5 h-3.5" />
+          </a>
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? "إغلاق القائمة" : "فتح القائمة"}
+            className="w-10 h-10 flex items-center justify-center rounded-[12px] bg-[#F5F9FC] text-[#07294D] hover:bg-[#EAF2F9] transition-colors"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile/Tablet menu overlay */}
-      <div
-        className={`lg:hidden fixed inset-0 z-50 bg-white transition-all duration-300 ease-in-out ${
-          isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
-      >
-        <div
-          className={`flex flex-col h-full transition-transform duration-300 ease-in-out ${
-            isMobileMenuOpen ? "translate-y-0" : "translate-y-full"
-          }`}
-        >
-          {/* Mobile header with logo and close button */}
-          <div className="flex justify-between items-center p-4 border-b relative">
-            <div
-              className="absolute left-4 w-20 h-8 md:w-28 md:h-12 flex items-center cursor-pointer z-10"
-              dir="ltr"
-              onClick={() => scrollToSection("#home")}
-            >
-              <img
-                src={navLogoPng}
-                alt="Zayd AI Logo"
-                className="w-full h-full object-contain"
-              />
-            </div>
-            <button
-              onClick={toggleMobileMenu}
-              className="w-8 h-8 flex items-center justify-center"
-              aria-label="Close mobile menu"
-            >
-              <span className="text-2xl">&times;</span>
-            </button>
-          </div>
-
-          {/* Mobile navigation items */}
-          <div className="flex-1 flex flex-col justify-center items-center space-y-6 py-8">
-            {menuItems.map((item, index) => {
-              const sectionId = item.href.substring(1);
-              const isActive = item.isRoute 
-                ? location.pathname === item.href
-                : isMainPath && activeSection === sectionId;
-              
-              if (item.isRoute) {
-                return (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className={`text-xl font-medium transition-all duration-300 ${
-                      isActive
-                        ? "text-[#058BF4]"
-                        : "text-gray-700 hover:text-[#058BF4]"
-                    } ${
-                      isMobileMenuOpen
-                        ? "opacity-100 translate-y-0"
-                        : "opacity-0 translate-y-4"
-                    }`}
-                    style={{
-                      transitionDelay: isMobileMenuOpen
-                        ? `${index * 100}ms`
-                        : "0ms",
-                    }}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                );
-              }
-              
+      {/* Mobile Drawer */}
+      {mobileMenuOpen && (
+        <div className="absolute top-[82px] left-4 right-4 bg-white/95 backdrop-blur-xl border border-[#DCE9F4] rounded-[20px] shadow-2xl p-5 flex flex-col gap-3 lg:hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+          <nav className="flex flex-col gap-1">
+            {navItems.map((item) => {
+              const isActive = activeItem === item.name;
               return (
                 <button
                   key={item.name}
-                  className={`text-xl font-medium transition-all duration-300 ${
+                  onClick={() => handleScroll(item.href, item.name)}
+                  className={`flex items-center justify-between px-4 py-3 rounded-[12px] text-[14px] font-medium transition-all text-right ${
                     isActive
-                      ? "text-[#058BF4]"
-                      : "text-gray-700 hover:text-[#058BF4]"
-                  } ${
-                    isMobileMenuOpen
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-4"
+                      ? "bg-[#F5F9FC] text-[#0862C1] font-bold"
+                      : "text-[#496176] hover:bg-[#F9FBFC]"
                   }`}
-                  style={{
-                    transitionDelay: isMobileMenuOpen
-                      ? `${index * 100}ms`
-                      : "0ms",
-                  }}
-                  onClick={() => scrollToSection(item.href, item.isRoute)}
                 >
-                  {item.name}
+                  <span>{item.name}</span>
+                  {isActive && <span className="w-2 h-2 rounded-full bg-[#48D3BF]" />}
                 </button>
               );
             })}
-          </div>
-
-          {/* Mobile/Tablet buttons */}
-          <div
-            className={`flex flex-col gap-3 p-6 border-t transition-all duration-300 ${
-              isMobileMenuOpen
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-4"
-            }`}
-            style={{
-              transitionDelay: isMobileMenuOpen ? "400ms" : "0ms",
-            }}
-          >
+          </nav>
+          <div className="pt-3 border-t border-[#EEF4F9] flex flex-col gap-2">
             <button
-              onClick={() => {
-                setLanguage(language === "ar" ? "en" : "ar");
-                setIsMobileMenuOpen(false);
-              }}
-              className="text-sm text-gray-700 hover:text-[#058BF4] transition-colors px-2 py-1 text-center"
+              onClick={() => handleScroll("#schools", "للمدارس")}
+              className="h-[44px] w-full bg-[#F5F9FC] border border-[#D4E5F2] rounded-[12px] text-[#0862C1] text-[14px] font-bold flex items-center justify-center gap-2"
             >
-              العربية | English
+              <Building2 className="w-[18px] h-[18px]" />
+              <span>للمدارس والشركاء</span>
             </button>
-            <Link to="/login">
-              <Button
-                variant="outline"
-                className="rounded-full text-black border-[#058BF4] w-full"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Sign In
-              </Button>
-            </Link>
-            {/* <Button
-              className="rounded-full bg-[#058BF4] w-full"
-              onClick={() => setIsMobileMenuOpen(false)}
+            <a
+              href="/auth/register"
+              className="h-[48px] w-full bg-gradient-to-r from-[#2681E9] to-[#0862C1] rounded-[13px] text-white text-[14px] font-bold flex items-center justify-center gap-2 shadow-[0px_10px_26px_rgba(38,129,233,0.22)]"
             >
-              Sign Up
-            </Button> */}
+              <span>جرّب زيــــد الآن</span>
+              <ArrowLeft className="w-4 h-4" />
+            </a>
           </div>
         </div>
-      </div>
-    </nav>
+      )}
+    </header>
   );
 }
