@@ -30,6 +30,7 @@ export default {
         "geist-sans": ["Geist", "sans-serif"], // Geist font for public pages
         almarai: ["Almarai", "sans-serif"],
         nunito: ["Nunito", "sans-serif"],
+        "ibm-plex": ["'IBM Plex Sans Arabic'", "sans-serif"],
       },
 
       borderRadius: {
