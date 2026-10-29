@@ -48,9 +48,15 @@ const out=path.resolve(process.env.AVATAR_QA_OUTPUT||'../outputs/avatar-workspac
           return{avatar:rect('.avatar-workspace-avatar'),panel:rect('.avatar-workspace-panel'),height:innerHeight,overflow:document.documentElement.scrollWidth>innerWidth,scrollHeight:document.documentElement.scrollHeight};
         });
         assert(!geometry.overflow,`${mode} horizontal overflow`);
+        const centering=await page.locator('.avatar-workspace-stage').evaluate(stage=>{
+          const frame=stage.getBoundingClientRect(),card=stage.parentElement,video=stage.querySelector('video').getBoundingClientRect();
+          return {stageWidth:frame.width,cardWidth:card.clientWidth,offset:Math.abs((video.left+video.width/2)-(frame.left+frame.width/2)),height:frame.height};
+        });
+        assert(Math.abs(centering.stageWidth-centering.cardWidth)<=1,`${mode} avatar stage must fill its card: ${JSON.stringify(centering)}`);
+        assert(centering.offset<=1,`${mode} video must be horizontally centered: ${JSON.stringify(centering)}`);
         if(viewport.width<768 && viewport.height>500) {
-          const framing=await page.locator('.avatar-workspace-stage').evaluate(node=>{const r=node.getBoundingClientRect();return r.width/r.height;});
-          assert(Math.abs(framing-1.42)<0.05,`${mode} framing changed between desktop and mobile: ${framing}`);
+          // Reading may cap stage height to reserve room for its controls.
+          assert(centering.height<=centering.stageWidth/1.42+1,`${mode} stage exceeded its portrait framing height`);
         }
         const layout=await page.locator('.avatar-workspace').evaluate(node=>({width:node.getBoundingClientRect().width,available:node.closest('main').clientWidth}));
         if(viewport.width>=768)assert(layout.width>=layout.available*.85,`${mode} desktop/tablet must use a wide web workspace`);

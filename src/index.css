@@ -19,6 +19,10 @@
 .avatar-workspace > div:not(.avatar-workspace-body) { flex-shrink: 0; }
 .avatar-workspace-body { overflow: hidden; padding-bottom: 8px; }
 .avatar-workspace-stage {
+  /* A height cap must not narrow the flex item and shift its video left. */
+  width: 100%;
+  align-self: stretch;
+  flex-shrink: 0;
   aspect-ratio: 1.42;
   height: auto;
   max-height: min(330px, calc(var(--avatar-workspace-height, 600px) * .4));
