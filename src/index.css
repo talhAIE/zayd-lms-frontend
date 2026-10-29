@@ -406,6 +406,45 @@ html.lenis body {
   animation: reading-feedback-text-pulse 1.5s ease-in-out infinite;
 }
 
+/* Grading feedback stays inside the answered control, including on touch screens. */
+.answer-feedback { position: relative; }
+.answer-feedback[data-answer-result="true"] {
+  border-color: #10b981 !important;
+  background-color: #ecfdf5 !important;
+  color: #065f46 !important;
+}
+.answer-feedback[data-answer-result="false"] {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2 !important;
+  color: #991b1b !important;
+}
+.answer-feedback[data-answer-result] > span { color: inherit !important; }
+.answer-feedback[data-answer-result] > input { background-color: inherit; color: inherit; }
+.answer-feedback-pop { animation: answer-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.answer-feedback-shake { animation: answer-shake 0.35s ease-in-out; }
+.answer-confetti { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; pointer-events: none; z-index: 5; }
+.answer-confetti-dot { position: absolute; width: 8px; height: 8px; border-radius: 50%; animation: answer-confetti-fall 1s ease-out both; }
+@keyframes answer-pop {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 rgb(16 185 129 / 0); }
+  50% { transform: scale(1.02); box-shadow: 0 0 20px rgb(16 185 129 / 0.6); }
+  100% { transform: scale(1); box-shadow: 0 0 10px rgb(16 185 129 / 0.3); }
+}
+@keyframes answer-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+@keyframes answer-confetti-fall {
+  from { transform: translateY(0) scale(1); opacity: 1; }
+  to { transform: translateY(60px) scale(0); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .answer-feedback-pop, .answer-feedback-shake { animation: none; }
+  .answer-confetti { display: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reading-feedback-text-pulse {
     animation: none;

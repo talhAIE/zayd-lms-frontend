@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AlertCircle, ExternalLink, Send } from 'lucide-react';
 import { LearningComponent, LearningResource } from '@/services/learningService';
+import { GradedAnswerSurface, gradedAttemptKey } from '../AnswerFeedback';
 
 type Submit = (response: Record<string, unknown>) => Promise<unknown> | void;
 const text = (value: unknown): string => typeof value === 'string' ? value : '';
@@ -83,7 +84,7 @@ export function FillInTheBlankComponent({ component, onAnswerChange, onSubmit, i
     const isMissing = showValidation && !answers[id]?.trim();
     if (isMissing) borderClass = 'border-[#EF4444] bg-[#FEF2F2]';
     const sentence = text(field.sentence) || text(field.label) || text(field.prompt);
-    return <label key={id} className="block"><span className="text-sm text-[#334155]">{emphasizedText(sentence, field.boldTerms)}</span><input data-component-id={component.id} data-fill-in-field={id} aria-invalid={isMissing || undefined} required value={answers[id] || ''} onChange={(event) => update(id, event.target.value)} disabled={isSubmitted || isSubmittingLocal} className={`mt-2 w-full rounded-lg border p-3 text-sm outline-none focus:border-[#4F8DFB] disabled:bg-slate-50 disabled:opacity-80 transition-colors ${borderClass}`} /></label>;
+    return <label key={id} className="block"><span className="text-sm text-[#334155]">{emphasizedText(sentence, field.boldTerms)}</span><GradedAnswerSurface className="mt-2 rounded-lg" feedbackKey={gradedAttemptKey(component)} result={locallySubmitted && typeof fieldRes?.isCorrect === 'boolean' ? fieldRes.isCorrect : null}><input data-component-id={component.id} data-fill-in-field={id} aria-invalid={isMissing || undefined} required value={answers[id] || ''} onChange={(event) => update(id, event.target.value)} disabled={isSubmitted || isSubmittingLocal} className={`w-full rounded-lg border p-3 text-sm outline-none focus:border-[#4F8DFB] disabled:bg-slate-50 disabled:opacity-80 transition-colors ${borderClass}`} /></GradedAnswerSurface></label>;
   })}</div>{onSubmit && !isSubmitted && <button type="button" onClick={handleSubmit} disabled={isSubmittingLocal || fields.some((field, index) => !answers[text(field.id) || `field-${index}`]?.trim())} className="mt-5 rounded-lg bg-[#4F8DFB] px-5 py-2.5 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#3B82F6]">{isSubmittingLocal ? 'Grading...' : text(content.submitLabel) || 'Submit answers'}</button>}
   </section>;
 }

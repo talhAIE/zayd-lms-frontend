@@ -12,8 +12,8 @@ const compile = source => ts.transpileModule(source, { compilerOptions: {
 } }).outputText;
 const icon = name => name;
 const icons = { Check: icon('Check'), X: icon('X'), CheckCircle2: icon('CheckCircle2'), CircleAlert: icon('CircleAlert'), Eye: icon('Eye') };
-const motion = { button: 'button', div: 'div' };
-function harness(reduced = false) {
+const feedback = require('./load-tsx.cjs')(path.join(root, 'src/components/learning/AnswerFeedback.tsx'));
+function harness() {
   const slots = []; let cursor, effects, dirty;
   const react = {
     useState(initial) {
@@ -37,7 +37,7 @@ function harness(reduced = false) {
       if (name === 'react') return react;
       if (name === 'react/jsx-runtime') return jsx;
       if (name === 'lucide-react') return icons;
-      if (name === 'framer-motion') return { motion, useReducedMotion: () => reduced };
+      if (name === '../AnswerFeedback') return { ...feedback, GradedAnswerButton: 'button' };
       throw new Error(`Unexpected import: ${name}`);
     },
   });
@@ -70,9 +70,7 @@ let tree = render(props()); option(tree, 'B').props.onClick(); tree = render(pro
 component = submitted('b', 1, false); tree = render(props());
 assert.match(option(tree, 'B').props.className, /border-\[#EF4444\]/, 'First wrong choice is red immediately');
 assert.match(option(tree, 'B').props['aria-label'], /Incorrect answer/);
-assert(option(tree, 'B').props.animate.x.length > 1, 'Fresh incorrect submission has a gentle shake');
-option(tree, 'B').props.onAnimationComplete(); tree = render(props());
-assert.equal(option(tree, 'B').props.animate.x, 0, 'Shake stops after one result');
+assert.equal(option(tree, 'B').props.result, false, 'Wrong selection reaches the shared feedback animation');
 option(tree, 'C').props.onClick(); tree = render(props());
 assert(!option(tree, 'C').props['aria-label'].includes('Incorrect'), 'New retry choice is not graded by the old answer');
 component = submitted('c', 2, false, true); tree = render(props());
@@ -83,14 +81,14 @@ assert.match(option(tree, 'C').props.className, /border-\[#EF4444\]/, 'Reveal pr
 assert.equal(option(tree, 'C').props.disabled, true, 'Exhaustion does not grant another attempt');
 tree = harness()({ ...props(), approvedAnswers: [{ id: 'option', value: 'A. Correct option' }] });
 assert.match(option(tree, 'C').props.className, /border-\[#EF4444\]/, 'Revisiting keeps the same incorrect result');
-assert.equal(option(tree, 'C').props.animate.x, 0, 'Revisiting does not replay the shake');
+assert.equal(option(tree, 'A').props.result, null, 'Revealing an answer never celebrates it as earned');
 const success = harness(); tree = success({ component: base }); option(tree, 'A').props.onClick();
 tree = success({ component: submitted('a', 1, true), isSubmitted: true });
 assert.match(option(tree, 'A').props.className, /border-\[#10B981\]/);
-assert(nodes(tree).some(node => node.type === 'div' && Array.isArray(node.props.animate?.scale)), 'Fresh success has a pulse');
-const reduced = harness(true); tree = reduced({ component: base }); option(tree, 'B').props.onClick();
+assert.equal(option(tree, 'A').props.result, true, 'Correct selection reaches the shared celebration');
+const reduced = harness(); tree = reduced({ component: base }); option(tree, 'B').props.onClick();
 tree = reduced({ component: submitted('b', 1, false) });
-assert.equal(option(tree, 'B').props.animate.x, 0, 'Reduced motion keeps feedback static');
+assert.equal(option(tree, 'B').props.result, false);
 
 const pageSource = fs.readFileSync(path.join(root, 'src/pages/student/ComponentModePlay.tsx'), 'utf8');
 const page = ts.createSourceFile('page.tsx', pageSource, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
@@ -115,6 +113,7 @@ async function checkDraftRace() {
   let finishDraft, didSubmit = false;
   const pendingDraft = new Promise(resolve => { finishDraft = resolve; });
   const submitContext = {
+    components: [base],
     draftSaves: { current: new Map([['question', pendingDraft]]) },
     submitComponentAttempt: async () => { didSubmit = true; return component; },
     setComponents() {}, setLocalResponses() {}, setCompletedComponentIds() {},

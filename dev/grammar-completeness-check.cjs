@@ -51,7 +51,7 @@ async function run(response) {
   assert.equal(complete.submissions.length, 1, 'Complete answers must reach grading even when incorrect');
 
   const loaded = { exports: {} };
-  vm.runInNewContext(compile(fs.readFileSync(path.join(root, 'src/components/learning/modes/AdditionalComponents.tsx'), 'utf8')), { require, module: loaded, exports: loaded.exports });
+  loaded.exports = require('./load-tsx.cjs')(path.join(root, 'src/components/learning/modes/AdditionalComponents.tsx'));
   const markup = renderToStaticMarkup(React.createElement(loaded.exports.FillInTheBlankComponent, {
     component: { ...activity, attempt: { response: { answers: { first: 'a', second: 'b', third: 'c', fourth: ' ' } } } },
     showValidation: true,

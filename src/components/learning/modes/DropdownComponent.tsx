@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { ChevronDown, Check } from 'lucide-react';
 import { LearningComponent } from '@/services/learningService';
+import { GradedAnswerButton, gradedAttemptKey } from '../AnswerFeedback';
 
 interface DropdownComponentProps {
   component: LearningComponent;
@@ -57,7 +58,8 @@ export default function DropdownComponent({
 
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>(() => {
     if (component.attempt?.response) {
-      return component.attempt.response;
+      const response = component.attempt.response;
+      return response.answers ?? (response.optionId && items.length === 1 ? { [items[0].id]: response.optionId } : response);
     }
     return {};
   });
@@ -127,6 +129,12 @@ export default function DropdownComponent({
         {items.map((item) => {
           const selectedValue = selectedAnswers[item.id] || '';
           const isOpen = openDropdownId === item.id;
+          const response = component.attempt?.response;
+          const submittedValue = response?.answers?.[item.id] ?? response?.[item.id] ?? (items.length === 1 ? response?.optionId : undefined);
+          const fieldResult = component.attempt?.feedback?.fieldResults?.find((field: { id: string }) => field.id === item.id);
+          const result = selectedValue && selectedValue === submittedValue && component.attempt?.submittedAt
+            ? fieldResult?.isCorrect ?? (items.length === 1 ? component.attempt.isCorrect : null)
+            : null;
 
           return (
             <div
@@ -140,7 +148,9 @@ export default function DropdownComponent({
 
               {/* Right Custom Dropdown Trigger */}
               <div className="relative w-full sm:w-auto min-w-[220px]">
-                <button
+                <GradedAnswerButton
+                  feedbackKey={gradedAttemptKey(component)}
+                  result={result}
                   type="button"
                   onClick={() => !disabled && !isSubmitted && setOpenDropdownId(isOpen ? null : item.id)}
                   disabled={disabled || isSubmitted}
@@ -149,14 +159,14 @@ export default function DropdownComponent({
                   } rounded-[10px] px-4 py-2.5 flex items-center justify-between gap-3 text-[14px] font-semibold text-[#0D9488] shadow-sm hover:border-[#CBD5E1] transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed`}
                 >
                   <span className={selectedValue ? 'text-[#0D9488] font-bold' : 'text-[#94A3B8] font-normal'}>
-                    {selectedValue || 'Select an option...'}
+                    {options.find((option) => option.value === selectedValue)?.label || selectedValue || 'Select an option...'}
                   </span>
                   <ChevronDown
                     className={`w-4 h-4 text-[#0D9488] transition-transform duration-200 ${
                       isOpen ? 'rotate-180' : ''
                     }`}
                   />
-                </button>
+                </GradedAnswerButton>
 
                 {/* Dropdown Menu */}
                 {isOpen && (
