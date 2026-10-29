@@ -1,4 +1,5 @@
 import { useAvatarWorkspace } from '@/components/avatar-reading/useAvatarWorkspace';
+import { GradedAnswerButton } from '@/components/learning/AnswerFeedback';
 import { readingNarration } from '@/components/avatar-reading/readingNarration';
 import { readingPracticePresentation } from '@/utils/readingPracticePresentation';
 import { useState, useEffect, useRef, useCallback, useContext } from 'react';
@@ -1047,8 +1048,11 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
                         const isIncorrectSelection = isSelected && answerFeedback?.isCorrect === false;
 
                         return (
-                          <button
-                            key={oIdx}
+                          <GradedAnswerButton
+                            key={`${mcq.id}:${oIdx}`}
+                            feedbackKey={answerFeedback}
+                            result={isSelected ? answerFeedback?.isCorrect : null}
+                            disabled={hasCorrectAnswer || isCheckingMcqAnswer || isAccountBlocked}
                             type="button"
                             onClick={() => {
                               if (hasCorrectAnswer) return;
@@ -1079,7 +1083,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
                             }`}>
                               {optLabel}
                             </span>
-                          </button>
+                          </GradedAnswerButton>
                         );
                       })}
                     </div>

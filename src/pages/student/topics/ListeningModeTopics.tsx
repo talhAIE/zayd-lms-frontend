@@ -1,4 +1,5 @@
 import { useAvatarWorkspace } from '@/components/avatar-reading/useAvatarWorkspace';
+import { GradedAnswerButton } from '@/components/learning/AnswerFeedback';
 import { AvatarSpeechHighlight } from '@/components/avatar-reading/AvatarSpeechHighlight';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -11,51 +12,6 @@ import { useLearningProgressRefresh } from '@/hooks/useLearningProgressRefresh';
 import { useAudioPlayback } from '@/hooks/useAudioPlayback';
 import AudioPlayer from '../AudioPlayer';
 import { useAvatarListeningPlayback } from '@/components/avatar-reading/useAvatarListeningPlayback';
-
-function isOptionCorrect(mcq: any, answer: number | string | undefined) {
-  if (answer === undefined || answer === null || answer === -1) {
-    return false;
-  }
-
-  if (typeof mcq.correct === 'number') {
-    return Number(answer) === mcq.correct;
-  }
-
-  if (typeof mcq.correct === 'string') {
-    if (String(answer) === mcq.correct) {
-      return true;
-    }
-    const index = Number(answer);
-    if (!isNaN(index) && Array.isArray(mcq.options) && typeof mcq.options[index] === 'string') {
-      return mcq.options[index] === mcq.correct;
-    }
-    if (!isNaN(index) && Array.isArray(mcq.options) && typeof mcq.options[index] === 'object') {
-      return (
-        mcq.options[index]?.text === mcq.correct ||
-        mcq.options[index]?.label === mcq.correct ||
-        mcq.options[index]?.id === mcq.correct
-      );
-    }
-    return false;
-  }
-
-  if (mcq.correctOptionId) {
-    return String(answer) === String(mcq.correctOptionId);
-  }
-
-  if (Array.isArray(mcq.options)) {
-    const index = Number(answer);
-    if (!isNaN(index) && mcq.options[index]?.isCorrect !== undefined) {
-      return Boolean(mcq.options[index].isCorrect);
-    }
-    const found = mcq.options.find((o: any) => o.id === answer || o.value === answer);
-    if (found?.isCorrect !== undefined) {
-      return Boolean(found.isCorrect);
-    }
-  }
-
-  return true;
-}
 
 export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:string;title:string}} = {}) {
   const navigate = useNavigate();
@@ -91,6 +47,10 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
     listeningPayload,
     mcqList,
     mcqResult,
+    mcqAnswerFeedback,
+    isCheckingMcqAnswer,
+    checkMcqAnswer,
+    clearMcqAnswerFeedback,
     isCompleted,
     isAccountBlocked,
     sessionStatus,
@@ -552,6 +512,8 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
               {(() => {
                 const mcq = mcqList[currentMcqIndex] || mcqList[0];
                 const currentAnswer = selectedAnswers[currentMcqIndex];
+                const answerFeedback = mcqAnswerFeedback[mcq.id];
+                const hasCorrectAnswer = answerFeedback?.isCorrect === true;
 
                 return (
                   <div className="flex flex-col gap-4 w-full">
@@ -568,9 +530,17 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
                         const optLabel = typeof opt === 'string' ? opt : opt.text;
 
                         return (
-                          <div
-                            key={oIdx}
-                            onClick={() => setSelectedAnswers(prev => ({ ...prev, [currentMcqIndex]: optVal }))}
+                          <GradedAnswerButton
+                            key={`${mcq.id}:${oIdx}`}
+                            type="button"
+                            feedbackKey={answerFeedback}
+                            result={isSelected ? answerFeedback?.isCorrect : null}
+                            aria-pressed={isSelected}
+                            disabled={hasCorrectAnswer || isCheckingMcqAnswer || isAccountBlocked}
+                            onClick={() => {
+                              clearMcqAnswerFeedback(mcq.id);
+                              setSelectedAnswers(prev => ({ ...prev, [currentMcqIndex]: optVal }));
+                            }}
                             className={`w-full p-[14px_16px] rounded-[10px] flex flex-row items-center gap-3 cursor-pointer transition-all ${
                               isSelected
                                 ? 'bg-[#3B82F6] border border-[#3B82F6] text-white shadow-sm'
@@ -580,48 +550,50 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
                             <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
                               isSelected ? 'bg-white' : 'border-[1.5px] border-[#9CA3AF]'
                             }`}>
-                              {isSelected && <Check className="w-2.5 h-2.5 text-[#3B82F6] stroke-[3]" />}
+                              {isSelected && answerFeedback?.isCorrect === false
+                                ? <span className="text-[13px] font-bold text-[#DC2626]">×</span>
+                                : isSelected && <Check className={`w-2.5 h-2.5 ${hasCorrectAnswer ? 'text-[#16A34A]' : 'text-[#3B82F6]'} stroke-[3]`} />}
                             </div>
-                            <span className={`text-[14px] leading-[18px] flex-1 ${isSelected ? 'font-bold text-white' : 'font-normal text-[#0F1450]'}`}>
+                            <span className={`text-[14px] leading-[18px] flex-1 ${isSelected && answerFeedback ? 'font-bold' : isSelected ? 'font-bold text-white' : 'font-normal text-[#0F1450]'}`}>
                               {optLabel}
                             </span>
-                          </div>
+                          </GradedAnswerButton>
                         );
                       })}
                     </div>
+
+                    {answerFeedback && <p role="status" className={`text-sm font-semibold ${hasCorrectAnswer ? 'text-emerald-800' : 'text-red-800'}`}>{answerFeedback.message}</p>}
 
                     {/* Action Button */}
                     <div className="flex justify-end pt-2">
                       {currentMcqIndex < mcqList.length - 1 ? (
                         <button
                           onClick={() => {
-                            const isCorrect = isOptionCorrect(mcq, currentAnswer);
-                            if (!isCorrect) {
-                              toast.error('Incorrect answer. Please try again.');
+                            if (!hasCorrectAnswer) {
+                              if (currentAnswer !== undefined) checkMcqAnswer(mcq.id, currentAnswer);
                               return;
                             }
                             setCurrentMcqIndex(prev => prev + 1);
                           }}
-                          disabled={currentAnswer === undefined || isAccountBlocked}
+                          disabled={currentAnswer === undefined || isAccountBlocked || isCheckingMcqAnswer}
                           className="px-6 py-2.5 bg-[#3B82F6] text-white rounded-full font-['Outfit'] font-semibold text-[14px] hover:bg-[#2563EB] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         >
-                          Next Question
+                          {hasCorrectAnswer ? 'Next Question' : isCheckingMcqAnswer ? 'Checking…' : 'Check Answer'}
                         </button>
                       ) : (
                         <button
                           onClick={() => {
-                            const isCorrect = isOptionCorrect(mcq, currentAnswer);
-                            if (!isCorrect) {
-                              toast.error('Incorrect answer. Please try again.');
+                            if (!hasCorrectAnswer) {
+                              if (currentAnswer !== undefined) checkMcqAnswer(mcq.id, currentAnswer);
                               return;
                             }
                             const answers = mcqList.map((_, idx) => selectedAnswers[idx] ?? -1);
                             submitMcqs(answers);
                           }}
-                          disabled={Object.keys(selectedAnswers).length < mcqList.length || isAccountBlocked}
+                          disabled={currentAnswer === undefined || isAccountBlocked || isCheckingMcqAnswer}
                           className="px-6 py-2.5 bg-[#3B82F6] text-white rounded-full font-['Outfit'] font-semibold text-[14px] hover:bg-[#2563EB] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         >
-                          Submit Answers
+                          {hasCorrectAnswer ? 'Submit Answers' : isCheckingMcqAnswer ? 'Checking…' : 'Check Answer'}
                         </button>
                       )}
                     </div>
