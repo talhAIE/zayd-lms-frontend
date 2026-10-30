@@ -15,7 +15,7 @@ import Footer from "./footer";
 
 export default function Main() {
   return (
-    <div className="min-h-screen bg-white text-[#07294D] font-ibm-plex selection:bg-[#48D3BF]/30 selection:text-[#07294D] overflow-x-hidden" dir="rtl">
+    <div className="min-h-screen bg-white text-[#07294D] font-ibm-plex selection:bg-[#48D3BF]/30 selection:text-[#07294D] overflow-x-clip" dir="rtl">
       {/* Floating Glassmorphic Navbar */}
       <Navbar />
 

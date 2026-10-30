@@ -5,7 +5,7 @@ export default function VideoShowcaseSection() {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <section className="py-20 md:py-28 bg-[#F8FBFD] font-ibm-plex" dir="rtl">
+    <section id="zayd-demo" className="scroll-mt-24 py-20 md:py-28 bg-[#F8FBFD] font-ibm-plex" dir="rtl">
       <div className="max-w-[1180px] mx-auto px-4 md:px-6">
         {/* Section Header */}
         <div className="text-center max-w-[720px] mx-auto">
