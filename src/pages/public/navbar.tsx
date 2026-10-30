@@ -44,7 +44,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#EFF5FF] font-ibm-plex" dir="rtl">
-      <div className="mx-auto flex h-[86px] w-full max-w-[1180px] items-center justify-between gap-5 px-6 sm:px-[60px] lg:px-6">
+      <div className="mx-auto flex h-[86px] w-full max-w-[1180px] items-center justify-between gap-5 px-6 max-[360px]:gap-2 max-[360px]:px-3 sm:px-[60px] lg:px-6">
         <a
           href="#home"
           onClick={(event) => {
