@@ -9,7 +9,6 @@
   font-family: "IBM Plex Sans Arabic", sans-serif;
 }
 .personalized-learning__container { position: relative; max-width: 1280px; margin-inline: auto; }
-.personalized-learning__contours { position: absolute; z-index: -1; top: 0; left: -170px; width: min(960px, 77vw); height: 100%; color: #d2eaf6; pointer-events: none; }
 .personalized-learning__header { max-width: 1050px; margin-inline: auto; text-align: center; }
 .personalized-learning__heading { margin: 0; font-family: "Almarai", sans-serif; font-size: clamp(30px, 3.1vw, 44px); font-weight: 800; line-height: 1.5; }
 .personalized-learning__heading > span { display: block; }
@@ -49,7 +48,6 @@
   .personalized-learning__card > h3 { font-size: 15px; }
   .personalized-learning__card > p { font-size: 12px; }
   .personalized-learning__icon { width: 46px; height: 46px; }
-  .personalized-learning__contours { left: -260px; top: 130px; width: 900px; height: 600px; opacity: .7; }
 }
 @media (max-width: 559px) {
   .personalized-learning { padding: 30px 18px 36px; }
@@ -62,7 +60,6 @@
   .personalized-learning__icon { width: 44px; height: 44px; border-radius: 9px; }
   .personalized-learning__figure { max-width: 280px; }
   .personalized-learning__figure::before { border-width: 22px; }
-  .personalized-learning__contours { display: none; }
 }
 @media (forced-colors: active) {
   .personalized-learning__heading-accent { background: none; -webkit-text-fill-color: CanvasText; }
