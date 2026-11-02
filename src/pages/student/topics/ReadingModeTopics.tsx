@@ -165,7 +165,13 @@ export default function ReadingModeTopics({ avatar, demo }: {
     startRecording,
     stopRecording,
     cancelRecording
-  } = useAudioRecorder({ detectSilence: true });
+  } = useAudioRecorder({
+    detectSilence: true,
+    // Do not classify a quiet guest microphone as missing speech. Let the
+    // existing speech engine assess any meaningful captured signal.
+    silenceThreshold: demo ? 0.00001 : undefined,
+    silenceMessage: demo ? 'Your microphone recorded silence. Check the microphone selected in Chrome and its input volume, then try again.' : undefined,
+  });
 
   const {
     modeSessionId,

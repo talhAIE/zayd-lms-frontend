@@ -7,7 +7,7 @@ export interface AudioRecordResult {
   format: string;
 }
 
-async function isDefinitelySilent(blob: Blob): Promise<boolean> {
+async function isDefinitelySilent(blob: Blob, threshold = 0.002): Promise<boolean> {
   let context: AudioContext | null = null;
   try {
     context = new AudioContext();
@@ -18,7 +18,7 @@ async function isDefinitelySilent(blob: Blob): Promise<boolean> {
     for (let channel = 0; channel < decoded.numberOfChannels; channel += 1) {
       const samples = decoded.getChannelData(channel);
       for (let index = 0; index < samples.length; index += stride) {
-        if (Math.abs(samples[index]) > 0.002) return false;
+        if (Math.abs(samples[index]) > threshold) return false;
       }
     }
     return true;
@@ -29,7 +29,11 @@ async function isDefinitelySilent(blob: Blob): Promise<boolean> {
   }
 }
 
-export function useAudioRecorder({ detectSilence = false }: { detectSilence?: boolean } = {}) {
+export function useAudioRecorder({ detectSilence = false, silenceThreshold = 0.002, silenceMessage }: {
+  detectSilence?: boolean;
+  silenceThreshold?: number;
+  silenceMessage?: string;
+} = {}) {
   const [isRecording, setIsRecording] = useState(false);
   const [isStartingRecording, setIsStartingRecording] = useState(false);
   const [recordingError, setRecordingError] = useState<string | null>(null);
@@ -235,8 +239,8 @@ export function useAudioRecorder({ detectSilence = false }: { detectSilence?: bo
 
         setIsProcessingRecording(true);
         try {
-          if (detectSilence && await isDefinitelySilent(audioBlob)) {
-            toast.error('No speech was detected. Please record the sentence again.');
+          if (detectSilence && await isDefinitelySilent(audioBlob, silenceThreshold)) {
+            toast.error(silenceMessage || 'No speech was detected. Please record the sentence again.');
             resolve(null);
             return;
           }
@@ -260,7 +264,7 @@ export function useAudioRecorder({ detectSilence = false }: { detectSilence?: bo
         resolve(null);
       }
     });
-  }, [cleanup, detectSilence]);
+  }, [cleanup, detectSilence, silenceThreshold, silenceMessage]);
 
   const cancelRecording = useCallback(() => {
     startupRequestRef.current++;

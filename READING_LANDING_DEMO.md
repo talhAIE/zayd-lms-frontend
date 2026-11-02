@@ -50,6 +50,7 @@ Frontend checks:
 ```
 node dev/reading-demo-transport-check.cjs
 node dev/reading-demo-flow-check.cjs
+node dev/reading-demo-silence-check.cjs
 node dev/reading-audio-upload-check.cjs
 node dev/reading-finish-check.cjs
 node node_modules/typescript/bin/tsc --noEmit --project tsconfig.app.json
@@ -57,3 +58,5 @@ node node_modules/vite/bin/vite.js build
 ```
 
 Backend coverage includes public demo HTTP validation and lifecycle, actual reading-engine transitions with mocked speech providers, ownership isolation, expiry, in-flight close, rate/upload limits, server-only quiz answers, normal Reading/3D engine parity, and existing mode upload/session tests.
+
+The demo uses a more conservative browser silence threshold than normal lessons, so quiet microphone signals reach the existing speech assessment service. Digital silence is still rejected locally with device/volume guidance. This does not relax the backend's speech or reading validation and does not change the normal LMS recorder defaults.
