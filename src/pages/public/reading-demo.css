@@ -1,0 +1,16 @@
+.reading-demo-modal.reading-demo-modal { display: flex; width: calc(100vw - 32px); max-width: 1207px; height: min(794px, calc(100dvh - 32px)); max-height: calc(100dvh - 32px); padding: 0; gap: 0; overflow: hidden; border-radius: 24px; background: white; color: #282828; }
+.reading-demo-modal > div.relative { height: 100%; max-height: 100%; min-width: 0; border: 0; border-radius: inherit; }
+.reading-demo-modal > button:last-child { top: 22px; right: 22px; }
+.reading-demo-modal h1 { white-space: nowrap; font-size: clamp(16px, 2vw, 20px); }
+.personalized-learning__demo-trigger { width: 100%; height: 100%; cursor: pointer; color: inherit; font: inherit; transition: border-color .2s, box-shadow .2s, transform .2s; }
+.personalized-learning__demo-trigger:hover { border-color: #3b82f6; box-shadow: 0 8px 24px #3b82f61a; transform: translateY(-2px); }
+.personalized-learning__demo-trigger:focus-visible { outline: 3px solid #3b82f6; outline-offset: 3px; }
+.personalized-learning__demo-trigger > h3 { margin: 8px 0 0; font: 700 17px/1.65 Almarai, sans-serif; }
+.personalized-learning__demo-trigger > p { margin: 6px 0 0; color: #60646b; font-size: 13px; line-height: 1.75; }
+.personalized-learning__demo-label { margin-top: 8px; color: #1768d9; font-size: 12px; font-weight: 600; }
+@media (max-width: 767px) {
+  .reading-demo-modal.reading-demo-modal { width: 100vw; height: 100dvh; max-height: 100dvh; border: 0; border-radius: 0; }
+  .reading-demo-modal > button:last-child { top: 25px; right: 15px; }
+  .personalized-learning__demo-trigger > h3 { font-size: 14px; }
+  .personalized-learning__demo-trigger > p { font-size: 12px; }
+}

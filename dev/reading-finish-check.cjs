@@ -27,6 +27,7 @@ async function finish(modes, lessons = [], extra = {}) {
   const dependencies = {
     ...navigation.exports,
     avatar: undefined,
+    demo: undefined,
     courseId: 'course', unitId: 'unit', lessonId: 'lesson', lessonModeId: 'reading',
     allLessonsPath: '/student/courses/course/units/unit',
     setShowCompletionModal: () => {}, navigate: value => paths.push(value),
