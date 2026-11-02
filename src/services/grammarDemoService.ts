@@ -10,7 +10,7 @@ export const grammarDemoMode: LearningLessonMode = {
 const apiBase = `${(import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '')}/api/v1/public-demo`;
 
 /** Ephemeral guest API. No account API client, cookies, storage, or LMS progress. */
-export function createComponentDemoApi(mode: 'grammar' | 'writing' = 'grammar') {
+export function createComponentDemoApi(mode: 'grammar' | 'writing' | 'vocabulary' = 'grammar') {
   const base = `${apiBase}/${mode}`;
   let current: { token: string; controller: AbortController } | undefined;
   let completed = false;

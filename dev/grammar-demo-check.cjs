@@ -2,6 +2,7 @@
 const fs = require('node:fs'), path = require('node:path'), vm = require('node:vm'), ts = require('typescript'), assert = require('node:assert/strict');
 const { webcrypto } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
+const demoMode = process.argv[2] || 'grammar';
 const compile = source => ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } }).outputText;
 const source = fs.readFileSync(path.join(root, 'src/services/grammarDemoService.ts'), 'utf8').replace('import.meta.env.VITE_API_BASE_URL', "'http://localhost:4000'");
 const calls = [], listeners = new Map(), loaded = { exports: {} };
@@ -16,7 +17,7 @@ vm.runInNewContext(compile(source), {
   },
 });
 (async () => {
-  const api = loaded.exports.createGrammarDemoApi();
+  const api = loaded.exports.createComponentDemoApi(demoMode);
   await api.open();
   const first = calls[0].headers['x-demo-token'];
   assert.match(first, /^[a-f0-9]{64}$/);
@@ -41,7 +42,7 @@ vm.runInNewContext(compile(source), {
   assert.equal(listeners.size, 0);
   for (const call of calls) {
     assert.equal(call.credentials, 'omit');
-    assert.ok(call.url.startsWith('http://localhost:4000/api/v1/public-demo/grammar/'));
+    assert.ok(call.url.startsWith(`http://localhost:4000/api/v1/public-demo/${demoMode}/`));
     assert.equal(call.headers.Authorization, undefined);
   }
 
@@ -63,5 +64,5 @@ vm.runInNewContext(compile(source), {
     setComponents() {}, setCompletedComponentIds() {}, toast: { success() {}, error() {} }, console,
   })('quiz', { optionId: 'choice' });
   assert.equal(closes, 3, 'Guest completion and back close without LMS navigation or progress dispatches');
-  console.log('Grammar demo passed: guest-only API, fresh tokens, abort/late-result cleanup, auto-close, no LMS progress calls.');
+  console.log(`${demoMode} demo passed: guest-only API, fresh tokens, abort/late-result cleanup, auto-close, no LMS progress calls.`);
 })().catch(error => { console.error(error); process.exitCode = 1; });

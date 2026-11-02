@@ -778,7 +778,7 @@ export default function ComponentModePlay({ demo }: { demo?: GrammarDemo } = {})
             </h1>
 
             <span className="text-[13px] font-semibold text-[#64748B] truncate">
-              {demo ? demo.writing ? 'Quick practice · my daily routine' : 'Quick practice · am / is / are' : currentUnit?.title || 'Unit'}
+              {demo ? demoMode.modeKey === 'vocabulary-mode' ? 'Quick practice · at the library' : demo.writing ? 'Quick practice · my daily routine' : 'Quick practice · am / is / are' : currentUnit?.title || 'Unit'}
               {currentLesson ? ` • ${currentLesson.title}` : ''}
             </span>
           </div>
