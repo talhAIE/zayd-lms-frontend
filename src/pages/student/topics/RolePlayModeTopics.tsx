@@ -17,12 +17,16 @@ import { toast } from 'sonner';
 import { fetchUnitLessons } from '@/services/learningService';
 import { getNextLessonPath } from '@/utils/learning-navigation';
 import { useAvatarSpeakingVideo } from '@/components/avatar-reading/useAvatarSpeakingVideo';
+import type { AvatarReadingTransport } from '@/components/avatar-reading/AvatarReadingContext';
 
-export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;title:string}}={}) {
+export default function RolePlayModeTopics({avatar, demo}:{
+  avatar?:{topicId:string;title:string};
+  demo?: { lessonModeId: string; transport: AvatarReadingTransport; onClose: () => void };
+}={}) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const avatarWorkspaceRef = useAvatarWorkspace(Boolean(avatar), true);
-  const lessonModeId = avatar?.topicId || searchParams.get('modeId') || '';
+  const lessonModeId = demo?.lessonModeId || avatar?.topicId || searchParams.get('modeId') || '';
   const lessonId = searchParams.get('lessonId') || '';
   const courseId = searchParams.get('courseId') || undefined;
   const unitId = searchParams.get('unitId') || undefined;
@@ -49,16 +53,25 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
   const [activeAssessment, setActiveAssessment] = useState<SpeechAssessment | null>(null);
   const [hintOpenForMessageId, setHintOpenForMessageId] = useState<string | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const demoAliveRef = useRef(true);
+  useEffect(() => { demoAliveRef.current = true; return () => { demoAliveRef.current = false; }; }, []);
 
   const {
     isRecording,
+    isStartingRecording,
+    isProcessingRecording,
     recordTime,
     startRecording,
     stopRecording,
     cancelRecording
-  } = useAudioRecorder();
+  } = useAudioRecorder({ detectSilence: Boolean(demo), silenceThreshold: demo ? 0.00001 : undefined,
+    silenceMessage: demo ? 'Your microphone recorded silence. Check the selected microphone and input volume, then try again.' : undefined });
 
   const {
+    modeSessionId,
+    isSessionLoading,
+    sessionLoadError,
+    reloadSession,
     chatHistory,
     contentPayload,
     roleplayProgress,
@@ -74,7 +87,10 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
     restartSession
   } = useModeSession({ 
     lessonModeId,
+    transport: demo?.transport,
+    ephemeral: Boolean(demo),
     onCompleted: async () => {
+      if (demo) { demo.onClose(); return; }
       if (!avatar) await refreshLearningProgress(lessonId, { courseId, unitId });
       setIsJustCompleted(true);
       setShowCompletionModal(true);
@@ -107,10 +123,10 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
   },[avatar,isRecording,isAccountBlocked,showCompletionModal]);
 
   useEffect(() => {
-    if (isCompleted && !isJustCompleted) {
+    if (!demo && isCompleted && !isJustCompleted) {
       setShowCompletionModal(true);
     }
-  }, [isCompleted, isJustCompleted]);
+  }, [isCompleted, isJustCompleted, demo]);
 
   useEffect(() => {
     return () => {
@@ -194,6 +210,7 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
 
   const finishMode = async () => {
     setShowCompletionModal(false);
+    if (demo) { demo.onClose(); return; }
     if(avatar){stopRoleplayMedia();navigate(allLessonsPath,{replace:true});return;}
     if (courseId && unitId && lessonId) {
       try {
@@ -235,7 +252,7 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
 
   const handleSend = () => {
     if (!inputValue.trim() || cooldown || isTyping || isAccountBlocked) return;
-    if(avatar)stopRoleplayMedia();
+    if(avatar || demo)stopRoleplayMedia();
     sendMessage(inputValue);
     setInputValue('');
     triggerCooldown();
@@ -244,6 +261,10 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
   const handleStopRecording = async () => {
     if (cooldown || isTyping || isAccountBlocked) return;
     const res = await stopRecording();
+    if (demo && !demoAliveRef.current) {
+      if (res?.audioUrl.startsWith('blob:')) URL.revokeObjectURL(res.audioUrl);
+      return;
+    }
     if (res) {
       sendAudio(res.audioBase64, res.format, res.audioUrl);
       triggerCooldown();
@@ -267,6 +288,9 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
     if (!roleplayProgress || roleplayProgress.requiredTurns <= 0) return 0;
     return Math.min(99, Math.round((roleplayProgress.completedTurns / roleplayProgress.requiredTurns) * 100));
   };
+
+  const showDemoLoadState = Boolean(demo && (isSessionLoading || sessionLoadError || !modeSessionId || !contentPayload));
+  const demoRecordingBusy = Boolean(demo && (isStartingRecording || isProcessingRecording));
 
   return (
     <div ref={avatarWorkspaceRef}
@@ -312,7 +336,8 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
           
           <div className={`${avatar?'shrink-0':'flex-1'} flex justify-start`}>
             <button 
-              onClick={() => navigate(allLessonsPath, { replace: true })}
+              onClick={() => demo ? demo.onClose() : navigate(allLessonsPath, { replace: true })}
+              aria-label={demo ? 'Close roleplay demo' : 'Back to lessons'}
               className="flex justify-center items-center w-10 h-10 bg-white border border-[#E5E7EB] shadow-[0px_1px_4px_rgba(0,0,0,0.06)] rounded-full hover:bg-gray-50 transition-colors"
             >
               <ChevronLeft className="w-5 h-5 text-[#282828]" />
@@ -335,7 +360,7 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
               </div>
             )}
           </div>
-          <div className={`${avatar?'hidden':'flex-1 flex'} justify-end items-center gap-2`}>
+          <div className={`${avatar || demo?'hidden':'flex-1 flex'} justify-end items-center gap-2`}>
             {/* Optional placeholders */}
           </div>
         </div>
@@ -357,7 +382,14 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
       </div>
 
       {/* Main Split Content */}
-      <div className={`flex flex-col min-h-0 ${avatar?'avatar-workspace-body flex-1 gap-2 px-2 pb-2 sm:px-4':'md:flex-row px-3 md:px-8 gap-3 md:gap-4 flex-1 pb-3 md:pb-6'}`}>
+      {showDemoLoadState && <div className="flex flex-1 min-h-0 flex-col items-center justify-center gap-4 p-6 text-center" role={sessionLoadError ? 'alert' : 'status'}>
+        <p>{sessionLoadError || 'Loading roleplay practice…'}</p>
+        <div className="flex gap-3">
+          {sessionLoadError && <button type="button" onClick={reloadSession} className="rounded-full bg-blue-500 px-6 py-2 font-semibold text-white">Retry</button>}
+          <button type="button" onClick={() => demo?.onClose()} className="rounded-full border px-6 py-2">Close demo</button>
+        </div>
+      </div>}
+      <div className={`${showDemoLoadState ? 'hidden' : 'flex'} flex-col min-h-0 ${avatar?'avatar-workspace-body flex-1 gap-2 px-2 pb-2 sm:px-4':'md:flex-row px-3 md:px-8 gap-3 md:gap-4 flex-1 pb-3 md:pb-6'}`}>
         
         {/* Mode Sidebar */}
         {!avatar && <div className={`${isComposerFocused ? 'hidden md:flex' : 'flex'} flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0`}>
@@ -670,9 +702,9 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
               <>
                 <input 
                   type="text" 
-                  placeholder={cooldown ? "Please wait..." : "Write your message..."}
+                  placeholder={demoRecordingBusy ? 'Preparing microphone…' : cooldown ? "Please wait..." : "Write your message..."}
                   value={inputValue}
-                  disabled={cooldown || isTyping || isAccountBlocked}
+                  disabled={cooldown || isTyping || isAccountBlocked || demoRecordingBusy}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyDown}
                   onFocus={() => setIsComposerFocused(true)}
@@ -682,15 +714,17 @@ export default function RolePlayModeTopics({avatar}:{avatar?:{topicId:string;tit
                 {inputValue.trim() ? (
                   <button 
                     onClick={handleSend}
-                    disabled={cooldown || isTyping || isAccountBlocked}
+                    aria-label={demo ? 'Send roleplay response' : undefined}
+                    disabled={cooldown || isTyping || isAccountBlocked || demoRecordingBusy}
                     className="flex shrink-0 justify-center items-center w-11 h-11 bg-[#5C9DFF] rounded-full text-white hover:bg-[#4A8BEB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Send className="w-5 h-5" />
                   </button>
                 ) : (
                   <button 
-                    onClick={() => {if(avatar){stopRoleplayMedia();avatarVideoRef.current?.pause();}startRecording();}}
-                    disabled={cooldown || isTyping || isAccountBlocked}
+                    onClick={() => {if(avatar || demo){stopRoleplayMedia();avatarVideoRef.current?.pause();}startRecording();}}
+                    aria-label={demo ? 'Record roleplay response' : undefined}
+                    disabled={cooldown || isTyping || isAccountBlocked || demoRecordingBusy}
                     className="flex shrink-0 justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Mic className="w-5 h-5" />

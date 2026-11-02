@@ -1,4 +1,10 @@
-# Public Reading Mode demo
+# Public landing mode demos
+
+Roleplay Mode is the third public demo. Its existing `RolePlayModeTopics` UI presents a short cafe scenario, then three meaningful exchanges: order a drink, choose a size, and finish politely. Both typed replies and microphone recordings use the existing Roleplay engine, relevance evaluation, hints, feedback, speech assessment, and tutor voice. The demo sets `requiredTurns: 3` in its own content only; ordinary lessons retain their configured lengths and behavior. There is no Roleplay quiz.
+
+Roleplay has its own `/api/v1/public-demo/roleplay` endpoints, anonymous tokens, memory store, close/expiry handling, and request limits. `/actions` accepts text or history; `/:sessionId/audio` accepts up to 3 MB and uses the existing audio decoder/duration validation and speech engine. Recording attempt IDs prevent network retries from awarding duplicate progress. Completed sessions are discarded immediately. It never creates an LMS user, saves LMS progress, or archives recordings. Closing stops playback/recording, aborts pending browser requests, and ignores late results. Reopening begins at the scenario with 0/3 turns.
+
+`scripts/generate-roleplay-demo-audio.ts` creates the fixed scenario narration once with the existing Tony voice. Conversation replies use the existing live AI and speech providers and share their quota. `scripts/roleplay-demo-smoke.ts` checks real text and synthetic voice replies, unrelated-answer rejection, three-turn completion, and session destruction against the isolated local demo server on port 4000.
 
 Listening Mode is also available beside Reading in the same landing section. It reuses `ListeningModeTopics` and the existing listening engine through separate `/api/v1/public-demo/listening` endpoints and a separate memory store. The flow is a complete first listen, a comprehension prompt with a complete second listen, then one server-graded quiz question. A correct submission closes the popup; a wrong submission keeps the normal quiz retry behavior. No microphone is used in Listening mode.
 
@@ -56,6 +62,7 @@ node dev/reading-demo-transport-check.cjs
 node dev/reading-demo-flow-check.cjs
 node dev/reading-demo-silence-check.cjs
 node dev/listening-demo-flow-check.cjs
+node dev/roleplay-demo-flow-check.cjs
 node dev/reading-audio-upload-check.cjs
 node dev/reading-finish-check.cjs
 node node_modules/typescript/bin/tsc --noEmit --project tsconfig.app.json

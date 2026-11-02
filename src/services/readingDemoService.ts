@@ -3,12 +3,13 @@ import type { AvatarReadingTransport } from '@/components/avatar-reading/AvatarR
 
 export const READING_DEMO_ID = '74baf277-61bd-4f07-bfee-9fe1842cb935';
 export const LISTENING_DEMO_ID = 'ae0b7f95-ce37-4689-9a41-4cd3c96267e6';
+export const ROLEPLAY_DEMO_ID = 'afce9412-81c7-4912-93cf-efad24ae3028';
 const apiBase = `${(import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '')}/api/v1/public-demo`;
 type Event = { event: string; payload: any };
 type Listener = (...args: any[]) => void;
 
 /** Guest-only transport: never reads account tokens or uses login/refresh interceptors. */
-export function createReadingDemoTransport(mode: 'reading' | 'listening' = 'reading'): AvatarReadingTransport {
+export function createReadingDemoTransport(mode: 'reading' | 'listening' | 'roleplay' = 'reading'): AvatarReadingTransport {
   const base = `${apiBase}/${mode}`;
   let current: { token: string; controller: AbortController } | undefined;
   const request = async (path: string, body: Record<string, unknown> | FormData, signal?: AbortSignal) => {
@@ -40,7 +41,7 @@ export function createReadingDemoTransport(mode: 'reading' | 'listening' = 'read
     storagePrefix: `public-demo:${mode}:`,
     upload: async params => {
       const bytes = Uint8Array.from(atob(params.base64), c => c.charCodeAt(0));
-      if (bytes.length > 3 * 1024 * 1024) throw new Error('Please record a shorter reading attempt (maximum 3 MB).');
+      if (bytes.length > 3 * 1024 * 1024) throw new Error('Please record a shorter response (maximum 3 MB).');
       const body = new FormData();
       body.append('audio', new Blob([bytes], { type: `audio/${params.format}` }), `reading.${params.format}`);
       body.append('format', params.format); body.append('clientAttemptId', params.attemptId);
@@ -60,10 +61,20 @@ export function createReadingDemoTransport(mode: 'reading' | 'listening' = 'read
           if (!active()) return transport;
           if (event === 'reset_activity_timer') return transport;
           const starting = event === 'start_mode_session';
-          void request(starting ? 'start' : 'actions', starting ? {} : { action: event, ...body }).then(result => {
+          const recording = mode === 'roleplay' && event === 'audio';
+          let payload: Record<string, unknown> | FormData = starting ? {} : { action: event, ...body };
+          if (recording) {
+            const bytes = Uint8Array.from(atob(String(body.audioBuffer)), c => c.charCodeAt(0));
+            if (bytes.length > 3 * 1024 * 1024) { deliver('error', { message: 'Please record a shorter response (maximum 3 MB).', clientAttemptId: body.clientAttemptId }); return transport; }
+            payload = new FormData();
+            payload.append('audio', new Blob([bytes], { type: `audio/${body.format}` }), `roleplay.${body.format}`);
+            payload.append('format', String(body.format)); payload.append('clientAttemptId', String(body.clientAttemptId));
+          }
+          const path = recording ? `${encodeURIComponent(String(body.modeSessionId))}/audio` : starting ? 'start' : 'actions';
+          void request(path, payload).then(result => {
             for (const item of result.events) deliver(item.event, item.payload);
           }).catch(error => {
-            if (active()) deliver('error', { message: error.message || 'Unable to load the demo. Please try again.', code: error.response?.data?.code });
+            if (active()) deliver('error', { message: error.message || 'Unable to load the demo. Please try again.', code: error.response?.data?.code, clientAttemptId: body.clientAttemptId });
           });
           return transport;
         },
