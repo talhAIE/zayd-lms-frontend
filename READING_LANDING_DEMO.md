@@ -34,6 +34,15 @@ From the backend checkout, `node -r ts-node/register -r tsconfig-paths/register 
 
 Run Vite on port 5179 with `VITE_API_BASE_URL=http://127.0.0.1:4012` in the process environment. No `.env` edits are needed. Open the Reading card on the landing page.
 
+If your frontend already targets `http://localhost:4000` and the normal backend is not running, start the isolated preview on that port instead (PowerShell):
+
+```
+$env:READING_DEMO_PREVIEW_PORT='4000'
+node -r ts-node/register -r tsconfig-paths/register scripts/reading-demo-preview.ts
+```
+
+Keep this terminal running while testing. The isolated preview accepts localhost frontend origins and serves only demo endpoints. To test the full LMS, run the normal backend with the new module instead; do not run both servers on the same port.
+
 `scripts/reading-demo-smoke.ts` checks all three sentences using synthetic narrated audio against the real speech provider, then checks the quiz and completed-session destruction. It requires the preview server and existing backend provider configuration. It does not use a student's microphone or account.
 
 Frontend checks:
