@@ -10,11 +10,11 @@ import {
   getUnits,
 } from '@/redux/slices/learningSlice';
 import { 
-  fetchLessonModeComponents,
+  fetchLessonModeComponents as fetchNormalComponents,
   resetLessonModePractice,
-  submitComponentAttempt,
-  saveComponentAttempt,
-  startLearningComponent,
+  submitComponentAttempt as submitNormalAttempt,
+  saveComponentAttempt as saveNormalAttempt,
+  startLearningComponent as startNormalComponent,
   fetchModeResources,
   interactWithResource,
   submitReflection,
@@ -34,6 +34,7 @@ import { toast } from 'sonner';
 import { getLearningModePath, getNextLessonPath } from '@/utils/learning-navigation';
 import { useLearningProgressRefresh } from '@/hooks/useLearningProgressRefresh';
 import TopicCompletionModal from '@/components/ui/TopicCompletionModal';
+import { grammarDemoMode, type GrammarDemo } from '@/services/grammarDemoService';
 
 import {
   DropdownComponent,
@@ -78,13 +79,19 @@ const hasIncompletePracticeAttempt = (components: LearningComponent[]) =>
       component.attempt !== null && !component.attempt.completedAt,
   );
 
-export default function ComponentModePlay() {
-  const { courseId, unitId, lessonId, modeId } = useParams<{
+export default function ComponentModePlay({ demo }: { demo?: GrammarDemo } = {}) {
+  const route = useParams<{
     courseId: string;
     unitId: string;
     lessonId: string;
     modeId: string;
   }>();
+  const { courseId, unitId, lessonId } = demo ? {} : route;
+  const modeId = demo ? grammarDemoMode.id : route.modeId;
+  const fetchLessonModeComponents = demo?.api.components ?? fetchNormalComponents;
+  const submitComponentAttempt = demo?.api.submit ?? submitNormalAttempt;
+  const saveComponentAttempt = demo?.api.save ?? saveNormalAttempt;
+  const startLearningComponent = demo?.api.start ?? startNormalComponent;
 
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
@@ -132,6 +139,7 @@ export default function ComponentModePlay() {
   const [isJustCompleted, setIsJustCompleted] = useState(false);
 
   const handleBack = () => {
+    if (demo) { demo.onClose(); return; }
     const isDirectLesson = currentLesson?.launchBehavior === 'direct_mode' || modes.length <= 1;
     if (isDirectLesson && courseId && unitId) {
       navigate(`/student/courses/${courseId}/units/${unitId}`);
@@ -143,6 +151,7 @@ export default function ComponentModePlay() {
   };
 
   const handleResetMode = async () => {
+    if (demo) return;
     if (!modeId) return;
     setIsSubmittingMode(true);
     try {
@@ -170,6 +179,7 @@ export default function ComponentModePlay() {
   };
 
   const refreshModeState = useCallback(async () => {
+    if (demo) { setComponents(await demo.api.components(grammarDemoMode.id)); return []; }
     if (!modeId || !lessonId) return [];
 
     const mode = resolvedMode ?? modes.find((m) => m.id === modeId);
@@ -196,10 +206,20 @@ export default function ComponentModePlay() {
     })));
     await refreshLearningProgress(lessonId, { unitId, courseId });
     return refreshedModes;
-  }, [courseId, dispatch, lessonId, modeId, modes, refreshLearningProgress, resolvedMode, unitId]);
+  }, [demo, courseId, dispatch, lessonId, modeId, modes, refreshLearningProgress, resolvedMode, unitId]);
 
   // Load components & initialize mode session
   useEffect(() => {
+    if (demo) {
+      let active = true;
+      setLoading(true); setError(null); setResolvedMode(grammarDemoMode);
+      void demo.api.open().then(data => {
+        if (active) { setComponents(data); setCurrentIndex(0); setLocalResponses({}); }
+      }).catch(err => {
+        if (active) setError(err.message || 'Unable to load grammar practice. Close the demo and try again.');
+      }).finally(() => { if (active) setLoading(false); });
+      return () => { active = false; demo.api.close(); };
+    }
     async function loadData() {
       if (!modeId) return;
       setLoading(true);
@@ -340,7 +360,7 @@ export default function ComponentModePlay() {
     }
 
     loadData();
-  }, [dispatch, lessonId, modeId]);
+  }, [demo, dispatch, lessonId, modeId]);
 
   // Handle component answer submissions
   const handleComponentSubmit = async (componentId: string, response: any) => {
@@ -396,8 +416,10 @@ export default function ComponentModePlay() {
       } else {
         toast.success(result.isComplete ? 'Activity completed!' : 'Response submitted.');
       }
+      if (demo?.api.isCompleted()) demo.onClose();
       return result;
     } catch (err: any) {
+      if (demo && err.name === 'AbortError' && !demo.api.isOpen()) return;
       console.error('Failed to submit component response:', err);
       toast.error(err.response?.data?.message || 'Failed to submit response.');
       throw err;
@@ -605,6 +627,7 @@ export default function ComponentModePlay() {
   };
 
   const handleCompleteNavigation = async (updatedModesList?: any[]) => {
+    if (demo) { demo.onClose(); return; }
     const activeModes = updatedModesList ?? modes;
     const currentModeIndex = activeModes.findIndex((m: any) => m.id === modeId);
     const nextMode = currentModeIndex !== -1 && currentModeIndex < activeModes.length - 1 
@@ -631,6 +654,13 @@ export default function ComponentModePlay() {
 
   // Complete the entire mode and progress to next mode or lesson roadmap
   const handleCompleteMode = async (acknowledgedComponent?: LearningComponent) => {
+    if (demo) {
+      try { await demo.api.finish(); demo.onClose(); }
+      catch (err: any) {
+        if (err.name !== 'AbortError' || demo.api.isOpen()) toast.error(err.message || 'Complete the required activities first.');
+      }
+      return;
+    }
     if (!modeId || !lessonId) return;
     const isModeAlreadyCompletedOnBackend = currentMode?.status === 'completed';
     
@@ -724,7 +754,7 @@ export default function ComponentModePlay() {
   );
 
   return (
-    <div className="w-full max-w-[1040px] mx-auto pb-16 flex flex-col gap-6 font-['Outfit',sans-serif]">
+    <div className={`${demo ? 'grammar-demo-player ' : ''}w-full max-w-[1040px] mx-auto pb-16 flex flex-col gap-6 font-['Outfit',sans-serif]`}>
       {/* Mode Header Card with Back and Reset Buttons */}
       <div className="w-full bg-white rounded-none md:rounded-[20px] border border-[#E2E8F0] shadow-sm p-4 md:p-6 flex flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
@@ -732,7 +762,7 @@ export default function ComponentModePlay() {
             type="button"
             onClick={handleBack}
             className="w-10 h-10 rounded-full border border-[#E2E8F0] bg-white flex items-center justify-center text-[#282828] hover:bg-gray-50 transition-all cursor-pointer shadow-sm flex-shrink-0"
-            title={currentLesson?.launchBehavior === 'direct_mode' || modes.length <= 1 ? 'Back to Lessons' : 'Back to Lesson'}
+            title={demo ? 'Close Grammar demo' : currentLesson?.launchBehavior === 'direct_mode' || modes.length <= 1 ? 'Back to Lessons' : 'Back to Lesson'}
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
@@ -742,13 +772,13 @@ export default function ComponentModePlay() {
             </h1>
 
             <span className="text-[13px] font-semibold text-[#64748B] truncate">
-              {currentUnit?.title || 'Unit'}
+              {demo ? 'Quick practice · am / is / are' : currentUnit?.title || 'Unit'}
               {currentLesson ? ` • ${currentLesson.title}` : ''}
             </span>
           </div>
         </div>
 
-        <button
+        {!demo && <button
           type="button"
           onClick={() => {
             if (canShowCompletedModePopup) {
@@ -766,7 +796,7 @@ export default function ComponentModePlay() {
         >
           <RotateCcw className="w-4 h-4 text-[#5C9DFF]" />
           <span className="hidden sm:inline">Reset Mode</span>
-        </button>
+        </button>}
       </div>
 
       {/* Top Progress Bar */}
@@ -1014,6 +1044,7 @@ export default function ComponentModePlay() {
                         await handleCompleteMode(result);
                       }
                     } catch (startError: any) {
+                      if (demo && startError.name === 'AbortError' && !demo.api.isOpen()) return;
                       toast.error(
                         startError.response?.data?.message ||
                           'Unable to record this activity step.',

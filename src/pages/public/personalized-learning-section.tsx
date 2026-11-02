@@ -5,11 +5,20 @@ import { lazy, Suspense, useCallback, useState } from 'react';
 import readingIcon from '@/assets/svgs/reading-mode.png';
 import listeningIcon from '@/assets/svgs/listening-mode.png';
 import roleplayIcon from '@/assets/svgs/roleplay-mode.png';
+import { BookOpenCheck } from 'lucide-react';
 import './reading-demo.css';
 
 const ReadingDemoModal = lazy(() => import('./ReadingDemoModal'));
 const ListeningDemoModal = lazy(() => import('./ListeningDemoModal'));
 const RoleplayDemoModal = lazy(() => import('./RoleplayDemoModal'));
+const GrammarDemoModal = lazy(() => import('./GrammarDemoModal'));
+
+const demos = {
+  '100% 0%': { mode: 'roleplay', title: 'وضع المحادثة', desc: 'تدرّب على حوار قصير من الحياة اليومية.', icon: roleplayIcon },
+  '50% 0%': { mode: 'listening', title: 'وضع الاستماع', desc: 'استمع لقصة قصيرة، واختبر فهمك.', icon: listeningIcon },
+  '0% 0%': { mode: 'reading', title: 'وضع القراءة', desc: 'استمع، واقرأ بصوتك، واختبر فهمك.', icon: readingIcon },
+  '100% 100%': { mode: 'grammar', title: 'وضع القواعد', desc: 'تعلّم قاعدة قصيرة، وتدرّب عليها، واختبر فهمك.', icon: null },
+} as const;
 
 const pillars = [
   { title: "تعلّم مخصص", desc: "تجربة تتفاعل مع مستوى الطالب واحتياجه وتقدمه.", position: "100% 0%" },
@@ -21,7 +30,7 @@ const pillars = [
 ];
 
 export default function PersonalizedLearningSection() {
-  const [demoOpen, setDemoOpen] = useState<'reading' | 'listening' | 'roleplay' | null>(null);
+  const [demoOpen, setDemoOpen] = useState<'reading' | 'listening' | 'roleplay' | 'grammar' | null>(null);
   const closeDemo = useCallback(() => setDemoOpen(null), []);
   return (
     <section id="personalized-learning" className="personalized-learning" dir="rtl" lang="ar" aria-labelledby="personalized-heading">
@@ -41,13 +50,14 @@ export default function PersonalizedLearningSection() {
             <img src={heroAvatar} alt="معلم زيد الذكي يحمل جهازًا لوحيًا ويشير إلى مزايا التعلم المخصص" width={1024} height={1017} loading="lazy" decoding="async" />
           </div>
           <ul className="personalized-learning__cards" aria-label="مزايا التعلم المخصص مع زيد">
-            {pillars.map((pillar) => (
-              pillar.position.endsWith(' 0%') ? (
+            {pillars.map((pillar) => {
+              const demo = demos[pillar.position as keyof typeof demos];
+              return demo ? (
                 <li key={pillar.title}>
-                  <button type="button" className="personalized-learning__card personalized-learning__demo-trigger" onClick={() => setDemoOpen(pillar.position === '0% 0%' ? 'reading' : pillar.position === '50% 0%' ? 'listening' : 'roleplay')} aria-haspopup="dialog">
-                    <img src={pillar.position === '0% 0%' ? readingIcon : pillar.position === '50% 0%' ? listeningIcon : roleplayIcon} alt="" width={52} height={52} className="h-[52px] w-[52px] object-contain" />
-                    <h3>{pillar.position === '0% 0%' ? 'وضع القراءة' : pillar.position === '50% 0%' ? 'وضع الاستماع' : 'وضع المحادثة'}</h3>
-                    <p>{pillar.position === '0% 0%' ? 'استمع، واقرأ بصوتك، واختبر فهمك.' : pillar.position === '50% 0%' ? 'استمع لقصة قصيرة، واختبر فهمك.' : 'تدرّب على حوار قصير من الحياة اليومية.'}</p>
+                  <button type="button" className="personalized-learning__card personalized-learning__demo-trigger" onClick={() => setDemoOpen(demo.mode)} aria-haspopup="dialog">
+                    {demo.icon ? <img src={demo.icon} alt="" width={52} height={52} className="h-[52px] w-[52px] object-contain" /> : <span className="flex h-[52px] w-[52px] items-center justify-center rounded-xl bg-blue-50 text-blue-500"><BookOpenCheck aria-hidden="true" size={32} /></span>}
+                    <h3>{demo.title}</h3>
+                    <p>{demo.desc}</p>
                     <span className="personalized-learning__demo-label">جرّب الآن — بدون تسجيل</span>
                   </button>
                 </li>
@@ -56,11 +66,11 @@ export default function PersonalizedLearningSection() {
                 <h3>{pillar.title}</h3>
                 <p>{pillar.desc}</p>
               </li>
-            ))}
+            })}
           </ul>
         </div>
       </div>
-      {demoOpen && <Suspense fallback={null}>{demoOpen === 'reading' ? <ReadingDemoModal onClose={closeDemo} /> : demoOpen === 'listening' ? <ListeningDemoModal onClose={closeDemo} /> : <RoleplayDemoModal onClose={closeDemo} />}</Suspense>}
+      {demoOpen && <Suspense fallback={null}>{demoOpen === 'reading' ? <ReadingDemoModal onClose={closeDemo} /> : demoOpen === 'listening' ? <ListeningDemoModal onClose={closeDemo} /> : demoOpen === 'grammar' ? <GrammarDemoModal onClose={closeDemo} /> : <RoleplayDemoModal onClose={closeDemo} />}</Suspense>}
     </section>
   );
 }
