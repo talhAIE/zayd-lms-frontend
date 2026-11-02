@@ -1,5 +1,9 @@
 # Public Reading Mode demo
 
+Listening Mode is also available beside Reading in the same landing section. It reuses `ListeningModeTopics` and the existing listening engine through separate `/api/v1/public-demo/listening` endpoints and a separate memory store. The flow is a complete first listen, a comprehension prompt with a complete second listen, then one server-graded quiz question. A correct submission closes the popup; a wrong submission keeps the normal quiz retry behavior. No microphone is used in Listening mode.
+
+Its fixed story is **8.892 seconds**. Instruction and comprehension audio are 4.824 and 4.860 seconds. All three use the existing Tony voice; their duration was checked from decoded PCM by `scripts/generate-listening-demo-audio.ts`. Packaged audio is committed in the backend, so playing the demo needs no runtime speech-generation request. This does not change normal Listening content, audio lengths, authentication, progress, or completion behavior. Reading keeps its own endpoints and session lifetime.
+
 Branch: `feat/live_interact` in the frontend and `zayd-lms-backend` checkouts.
 
 The Reading Mode card in `#personalized-learning` opens the existing `ReadingModeTopics` screen in a dialog. The session uses a fixed three-sentence A2 passage, the same sentence assessment/retry flow, and one server-graded question. A correct checked answer submits automatically; successful completion closes the dialog. Incorrect answers retain the normal retry UI.
@@ -51,6 +55,7 @@ Frontend checks:
 node dev/reading-demo-transport-check.cjs
 node dev/reading-demo-flow-check.cjs
 node dev/reading-demo-silence-check.cjs
+node dev/listening-demo-flow-check.cjs
 node dev/reading-audio-upload-check.cjs
 node dev/reading-finish-check.cjs
 node node_modules/typescript/bin/tsc --noEmit --project tsconfig.app.json

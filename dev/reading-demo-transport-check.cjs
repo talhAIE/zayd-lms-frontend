@@ -45,5 +45,14 @@ const flush = async () => { for (let i = 0; i < 20; i++) await Promise.resolve()
   assert.equal(requests.at(-2).config.signal.aborted, true);
   pending[0]({ ok: true, json: async () => ({ events: [{ event: 'mode_session_started', payload: {} }] }) });
   await flush();
+  holdStart = false;
+  const listeningAdapter = moduleValue.exports.createReadingDemoTransport('listening');
+  const listening = listeningAdapter.connect();
+  listening.on('connect', () => listening.emit('start_mode_session'));
+  await flush();
+  assert.equal(requests.at(-1).url, 'http://localhost:4012/api/v1/public-demo/listening/start');
+  assert.equal(requests.at(-1).config.credentials, 'omit');
+  listening.disconnect();
+  assert.equal(requests.at(-1).url, 'http://localhost:4012/api/v1/public-demo/listening/close');
   console.log('Reading demo transport passed: no account access, binary upload, fresh tokens, abort/keepalive close, pagehide and stale response isolation.');
 })().catch(error => { console.error(error); process.exitCode = 1; });

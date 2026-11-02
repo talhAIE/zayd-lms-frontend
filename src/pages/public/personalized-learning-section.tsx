@@ -3,9 +3,11 @@ import featureIcons from "@/assets/landing-page/personalized-feature-icons.png";
 import "./personalized-learning-section.css";
 import { lazy, Suspense, useCallback, useState } from 'react';
 import readingIcon from '@/assets/svgs/reading-mode.png';
+import listeningIcon from '@/assets/svgs/listening-mode.png';
 import './reading-demo.css';
 
 const ReadingDemoModal = lazy(() => import('./ReadingDemoModal'));
+const ListeningDemoModal = lazy(() => import('./ListeningDemoModal'));
 
 const pillars = [
   { title: "تعلّم مخصص", desc: "تجربة تتفاعل مع مستوى الطالب واحتياجه وتقدمه.", position: "100% 0%" },
@@ -17,8 +19,8 @@ const pillars = [
 ];
 
 export default function PersonalizedLearningSection() {
-  const [demoOpen, setDemoOpen] = useState(false);
-  const closeDemo = useCallback(() => setDemoOpen(false), []);
+  const [demoOpen, setDemoOpen] = useState<'reading' | 'listening' | null>(null);
+  const closeDemo = useCallback(() => setDemoOpen(null), []);
   return (
     <section id="personalized-learning" className="personalized-learning" dir="rtl" lang="ar" aria-labelledby="personalized-heading">
       <div className="personalized-learning__container">
@@ -38,12 +40,12 @@ export default function PersonalizedLearningSection() {
           </div>
           <ul className="personalized-learning__cards" aria-label="مزايا التعلم المخصص مع زيد">
             {pillars.map((pillar) => (
-              pillar.position === '0% 0%' ? (
+              pillar.position === '0% 0%' || pillar.position === '50% 0%' ? (
                 <li key={pillar.title}>
-                  <button type="button" className="personalized-learning__card personalized-learning__demo-trigger" onClick={() => setDemoOpen(true)} aria-haspopup="dialog">
-                    <img src={readingIcon} alt="" width={52} height={52} className="h-[52px] w-[52px] object-contain" />
-                    <h3>وضع القراءة</h3>
-                    <p>استمع، واقرأ بصوتك، واختبر فهمك.</p>
+                  <button type="button" className="personalized-learning__card personalized-learning__demo-trigger" onClick={() => setDemoOpen(pillar.position === '0% 0%' ? 'reading' : 'listening')} aria-haspopup="dialog">
+                    <img src={pillar.position === '0% 0%' ? readingIcon : listeningIcon} alt="" width={52} height={52} className="h-[52px] w-[52px] object-contain" />
+                    <h3>{pillar.position === '0% 0%' ? 'وضع القراءة' : 'وضع الاستماع'}</h3>
+                    <p>{pillar.position === '0% 0%' ? 'استمع، واقرأ بصوتك، واختبر فهمك.' : 'استمع لقصة قصيرة، واختبر فهمك.'}</p>
                     <span className="personalized-learning__demo-label">جرّب الآن — بدون تسجيل</span>
                   </button>
                 </li>
@@ -56,7 +58,7 @@ export default function PersonalizedLearningSection() {
           </ul>
         </div>
       </div>
-      {demoOpen && <Suspense fallback={null}><ReadingDemoModal onClose={closeDemo} /></Suspense>}
+      {demoOpen && <Suspense fallback={null}>{demoOpen === 'reading' ? <ReadingDemoModal onClose={closeDemo} /> : <ListeningDemoModal onClose={closeDemo} />}</Suspense>}
     </section>
   );
 }

@@ -2,12 +2,14 @@ import type { Socket } from 'socket.io-client';
 import type { AvatarReadingTransport } from '@/components/avatar-reading/AvatarReadingContext';
 
 export const READING_DEMO_ID = '74baf277-61bd-4f07-bfee-9fe1842cb935';
-const base = `${(import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '')}/api/v1/public-demo/reading`;
+export const LISTENING_DEMO_ID = 'ae0b7f95-ce37-4689-9a41-4cd3c96267e6';
+const apiBase = `${(import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '')}/api/v1/public-demo`;
 type Event = { event: string; payload: any };
 type Listener = (...args: any[]) => void;
 
 /** Guest-only transport: never reads account tokens or uses login/refresh interceptors. */
-export function createReadingDemoTransport(): AvatarReadingTransport {
+export function createReadingDemoTransport(mode: 'reading' | 'listening' = 'reading'): AvatarReadingTransport {
+  const base = `${apiBase}/${mode}`;
   let current: { token: string; controller: AbortController } | undefined;
   const request = async (path: string, body: Record<string, unknown> | FormData, signal?: AbortSignal) => {
     const session = current;
@@ -35,7 +37,7 @@ export function createReadingDemoTransport(): AvatarReadingTransport {
     }
   };
   return {
-    storagePrefix: 'public-demo:',
+    storagePrefix: `public-demo:${mode}:`,
     upload: async params => {
       const bytes = Uint8Array.from(atob(params.base64), c => c.charCodeAt(0));
       if (bytes.length > 3 * 1024 * 1024) throw new Error('Please record a shorter reading attempt (maximum 3 MB).');

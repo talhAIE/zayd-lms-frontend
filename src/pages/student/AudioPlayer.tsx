@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Pause, Play, LoaderPinwheel } from "lucide-react";
 
 interface AudioPlayerProps {
+  ariaLabel?: string;
   audioSrc: string;
   isPlaying: boolean;
   progress: number;
@@ -24,6 +25,7 @@ const formatTime = (sec: number) => {
 };
 
 const AudioPlayer: React.FC<AudioPlayerProps> = ({
+  ariaLabel,
   audioSrc,
   isPlaying,
   isLoading = false,
@@ -122,6 +124,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
       }`}
     >
       <Button
+        aria-label={ariaLabel}
         size="icon"
         className={`rounded-full text-white shadow-md h-8 w-8 flex-shrink-0 ${
           isGradient
