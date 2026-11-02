@@ -5,19 +5,21 @@ import { lazy, Suspense, useCallback, useState } from 'react';
 import readingIcon from '@/assets/svgs/reading-mode.png';
 import listeningIcon from '@/assets/svgs/listening-mode.png';
 import roleplayIcon from '@/assets/svgs/roleplay-mode.png';
-import { BookOpenCheck } from 'lucide-react';
+import { BookOpenCheck, PenLine } from 'lucide-react';
 import './reading-demo.css';
 
 const ReadingDemoModal = lazy(() => import('./ReadingDemoModal'));
 const ListeningDemoModal = lazy(() => import('./ListeningDemoModal'));
 const RoleplayDemoModal = lazy(() => import('./RoleplayDemoModal'));
 const GrammarDemoModal = lazy(() => import('./GrammarDemoModal'));
+const WritingDemoModal = lazy(() => import('./WritingDemoModal'));
 
 const demos = {
   '100% 0%': { mode: 'roleplay', title: 'وضع المحادثة', desc: 'تدرّب على حوار قصير من الحياة اليومية.', icon: roleplayIcon },
   '50% 0%': { mode: 'listening', title: 'وضع الاستماع', desc: 'استمع لقصة قصيرة، واختبر فهمك.', icon: listeningIcon },
   '0% 0%': { mode: 'reading', title: 'وضع القراءة', desc: 'استمع، واقرأ بصوتك، واختبر فهمك.', icon: readingIcon },
   '100% 100%': { mode: 'grammar', title: 'وضع القواعد', desc: 'تعلّم قاعدة قصيرة، وتدرّب عليها، واختبر فهمك.', icon: null },
+  '50% 100%': { mode: 'writing', title: 'وضع الكتابة', desc: 'اكتب فقرة قصيرة، واحصل على ملاحظات لتحسينها.', icon: null },
 } as const;
 
 const pillars = [
@@ -30,7 +32,7 @@ const pillars = [
 ];
 
 export default function PersonalizedLearningSection() {
-  const [demoOpen, setDemoOpen] = useState<'reading' | 'listening' | 'roleplay' | 'grammar' | null>(null);
+  const [demoOpen, setDemoOpen] = useState<'reading' | 'listening' | 'roleplay' | 'grammar' | 'writing' | null>(null);
   const closeDemo = useCallback(() => setDemoOpen(null), []);
   return (
     <section id="personalized-learning" className="personalized-learning" dir="rtl" lang="ar" aria-labelledby="personalized-heading">
@@ -55,7 +57,7 @@ export default function PersonalizedLearningSection() {
               return demo ? (
                 <li key={pillar.title}>
                   <button type="button" className="personalized-learning__card personalized-learning__demo-trigger" onClick={() => setDemoOpen(demo.mode)} aria-haspopup="dialog">
-                    {demo.icon ? <img src={demo.icon} alt="" width={52} height={52} className="h-[52px] w-[52px] object-contain" /> : <span className="flex h-[52px] w-[52px] items-center justify-center rounded-xl bg-blue-50 text-blue-500"><BookOpenCheck aria-hidden="true" size={32} /></span>}
+                    {demo.icon ? <img src={demo.icon} alt="" width={52} height={52} className="h-[52px] w-[52px] object-contain" /> : <span className="flex h-[52px] w-[52px] items-center justify-center rounded-xl bg-blue-50 text-blue-500">{demo.mode === 'writing' ? <PenLine aria-hidden="true" size={32} /> : <BookOpenCheck aria-hidden="true" size={32} />}</span>}
                     <h3>{demo.title}</h3>
                     <p>{demo.desc}</p>
                     <span className="personalized-learning__demo-label">جرّب الآن — بدون تسجيل</span>
@@ -70,7 +72,7 @@ export default function PersonalizedLearningSection() {
           </ul>
         </div>
       </div>
-      {demoOpen && <Suspense fallback={null}>{demoOpen === 'reading' ? <ReadingDemoModal onClose={closeDemo} /> : demoOpen === 'listening' ? <ListeningDemoModal onClose={closeDemo} /> : demoOpen === 'grammar' ? <GrammarDemoModal onClose={closeDemo} /> : <RoleplayDemoModal onClose={closeDemo} />}</Suspense>}
+      {demoOpen && <Suspense fallback={null}>{demoOpen === 'reading' ? <ReadingDemoModal onClose={closeDemo} /> : demoOpen === 'listening' ? <ListeningDemoModal onClose={closeDemo} /> : demoOpen === 'grammar' ? <GrammarDemoModal onClose={closeDemo} /> : demoOpen === 'writing' ? <WritingDemoModal onClose={closeDemo} /> : <RoleplayDemoModal onClose={closeDemo} />}</Suspense>}
     </section>
   );
 }

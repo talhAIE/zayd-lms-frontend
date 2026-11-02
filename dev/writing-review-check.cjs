@@ -38,6 +38,7 @@ const saveGate = new Promise(resolve => { releaseSave = resolve; });
 const noop = () => {};
 let localResponses = {};
 const dependencies = {
+  demo: undefined,
   draftSaves: { current: new Map() }, draftRevisions: { current: new Map() }, writingSubmitInFlight: { current: null }, writingRequestKey: { current: null },
   modeId: 'writing-mode', crypto: require('node:crypto').webcrypto,
   components: [component], setModelAnswerComponentId: noop,

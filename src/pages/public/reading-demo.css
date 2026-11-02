@@ -4,6 +4,12 @@
 .reading-demo-modal h1 { white-space: nowrap; font-size: clamp(16px, 2vw, 20px); }
 .grammar-demo-modal .grammar-demo-player { height: 100%; min-height: 0; max-width: none; overflow-y: auto; padding: 24px; overscroll-behavior: contain; }
 .grammar-demo-player > div:first-child { padding-right: 44px; }
+@media (max-width: 600px) {
+  .writing-demo-modal table { min-width: 0; width: 100%; }
+  .writing-demo-modal thead { display: none; }
+  .writing-demo-modal tbody, .writing-demo-modal tr, .writing-demo-modal td { display: block; width: 100%; }
+  .writing-demo-modal td + td { padding-top: 0; }
+}
 @media (max-width: 767px) { .grammar-demo-modal .grammar-demo-player { padding: 16px 12px; } }
 .personalized-learning__demo-trigger { width: 100%; height: 100%; cursor: pointer; color: inherit; font: inherit; transition: border-color .2s, box-shadow .2s, transform .2s; }
 .personalized-learning__demo-trigger:hover { border-color: #3b82f6; box-shadow: 0 8px 24px #3b82f61a; transform: translateY(-2px); }

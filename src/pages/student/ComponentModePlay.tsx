@@ -19,10 +19,10 @@ import {
   interactWithResource,
   submitReflection,
   revealApprovedAnswers,
-  compileWritingParagraph,
-  submitWriting,
-  revealWritingModelAnswer,
-  fetchLatestWritingSubmission,
+  compileWritingParagraph as compileNormalWriting,
+  submitWriting as submitNormalWriting,
+  revealWritingModelAnswer as revealNormalWritingModel,
+  fetchLatestWritingSubmission as fetchNormalWritingSubmission,
   fetchUnitLessons,
   LearningResource,
   ResourceInteractionType,
@@ -87,11 +87,16 @@ export default function ComponentModePlay({ demo }: { demo?: GrammarDemo } = {})
     modeId: string;
   }>();
   const { courseId, unitId, lessonId } = demo ? {} : route;
-  const modeId = demo ? grammarDemoMode.id : route.modeId;
+  const demoMode = demo?.mode ?? grammarDemoMode;
+  const modeId = demo ? demoMode.id : route.modeId;
   const fetchLessonModeComponents = demo?.api.components ?? fetchNormalComponents;
   const submitComponentAttempt = demo?.api.submit ?? submitNormalAttempt;
   const saveComponentAttempt = demo?.api.save ?? saveNormalAttempt;
   const startLearningComponent = demo?.api.start ?? startNormalComponent;
+  const compileWritingParagraph = demo?.writing?.compile ?? compileNormalWriting;
+  const submitWriting = demo?.writing?.review ?? submitNormalWriting;
+  const revealWritingModelAnswer = demo?.writing?.reveal ?? revealNormalWritingModel;
+  const fetchLatestWritingSubmission = demo?.writing?.latest ?? fetchNormalWritingSubmission;
 
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
@@ -179,7 +184,7 @@ export default function ComponentModePlay({ demo }: { demo?: GrammarDemo } = {})
   };
 
   const refreshModeState = useCallback(async () => {
-    if (demo) { setComponents(await demo.api.components(grammarDemoMode.id)); return []; }
+    if (demo) { setComponents(await demo.api.components(demoMode.id)); return []; }
     if (!modeId || !lessonId) return [];
 
     const mode = resolvedMode ?? modes.find((m) => m.id === modeId);
@@ -212,11 +217,11 @@ export default function ComponentModePlay({ demo }: { demo?: GrammarDemo } = {})
   useEffect(() => {
     if (demo) {
       let active = true;
-      setLoading(true); setError(null); setResolvedMode(grammarDemoMode);
+      setLoading(true); setError(null); setResolvedMode(demoMode);
       void demo.api.open().then(data => {
         if (active) { setComponents(data); setCurrentIndex(0); setLocalResponses({}); }
       }).catch(err => {
-        if (active) setError(err.message || 'Unable to load grammar practice. Close the demo and try again.');
+        if (active) setError(err.message || 'Unable to load practice. Close the demo and try again.');
       }).finally(() => { if (active) setLoading(false); });
       return () => { active = false; demo.api.close(); };
     }
@@ -564,6 +569,7 @@ export default function ComponentModePlay({ demo }: { demo?: GrammarDemo } = {})
         },
       };
     } catch (submitError: any) {
+      if (demo && submitError.name === 'AbortError' && !demo.api.isOpen()) return;
       toast.error(
         submitError.response?.data?.message ||
           'Unable to build and review your paragraph.',
@@ -762,7 +768,7 @@ export default function ComponentModePlay({ demo }: { demo?: GrammarDemo } = {})
             type="button"
             onClick={handleBack}
             className="w-10 h-10 rounded-full border border-[#E2E8F0] bg-white flex items-center justify-center text-[#282828] hover:bg-gray-50 transition-all cursor-pointer shadow-sm flex-shrink-0"
-            title={demo ? 'Close Grammar demo' : currentLesson?.launchBehavior === 'direct_mode' || modes.length <= 1 ? 'Back to Lessons' : 'Back to Lesson'}
+            title={demo ? `Close ${demoMode.title.replace(' Mode', '')} demo` : currentLesson?.launchBehavior === 'direct_mode' || modes.length <= 1 ? 'Back to Lessons' : 'Back to Lesson'}
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
@@ -772,7 +778,7 @@ export default function ComponentModePlay({ demo }: { demo?: GrammarDemo } = {})
             </h1>
 
             <span className="text-[13px] font-semibold text-[#64748B] truncate">
-              {demo ? 'Quick practice · am / is / are' : currentUnit?.title || 'Unit'}
+              {demo ? demo.writing ? 'Quick practice · my daily routine' : 'Quick practice · am / is / are' : currentUnit?.title || 'Unit'}
               {currentLesson ? ` • ${currentLesson.title}` : ''}
             </span>
           </div>
