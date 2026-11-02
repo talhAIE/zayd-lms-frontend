@@ -24,6 +24,7 @@ const activity = { id: 'grammar', componentType: 'fill_in_the_blank', content: {
 async function run(response) {
   const errors = [], submissions = [], focused = [], validation = [];
   const context = {
+    demo: undefined,
     components: [activity], setFillInValidationComponentId: id => validation.push(id),
     toast: { error: message => errors.push(message), success() {} },
     document: { querySelectorAll: () => fields.map(field => ({ dataset: { componentId: 'grammar', fillInField: field.id }, focus: () => focused.push(field.id) })) },

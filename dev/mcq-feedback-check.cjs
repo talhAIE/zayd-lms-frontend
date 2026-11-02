@@ -113,7 +113,7 @@ async function checkDraftRace() {
   let finishDraft, didSubmit = false;
   const pendingDraft = new Promise(resolve => { finishDraft = resolve; });
   const submitContext = {
-    components: [base],
+    demo: undefined, components: [base],
     draftSaves: { current: new Map([['question', pendingDraft]]) },
     submitComponentAttempt: async () => { didSubmit = true; return component; },
     setComponents() {}, setLocalResponses() {}, setCompletedComponentIds() {},

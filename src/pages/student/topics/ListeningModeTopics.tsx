@@ -2,6 +2,7 @@ import { useAvatarWorkspace } from '@/components/avatar-reading/useAvatarWorkspa
 import { GradedAnswerButton } from '@/components/learning/AnswerFeedback';
 import { AvatarSpeechHighlight } from '@/components/avatar-reading/AvatarSpeechHighlight';
 import { useState, useEffect, useRef } from 'react';
+import type { AvatarReadingTransport } from '@/components/avatar-reading/AvatarReadingContext';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ChevronLeft, Clock, Check, Pause, Play, ChevronDown, ChevronUp } from 'lucide-react';
 import { toast } from 'sonner';
@@ -13,17 +14,66 @@ import { useAudioPlayback } from '@/hooks/useAudioPlayback';
 import AudioPlayer from '../AudioPlayer';
 import { useAvatarListeningPlayback } from '@/components/avatar-reading/useAvatarListeningPlayback';
 
-export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:string;title:string}} = {}) {
+function isOptionCorrect(mcq: any, answer: number | string | undefined) {
+  if (answer === undefined || answer === null || answer === -1) {
+    return false;
+  }
+
+  if (typeof mcq.correct === 'number') {
+    return Number(answer) === mcq.correct;
+  }
+
+  if (typeof mcq.correct === 'string') {
+    if (String(answer) === mcq.correct) {
+      return true;
+    }
+    const index = Number(answer);
+    if (!isNaN(index) && Array.isArray(mcq.options) && typeof mcq.options[index] === 'string') {
+      return mcq.options[index] === mcq.correct;
+    }
+    if (!isNaN(index) && Array.isArray(mcq.options) && typeof mcq.options[index] === 'object') {
+      return (
+        mcq.options[index]?.text === mcq.correct ||
+        mcq.options[index]?.label === mcq.correct ||
+        mcq.options[index]?.id === mcq.correct
+      );
+    }
+    return false;
+  }
+
+  if (mcq.correctOptionId) {
+    return String(answer) === String(mcq.correctOptionId);
+  }
+
+  if (Array.isArray(mcq.options)) {
+    const index = Number(answer);
+    if (!isNaN(index) && mcq.options[index]?.isCorrect !== undefined) {
+      return Boolean(mcq.options[index].isCorrect);
+    }
+    const found = mcq.options.find((o: any) => o.id === answer || o.value === answer);
+    if (found?.isCorrect !== undefined) {
+      return Boolean(found.isCorrect);
+    }
+  }
+
+  return true;
+}
+
+export default function ListeningModeTopics({ avatar, demo }: {
+  avatar?: {topicId:string;title:string};
+  demo?: { lessonModeId: string; transport: AvatarReadingTransport; onClose: () => void };
+} = {}) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const avatarWorkspaceRef = useAvatarWorkspace(Boolean(avatar));
-  const lessonModeId = avatar?.topicId || searchParams.get('modeId') || '';
-  const backToTopics = () => avatar ? navigate('/student/3d-avatar/listening', {replace:true}) : navigate(-1);
+  const lessonModeId = demo?.lessonModeId || avatar?.topicId || searchParams.get('modeId') || '';
+  const backToTopics = () => demo ? demo.onClose() : avatar ? navigate('/student/3d-avatar/listening', {replace:true}) : navigate(-1);
   const lessonId = searchParams.get('lessonId') || '';
   const courseId = searchParams.get('courseId') || undefined;
   const unitId = searchParams.get('unitId') || undefined;
   const refreshLearningProgress = useLearningProgressRefresh();
   const { 
+    playingAudioId: topicPlayingId,
     isCurrentlyPlaying: isTopicPlaying, 
     loadingAudioId: topicLoadingId, 
     audioProgress: topicProgress, 
@@ -44,6 +94,9 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
   
   const {
     modeSessionId,
+    isSessionLoading,
+    sessionLoadError,
+    reloadSession,
     listeningPayload,
     mcqList,
     mcqResult,
@@ -63,7 +116,10 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
     restartSession
   } = useModeSession({ 
     lessonModeId,
+    transport: demo?.transport,
+    ephemeral: Boolean(demo),
     onCompleted: async () => {
+      if (demo) { demo.onClose(); return; }
       if (!avatar) await refreshLearningProgress(lessonId, { courseId, unitId });
       setIsJustCompleted(true);
       setShowCompletionModal(true);
@@ -71,25 +127,26 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
   });
 
   useEffect(() => {
-    if (isCompleted && !isJustCompleted) {
+    if (!demo && isCompleted && !isJustCompleted) {
       setShowCompletionModal(true);
     }
-  }, [isCompleted, isJustCompleted]);
+  }, [isCompleted, isJustCompleted, demo]);
 
   const hasStartedRef = useRef(false);
 
   useEffect(() => {
     // The isolated HTTP start/restart response already includes listening_payload.
-    if (!avatar && modeSessionId && !listeningPayload && !hasStartedRef.current) {
+    if (!avatar && !demo && modeSessionId && !listeningPayload && !hasStartedRef.current) {
       hasStartedRef.current = true;
       startListening();
     }
-  }, [modeSessionId, listeningPayload, startListening, avatar]);
+  }, [modeSessionId, listeningPayload, startListening, avatar, demo]);
 
   useEffect(() => {
     // A full topic-audio play is required at both listening stages. Entering
     // the question stage deliberately resets this so the learner completes a
     // second listen before the quiz can be unlocked.
+    if (demo) pauseTopic();
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       narratorSpeechRef.current = null;
@@ -102,7 +159,7 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
       setHasListenedToAudio(false);
       setHasStartedAudio(false);
     }
-  }, [listeningPayload?.stage]);
+  }, [listeningPayload?.stage, demo, pauseTopic]);
 
   useEffect(() => {
     setCurrentMcqIndex(0);
@@ -116,10 +173,11 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
   }, [mcqResult]);
 
   useEffect(() => {
+    if (demo && topicPlayingId !== 'listening_topic_audio') return;
     if (isTopicPlaying || topicLoadingId) {
       setHasStartedAudio(true);
     }
-  }, [isTopicPlaying, topicLoadingId]);
+  }, [isTopicPlaying, topicLoadingId, demo, topicPlayingId]);
 
   useEffect(() => {
     if (modeSessionId) {
@@ -158,8 +216,8 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
     listeningPayload?.stage,
     () => setHasListenedToAudio(true),
   );
-  const topicPlaying = avatar ? avatarPlayback.track === 'topic' && avatarPlayback.playing : isTopicPlaying;
-  const narratorPlaying = avatar ? avatarPlayback.track === 'narrator' && avatarPlayback.playing : isNarratorTextPlaying;
+  const topicPlaying = avatar ? avatarPlayback.track === 'topic' && avatarPlayback.playing : isTopicPlaying && (!demo || topicPlayingId === 'listening_topic_audio');
+  const narratorPlaying = avatar ? avatarPlayback.track === 'narrator' && avatarPlayback.playing : demo ? isTopicPlaying && topicPlayingId === 'listening_demo_narrator' : isNarratorTextPlaying;
   const narratorTextRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const text = narratorTextRef.current, panel = text?.closest('.avatar-workspace-panel');
@@ -179,6 +237,24 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
   const isRequiredListeningStage =
     listeningPayload?.stage === 'initial' || isQuestionStage;
   const nextStageUnlocked = isTranscriptStage || hasListenedToAudio;
+
+  // Guest demos submit to their isolated API; authenticated/3D lessons retain
+  // the newer server-checked feedback flow from fix/accgrade10.
+  const handleQuizAction = (mcq: any, answer: number | string | undefined, isLast: boolean) => {
+    if (isAccountBlocked || isCheckingMcqAnswer) return;
+    if (demo) {
+      if (!isOptionCorrect(mcq, answer)) {
+        toast.error('Incorrect answer. Please try again.');
+        return;
+      }
+    } else if (mcqAnswerFeedback[mcq.id]?.isCorrect !== true) {
+      if (answer !== undefined) checkMcqAnswer(mcq.id, answer);
+      return;
+    }
+    if (isLast) submitMcqs(mcqList.map((_, index) => selectedAnswers[index] ?? -1));
+    else setCurrentMcqIndex(index => index + 1);
+  };
+
   const listenNumber = isQuestionStage ? 2 : 1;
   const topicAudioTitle = isQuestionStage
     ? 'Listen Again (2 of 2)'
@@ -189,6 +265,11 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
   const toggleNarratorTextSpeech = () => {
     if (!narratorText) return;
     if (avatar) { void avatarPlayback.toggle('narrator'); return; }
+    if (demo && narratorAudioUrl) {
+      window.speechSynthesis?.cancel();
+      toggleTopic('listening_demo_narrator', narratorAudioUrl);
+      return;
+    }
 
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
       toast.error('Narrator text playback is not available in this browser.');
@@ -228,6 +309,8 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
     setIsNarratorTextPlaying(false);
   };
 
+  const showDemoLoadState = Boolean(demo && (isSessionLoading || sessionLoadError || !modeSessionId || !listeningPayload));
+
   return (
     <div ref={avatarWorkspaceRef} className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'avatar-workspace max-w-[1440px] min-w-0' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
       
@@ -265,6 +348,7 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
           <div className={`${avatar ? 'shrink-0' : 'flex-1'} flex justify-start`}>
             <button 
               onClick={backToTopics}
+              aria-label={demo ? 'Close listening demo' : 'Back to lessons'}
               className="flex justify-center items-center w-10 h-10 bg-white border border-[#E5E7EB] shadow-[0px_1px_4px_rgba(0,0,0,0.06)] rounded-full hover:bg-gray-50 transition-colors"
             >
               <ChevronLeft className="w-5 h-5 text-[#282828]" />
@@ -304,7 +388,14 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
       </div>
 
       {/* Main Split Content */}
-      <div className={`flex flex-col min-h-0 pb-6 ${avatar ? 'avatar-workspace-body flex-1 gap-2 px-2 sm:px-4' : 'md:flex-row px-4 md:px-8 gap-4 flex-1'}`}>
+      {showDemoLoadState && <div className="flex flex-1 min-h-0 flex-col items-center justify-center gap-4 p-6 text-center" role={sessionLoadError ? 'alert' : 'status'}>
+        <p>{sessionLoadError || 'Loading listening practice…'}</p>
+        <div className="flex gap-3">
+          {sessionLoadError && <button type="button" onClick={reloadSession} className="rounded-full bg-blue-500 px-6 py-2 font-semibold text-white">Retry</button>}
+          <button type="button" onClick={backToTopics} className="rounded-full border px-6 py-2">Close demo</button>
+        </div>
+      </div>}
+      <div className={`${showDemoLoadState ? 'hidden' : 'flex'} flex-col min-h-0 pb-6 ${avatar ? 'avatar-workspace-body flex-1 gap-2 px-2 sm:px-4' : 'md:flex-row px-4 md:px-8 gap-4 flex-1'}`}>
         
         {/* Mode Sidebar */}
         {!avatar && <div className="flex flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0">
@@ -432,10 +523,11 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
               </div>
               <AudioPlayer
                 audioSrc={topicAudioUrl}
+                ariaLabel={demo ? topicPlaying ? 'Pause demo story' : 'Play demo story' : undefined}
                 isPlaying={topicPlaying}
                 isLoading={avatar ? avatarPlayback.track === 'topic' && avatarPlayback.loading : !!topicLoadingId}
-                progress={avatar ? avatarPlayback.position : topicProgress}
-                duration={avatar ? avatarPlayback.duration : topicDuration}
+                progress={avatar ? avatarPlayback.position : demo && topicPlayingId !== 'listening_topic_audio' ? 0 : topicProgress}
+                duration={avatar ? avatarPlayback.duration : demo && topicPlayingId !== 'listening_topic_audio' ? 0 : topicDuration}
                 onTogglePlay={() => {
                   stopNarratorTextSpeech();
                   if (avatar) { void avatarPlayback.toggle('topic'); }
@@ -494,7 +586,7 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
                   {/* Text Stack */}
                   <div className="flex flex-col gap-0.5">
                     <span className="font-['Outfit'] font-semibold text-[11px] leading-[14px] tracking-[1.2px] text-[#6E748F] uppercase">
-                      STEP 4: QUIZ
+                      {demo ? 'STEP 3: QUIZ' : 'STEP 4: QUIZ'}
                     </span>
                     <h3 className="font-['Outfit'] font-bold text-[18px] leading-[23px] text-[#0F1450]">
                       Test Your Knowledge
@@ -523,7 +615,7 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
                     </h4>
 
                     {/* Options List */}
-                    <div className="flex flex-col gap-2 w-full">
+                    <div className="flex flex-col gap-2 w-full" role={demo ? 'radiogroup' : undefined} aria-label={demo ? mcq.question : undefined}>
                       {mcq.options.map((opt, oIdx) => {
                         const optVal = typeof opt === 'string' ? oIdx : opt.id;
                         const isSelected = currentAnswer === optVal;
@@ -535,7 +627,9 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
                             type="button"
                             feedbackKey={answerFeedback}
                             result={isSelected ? answerFeedback?.isCorrect : null}
-                            aria-pressed={isSelected}
+                            aria-pressed={demo ? undefined : isSelected}
+                            role={demo ? 'radio' : undefined}
+                            aria-checked={demo ? isSelected : undefined}
                             disabled={hasCorrectAnswer || isCheckingMcqAnswer || isAccountBlocked}
                             onClick={() => {
                               clearMcqAnswerFeedback(mcq.id);
@@ -569,31 +663,22 @@ export default function ListeningModeTopics({ avatar }: {avatar?: {topicId:strin
                       {currentMcqIndex < mcqList.length - 1 ? (
                         <button
                           onClick={() => {
-                            if (!hasCorrectAnswer) {
-                              if (currentAnswer !== undefined) checkMcqAnswer(mcq.id, currentAnswer);
-                              return;
-                            }
-                            setCurrentMcqIndex(prev => prev + 1);
+                            handleQuizAction(mcq, currentAnswer, false);
                           }}
                           disabled={currentAnswer === undefined || isAccountBlocked || isCheckingMcqAnswer}
                           className="px-6 py-2.5 bg-[#3B82F6] text-white rounded-full font-['Outfit'] font-semibold text-[14px] hover:bg-[#2563EB] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         >
-                          {hasCorrectAnswer ? 'Next Question' : isCheckingMcqAnswer ? 'Checking…' : 'Check Answer'}
+                          {demo || hasCorrectAnswer ? 'Next Question' : isCheckingMcqAnswer ? 'Checking…' : 'Check Answer'}
                         </button>
                       ) : (
                         <button
                           onClick={() => {
-                            if (!hasCorrectAnswer) {
-                              if (currentAnswer !== undefined) checkMcqAnswer(mcq.id, currentAnswer);
-                              return;
-                            }
-                            const answers = mcqList.map((_, idx) => selectedAnswers[idx] ?? -1);
-                            submitMcqs(answers);
+                            handleQuizAction(mcq, currentAnswer, true);
                           }}
                           disabled={currentAnswer === undefined || isAccountBlocked || isCheckingMcqAnswer}
                           className="px-6 py-2.5 bg-[#3B82F6] text-white rounded-full font-['Outfit'] font-semibold text-[14px] hover:bg-[#2563EB] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         >
-                          {hasCorrectAnswer ? 'Submit Answers' : isCheckingMcqAnswer ? 'Checking…' : 'Check Answer'}
+                          {demo || hasCorrectAnswer ? 'Submit Answers' : isCheckingMcqAnswer ? 'Checking…' : 'Check Answer'}
                         </button>
                       )}
                     </div>

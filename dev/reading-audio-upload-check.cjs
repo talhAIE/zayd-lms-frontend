@@ -36,6 +36,7 @@ vm.runInNewContext(compile(fs.readFileSync(path.join(root, 'src/utils/readingAud
   visit(hook);
   const pendingAudioRef = { current: null }, timeline = [];
   const sandbox = {
+    ephemeral: false, localAudioUrls: { current: new Set() },
     useCallback: callback => callback, socket: { connected: true }, isAccountBlocked: false, lessonModeId: 'mode', recordingStorageKey: 'mode', dispatchAudio: () => timeline.push('dispatch'),
     pendingAudioRef, modeKeyRef: { current: 'reading-mode' }, modeSessionIdRef: { current: 'session' }, pendingAudioMessageIdRef: { current: null },
     modeRequestInFlightRef: { current: false }, pendingAudioTimeoutRef: { current: null },
@@ -47,5 +48,12 @@ vm.runInNewContext(compile(fs.readFileSync(path.join(root, 'src/utils/readingAud
   assert.equal(await sandbox.run(params.base64, 'mp4', 'blob:local'), true);
   assert.deepEqual(timeline, ['persist', 'dispatch']);
   assert.equal(pendingAudioRef.current.base64, params.base64);
+  sandbox.ephemeral = true;
+  sandbox.pendingAudioRef.current = null;
+  sandbox.modeRequestInFlightRef.current = false;
+  timeline.length = 0;
+  assert.equal(await sandbox.run(params.base64, 'mp4', 'blob:guest'), true);
+  assert.deepEqual(timeline, ['dispatch'], 'Guest audio must never be persisted to IndexedDB');
+  assert.equal(sandbox.localAudioUrls.current.has('blob:guest'), true);
   console.log('Reading binary upload: large-file transport, byte limits, stable retry IDs and persist-before-dispatch passed.');
 })().catch(error => { console.error(error); process.exitCode = 1; });

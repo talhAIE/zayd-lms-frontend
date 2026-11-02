@@ -23,6 +23,7 @@ import { fetchLessonModes, fetchUnitLessons } from '@/services/learningService';
 import { getLearningModePath, getNextLessonPath, isLockedLearningItem } from '@/utils/learning-navigation';
 import SpeechAssessmentModal, { isSpeechAssessment, SpeechAssessment } from '@/components/ui/SpeechAssessmentModal';
 import ReactMarkdown from 'react-markdown';
+import type { AvatarReadingTransport } from '@/components/avatar-reading/AvatarReadingContext';
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -108,11 +109,14 @@ function HighlightedReadingSentence({ text, vocabularyTerms, vocabularyCards, on
   )}</>;
 }
 
-export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: string; title: string; restartCompleted?: boolean; onSessionReady?: () => void } } = {}) {
+export default function ReadingModeTopics({ avatar, demo }: {
+  avatar?: { topicId: string; title: string; restartCompleted?: boolean; onSessionReady?: () => void };
+  demo?: { lessonModeId: string; transport: AvatarReadingTransport; onClose: () => void };
+} = {}) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const avatarWorkspaceRef = useAvatarWorkspace(Boolean(avatar));
-  const lessonModeId = avatar?.topicId || searchParams.get('modeId') || '';
+  const lessonModeId = demo?.lessonModeId || avatar?.topicId || searchParams.get('modeId') || '';
   const avatarTransport = useContext(AvatarReadingContext);
   const feedbackStorageKey = `${avatarTransport?.storagePrefix ?? ''}${lessonModeId}`;
   const lessonId = searchParams.get('lessonId') || '';
@@ -130,16 +134,16 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
   const [isJustCompleted, setIsJustCompleted] = useState(false);
   const [activeFeedback, setActiveFeedback] = useState<string | null>(null);
   const [activeFeedbackTarget, setActiveFeedbackTarget] = useState<ReadingFeedbackTarget | undefined>();
-  const [viewedFeedbackIds, setViewedFeedbackIds] = useState(() => loadViewedReadingFeedback(feedbackStorageKey));
+  const [viewedFeedbackIds, setViewedFeedbackIds] = useState(() => demo ? new Set<string>() : loadViewedReadingFeedback(feedbackStorageKey));
   const openReadingFeedback = useCallback((id: string, feedback: string, target?: ReadingFeedbackTarget) => {
     setActiveFeedback(feedback);
     setActiveFeedbackTarget(target);
     setViewedFeedbackIds(previous => {
       const next = new Set(previous).add(id);
-      saveViewedReadingFeedback(feedbackStorageKey, next);
+      if (!demo) saveViewedReadingFeedback(feedbackStorageKey, next);
       return next;
     });
-  }, [feedbackStorageKey]);
+  }, [feedbackStorageKey, demo]);
   const [activeAssessment, setActiveAssessment] = useState<SpeechAssessment | null>(null);
   const [activeVocabularyCard, setActiveVocabularyCard] = useState<ReadingVocabularyCard | null>(null);
   const [hasStartedShadowReading, setHasStartedShadowReading] = useState(false);
@@ -148,6 +152,11 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
   const [isFallbackSpeechPaused, setIsFallbackSpeechPaused] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const fallbackSpeechRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const demoAliveRef = useRef(true);
+  useEffect(() => {
+    demoAliveRef.current = true;
+    return () => { demoAliveRef.current = false; };
+  }, []);
   const {
     isRecording,
     isStartingRecording,
@@ -157,7 +166,13 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
     startRecording,
     stopRecording,
     cancelRecording
-  } = useAudioRecorder({ detectSilence: true });
+  } = useAudioRecorder({
+    detectSilence: true,
+    // Do not classify a quiet guest microphone as missing speech. Let the
+    // existing speech engine assess any meaningful captured signal.
+    silenceThreshold: demo ? 0.00001 : undefined,
+    silenceMessage: demo ? 'Your microphone recorded silence. Check the microphone selected in Chrome and its input volume, then try again.' : undefined,
+  });
 
   const {
     modeSessionId,
@@ -192,13 +207,25 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
     restartSession
   } = useModeSession({ 
     lessonModeId,
+    transport: demo?.transport,
+    ephemeral: Boolean(demo),
     restartCompleted: avatar?.restartCompleted,
     onCompleted: async () => {
+      if (demo) { demo.onClose(); return; }
       if (!avatar) await refreshLearningProgress(lessonId, { courseId, unitId });
       setIsJustCompleted(true);
       setShowCompletionModal(true);
     }
   });
+
+  const demoSubmitted = useRef(false);
+  useEffect(() => {
+    if (!demo || demoSubmitted.current || mcqList.length !== 1) return;
+    if (mcqAnswerFeedback[mcqList[0].id]?.isCorrect) {
+      demoSubmitted.current = true;
+      submitMcqs([selectedAnswers[0] ?? -1]);
+    }
+  }, [demo, mcqAnswerFeedback, mcqList, selectedAnswers, submitMcqs]);
 
   const stopAvatarPracticeAudio = () => {
     stopAudio();
@@ -242,8 +269,8 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
 
   useEffect(() => {
     setHasStartedShadowReading(false);
-    setViewedFeedbackIds(loadViewedReadingFeedback(feedbackStorageKey));
-  }, [lessonModeId, feedbackStorageKey]);
+    setViewedFeedbackIds(demo ? new Set<string>() : loadViewedReadingFeedback(feedbackStorageKey));
+  }, [lessonModeId, feedbackStorageKey, Boolean(demo)]);
 
   useEffect(() => {
     const latest = [...chatHistory].reverse().find(message => message.role === 'assistant');
@@ -267,6 +294,10 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
   const handleStopRecording = async () => {
     if (cooldown || isTyping || isAccountBlocked) return;
     const res = await stopRecording();
+    if (demo && !demoAliveRef.current) {
+      if (res?.audioUrl.startsWith('blob:')) URL.revokeObjectURL(res.audioUrl);
+      return;
+    }
     if (res) {
       if (await sendAudio(res.audioBase64, res.format, res.audioUrl)) triggerCooldown();
     }
@@ -452,6 +483,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
 
   const finishMode = async () => {
     setShowCompletionModal(false);
+    if (demo) { demo.onClose(); return; }
     if (avatar) { navigate(allLessonsPath, { replace: true }); return; }
     if (courseId && unitId && lessonId) {
       try {
@@ -507,7 +539,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
     }));
   }
 
-  const showAvatarSessionState = Boolean(avatar && (isSessionLoading || sessionLoadError || !modeSessionId || !contentPayload));
+  const showAvatarSessionState = Boolean((avatar || demo) && (isSessionLoading || sessionLoadError || !modeSessionId || !contentPayload));
 
   return (
     <div ref={avatarWorkspaceRef} className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'avatar-workspace avatar-reading-workspace max-w-[1440px] min-w-0' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
@@ -562,7 +594,8 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
           
           <div className={`${avatar ? 'shrink-0' : 'flex-1'} flex justify-start`}>
             <button 
-              onClick={() => navigate(allLessonsPath, { replace: true })}
+              onClick={() => demo ? demo.onClose() : navigate(allLessonsPath, { replace: true })}
+              aria-label={demo ? 'Close reading demo' : 'Back to lessons'}
               className="flex justify-center items-center w-10 h-10 bg-white border border-[#E5E7EB] shadow-[0px_1px_4px_rgba(0,0,0,0.06)] rounded-full hover:bg-gray-50 transition-colors"
             >
               <ChevronLeft className="w-5 h-5 text-[#282828]" />
@@ -607,7 +640,7 @@ export default function ReadingModeTopics({ avatar }: { avatar?: { topicId: stri
           <p>{sessionLoadError || 'Loading reading practice…'}</p>
           <div className="flex flex-wrap justify-center gap-3">
             {sessionLoadError && <button type="button" onClick={reloadSession} className="rounded-full bg-blue-500 px-6 py-2 font-semibold text-white">Retry</button>}
-            <button type="button" onClick={() => navigate(allLessonsPath)} className="rounded-full border px-6 py-2">Back to topics</button>
+            <button type="button" onClick={() => demo ? demo.onClose() : navigate(allLessonsPath)} className="rounded-full border px-6 py-2">{demo ? 'Close demo' : 'Back to topics'}</button>
           </div>
         </div>
       )}

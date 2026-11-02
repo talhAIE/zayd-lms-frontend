@@ -6,7 +6,7 @@ import { StudentLayout } from "@/components/layouts/student-layout";
 import { TeacherLayout } from "@/components/layouts/teacher-layout";
 
 // Public Pages
-// import Main from "@/pages/public/Main";
+import Main from "@/pages/public/Main";
 import MainChinese from "@/pages/public/chinese/Main";
 import ContactUs from "@/pages/public/contact-us";
 import ChineseContactUs from "@/pages/public/chinese/ChineseContactUs";
@@ -75,7 +75,8 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/" element={<HomeRedirect />} />
+      <Route path="/" element={<Main />} />
+      <Route path="/home" element={<HomeRedirect />} />
       <Route path="/chinese" element={<MainChinese />} />
       <Route path="/contact-us" element={<ContactUs />} />
       <Route path="/chinese/contact-us" element={<ChineseContactUs />} />

@@ -1,0 +1,67 @@
+.personalized-learning {
+  position: relative;
+  isolation: isolate;
+  scroll-margin-top: 102px;
+  overflow: clip;
+  padding: 36px 32px 48px;
+  background: #fff;
+  color: #242424;
+  font-family: "IBM Plex Sans Arabic", sans-serif;
+}
+.personalized-learning__container { position: relative; max-width: 1280px; margin-inline: auto; }
+.personalized-learning__header { max-width: 1050px; margin-inline: auto; text-align: center; }
+.personalized-learning__heading { margin: 0; font-family: "Almarai", sans-serif; font-size: clamp(30px, 3.1vw, 44px); font-weight: 800; line-height: 1.5; }
+.personalized-learning__heading > span { display: block; }
+.personalized-learning__heading-accent { color: #258da9; background: linear-gradient(270deg, #4b92e4, #259f9b); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.personalized-learning__description { margin: 14px 0 0; color: #60646b; font-size: 16px; line-height: 1.9; text-wrap: pretty; }
+.personalized-learning__content { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.6fr); align-items: center; gap: 40px; margin-top: 24px; }
+.personalized-learning__figure { position: relative; isolation: isolate; width: 100%; max-width: 420px; margin-inline: auto; }
+.personalized-learning__figure::before { content: ""; position: absolute; z-index: -1; top: 17%; right: -3%; width: 73%; aspect-ratio: 1; border: 30px solid #e1effc; border-radius: 50%; }
+.personalized-learning__figure > img { display: block; width: 100%; height: auto; object-fit: contain; }
+.personalized-learning__cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; gap: 16px; min-width: 0; list-style: none; padding: 0; margin: 0; }
+.personalized-learning__card { display: flex; flex-direction: column; align-items: center; min-width: 0; min-height: 166px; padding: 14px 16px 16px; border: 1px solid #e7e7e9; border-radius: 15px; background: #fafafa; box-shadow: 0 2px 0 #17284008; text-align: center; }
+.personalized-learning__icon { display: block; flex-shrink: 0; width: 52px; height: 52px; border: 1px solid #e6e2eb; border-radius: 11px; background-color: #fff; background-size: 300% 200%; background-repeat: no-repeat; }
+.personalized-learning__card > h3 { margin: 8px 0 0; font-family: "Almarai", sans-serif; font-size: 17px; font-weight: 700; line-height: 1.65; }
+.personalized-learning__card > p { max-width: 230px; margin: 6px 0 0; color: #60646b; font-size: 13px; line-height: 1.75; text-wrap: pretty; }
+
+@media (min-width: 850px) and (max-width: 1100px) {
+  .personalized-learning { padding-inline: 26px; }
+  .personalized-learning__heading { font-size: 36px; }
+  .personalized-learning__description { font-size: 15px; }
+  .personalized-learning__content { grid-template-columns: minmax(0, .9fr) minmax(0, 1.7fr); gap: 28px; }
+  .personalized-learning__cards { gap: 12px; }
+  .personalized-learning__card { min-height: 160px; padding: 12px 10px 14px; }
+  .personalized-learning__card > h3 { font-size: 15px; }
+  .personalized-learning__card > p { font-size: 12px; }
+  .personalized-learning__icon { width: 44px; height: 44px; }
+  .personalized-learning__figure::before { border-width: 24px; }
+}
+@media (max-width: 849px) {
+  .personalized-learning { padding: 36px 24px 42px; }
+  .personalized-learning__container { max-width: 660px; }
+  .personalized-learning__heading { font-size: clamp(30px, 5.4vw, 40px); }
+  .personalized-learning__description { font-size: 15px; }
+  .personalized-learning__content { grid-template-columns: minmax(0, 1fr); gap: 30px; margin-top: 28px; }
+  .personalized-learning__cards { order: 1; gap: 12px; }
+  .personalized-learning__figure { order: 2; max-width: 340px; }
+  .personalized-learning__card { min-height: 166px; padding-inline: 12px; }
+  .personalized-learning__card > h3 { font-size: 15px; }
+  .personalized-learning__card > p { font-size: 12px; }
+  .personalized-learning__icon { width: 46px; height: 46px; }
+}
+@media (max-width: 559px) {
+  .personalized-learning { padding: 30px 18px 36px; }
+  .personalized-learning__heading { font-size: clamp(28px, 7.2vw, 36px); }
+  .personalized-learning__description { margin-top: 14px; font-size: 14px; line-height: 1.9; }
+  .personalized-learning__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .personalized-learning__card { padding: 13px 10px; }
+  .personalized-learning__card > h3 { font-size: 14px; }
+  .personalized-learning__card > p { font-size: 12px; }
+  .personalized-learning__icon { width: 44px; height: 44px; border-radius: 9px; }
+  .personalized-learning__figure { max-width: 280px; }
+  .personalized-learning__figure::before { border-width: 22px; }
+}
+@media (forced-colors: active) {
+  .personalized-learning__heading-accent { background: none; -webkit-text-fill-color: CanvasText; }
+  .personalized-learning__card { border-color: CanvasText; }
+}

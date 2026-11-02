@@ -18,6 +18,7 @@ async function run({ otherIncomplete = false, acknowledgementFails = false, resu
   let rendered = [objective, review];
   const errors = [], events = [];
   const context = {
+    demo: undefined,
     modeId: 'mode', lessonId: 'lesson', unitId: 'unit', courseId: 'course',
     currentMode: { status: 'in_progress' }, visibleComponents: [objective, review],
     currentComp: review, currentIndex: 1, totalCount: 2,
