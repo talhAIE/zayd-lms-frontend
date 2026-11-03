@@ -1,0 +1,41 @@
+{
+  "clientDate": "2026-11-04",
+  "sourceSha256": "27644ec6a649ca1b571f3a68925ca383f20de93a35a262af5668d265b8abd0d7",
+  "production": {
+    "students": 114,
+    "newStudents": 72,
+    "reusedStudents": 42,
+    "teachers": 9,
+    "newTeachers": 8,
+    "reusedTeachers": 1,
+    "nafsStudentGrants": 317,
+    "nafsTeacherGrants": 317,
+    "regularEnglishGrade9Grants": 42,
+    "sparkScienceGrade9Grants": 42,
+    "oldTeacher9GAssignmentsRemaining": 0,
+    "existingStudentTablesHashedAndPreserved": 11
+  },
+  "validation": {
+    "backendTestsPassed": 101,
+    "frontendBrowserTransportChecksPassed": 21,
+    "backendBuild": "passed",
+    "frontendBuildTypeCheck": "passed",
+    "backendRuntimeLint": "passed",
+    "frontendRuntimeLintErrors": 0,
+    "existingFrontendDashboardWarnings": 5,
+    "ownedLocalDatabaseDiagnostic": "passed; fixtures rolled back",
+    "readOnlyProductionVerification": "passed",
+    "screenshotsReviewedWidths": [
+      1440,
+      390
+    ]
+  },
+  "remaining": {
+    "codeDeploymentRequired": true,
+    "realStudentNafsAcademicPublicationRequired": true,
+    "pendingAcademicFindings": 7,
+    "grade3and6RegularEnglishStudentsAwaitingContent": 72
+  },
+  "mainMerged": false,
+  "azureSettingsChanged": false
+}
