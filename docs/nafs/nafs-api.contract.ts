@@ -1,4 +1,4 @@
-/** NAFS launch contract v1. Design artifact only; no routes are registered.
+/** NAFS launch contract v1. Backend implemented in Phase 2; frontend integration follows.
  * Identical copy lives in frontend docs/nafs. Never import authoring manifests
  * or private answer keys into the frontend. IDs are opaque API identifiers.
  */
@@ -10,7 +10,8 @@ export interface NafsEnvelope<T> { status: true; data: T }
 export interface NafsError {
   statusCode: number;
   code: 'NAFS_DISABLED' | 'NAFS_NOT_FOUND' | 'NAFS_SUBMITTED' |
-    'NAFS_REVISION_CONFLICT' | 'NAFS_INCOMPLETE' | 'NAFS_INVALID_ANSWER';
+    'NAFS_REVISION_CONFLICT' | 'NAFS_INCOMPLETE' | 'NAFS_INVALID_ANSWER' |
+    'NAFS_NOT_SUBMITTED' | 'NAFS_REQUEST_CONFLICT' | 'NAFS_UNAVAILABLE';
   message: string;
   // Only for an owned, authorized unfinished attempt; never correctness data.
   missingQuestionIds?: string[];

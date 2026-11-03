@@ -1,6 +1,6 @@
 # NAFS launch contract v1
 
-Design-only Phase 1 artifact. Runtime implementation starts in Phase 2. The matching frontend copy and `nafs-api.contract.ts` must stay byte-identical between repositories.
+Contract established in Phase 1. The backend is implemented in Phase 2; frontend integration follows in Phases 4-5. The matching frontend copy and `nafs-api.contract.ts` must stay byte-identical between repositories.
 
 ## Decisions frozen for implementation
 
@@ -37,6 +37,8 @@ Existing bearer JWT, regional identity, validation and `{ status: true, data: ..
 | GET `/api/v1/nafs/attempts/:id/assets/:assetId` | Image bytes | Own unfinished attempt and referenced learner asset only; never source PDFs/private keys |
 
 Unauthorized identity: existing 401 behavior. Foreign region/user/assessment/asset or missing test grant: non-enumerating 404 `NAFS_NOT_FOUND`. Disabled detail/write endpoint: 404 `NAFS_DISABLED`. Existing teacher-role checks still apply. No-grant/disabled teacher collection returns zero rows and zero filter options. Invalid IDs/options/duplicate or foreign question IDs: 400 `NAFS_INVALID_ANSWER`. Missing required answers: 400 `NAFS_INCOMPLETE` with missing IDs for owned work. Attempt not yet submitted on result endpoint: 409. Submitted edits: 409 `NAFS_SUBMITTED`. Stale mutation: 409 `NAFS_REVISION_CONFLICT`.
+
+Phase 2 clarification: the pending-result 409 code is `NAFS_NOT_SUBMITTED`; reusing an accepted request ID with different data returns 409 `NAFS_REQUEST_CONFLICT`; unexpected persistence failures return sanitized 503 `NAFS_UNAVAILABLE`. Parameter/DTO validation and role failures use existing NestJS 400/403 responses. IDs in path parameters are UUIDs. Media URLs require the same bearer token: the frontend must request images through its authenticated API client and render Blob URLs, not attach tokens to query strings or use an unauthenticated image request.
 
 ## Saving, concurrent tabs, and finishing
 
