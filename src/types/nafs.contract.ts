@@ -63,6 +63,7 @@ export interface NafsQuestionView {
   stem: string;
   accessibleVisualText: string | null;
   presentation: 'structured_text' | 'source_facsimile';
+  // Legacy name: an essential cropped figure only; null for text-only launch questions.
   sourceFacsimile: NafsAssetView | null;
   passageId: string | null;
   options: NafsOptionView[];

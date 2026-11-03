@@ -12,6 +12,12 @@ export const source = JSON.parse(
     'utf8',
   ),
 );
+export const presentation = JSON.parse(
+  fs.readFileSync(
+    path.join(backend, 'content/nafs/learner-presentation.json'),
+    'utf8',
+  ),
+);
 export const user = {
   id: 'nafs-browser-student',
   username: 'nafs.browser.synthetic',
@@ -60,7 +66,9 @@ export async function installFixture(page: Page) {
   }, user);
   const asset = (assetId: string | null, attemptId: string) => {
     if (!assetId) return null;
-    const a = source.assets.find((a: any) => a.id === assetId);
+    const a = [...presentation.assets, ...source.assets].find(
+      (a: any) => a.id === assetId,
+    );
     return {
       id: a.id,
       url: `/api/v1/nafs/attempts/${attemptId}/assets/${a.id}`,
@@ -107,16 +115,22 @@ export async function installFixture(page: Page) {
       questions: qs.map((q: any) => ({
         id: q.id,
         displayOrder: q.displayOrder,
-        stem: q.stem,
+        stem: presentation.questions[q.stem]?.stem ?? q.stem,
         accessibleVisualText: q.accessibleVisualText,
         presentation: q.presentation,
-        sourceFacsimile: asset(q.sourceFacsimileAssetId, id),
+        sourceFacsimile: asset(
+          presentation.questions[q.stem]?.visual?.id ?? null,
+          id,
+        ),
         passageId: q.passageId,
         options: q.options.map((o: any) => ({
           id: o.id,
           label: o.label,
-          text: o.text,
-          image: asset(o.assetId, id),
+          text: q.id === 'g9-q09' ? o.text.replaceAll('; ', '\n') : o.text,
+          image: asset(
+            presentation.questions[q.stem]?.optionVisuals[o.label]?.id ?? null,
+            id,
+          ),
         })),
       })),
       passages: source.passages
@@ -231,7 +245,9 @@ export async function installFixture(page: Page) {
         await error('NAFS_NOT_FOUND', 404);
         return;
       }
-      const info = source.assets.find((x: any) => x.id === segments[4]);
+      const info = [...presentation.assets, ...source.assets].find(
+        (x: any) => x.id === segments[4],
+      );
       if (!info) {
         await error('NAFS_NOT_FOUND', 404);
         return;

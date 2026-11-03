@@ -25,6 +25,7 @@ import type {
 } from '@/types/nafs.contract';
 import { useNafsSession } from '@/components/nafs/useNafsSession';
 import { NafsMedia } from '@/components/nafs/NafsMedia';
+import { NafsText } from '@/components/nafs/NafsText';
 import {
   AttemptSession,
   type AttemptState,
@@ -244,26 +245,12 @@ function Result({ result }: { result: NafsResultView }) {
     </section>
   );
 }
-function Passage({
-  passage,
-  attemptId,
-}: {
-  passage: NafsPassageView;
-  attemptId: string;
-}) {
+function Passage({ passage }: { passage: NafsPassageView }) {
   return (
-    <div className="space-y-4">
-      <NafsMedia asset={passage.sourceFacsimile} attemptId={attemptId} />
-      <details className="text-sm">
-        <summary className="cursor-pointer min-h-10">
-          Read passage as text
-        </summary>
-        <div className="space-y-4 leading-7 mt-3">
-          {passage.paragraphs.map((text, i) => (
-            <p key={i}>{emphasize(text, passage.emphasisTerms)}</p>
-          ))}
-        </div>
-      </details>
+    <div className="space-y-4 text-base leading-7">
+      {passage.paragraphs.map((text, i) => (
+        <p key={i}>{emphasize(text, passage.emphasisTerms)}</p>
+      ))}
     </div>
   );
 }
@@ -530,7 +517,7 @@ function Quiz({ initial }: { initial: NafsInProgressAttemptView }) {
                   id="nafs-reading-passage"
                   className={passageOpen ? 'block' : 'hidden lg:block'}
                 >
-                  <Passage passage={passage} attemptId={attempt.id} />
+                  <Passage passage={passage} />
                 </div>
               </aside>
             )}
@@ -538,9 +525,9 @@ function Quiz({ initial }: { initial: NafsInProgressAttemptView }) {
               <h2
                 ref={heading}
                 tabIndex={-1}
-                className="text-lg md:text-xl font-semibold leading-relaxed mb-4 outline-none"
+                className="text-lg md:text-xl font-semibold leading-relaxed mb-4 outline-none whitespace-pre-wrap"
               >
-                {question.stem}
+                <NafsText text={question.stem} />
               </h2>
               {question.sourceFacsimile && (
                 <NafsMedia
@@ -549,16 +536,18 @@ function Quiz({ initial }: { initial: NafsInProgressAttemptView }) {
                   attemptId={attempt.id}
                 />
               )}
-              {question.accessibleVisualText && (
-                <details className="my-3 text-sm text-slate-600">
-                  <summary className="cursor-pointer min-h-10">
-                    Read diagram description
-                  </summary>
-                  <p className="whitespace-pre-wrap leading-6">
-                    {question.accessibleVisualText}
-                  </p>
-                </details>
-              )}
+              {question.accessibleVisualText &&
+                (question.sourceFacsimile ||
+                  question.options.some((option) => option.image)) && (
+                  <details className="my-3 text-sm text-slate-600">
+                    <summary className="cursor-pointer min-h-10">
+                      Read diagram description
+                    </summary>
+                    <p className="whitespace-pre-wrap leading-6">
+                      {question.accessibleVisualText}
+                    </p>
+                  </details>
+                )}
               <fieldset disabled={locked} className="mt-5 space-y-3">
                 <legend className="font-semibold mb-3">
                   Choose one answer
@@ -587,7 +576,11 @@ function Quiz({ initial }: { initial: NafsInProgressAttemptView }) {
                         <span className="font-semibold mr-2">
                           {option.label}.
                         </span>
-                        {option.text}
+                        {option.image ? (
+                          <span className="sr-only">{option.text}</span>
+                        ) : (
+                          <NafsText text={option.text} />
+                        )}
                       </label>
                       {option.image && (
                         <NafsMedia

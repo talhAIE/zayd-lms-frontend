@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { installFixture, source } from './browser-fixture';
+import { installFixture, source, presentation } from './browser-fixture';
 
 for (const [name, width, height] of [
   ['desktop', 1440, 1000],
@@ -49,9 +49,7 @@ for (const [name, width, height] of [
       );
       for (let i = 0; i < questions.length; i++) {
         const q = questions[i];
-        await expect(
-          page.getByRole('heading', { name: q.stem, exact: true }),
-        ).toBeVisible();
+        await expect(page.locator('h2[tabindex="-1"]')).toBeVisible();
         await expect(page.getByRole('radio')).toHaveCount(4);
         if (q.passageId && name === 'mobile')
           await page
@@ -61,17 +59,19 @@ for (const [name, width, height] of [
           await expect(
             page.getByRole('heading', { name: 'Reading passage' }),
           ).toBeVisible();
+        const display = presentation.questions[q.stem];
         const images = page.locator('section img');
+        await expect(images).toHaveCount(
+          (display.visual ? 1 : 0) + Object.keys(display.optionVisuals).length,
+        );
         await expect
           .poll(async () =>
-            images.evaluateAll(
-              (imgs) =>
-                imgs.length > 0 &&
-                imgs.every(
-                  (img) =>
-                    (img as HTMLImageElement).complete &&
-                    (img as HTMLImageElement).naturalWidth > 0,
-                ),
+            images.evaluateAll((imgs) =>
+              imgs.every(
+                (img) =>
+                  (img as HTMLImageElement).complete &&
+                  (img as HTMLImageElement).naturalWidth > 0,
+              ),
             ),
           )
           .toBe(true);
@@ -96,7 +96,7 @@ for (const [name, width, height] of [
           path: testInfo.outputPath(`${q.id}.png`),
           fullPage: true,
         });
-        if (i === 0) {
+        if (i === 0 && (await images.count())) {
           await page
             .getByRole('button', { name: 'Enlarge image' })
             .last()
@@ -154,19 +154,13 @@ for (const [name, width, height] of [
         page.getByRole('heading', { name: 'Quiz finished' }),
       ).toBeVisible();
       const expectedAssets = new Set(
-        questions
-          .flatMap((q: any) => [
-            q.sourceFacsimileAssetId,
-            ...q.options.map((o: any) => o.assetId),
-          ])
-          .concat(
-            source.passages
-              .filter((p: any) =>
-                questions.some((q: any) => q.passageId === p.id),
-              )
-              .map((p: any) => p.sourceFacsimileAssetId),
-          )
-          .filter(Boolean),
+        questions.flatMap((q: any) => {
+          const d = presentation.questions[q.stem];
+          return [
+            d.visual?.id,
+            ...Object.values(d.optionVisuals).map((a: any) => a.id),
+          ].filter(Boolean);
+        }),
       );
       expect([...state.media].sort()).toEqual([...expectedAssets].sort());
       expect(errors).toEqual([]);

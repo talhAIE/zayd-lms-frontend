@@ -145,7 +145,12 @@ const report = {
     questionsPerViewport: 63,
     viewports: ['1440x1000', '390x844'],
     screenshots: images.length,
-    assetsHashAndDimensionsCheckedPerViewport: 82,
+    assetsHashAndDimensionsCheckedPerViewport: JSON.parse(
+      fs.readFileSync(
+        path.join(backend, 'content/nafs/learner-presentation.json'),
+        'utf8',
+      ),
+    ).assets.length,
     passages: 3,
     privateSourceKeysRead: false,
     academicApproval: false,
