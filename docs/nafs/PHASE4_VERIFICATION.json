@@ -1,0 +1,229 @@
+{
+  "status": "passed",
+  "capturedAtUtc": "2026-11-03T19:10:36.812Z",
+  "browser": "Microsoft Edge (Chromium), headless",
+  "cases": [
+    {
+      "name": "real-database.spec.ts: diagnostic quiz 1: 2/2, resume, locked result and exact teacher marks",
+      "status": "passed"
+    },
+    {
+      "name": "real-database.spec.ts: diagnostic quiz 2: 0/2, resume, locked result and exact teacher marks",
+      "status": "passed"
+    },
+    {
+      "name": "real-database.spec.ts: diagnostic quiz 3: 1/2, resume, locked result and exact teacher marks",
+      "status": "passed"
+    },
+    {
+      "name": "recovery.spec.ts: uncertain submission disables changes and safely checks the same submitted attempt",
+      "status": "passed"
+    },
+    {
+      "name": "recovery.spec.ts: logout and account switch remove old questions and do not expose the previous local draft",
+      "status": "passed"
+    },
+    {
+      "name": "service.spec.ts: NAFS mutations preserve contract envelopes, request IDs, bounded timeout and shared bearer auth",
+      "status": "passed"
+    },
+    {
+      "name": "service.spec.ts: optional 404 discovery is empty, while direct access and server failures stay errors",
+      "status": "passed"
+    },
+    {
+      "name": "service.spec.ts: account change or aborted lifetime cancels before a NAFS request can be sent",
+      "status": "passed"
+    },
+    {
+      "name": "service.spec.ts: a delayed response from a previous student is never delivered to the next session",
+      "status": "passed"
+    },
+    {
+      "name": "service.spec.ts: 401 refresh reuses the exact save payload and updates bearer authorization once",
+      "status": "passed"
+    },
+    {
+      "name": "service.spec.ts: private media uses the API asset route and Blob bytes, never query-string credentials",
+      "status": "passed"
+    },
+    {
+      "name": "session.spec.ts: serializes rapid edits, retains newest selection and drains saves before final snapshot",
+      "status": "passed"
+    },
+    {
+      "name": "session.spec.ts: retains a failed save and replays its exact request before newer edits",
+      "status": "passed"
+    },
+    {
+      "name": "session.spec.ts: revision conflict reads server and requires explicit choice instead of silently overwriting another tab",
+      "status": "passed"
+    },
+    {
+      "name": "session.spec.ts: discarding recovered local answers retains current server selections",
+      "status": "passed"
+    },
+    {
+      "name": "session.spec.ts: lost finish response recovers submitted summary without another submit",
+      "status": "passed"
+    },
+    {
+      "name": "session.spec.ts: uncertain finish freezes edits and checks/replays the same immutable request",
+      "status": "passed"
+    },
+    {
+      "name": "session.spec.ts: failed reconciliation can be retried, and server-submitted attempts lock immediately",
+      "status": "passed"
+    },
+    {
+      "name": "session.spec.ts: incomplete and disposed sessions never submit or deliver late updates",
+      "status": "passed"
+    },
+    {
+      "name": "session.spec.ts: simultaneous finish clicks send only one immutable submission",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: desktop: nafs-g3-math-form-a, source images, save/resume/finish and locked marks",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: desktop: nafs-g3-english-form-a, source images, save/resume/finish and locked marks",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: desktop: nafs-g6-math-form-a, source images, save/resume/finish and locked marks",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: desktop: nafs-g6-science-form-a, source images, save/resume/finish and locked marks",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: desktop: nafs-g6-english-form-a, source images, save/resume/finish and locked marks",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: desktop: nafs-g9-math-form-a, source images, save/resume/finish and locked marks",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: desktop: nafs-g9-science-form-a, source images, save/resume/finish and locked marks",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: desktop: nafs-g9-english-form-a, source images, save/resume/finish and locked marks",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: mobile: nafs-g3-math-form-a, source images, save/resume/finish and locked marks",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: mobile: nafs-g3-english-form-a, source images, save/resume/finish and locked marks",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: mobile: nafs-g6-math-form-a, source images, save/resume/finish and locked marks",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: mobile: nafs-g6-science-form-a, source images, save/resume/finish and locked marks",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: mobile: nafs-g6-english-form-a, source images, save/resume/finish and locked marks",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: mobile: nafs-g9-math-form-a, source images, save/resume/finish and locked marks",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: mobile: nafs-g9-science-form-a, source images, save/resume/finish and locked marks",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: mobile: nafs-g9-english-form-a, source images, save/resume/finish and locked marks",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: network failure retains local selections across reload and requires explicit recovery",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: lost submission response recovers the locked result without a fresh attempt",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: disabled: ordinary courses remain usable and direct NAFS URLs do not expose content",
+      "status": "passed"
+    },
+    {
+      "name": "student.spec.ts: no-grant: ordinary courses remain usable and direct NAFS URLs do not expose content",
+      "status": "passed"
+    },
+    {
+      "name": "courses.spec.ts: NAFS-only students see their courses without an empty-curriculum message and get accurate resume counts",
+      "status": "passed"
+    },
+    {
+      "name": "courses.spec.ts: NAFS discovery failure preserves ordinary cards and can reload NAFS independently",
+      "status": "passed"
+    },
+    {
+      "name": "session.spec.ts: a known submission rejection and failed reread can recover without trapping editable answers",
+      "status": "passed"
+    }
+  ],
+  "sourcePreview": {
+    "assessments": 8,
+    "questionsPerViewport": 63,
+    "viewports": [
+      "1440x1000",
+      "390x844"
+    ],
+    "screenshots": 126,
+    "assetsHashAndDimensionsCheckedPerViewport": 82,
+    "passages": 3,
+    "privateSourceKeysRead": false,
+    "academicApproval": false
+  },
+  "realDatabase": {
+    "status": "passed",
+    "normalTablesUnchanged": 44,
+    "originalFormsPublished": 0,
+    "diagnosticQuizzesDeactivated": 3,
+    "submitted": 3,
+    "scores": [
+      "2/2",
+      "0/2",
+      "1/2"
+    ],
+    "teacherMarksMatched": true
+  },
+  "release": {
+    "canonicalContractMatched": true,
+    "noSourceContentOrQaControlsInBundle": true,
+    "files": [
+      {
+        "file": "assets/index-D_HQax59.css",
+        "sha256": "54f606935d5e26644557df72b633aba38363d40caef5428b57afb0d804f970b3"
+      },
+      {
+        "file": "assets/index-kzLt4BR2.js",
+        "sha256": "f570eae7e8a8b8d6d72c146af2a6f0cd00ca21ea9da19eec8053937bf6b1ba0f"
+      },
+      {
+        "file": "assets/pdf.worker.min-DKQKFyKK.js",
+        "sha256": "feabdf309770ed24bba31a5467836cdc8cf639c705af27d52b585b041bb8527b"
+      },
+      {
+        "file": "index.html",
+        "sha256": "f687f825055d0e2e10a1eeca3a8e31fa943d07e59bafeabe0b64ec49387fddec"
+      }
+    ]
+  },
+  "academicFindingsPending": 7,
+  "productionChanges": false
+}

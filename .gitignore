@@ -28,3 +28,10 @@ dist-ssr
 
 # Local private-storage viewer fixtures; never deployed or committed.
 /dev/.science-spark-fixtures/
+
+# NAFS local browser evidence, traces and private QA session files.
+/test-results/
+/dev/nafs/test-results/
+/dev/nafs/dev/
+/playwright-report/
+/dev/.nafs-qa/

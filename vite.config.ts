@@ -4,7 +4,7 @@ import { defineConfig, type ProxyOptions } from 'vite';
 import { readFile } from 'node:fs/promises';
 
 export default defineConfig(({ command }) => ({
-  define: command === 'serve' && (process.env.SCIENCE_SPARK_JOURNEY_HARNESS === 'true' || process.env.SPARK_SCIENCE_MOTION_HARNESS === 'true')
+  define: command === 'serve' && (process.env.NAFS_BROWSER_QA === 'true' || process.env.SCIENCE_SPARK_JOURNEY_HARNESS === 'true' || process.env.SPARK_SCIENCE_MOTION_HARNESS === 'true')
     ? { 'import.meta.env.VITE_API_BASE_URL': JSON.stringify('') } : {},
   plugins: [react(), {
     name: 'science-spark-development-harness',
