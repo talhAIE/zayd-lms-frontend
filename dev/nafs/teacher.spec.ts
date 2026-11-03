@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import type { TeacherProgramResult } from "../../src/services/nafsService";
 
 const teacher = {
   id: "teacher-browser",
@@ -38,6 +39,8 @@ async function fixture(
     normalRequests: 0,
     delay: 0,
     keep: rows.length,
+    programs: [] as TeacherProgramResult[],
+    failPrograms: false,
   };
   await page.addInitScript((u) => {
     localStorage.setItem("AiTutorUser", JSON.stringify(u));
@@ -52,6 +55,14 @@ async function fixture(
     }
     if (!url.pathname.startsWith("/api/")) {
       await route.continue();
+      return;
+    }
+    if (url.pathname === "/api/v1/teacher/me/program-results") {
+      await route.fulfill(
+        state.failPrograms
+          ? { status: 503, json: { message: "Unavailable" } }
+          : { json: { status: true, data: { results: state.programs } } },
+      );
       return;
     }
     if (url.pathname === "/api/v1/nafs/teacher/results") {
@@ -238,6 +249,86 @@ test("NAFS remains usable if the ordinary dashboard fails", async ({
   await expect(
     page.getByRole("cell", { name: "0 / 10", exact: true }),
   ).toBeVisible();
+});
+
+for (const width of [1440, 390])
+  test(`Science teacher program scope and progress ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    const state = await fixture(page, { unavailable: true });
+    state.programs = Array.from({ length: 12 }, (_, i) => ({
+      student: {
+        id: `s${i}`,
+        username: `sci.student${i}`,
+        displayName: `Science Student ${i}`,
+        class: "9G",
+      },
+      course: {
+        key: "spark-science-motion",
+        title: "Spark Science",
+        unitTitle: "Motion",
+      },
+      completedActivities: i === 0 ? 5 : 1,
+      totalActivities: 5,
+      progressPct: i === 0 ? 100 : 20,
+      state: i === 0 ? "completed" : "in_progress",
+    }));
+    await page.goto("/teacher/dashboard");
+    const section = page.getByRole("region", {
+      name: "Spark Science progress",
+    });
+    await expect(section).toBeVisible();
+    await expect(
+      section.getByText("5 / 5 activities completed (100%)"),
+    ).toBeVisible();
+    await expect(section.getByRole("listitem")).toHaveCount(10);
+    await expect(
+      page.getByRole("region", { name: "NAFS results" }),
+    ).toHaveCount(0);
+    await section.getByRole("button", { name: "Next Science page" }).click();
+    await expect(section.getByRole("listitem")).toHaveCount(2);
+    await section
+      .getByLabel("Science completion", { exact: true })
+      .selectOption("completed");
+    await expect(section.getByRole("listitem")).toHaveCount(1);
+    await expect(section.getByText("Page 1 of 1")).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await page.screenshot({
+      path: `dev/.nafs-qa/science-teacher-${width}.png`,
+      fullPage: true,
+    });
+    state.programs = [];
+    await section
+      .getByRole("button", { name: "Refresh Science progress" })
+      .click();
+    await expect(section).toHaveCount(0);
+  });
+
+test("Science progress failure leaves NAFS and ordinary dashboard available", async ({
+  page,
+}) => {
+  const state = await fixture(page);
+  state.failPrograms = true;
+  await page.goto("/teacher/dashboard");
+  await expect(
+    page.getByRole("region", { name: "Spark Science progress" }),
+  ).toContainText("Could not load Science progress.");
+  await expect(
+    page.getByRole("region", { name: "NAFS results" }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("Assigned Learners", { exact: true }),
+  ).toBeVisible();
+  state.failPrograms = false;
+  await page.getByRole("button", { name: "Retry Science progress" }).click();
+  await expect(
+    page.getByRole("region", { name: "Spark Science progress" }),
+  ).toHaveCount(0);
 });
 
 test("NAFS failure has a retry and does not hide ordinary statistics", async ({

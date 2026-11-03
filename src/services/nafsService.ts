@@ -70,7 +70,37 @@ async function request<T>(
   return response.data.data;
 }
 const id = encodeURIComponent;
+export interface TeacherProgramResult {
+  student: {
+    id: string;
+    username: string;
+    displayName: string;
+    class: string | null;
+  };
+  course: { key: string; title: string; unitTitle: string };
+  completedActivities: number;
+  totalActivities: number;
+  progressPct: number;
+  state: "not_started" | "in_progress" | "completed";
+}
 export const nafsTeacherService = {
+  async programs(owner: NafsOwner, signal: AbortSignal) {
+    if (owner.role !== "teacher")
+      throw new axios.CanceledError("Teacher session required");
+    try {
+      return await request<{ results: TeacherProgramResult[] }>(owner, signal, {
+        url: "/teacher/me/program-results",
+      });
+    } catch (error) {
+      if (
+        sameNafsOwner(owner, signal) &&
+        axios.isAxiosError(error) &&
+        error.response?.status === 404
+      )
+        return { results: [] };
+      throw error;
+    }
+  },
   async results(
     owner: NafsOwner,
     signal: AbortSignal,
