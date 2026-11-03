@@ -32,6 +32,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   }, [isDesktopCollapsed]);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const location = useLocation();
+  const isNafsRoute = location.pathname === '/student/nafs' || location.pathname.startsWith('/student/nafs/');
   const isScienceRoute = location.pathname === '/student/science' || location.pathname.startsWith('/student/science/');
   const isScienceActivity = isScienceRoute && location.pathname.includes('/activities/');
   const isSparkScienceActivity = location.pathname.startsWith('/student/science/spark-science/') && isScienceActivity;
@@ -48,6 +49,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   const navigate = useNavigate();
   const scienceBackTarget = sparkScienceBackTarget(location.pathname, location.search);
   const handleBack = () => {
+    if (isNafsRoute) { navigate('/student/courses'); return; }
     if (scienceBackTarget) navigate(scienceBackTarget);
     else navigate(-1);
   };
@@ -70,7 +72,9 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   };
 
   let formattedTitle;
-  if (isScienceRoute) {
+  if (isNafsRoute) {
+    formattedTitle = 'NAFS';
+  } else if (isScienceRoute) {
     formattedTitle = 'Science';
   } else if (location.pathname.startsWith("/teacher/student-profile/")) {
     formattedTitle = "Student Profile";
@@ -101,7 +105,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   }, [isAuthenticated, user, navigate]);
 
   useEffect(() => {
-    if (user?.role !== "student" || isScienceRoute) return;
+    if (user?.role !== "student" || isScienceRoute || isNafsRoute) return;
 
     let intervalId: number | undefined;
     let sessionBootstrapInFlight = false;
@@ -182,10 +186,10 @@ export function StudentLayout({ children }: StudentLayoutProps) {
       stop();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [user?.id, user?.role, isScienceRoute]);
+  }, [user?.id, user?.role, isScienceRoute, isNafsRoute]);
 
   const isActive = (path: string) => {
-    return location.pathname === path || location.pathname.startsWith(`${path}/`) || (path === "/student/courses" && isScienceRoute);
+    return location.pathname === path || location.pathname.startsWith(`${path}/`) || (path === "/student/courses" && (isScienceRoute || isNafsRoute));
   };
 
   const handleLogout = async () => {

@@ -11,7 +11,9 @@ node_modules
 dist
 dist-ssr
 *.local
-docs/
+# Keep local docs ignored except the versioned NAFS implementation contract.
+/docs/*
+!/docs/nafs/
 
 # Editor directories and files
 .vscode/*
@@ -26,3 +28,10 @@ docs/
 
 # Local private-storage viewer fixtures; never deployed or committed.
 /dev/.science-spark-fixtures/
+
+# NAFS local browser evidence, traces and private QA session files.
+/test-results/
+/dev/nafs/test-results/
+/dev/nafs/dev/
+/playwright-report/
+/dev/.nafs-qa/

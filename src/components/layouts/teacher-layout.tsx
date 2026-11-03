@@ -159,7 +159,7 @@ export function TeacherLayout({ children }: TeacherLayoutProps) {
       </nav>
 
       {/* Main content */}
-      <div className="xl:pl-64 flex flex-col flex-1">
+      <div className="xl:pl-64 flex min-w-0 flex-col flex-1">
         {/* Top header */}
         <header className="sticky top-0 z-40 flex xl:hidden items-center justify-between h-16 px-4 bg-background xl:px-8">
           <Button
