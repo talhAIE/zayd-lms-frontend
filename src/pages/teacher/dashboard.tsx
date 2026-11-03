@@ -54,6 +54,7 @@ import {
   generateBulkPdfReports,
 } from "@/services/teacherService";
 import { toast } from "sonner";
+import { NafsTeacherResults } from "@/components/nafs/NafsTeacherResults";
 
 const formatStudentUsage = (usageInSeconds: number): string => {
   if (usageInSeconds <= 0) return "0 Min";
@@ -62,6 +63,10 @@ const formatStudentUsage = (usageInSeconds: number): string => {
 };
 
 export default function TeacherDashboard() {
+  return <><NafsTeacherResults /><TeacherCurriculumDashboard /></>;
+}
+
+function TeacherCurriculumDashboard() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const {

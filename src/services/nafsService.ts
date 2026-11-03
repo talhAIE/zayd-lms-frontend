@@ -1,5 +1,5 @@
-import axios, { type AxiosRequestConfig } from 'axios';
-import apiClient from '@/config/ApiConfig';
+import axios, { type AxiosRequestConfig } from "axios";
+import apiClient from "@/config/ApiConfig";
 import type {
   NafsAssessmentView,
   NafsAttemptView,
@@ -10,40 +10,43 @@ import type {
   NafsSaveAnswerRequest,
   NafsSaveAnswerResponse,
   NafsSubmitRequest,
-} from '@/types/nafs.contract';
+  NafsTeacherResultsQuery,
+  NafsTeacherResultsView,
+} from "@/types/nafs.contract";
 
 export interface NafsOwner {
   id: string;
   username: string;
+  role?: "student" | "teacher";
 }
 export function sameNafsOwner(owner: NafsOwner, signal: AbortSignal) {
   try {
-    const current = JSON.parse(localStorage.getItem('AiTutorUser') || 'null');
+    const current = JSON.parse(localStorage.getItem("AiTutorUser") || "null");
     return (
       !signal.aborted &&
       current?.id === owner.id &&
       current?.username === owner.username &&
-      current?.role?.toLowerCase() === 'student'
+      current?.role?.toLowerCase() === (owner.role ?? "student")
     );
   } catch {
     return false;
   }
 }
-export function nafsErrorCode(error: unknown): NafsError['code'] | undefined {
+export function nafsErrorCode(error: unknown): NafsError["code"] | undefined {
   return axios.isAxiosError<NafsError>(error)
     ? error.response?.data?.code
     : undefined;
 }
 export function nafsErrorMessage(error: unknown) {
   switch (nafsErrorCode(error)) {
-    case 'NAFS_DISABLED':
-      return 'NAFS is currently unavailable.';
-    case 'NAFS_NOT_FOUND':
-      return 'This quiz is unavailable or you do not have access.';
-    case 'NAFS_UNAVAILABLE':
-      return 'NAFS could not load. Please try again.';
+    case "NAFS_DISABLED":
+      return "NAFS is currently unavailable.";
+    case "NAFS_NOT_FOUND":
+      return "This quiz is unavailable or you do not have access.";
+    case "NAFS_UNAVAILABLE":
+      return "NAFS could not load. Please try again.";
     default:
-      return 'Could not connect to NAFS. Please check your connection and try again.';
+      return "Could not connect to NAFS. Please check your connection and try again.";
   }
 }
 // The existing interceptor checks this request-local guard before sending,
@@ -55,7 +58,7 @@ async function request<T>(
   config: AxiosRequestConfig,
 ): Promise<T> {
   if (!sameNafsOwner(owner, signal))
-    throw new axios.CanceledError('NAFS session changed');
+    throw new axios.CanceledError("NAFS session changed");
   const response = await apiClient.request<NafsEnvelope<T>>({
     ...config,
     signal,
@@ -63,15 +66,49 @@ async function request<T>(
     scienceSession: () => sameNafsOwner(owner, signal),
   } as OwnedConfig);
   if (!sameNafsOwner(owner, signal))
-    throw new axios.CanceledError('NAFS session changed');
+    throw new axios.CanceledError("NAFS session changed");
   return response.data.data;
 }
 const id = encodeURIComponent;
+export const nafsTeacherService = {
+  async results(
+    owner: NafsOwner,
+    signal: AbortSignal,
+    query: NafsTeacherResultsQuery,
+  ): Promise<NafsTeacherResultsView> {
+    if (owner.role !== "teacher")
+      throw new axios.CanceledError("Teacher session required");
+    try {
+      return await request<NafsTeacherResultsView>(owner, signal, {
+        url: "/nafs/teacher/results",
+        params: query,
+      });
+    } catch (error) {
+      // Older deployments have no NAFS route. Keep the ordinary dashboard usable.
+      if (
+        sameNafsOwner(owner, signal) &&
+        axios.isAxiosError(error) &&
+        error.response?.status === 404
+      )
+        return {
+          results: [],
+          assessments: [],
+          pagination: {
+            page: query.page ?? 1,
+            limit: query.limit ?? 10,
+            total: 0,
+            totalPages: 0,
+          },
+        };
+      throw error;
+    }
+  },
+};
 export const nafsService = {
   async courses(owner: NafsOwner, signal: AbortSignal) {
     try {
       return await request<{ courses: NafsCourseView[] }>(owner, signal, {
-        url: '/nafs/courses',
+        url: "/nafs/courses",
       });
     } catch (error) {
       if (
@@ -90,7 +127,7 @@ export const nafsService = {
   start: (owner: NafsOwner, signal: AbortSignal, assessmentId: string) =>
     request<{ attempt: NafsAttemptView }>(owner, signal, {
       url: `/nafs/assessments/${id(assessmentId)}/attempt`,
-      method: 'POST',
+      method: "POST",
       data: {},
     }),
   attempt: (owner: NafsOwner, signal: AbortSignal, attemptId: string) =>
@@ -106,7 +143,7 @@ export const nafsService = {
   ) =>
     request<{ saved: NafsSaveAnswerResponse }>(owner, signal, {
       url: `/nafs/attempts/${id(attemptId)}/answers/${id(questionId)}`,
-      method: 'PUT',
+      method: "PUT",
       data,
     }),
   submit: (
@@ -117,7 +154,7 @@ export const nafsService = {
   ) =>
     request<{ result: NafsResultView }>(owner, signal, {
       url: `/nafs/attempts/${id(attemptId)}/submit`,
-      method: 'POST',
+      method: "POST",
       data,
     }),
   async media(
@@ -131,14 +168,14 @@ export const nafsService = {
     if (!sameNafsOwner(owner, signal)) throw new axios.CanceledError();
     const response = await apiClient.request<Blob>({
       url: `/nafs/attempts/${id(attemptId)}/assets/${id(assetId)}`,
-      responseType: 'blob',
+      responseType: "blob",
       signal,
       timeout: 30000,
       scienceSession: () => sameNafsOwner(owner, signal),
     } as OwnedConfig);
     if (!sameNafsOwner(owner, signal)) throw new axios.CanceledError();
-    if (response.data.type.split(';')[0] !== 'image/png')
-      throw new Error('NAFS image unavailable');
+    if (response.data.type.split(";")[0] !== "image/png")
+      throw new Error("NAFS image unavailable");
     return response.data;
   },
 };
