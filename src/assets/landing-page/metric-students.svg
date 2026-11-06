@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="76" height="64" viewBox="0 0 76 64" fill="none">
+  <defs>
+    <linearGradient id="silver" x1="12" y1="18" x2="25" y2="49" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset=".5" stop-color="#e5ebf0"/><stop offset="1" stop-color="#a0abb5"/></linearGradient>
+    <radialGradient id="blue" cx="0" cy="0" r="1" gradientTransform="translate(30 22) rotate(55) scale(39 30)" gradientUnits="userSpaceOnUse"><stop stop-color="#69c6ff"/><stop offset=".45" stop-color="#168bfa"/><stop offset="1" stop-color="#0061d9"/></radialGradient>
+    <radialGradient id="head" cx="0" cy="0" r="1" gradientTransform="translate(34 10) rotate(50) scale(20)" gradientUnits="userSpaceOnUse"><stop stop-color="#a5e4ff"/><stop offset=".45" stop-color="#278fff"/><stop offset="1" stop-color="#0760d9"/></radialGradient>
+  </defs>
+  <ellipse cx="38" cy="57" rx="31" ry="4" fill="#001f43" opacity=".16"/>
+  <circle cx="16" cy="19" r="9" fill="url(#silver)" stroke="#e7edf3"/>
+  <circle cx="60" cy="19" r="9" fill="url(#silver)" stroke="#e7edf3"/>
+  <path d="M2 42c0-9 6-15 14-15s15 6 15 15v4c-6 6-23 6-29 0v-4Z" fill="url(#silver)" stroke="#d5dee7"/>
+  <path d="M45 42c0-9 7-15 15-15s14 6 14 15v4c-6 6-23 6-29 0v-4Z" fill="url(#silver)" stroke="#d5dee7"/>
+  <circle cx="38" cy="17" r="12" fill="url(#head)"/>
+  <ellipse cx="34" cy="11" rx="4" ry="2" fill="#fff" opacity=".45" transform="rotate(-25 34 11)"/>
+  <path d="M19 48c0-12 8-20 19-20s19 8 19 20v5c-9 8-29 8-38 0v-5Z" fill="url(#blue)"/>
+  <path d="M24 43c1-5 4-9 8-11" stroke="#9fe1ff" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+</svg>

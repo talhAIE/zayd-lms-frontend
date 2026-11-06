@@ -1,0 +1,221 @@
+.impact-stats {
+  scroll-margin-top: 100px;
+  overflow: clip;
+  padding: 20px 6.5vw 80px;
+  background: #fff;
+  font-family: "IBM Plex Sans Arabic", sans-serif;
+}
+
+.impact-stats__container {
+  position: relative;
+  isolation: isolate;
+  max-width: 1368px;
+  margin-inline: auto;
+  container-type: inline-size;
+}
+
+.impact-comparison {
+  display: grid;
+  grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 1.8cqw;
+  min-height: 42.3cqw;
+  padding: 2.6cqw .8cqw 2.6cqw 4cqw;
+  border-radius: 3.5cqw;
+  background: #e8f3ff;
+  direction: ltr;
+}
+
+.impact-comparison__copy {
+  min-width: 0;
+  text-align: right;
+}
+
+.impact-comparison__eyebrow {
+  display: inline-block;
+  padding: .45cqw 1.05cqw;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #55cfc5, #347fe2);
+  color: #fff;
+  font-size: 1.25cqw;
+  font-weight: 700;
+  line-height: 1.65;
+}
+
+.impact-comparison__heading {
+  margin: 1.1cqw 0 0;
+  color: #242424;
+  font-family: "Almarai", sans-serif;
+  font-size: 3.9cqw;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.impact-comparison__heading > span {
+  display: block;
+}
+
+.impact-comparison__heading-accent {
+  font-size: 3.85cqw;
+  font-weight: 700;
+  color: #438fe8;
+  background: linear-gradient(90deg, #55cfc5, #5897ed);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.impact-comparison__description {
+  margin: 1.2cqw 0 0;
+  color: #5b5e66;
+  font-size: 1.35cqw;
+  font-weight: 500;
+  line-height: 1.9;
+}
+
+.impact-comparison__footnote {
+  margin: 1.5cqw 0 0;
+  color: #237ef3;
+  font-size: 1.12cqw;
+  font-weight: 500;
+  line-height: 1.85;
+}
+
+.impact-comparison__metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.3cqw;
+  margin: 1.8cqw 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.impact-comparison__metric {
+  display: flex;
+  min-width: 0;
+  min-height: 11.2cqw;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .4cqw;
+  padding: .75cqw .5cqw;
+  border: 1px solid #e2e6eb;
+  border-radius: 1.2cqw;
+  background: #fafafa;
+  box-shadow: 0 2px 2px rgb(0 0 0 / 12%);
+  text-align: center;
+}
+
+.impact-comparison__metric img { width: 5.4cqw; height: 4.5cqw; object-fit: contain; }
+.impact-comparison__metric bdi { color: #3085e9; font-family: "Almarai", sans-serif; font-size: 1.55cqw; font-weight: 800; line-height: 1.4; }
+.impact-comparison__metric span { color: #606060; font-family: "Almarai", sans-serif; font-size: 1.05cqw; font-weight: 700; line-height: 1.5; }
+
+.impact-comparison__illustration {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  align-self: end;
+}
+
+.impact-comparison__illustration > img {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: auto;
+}
+
+.impact-comparison__spark,
+.impact-comparison__arrow {
+  position: absolute;
+  color: #3986de;
+  pointer-events: none;
+}
+
+.impact-comparison__spark {
+  top: -5%;
+  left: 16%;
+  width: 8%;
+  height: auto;
+}
+
+.impact-comparison__arrow {
+  top: 9%;
+  left: 48%;
+  width: 12%;
+  height: auto;
+}
+
+@media (max-width: 849px) {
+  .impact-stats {
+    padding: 12px 24px 56px;
+  }
+
+  .impact-comparison {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 30px;
+    padding: 28px;
+    border-radius: 30px;
+    min-height: auto;
+  }
+
+  .impact-comparison__eyebrow { padding: 5px 14px; font-size: 13px; }
+  .impact-comparison__heading { margin-top: 16px; }
+  .impact-comparison__description { margin-top: 14px; font-size: 15px; }
+  .impact-comparison__footnote { margin-top: 16px; font-size: 12px; }
+
+  .impact-comparison__heading {
+    font-size: clamp(26px, 4.8vw, 38px);
+  }
+
+  .impact-comparison__heading-accent { font-size: inherit; }
+
+  .impact-comparison__metrics { gap: 12px; margin-top: 20px; }
+  .impact-comparison__metric { min-height: 112px; padding: 12px 6px; gap: 5px; border-radius: 12px; }
+  .impact-comparison__metric img { width: 54px; height: 45px; }
+  .impact-comparison__metric bdi { font-size: 18px; }
+  .impact-comparison__metric span { font-size: 11px; }
+
+  .impact-comparison__illustration {
+    width: 100%;
+    max-width: 480px;
+    margin-inline: auto;
+  }
+}
+
+@media (max-width: 559px) {
+  .impact-stats {
+    padding-inline: 18px;
+  }
+
+  .impact-comparison {
+    padding: 24px 20px;
+    border-radius: 26px;
+  }
+
+  .impact-comparison__eyebrow {
+    font-size: 12px;
+  }
+
+  .impact-comparison__description {
+    font-size: 14px;
+  }
+
+  .impact-comparison__footnote {
+    font-size: 12px;
+  }
+
+  .impact-comparison__metrics { gap: 8px; }
+  .impact-comparison__metric { min-height: 100px; padding: 10px 3px; }
+  .impact-comparison__metric img { width: 44px; height: 38px; }
+  .impact-comparison__metric bdi { font-size: 15px; }
+  .impact-comparison__metric span { font-size: 10px; }
+}
+
+@media (forced-colors: active) {
+  .impact-comparison__heading-accent {
+    background: none;
+    -webkit-text-fill-color: CanvasText;
+  }
+}

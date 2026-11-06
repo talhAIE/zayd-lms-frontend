@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Plus, Minus } from "lucide-react";
+import { CircleChevronDown } from "lucide-react";
+import "./faq-section.css";
 
 interface FAQItem {
   question: string;
@@ -10,7 +11,7 @@ const faqs: FAQItem[] = [
   {
     question: "ما هو زيــــد؟",
     answer:
-      "زيــــد معلّم ذكي لممارسة اللغة الإنجليزية، يمنح الطالب فرصًا أكبر للتحدث والتفاعل والتغذية الراجعة الفورية، مع توافق كامل مع مناهج طلاب المرحلتين المتوسطة والثانوية بالمملكة.",
+      "زيــــد معلّم ذكي لممارسة اللغة الإنجليزية يساعد الطالب على الحصول على فرص أكبر للتحدث والتفاعل والتغذية الراجعة، مع توافق كامل مع منهج طلاب المرحلتين المتوسطة والثانوية.",
   },
   {
     question: "هل زيــــد بديل عن معلم اللغة الإنجليزية؟",
@@ -23,7 +24,7 @@ const faqs: FAQItem[] = [
       "يخدم زيــــد حاليًا جميع طلاب المرحلة المتوسطة (الأول، الثاني، الثالث المتوسط) والمرحلة الثانوية (المسارات المشتركة والتخصصية)، بالإضافة إلى باقة مواقف الحياة اليومية لجميع المراحل.",
   },
   {
-    question: "كم يحتاج الطالب إلى استخدام زيــــد يوميًا؟",
+    question: "كم يحتاج الطالب إلى استخدام زيــــد؟",
     answer:
       "يكفي من 15 إلى 20 دقيقة يوميًا بمعدل ساعة إلى ساعتين أسبوعيًا لإحداث فارق كبير في طلاقة التحدث واستيعاب الدروس وبناء الثقة اللغوية.",
   },
@@ -38,7 +39,7 @@ const faqs: FAQItem[] = [
       "نعم، نقدم باقات مرنة وخصومات خاصة للمدارس والمجموعات الطلابية الكبيرة، تشمل تقارير متابعة ولوحة تحكم متكاملة للإدارة والمعلمين.",
   },
   {
-    question: "هل يدفع المعلم مقابل حسابه في المدارس المشاركة؟",
+    question: "هل يدفع المعلم مقابل حسابه؟",
     answer:
       "لا، يحصل جميع معلمي ومعلمات المدارس الشريكة على حساب مجاني متكامل دون أي رسوم إضافية لمتابعة أداء فصولهم وطلابهم.",
   },
@@ -48,65 +49,41 @@ export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const toggleItem = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
+    setOpenIndex(current => current === index ? null : index);
   };
 
   return (
-    <section id="faq" className="py-20 md:py-28 bg-[#F8FBFD] font-ibm-plex" dir="rtl">
-      <div className="max-w-[1180px] mx-auto px-4 md:px-6">
-        {/* Section Header */}
-        <div className="text-center max-w-[720px] mx-auto">
-          {/* Eyebrow */}
-          <div className="inline-flex items-center justify-center gap-3">
-            <span className="w-6 h-[1.5px] bg-[#48D3BF]" />
-            <span className="text-[#2681E9] text-[13px] sm:text-[14px] font-bold tracking-wide">
-              الأسئلـــة الشائعـــة
-            </span>
-            <span className="w-6 h-[1.5px] bg-[#48D3BF]" />
-          </div>
-
-          {/* Heading */}
-          <h2 className="mt-4 text-[32px] sm:text-[42px] lg:text-[49px] font-bold text-[#07294D] tracking-tight leading-[1.25]">
-            كل ما تحتاج معرفته <br />
-            قبل البدء مع زيــــد
+    <section id="faq" className="faq" dir="rtl" lang="ar" aria-labelledby="faq-heading">
+      <div className="faq__container">
+        <div className="faq__header">
+          <span className="faq__eyebrow">الأسئلــة الشائعــة</span>
+          <h2 id="faq-heading" className="faq__heading">
+            <span>كل ما تحتاج معرفته</span>
+            <span className="faq__heading-accent">قبـــــــــــل البـــــــــــدء</span>
           </h2>
         </div>
 
-        {/* Accordion Stack */}
-        <div className="mt-12 md:mt-16 max-w-[890px] mx-auto flex flex-col gap-3.5">
+        <div className="faq__list">
           {faqs.map((faq, index) => {
             const isOpen = openIndex === index;
             return (
-              <div
-                key={index}
-                className={`bg-white rounded-[14px] border transition-all duration-200 overflow-hidden ${
-                  isOpen
-                    ? "border-[#A9D6F7] shadow-[0px_12px_30px_rgba(20,96,160,0.08)]"
-                    : "border-[#DCE9F4] hover:border-[#BEDEF7]"
-                }`}
-              >
+              <div key={faq.question} className={`faq__item${isOpen ? " faq__item--open" : ""}`}>
+                <h3 className="faq__question-heading">
                 <button
+                  type="button"
+                  id={`faq-question-${index}`}
                   onClick={() => toggleItem(index)}
-                  className="w-full px-5 sm:px-6 py-4 sm:py-5 flex items-center justify-between gap-4 text-right cursor-pointer select-none"
+                  className="faq__question"
                   aria-expanded={isOpen}
+                  aria-controls={`faq-answer-${index}`}
                 >
-                  <span className="text-[15px] sm:text-[16px] font-bold text-[#07294D]">
-                    {faq.question}
-                  </span>
-                  <div
-                    className={`w-8 h-8 rounded-[8px] flex items-center justify-center transition-colors flex-shrink-0 ${
-                      isOpen ? "bg-[#2681E9] text-white" : "bg-[#EEF7FF] text-[#2681E9]"
-                    }`}
-                  >
-                    {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-                  </div>
+                  <span>{faq.question}</span>
+                  <CircleChevronDown className="faq__chevron" aria-hidden="true" strokeWidth={2.25} />
                 </button>
-
-                {isOpen && (
-                  <div className="px-5 sm:px-6 pb-5 pt-1 text-[#60768B] text-[14px] sm:text-[15px] leading-[1.8] border-t border-[#EEF4F9] animate-in fade-in slide-in-from-top-1 duration-200">
-                    <p>{faq.answer}</p>
-                  </div>
-                )}
+                </h3>
+                <div id={`faq-answer-${index}`} className="faq__answer" role="region" aria-labelledby={`faq-question-${index}`} hidden={!isOpen}>
+                  <p>{faq.answer}</p>
+                </div>
               </div>
             );
           })}
