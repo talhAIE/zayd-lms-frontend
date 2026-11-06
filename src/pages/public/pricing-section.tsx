@@ -1,187 +1,73 @@
-import { Check, ArrowLeft } from "lucide-react";
+import { ArrowLeft, Check, Crown } from "lucide-react";
+import { SaudiRiyalIcon } from "@/components/Icons";
+import pricingMascot from "@/assets/landing-page/pricing-mascot-reference.png";
+import "./pricing-section.css";
+
+const plans = [
+  {
+    name: "باقة المنهج",
+    description: "لطلاب المتوسطة والثانوية الذين يريدون التركيز على ممارسة محتوى المنهج.",
+    originalPrice: "199", price: "99.5", featured: false,
+    features: ["محتوى متوافق مع المنهج", "ممارسة التحدث والاستماع والقراءة والكتابة", "تعلّم مخصص", "تغذية راجعة بالذكاء الاصطناعي"],
+    action: "ابدأ باقة المنهج",
+  },
+  {
+    name: "Zayd Plus",
+    description: "التجربة الكاملة: المنهج الدراسي، والمواضيع والمواقف الحياتية.",
+    originalPrice: "399", price: "199.5", featured: true,
+    features: ["جميع مزايا باقة المنهج", "جميع مزايا Zayd Life", "أكثر من 40 موقفًا حياتيًا", "تجربة أشمل لبناء الثقة في استخدام اللغة"],
+    action: "اختر Zayd Plus",
+  },
+  {
+    name: "Zayd Life",
+    description: "لمن يريد ممارسة الإنجليزية في مواقف الحياة اليومية بعيدًا عن محتوى المنهج.",
+    originalPrice: "199", price: "99.5", featured: false,
+    features: ["أكثر من 40 موضوعًا حياتيًا", "محادثات في المطعم والسوق والمطار وغيرها", "ممارسة التحدث في المواقف اليومية", "تغذية راجعة وتكرار المحاولة"],
+    action: "ابدأ Zayd Life",
+  },
+];
 
 export default function PricingSection() {
   return (
-    <section id="pricing" className="py-20 md:py-28 bg-[#F8FBFD] font-ibm-plex" dir="rtl">
-      <div className="max-w-[1180px] mx-auto px-4 md:px-6">
-        {/* Section Header */}
-        <div className="text-center max-w-[720px] mx-auto">
-          {/* Eyebrow */}
-          <div className="inline-flex items-center justify-center gap-3">
-            <span className="w-6 h-[1.5px] bg-[#48D3BF]" />
-            <span className="text-[#2681E9] text-[13px] sm:text-[14px] font-bold tracking-wide">
-              عرض لفترة محدودة
-            </span>
-            <span className="w-6 h-[1.5px] bg-[#48D3BF]" />
-          </div>
-
-          {/* Heading */}
-          <h2 className="mt-4 text-[32px] sm:text-[42px] lg:text-[49px] font-bold text-[#07294D] tracking-tight leading-[1.25]">
-            اختر التجربة المناسبة
-          </h2>
-
-          {/* Description */}
-          <p className="mt-4 text-[15px] sm:text-[16px] leading-[1.8] text-[#60768B]">
-            خصم 50% متاح حاليًا على جميع الباقات السنوية للأفراد لتمنح طالبك فرصة الممارسة الحقيقية.
-          </p>
+    <section id="pricing" className="pricing" dir="rtl" lang="ar" aria-labelledby="pricing-heading">
+      <div className="pricing__container">
+        <div className="pricing__header">
+          <span className="pricing__eyebrow">عرض لفترة محدودة</span>
+          <h2 id="pricing-heading" className="pricing__heading">اختر التجربة <span>المناسبة</span></h2>
+          <p className="pricing__description">خصم <strong>50%</strong> حاليًا على الباقات الثلاث للأفراد.</p>
         </div>
-
-        {/* Pricing Cards Grid */}
-        <div className="mt-14 md:mt-16 grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch pt-4">
-          {/* Card 1: باقة المنهج */}
-          <div className="bg-white border border-[#DCE9F4] rounded-[23px] p-7 sm:p-8 shadow-[0px_10px_35px_rgba(15,78,133,0.07)] flex flex-col justify-between transition-all hover:shadow-lg hover:-translate-y-1">
-            <div>
-              {/* Badge */}
-              <div className="flex items-center justify-between">
-                <span className="px-3 py-1 rounded-full bg-[#E9FBF7] text-[#07977E] text-[11px] font-bold">
-                  خصم 50%
+        <div className="pricing__plans">
+          {plans.map((plan) => (
+            <article key={plan.name} className={`pricing-card${plan.featured ? " pricing-card--featured" : ""}`} aria-label={plan.name}>
+              {plan.featured && <>
+                <div className="pricing-card__mascot" aria-hidden="true"><img src={pricingMascot} alt="" width={304} height={150} /></div>
+                <span className="pricing-card__recommendation"><Crown aria-hidden="true" /> الأفضل قيمة</span>
+              </>}
+              <h3 className="pricing-card__name"><bdi>{plan.name}</bdi></h3>
+              <p className="pricing-card__description">{plan.description}</p>
+              <del className="pricing-card__original-price" dir="ltr" aria-label={`السعر السابق: ${plan.originalPrice} ريال سعودي`}>
+                <SaudiRiyalIcon className="pricing-card__riyal" />
+                <bdi dir="ltr">{plan.originalPrice}</bdi>
+              </del>
+              <div className="pricing-card__price">
+                <strong><bdi dir="ltr">{plan.price}</bdi></strong>
+                <span className="pricing-card__billing">
+                  <SaudiRiyalIcon className="pricing-card__riyal" />
+                  <span className="sr-only">ريال سعودي</span>
+                  <span className="pricing-card__period">/ سنة</span>
                 </span>
-                <span className="text-[12px] text-[#60768B]">اشتراك سنوي</span>
               </div>
-
-              {/* Title & Subtitle */}
-              <h3 className="mt-4 text-[24px] font-bold text-[#07294D]">باقة المنهج</h3>
-              <p className="text-[13px] text-[#60768B] mt-1">لطلاب المتوسطة والثانوية</p>
-
-              {/* Price */}
-              <div className="mt-6 flex items-baseline gap-2">
-                <span className="text-[38px] font-bold text-[#2681E9]">99.5</span>
-                <span className="text-[12px] text-[#60768B] font-medium">ر.س / سنة</span>
-                <span className="text-[14px] text-[#8CA0B1] line-through mr-auto">199 ر.س</span>
-              </div>
-
-              {/* Features List */}
-              <ul className="mt-8 space-y-3.5 border-t border-[#EEF4F9] pt-6">
-                {[
-                  "محتوى متوافق بالكامل مع المنهج السعودي",
-                  "التحدث والاستماع والقراءة والكتابة",
-                  "تعلّم مخصص وتدرج حسب المستوى",
-                  "تغذية راجعة ذكية وملاحظات فورية",
-                ].map((feat, idx) => (
-                  <li key={idx} className="flex items-center gap-3 text-[14px] text-[#07294D]">
-                    <div className="w-5 h-5 rounded-full bg-[#E9FBF7] text-[#07977E] flex items-center justify-center flex-shrink-0">
-                      <Check className="w-3.5 h-3.5" />
-                    </div>
-                    <span>{feat}</span>
-                  </li>
+              <span className="pricing-card__discount">خصــــــــم 50%</span>
+              <ul className="pricing-card__features">
+                {plan.features.map((feature) => (
+                  <li key={feature}><span className="pricing-card__check"><Check aria-hidden="true" /></span><span>{feature}</span></li>
                 ))}
               </ul>
-            </div>
-
-            {/* CTA */}
-            <a
-              href="/auth/register"
-              className="mt-8 h-[46px] w-full rounded-[11px] bg-gradient-to-r from-[#2681E9] to-[#0862C1] hover:from-[#1F73D4] hover:to-[#0753A6] shadow-[0px_10px_26px_rgba(38,129,233,0.22)] text-white text-[14px] font-bold flex items-center justify-center gap-2 transition-all cursor-pointer"
-            >
-              <span>ابدأ باقة المنهج</span>
-              <ArrowLeft className="w-4 h-4" />
-            </a>
-          </div>
-
-          {/* Card 2: Zayd Plus (Featured / Elevated) */}
-          <div className="relative bg-white border-2 border-[#2681E9] rounded-[23px] p-7 sm:p-8 shadow-[0px_24px_60px_rgba(31,126,217,0.16)] flex flex-col justify-between lg:-translate-y-4 transition-all hover:shadow-2xl">
-            {/* Top Ribbon */}
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-1 rounded-full bg-[#2681E9] text-white text-[12px] font-bold shadow-md">
-              الأفضل قيمة والأشمل
-            </div>
-
-            <div>
-              {/* Badge */}
-              <div className="flex items-center justify-between pt-2">
-                <span className="px-3 py-1 rounded-full bg-[#E9FBF7] text-[#07977E] text-[11px] font-bold">
-                  خصم 50%
-                </span>
-                <span className="text-[12px] text-[#2681E9] font-bold">شامل كل المزايا</span>
-              </div>
-
-              {/* Title & Subtitle */}
-              <h3 className="mt-4 text-[24px] font-bold text-[#07294D]">Zayd Plus</h3>
-              <p className="text-[13px] text-[#60768B] mt-1">التجربة الكاملة للمنهج والحياة</p>
-
-              {/* Price */}
-              <div className="mt-6 flex items-baseline gap-2">
-                <span className="text-[38px] font-bold text-[#2681E9]">199.5</span>
-                <span className="text-[12px] text-[#60768B] font-medium">ر.س / سنة</span>
-                <span className="text-[14px] text-[#8CA0B1] line-through mr-auto">399 ر.س</span>
-              </div>
-
-              {/* Features List */}
-              <ul className="mt-8 space-y-3.5 border-t border-[#EEF4F9] pt-6">
-                {[
-                  "جميع مزايا باقة المنهج الدراسي بالكامل",
-                  "جميع مزايا Zayd Life للتحدث اليومي",
-                  "أكثر من 40 موقفًا وموضوعًا حياتيًا تفاعليًا",
-                  "تجربة أشمل لبناء الثقة والطلاقة اللغوية",
-                ].map((feat, idx) => (
-                  <li key={idx} className="flex items-center gap-3 text-[14px] text-[#07294D] font-medium">
-                    <div className="w-5 h-5 rounded-full bg-[#2681E9] text-white flex items-center justify-center flex-shrink-0">
-                      <Check className="w-3.5 h-3.5" />
-                    </div>
-                    <span>{feat}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* CTA */}
-            <a
-              href="/auth/register"
-              className="mt-8 h-[48px] w-full rounded-[11px] bg-gradient-to-r from-[#2681E9] to-[#0862C1] hover:from-[#1F73D4] hover:to-[#0753A6] shadow-[0px_10px_26px_rgba(38,129,233,0.3)] text-white text-[15px] font-bold flex items-center justify-center gap-2 transition-all transform hover:scale-[1.02] cursor-pointer"
-            >
-              <span>اختر Zayd Plus</span>
-              <ArrowLeft className="w-4 h-4" />
-            </a>
-          </div>
-
-          {/* Card 3: Zayd Life */}
-          <div className="bg-white border border-[#DCE9F4] rounded-[23px] p-7 sm:p-8 shadow-[0px_10px_35px_rgba(15,78,133,0.07)] flex flex-col justify-between transition-all hover:shadow-lg hover:-translate-y-1">
-            <div>
-              {/* Badge */}
-              <div className="flex items-center justify-between">
-                <span className="px-3 py-1 rounded-full bg-[#E9FBF7] text-[#07977E] text-[11px] font-bold">
-                  خصم 50%
-                </span>
-                <span className="text-[12px] text-[#60768B]">اشتراك سنوي</span>
-              </div>
-
-              {/* Title & Subtitle */}
-              <h3 className="mt-4 text-[24px] font-bold text-[#07294D]">Zayd Life</h3>
-              <p className="text-[13px] text-[#60768B] mt-1">للإنجليزية في الحياة اليومية</p>
-
-              {/* Price */}
-              <div className="mt-6 flex items-baseline gap-2">
-                <span className="text-[38px] font-bold text-[#2681E9]">99.5</span>
-                <span className="text-[12px] text-[#60768B] font-medium">ر.س / سنة</span>
-                <span className="text-[14px] text-[#8CA0B1] line-through mr-auto">199 ر.س</span>
-              </div>
-
-              {/* Features List */}
-              <ul className="mt-8 space-y-3.5 border-t border-[#EEF4F9] pt-6">
-                {[
-                  "أكثر من 40 موضوعًا وموقفًا حياتيًا",
-                  "المطعم، السوق، المطار، السفر وغيرها",
-                  "ممارسة التحدث في المواقف الاجتماعية",
-                  "تغذية راجعة وتكرار المحاولة بحرية تامة",
-                ].map((feat, idx) => (
-                  <li key={idx} className="flex items-center gap-3 text-[14px] text-[#07294D]">
-                    <div className="w-5 h-5 rounded-full bg-[#E9FBF7] text-[#07977E] flex items-center justify-center flex-shrink-0">
-                      <Check className="w-3.5 h-3.5" />
-                    </div>
-                    <span>{feat}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* CTA */}
-            <a
-              href="/auth/register"
-              className="mt-8 h-[46px] w-full rounded-[11px] bg-gradient-to-r from-[#2681E9] to-[#0862C1] hover:from-[#1F73D4] hover:to-[#0753A6] shadow-[0px_10px_26px_rgba(38,129,233,0.22)] text-white text-[14px] font-bold flex items-center justify-center gap-2 transition-all cursor-pointer"
-            >
-              <span>ابدأ Zayd Life</span>
-              <ArrowLeft className="w-4 h-4" />
-            </a>
-          </div>
+              <a href="/auth/register" className="pricing-card__action">
+                <span>{plan.action}</span><span className="pricing-card__arrow"><ArrowLeft aria-hidden="true" /></span>
+              </a>
+            </article>
+          ))}
         </div>
       </div>
     </section>

@@ -12,10 +12,11 @@ import SchoolsSection from "./schools-section";
 import FAQSection from "./faq-section";
 import FinalCtaSection from "./final-cta-section";
 import Footer from "./footer";
+import "./landing-layout.css";
 
 export default function Main() {
   return (
-    <div className="min-h-screen bg-white text-[#07294D] font-ibm-plex selection:bg-[#48D3BF]/30 selection:text-[#07294D] overflow-x-clip" dir="rtl">
+    <div className="public-landing min-h-screen bg-white text-[#07294D] font-ibm-plex selection:bg-[#48D3BF]/30 selection:text-[#07294D] overflow-x-clip" dir="rtl">
       {/* Floating Glassmorphic Navbar */}
       <Navbar />
 

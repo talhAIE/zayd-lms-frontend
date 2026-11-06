@@ -1,0 +1,155 @@
+.schools {
+  scroll-margin-top: 100px;
+  padding: 20px 6.5vw 64px;
+  background: #fff;
+  color: #242424;
+  font-family: "IBM Plex Sans Arabic", sans-serif;
+}
+.schools__container {
+  max-width: 1368px;
+  margin-inline: auto;
+  container-type: inline-size;
+}
+.schools__card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 3.2cqw;
+  min-height: 42.3cqw;
+  padding: 3.8cqw 6cqw 4.1cqw 1.2cqw;
+  border-radius: 3.5cqw;
+  background: #e8f3ff;
+}
+.schools__copy { min-width: 0; text-align: right; }
+.schools__eyebrow {
+  display: inline-block;
+  padding: .44cqw 1.1cqw;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #55cfc5, #347fe2);
+  color: #fff;
+  font-size: clamp(11px, 1.3cqw, 18px);
+  font-weight: 700;
+  line-height: 1.5;
+}
+.schools__heading {
+  margin: .2cqw 0 0;
+  font-family: "Almarai", sans-serif;
+  font-size: 4.1cqw;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.schools__heading > span { display: block; }
+.schools__heading-accent {
+  color: #4daacb;
+  background: linear-gradient(90deg, #55cfc5, #5897ed);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 3.85cqw;
+  line-height: 1.6;
+}
+.schools__description {
+  margin: .3cqw 0 0;
+  color: #5b5e66;
+  font-size: clamp(12px, 1.3cqw, 18px);
+  font-weight: 500;
+  line-height: 1.85;
+}
+.schools__features {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1cqw;
+  margin: 2.63cqw 0 0;
+  padding: 0;
+  list-style: none;
+}
+.schools__features li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 3.875cqw;
+  padding: .6cqw .5cqw;
+  border-radius: 999px;
+  background: #fff;
+  color: #347fe2;
+  font-size: clamp(11px, 1.24cqw, 17px);
+  font-weight: 600;
+  line-height: 1.6;
+  text-align: center;
+}
+.schools__action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1cqw;
+  width: 27.3cqw;
+  max-width: 100%;
+  min-height: 4.17cqw;
+  margin-top: 3.14cqw;
+  padding: .6cqw 3.8cqw .6cqw 2.6cqw;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #55cfc5, #347fe2);
+  color: #fff;
+  font-size: clamp(15px, 1.75cqw, 24px);
+  font-weight: 700;
+  line-height: 1.5;
+  text-decoration: none;
+}
+.schools__arrow {
+  display: flex;
+  flex: 0 0 2.34cqw;
+  align-items: center;
+  justify-content: center;
+  width: 2.34cqw;
+  height: 2.34cqw;
+  border-radius: 50%;
+  background: #fff;
+  color: #347fe2;
+}
+.schools__arrow svg { width: 1.6cqw; height: 1.6cqw; }
+.schools__action:hover { filter: brightness(.97); }
+.schools__action:focus-visible { outline: 3px solid #07294d; outline-offset: 4px; }
+.schools__visual { min-width: 0; text-align: center; transform: translateY(1.5cqw); }
+.schools__visual > img { display: block; width: 100%; height: auto; }
+.schools__teacher-note {
+  max-width: 29.25cqw;
+  margin: 1.45cqw auto 0;
+  color: #5b5e66;
+  font-size: clamp(12px, 1.3cqw, 18px);
+  line-height: 1.65;
+}
+.schools__teacher-message {
+  margin: .3cqw 0 0;
+  color: #237ef3;
+  font-size: clamp(11px, 1.17cqw, 16px);
+  font-weight: 600;
+  line-height: 1.8;
+}
+@media (max-width: 849px) {
+  .schools { padding: 12px 24px 48px; }
+  .schools__card { grid-template-columns: minmax(0, 1fr); gap: 32px; padding: 28px; border-radius: 30px; }
+  .schools__eyebrow { padding: 6px 13px; font-size: 12px; }
+  .schools__heading { margin-top: 16px; font-size: clamp(26px, 4.8vw, 38px); line-height: 1.5; }
+  .schools__heading-accent { font-size: inherit; line-height: inherit; }
+  .schools__description { margin-top: 14px; font-size: 14px; }
+  .schools__features { gap: 10px; margin-top: 24px; }
+  .schools__features li { min-height: 40px; padding: 8px 10px; font-size: 12px; }
+  .schools__action { width: 350px; min-height: 48px; margin-top: 26px; padding: 8px 20px; font-size: 18px; }
+  .schools__arrow { flex-basis: 30px; width: 30px; height: 30px; }
+  .schools__arrow svg { width: 20px; height: 20px; }
+  .schools__visual { max-width: 480px; margin-inline: auto; transform: none; }
+  .schools__teacher-note { max-width: 400px; margin-top: 18px; font-size: 14px; line-height: 1.85; }
+  .schools__teacher-message { margin-top: 4px; font-size: 13px; }
+}
+@media (max-width: 559px) {
+  .schools { padding-inline: 18px; }
+  .schools__card { padding: 24px 20px; border-radius: 26px; }
+  .schools__features { display: flex; flex-wrap: wrap; gap: 8px; }
+  .schools__features li { flex: 1 1 auto; }
+  .schools__action { font-size: 16px; }
+  .schools__teacher-note { font-size: 13px; }
+}
+@media (forced-colors: active) {
+  .schools__heading-accent { background: none; -webkit-text-fill-color: CanvasText; }
+}
