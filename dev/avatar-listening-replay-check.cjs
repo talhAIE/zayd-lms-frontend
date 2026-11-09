@@ -16,29 +16,31 @@ for (let i = 0; i < 8000 * 12; i++) wav.writeInt16LE(Math.round(Math.sin(i * Mat
 (async () => {
   const browser = await chromium.launch({ channel: 'chrome', headless: true });
   try {
-    for (const width of [390, 1440]) {
-      const page = await browser.newPage({ viewport: { width, height: 900 } });
+    for (const [width, height] of [[390, 844], [360, 640], [1440, 900]]) {
+      const page = await browser.newPage({ viewport: { width, height } });
       const errors = [], actions = []; let stage = 'initial', failVideo = false;
       page.on('pageerror', error => errors.push(error.message));
       await page.addInitScript(() => {
         localStorage.setItem('AiTutorUser', JSON.stringify({ id: 'listening-replay-test', role: 'student' }));
         localStorage.setItem('accessToken', 'fixture-only');
-        window.listeningAudio = [];
         window.videoSeeks = [];
         const currentTime = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'currentTime');
         Object.defineProperty(HTMLMediaElement.prototype, 'currentTime', { configurable: true, get: currentTime.get, set(value) {
           if (this.tagName === 'VIDEO') window.videoSeeks.push({ value, duration: this.duration });
           currentTime.set.call(this, value);
         } });
-        const Audio = window.Audio;
-        window.Audio = function (...args) { const audio = new Audio(...args); window.listeningAudio.push(audio); return audio; };
-        window.Audio.prototype = Audio.prototype;
+        const playMedia = HTMLMediaElement.prototype.play;
+        HTMLMediaElement.prototype.play = function () {
+          if (this instanceof HTMLAudioElement && this.src.endsWith('/topic.wav')) window.playedTopicAudio = this;
+          return playMedia.call(this);
+        };
       });
       await page.route('https://listening.test/**', route => failVideo && route.request().url().endsWith('.mp4') ? route.fulfill({ status: 404, body: '' }) : route.fulfill({ body: route.request().url().endsWith('.mp4') ? video : wav,
         contentType: route.request().url().endsWith('.mp4') ? 'video/mp4' : 'audio/wav' }));
+      const prompt = 'Listen again and try to find answers for the following questions - What each person wanted to do - Whether they succeeded - What wrong decision they made - What happened because of it';
       const payload = () => ({ stage, kbAudioUrl: 'https://listening.test/topic.wav', narrationVideoUrl: 'https://listening.test/avatar.mp4',
-        narrationText: 'Listen to the story.', narrationAudioUrl: 'https://listening.test/narrator.wav',
-        questionText: 'Listen again.', questionAudioUrl: 'https://listening.test/question.wav',
+        narrationText: prompt, narrationAudioUrl: 'https://listening.test/narrator.wav',
+        questionText: prompt, questionAudioUrl: 'https://listening.test/question.wav',
         ...(stage === 'quiz' ? { mcqs: [
           { id: 'q1', question: 'What are duets?', options: ['Two students recording together', 'Two microphones breaking'] },
           { id: 'q2', question: 'Where do they record?', options: ['In the broadcast room', 'In the garden'] },
@@ -50,6 +52,9 @@ for (let i = 0; i < 8000 * 12; i++) wav.writeInt16LE(Math.round(Math.sin(i * Mat
         if (url.endsWith('/listening/actions')) {
           const body = route.request().postDataJSON(); actions.push(body.action);
           if (body.action === 'next_listening_stage') stage = stage === 'initial' ? 'question' : 'quiz';
+          if (body.action === 'check_mcq_answer') return route.fulfill({ json: { events: [{ event: 'mcq_answer_result', payload: {
+            modeSessionId: body.modeSessionId, questionId: body.questionId, isCorrect: true, message: 'Correct! Great job.',
+          } }] } });
           data = { events: body.action === 'submit_mcqs' ? [{ event: 'mcq_result', payload: { passed: false, message: 'Try again.', correctCount: 0, required: 2 } }] : [
             ...(body.action === 'start_mode_session' ? [{ event: 'mode_session_started', payload: {
               lessonModeId: 'replay-topic', modeSessionId: 'replay-session', modeKey: 'listening-mode', chatHistory: [], isCompleted: false,
@@ -62,19 +67,38 @@ for (let i = 0; i < 8000 * 12; i++) wav.writeInt16LE(Math.round(Math.sin(i * Mat
       const play = () => page.getByRole('button', { name: 'Play audio', exact: true });
       const pause = () => page.getByRole('button', { name: 'Pause audio', exact: true });
       await page.waitForFunction(() => { const v = document.querySelector('video'); return v?.readyState >= 2 && v.currentTime < .1 && window.videoSeeks.some(seek => seek.value > 0 && seek.value < .1); });
+      if (width < 768) {
+        const frame = await page.locator('.avatar-workspace-stage').evaluate(node => ({
+          width: node.clientWidth, height: node.clientHeight, workspaceHeight: parseFloat(getComputedStyle(node).getPropertyValue('--avatar-workspace-height')),
+        }));
+        assert(Math.abs(frame.height - Math.min(frame.width / 1.42, 330, frame.workspaceHeight * .4)) <= 1, 'Mobile avatar must keep its original size');
+      }
       for (let i = 0; i < 2; i++) {
         await page.getByText('Finish the audio to continue.', { exact: true }).waitFor();
         assert.equal(await page.getByRole('button', { name: 'Next', exact: true }).count(), 0, 'Required listens must still be gated');
         await play().click(); await pause().waitFor();
-        await page.evaluate(() => window.listeningAudio.findLast(audio => audio.src.endsWith('/topic.wav')).dispatchEvent(new Event('ended')));
-        await page.getByRole('button', { name: 'Next', exact: true }).click();
+        await page.evaluate(() => window.playedTopicAudio.dispatchEvent(new Event('ended')));
+        const next = page.getByRole('button', { name: 'Next', exact: true });
+        if (width < 768) {
+          await next.waitFor();
+          const geometry = await next.evaluate(button => {
+            const panel = button.closest('.avatar-workspace-panel');
+            const bounds = button.getBoundingClientRect();
+            return { scroll: panel.scrollTop, bottom: bounds.bottom, top: bounds.top, panelBottom: panel.getBoundingClientRect().bottom };
+          });
+          assert.equal(geometry.scroll, 0, 'Opening a listen must keep the panel at the top');
+          assert(geometry.top >= 0 && geometry.bottom <= Math.min(height, geometry.panelBottom) + 1, 'Next must be on screen without scrolling');
+        }
+        await next.click();
         if (i === 0) await page.getByText('Listen Again (2 of 2)', { exact: true }).waitFor();
       }
       await page.getByText('What are duets?', { exact: true }).waitFor();
       assert.equal(await play().isEnabled(), true);
       await page.getByText('Two students recording together', { exact: true }).click();
+      await page.getByRole('button', { name: 'Check Answer', exact: true }).click();
       await page.getByRole('button', { name: 'Next Question', exact: true }).click();
       await page.getByText('In the broadcast room', { exact: true }).click();
+      await page.getByRole('button', { name: 'Check Answer', exact: true }).click();
       await play().click(); await pause().waitFor(); await page.waitForTimeout(250);
       assert(await page.evaluate(() => !document.querySelector('video').paused), 'Quiz stage must not auto-pause replay');
       await page.getByRole('button', { name: 'Restart audio', exact: true }).click();
@@ -96,7 +120,7 @@ for (let i = 0; i < 8000 * 12; i++) wav.writeInt16LE(Math.round(Math.sin(i * Mat
       await page.waitForFunction(() => document.querySelector('video')?.readyState >= 2 && !document.body.textContent.includes('Loading avatar…'));
       await play().click(); await pause().waitFor();
       assert(await page.evaluate(() => !document.querySelector('video').paused));
-      assert.deepEqual(actions, ['start_mode_session', 'next_listening_stage', 'next_listening_stage', 'submit_mcqs']);
+      assert.deepEqual(actions, ['start_mode_session', 'next_listening_stage', 'next_listening_stage', 'check_mcq_answer', 'check_mcq_answer', 'submit_mcqs']);
       assert.deepEqual(errors, []);
       console.log(`PASS ${width}px: decoded idle avatar, two required listens, quiz replay/restart, preserved answers, failed quiz replay, video-error audio fallback and avatar retry`);
       await page.close();
