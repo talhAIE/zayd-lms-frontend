@@ -312,7 +312,7 @@ export default function ListeningModeTopics({ avatar, demo }: {
   const showDemoLoadState = Boolean(demo && (isSessionLoading || sessionLoadError || !modeSessionId || !listeningPayload));
 
   return (
-    <div ref={avatarWorkspaceRef} className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'avatar-workspace max-w-[1440px] min-w-0' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
+    <div ref={avatarWorkspaceRef} className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'avatar-workspace avatar-listening-workspace max-w-[1440px] min-w-0' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
       
       <TopicCompletionModal 
         isOpen={showCompletionModal}
@@ -515,7 +515,7 @@ export default function ListeningModeTopics({ avatar, demo }: {
           
           {/* Audio Player Card */}
           {topicAudioUrl && listeningPayload?.stage !== 'quiz' && (
-            <div className={`flex flex-col p-4 px-5 gap-3.5 bg-white border-2 border-[#5C9DFF] rounded-xl ${avatar ? 'shrink-0' : ''}`}>
+            <div className={`listening-audio-card flex flex-col p-4 px-5 gap-3.5 bg-white border-2 border-[#5C9DFF] rounded-xl ${avatar ? 'shrink-0' : ''}`}>
               <div className="flex flex-row justify-between items-center w-full">
                 <span className="font-bold text-[14px] leading-[18px] text-[#5C9DFF]">
                   {topicAudioTitle}
@@ -549,14 +549,14 @@ export default function ListeningModeTopics({ avatar, demo }: {
           
           {/* The backend exposes a transcript only at its approved retry stage. */}
           {narratorText && listeningPayload?.stage !== 'quiz' && (
-            <div className="flex flex-col p-5 px-6 gap-2 flex-1 bg-[#F8F9FA] rounded-2xl">
+            <div className="listening-narrator flex flex-col p-5 px-6 gap-2 flex-1 bg-[#F8F9FA] rounded-2xl">
               <div className="flex items-center gap-1.5 mb-1">
                 <div className="w-2 h-2 bg-[#5C9DFF] rounded-full" />
                 <span className="font-semibold text-[12px] leading-[15px] text-[#6E748F]">{isTranscriptStage ? 'Transcript for retry' : 'Narrator'}</span>
               </div>
               
               <div ref={narratorTextRef} aria-current={avatar && narratorPlaying ? 'true' : undefined}
-                className="p-3.5 px-4 bg-white border-[1.5px] border-[#DBEAFE] shadow-[0px_2px_8px_rgba(0,0,0,0.06)] rounded-tr-xl rounded-br-xl rounded-bl-xl rounded-tl-sm w-full">
+                className="listening-narrator-content p-3.5 px-4 bg-white border-[1.5px] border-[#DBEAFE] shadow-[0px_2px_8px_rgba(0,0,0,0.06)] rounded-tr-xl rounded-br-xl rounded-bl-xl rounded-tl-sm w-full">
                 <p className="font-normal text-[14px] leading-[22px] text-[#0F1450]">
                   <AvatarSpeechHighlight active={Boolean(avatar && narratorPlaying)}>{narratorText}</AvatarSpeechHighlight>
                 </p>
@@ -574,7 +574,7 @@ export default function ListeningModeTopics({ avatar, demo }: {
 
           {/* MCQs Area (Figma Spec) */}
           {listeningPayload?.stage === 'quiz' && mcqList && mcqList.length > 0 && (
-            <div className="w-full bg-white border border-[#E5E7EB] shadow-[0px_4px_12px_rgba(0,0,0,0.04)] rounded-[12px] p-6 flex flex-col gap-6 flex-shrink-0 font-['Outfit',sans-serif]">
+            <div className="listening-quiz w-full bg-white border border-[#E5E7EB] shadow-[0px_4px_12px_rgba(0,0,0,0.04)] rounded-[12px] p-6 flex flex-col gap-6 flex-shrink-0 font-['Outfit',sans-serif]">
               
               {/* Quiz Header Row */}
               <div className="flex flex-row justify-between items-center w-full">
@@ -691,7 +691,7 @@ export default function ListeningModeTopics({ avatar, demo }: {
           
           {/* The server decides which listening stage comes next, including retry. */}
           {listeningPayload?.stage && listeningPayload.stage !== 'quiz' && listeningPayload.stage !== 'completed' && (
-            <div className="flex justify-center items-center pt-2 mt-auto">
+            <div className="listening-next flex justify-center items-center pt-2 mt-auto">
               {nextStageUnlocked ? (
                 <button
                   onClick={() => { if (avatar) avatarPlayback.pause(); nextListeningStage(); }}
