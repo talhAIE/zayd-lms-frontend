@@ -42,6 +42,7 @@ export type PrimaryItem =
       id: string;
       step: 'learn';
       slide: { id: string; imageKey: string; text: string; listenAudioKey: string; vocabulary: Record<string, string> };
+      paragraph?: { index: number; count: number };
       sentence: { id: string; text: string; shadowAudioKey: string };
       sentenceIndex: number;
       sentenceCount: number;
