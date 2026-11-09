@@ -7,6 +7,7 @@ import { Award } from 'lucide-react';
 import { ScienceCourseCard } from '@/components/science/ScienceCourseCard';
 import { SparkScienceCourseCard } from '@/components/science/SparkScienceCourseCard';
 import type { SparkCourse } from '@/services/sparkScienceService';
+import { PrimaryCourseCard } from '@/components/primary/PrimaryCourseCard';
 import { AvatarCourseCard } from '@/components/avatar-reading/AvatarCourseCard';
 
 export default function StudentCourses() {
@@ -14,6 +15,7 @@ export default function StudentCourses() {
   const { courses, loading, error } = useSelector((state: RootState) => state.learning);
   const { user } = useSelector((state: RootState) => state.auth);
   const [sparkCourse, setSparkCourse] = useState<SparkCourse | null>(null);
+  const [primaryAvailable, setPrimaryAvailable] = useState(false);
   const [avatarAvailable, setAvatarAvailable] = useState(false);
   const studentName = [user?.firstName, user?.lastName]
     .filter((name): name is string => typeof name === 'string' && name.trim().length > 0)
@@ -50,10 +52,11 @@ export default function StudentCourses() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <ScienceCourseCard />
           <AvatarCourseCard onAvailabilityChange={setAvatarAvailable} />
+          <PrimaryCourseCard onAvailabilityChange={setPrimaryAvailable} />
           <SparkScienceCourseCard onCourseChange={setSparkCourse} />
           {loading && <p className="text-gray-500">Loading courses...</p>}
           {error && <p className="text-red-500">{error}</p>}
-          {!loading && !error && courses.length === 0 && !sparkCourse && !avatarAvailable && (
+          {!loading && !error && courses.length === 0 && !sparkCourse && !avatarAvailable && !primaryAvailable && (
             <p className="text-gray-500">No curriculum courses available.</p>
           )}
           {!loading && courses.map((course) => (
