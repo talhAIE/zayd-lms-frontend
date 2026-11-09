@@ -44,13 +44,14 @@ const out=path.resolve(process.env.AVATAR_QA_OUTPUT||'../outputs/avatar-workspac
         await page.goto(`${base}/avatar-workspace-harness.html?mode=${mode}`);
         await page.locator('.avatar-workspace-panel').waitFor();
         const geometry=await page.evaluate(()=>{
-          const rect=selector=>{const r=document.querySelector(selector).getBoundingClientRect();return{top:r.top,bottom:r.bottom,height:r.height};};
+          const rect=selector=>{const r=document.querySelector(selector).getBoundingClientRect();return{top:r.top,bottom:r.bottom,left:r.left,right:r.right,height:r.height};};
           return{avatar:rect('.avatar-workspace-avatar'),panel:rect('.avatar-workspace-panel'),height:innerHeight,overflow:document.documentElement.scrollWidth>innerWidth,scrollHeight:document.documentElement.scrollHeight};
         });
         assert(!geometry.overflow,`${mode} horizontal overflow`);
         const centering=await page.locator('.avatar-workspace-stage').evaluate(stage=>{
           const frame=stage.getBoundingClientRect(),card=stage.parentElement,video=stage.querySelector('video').getBoundingClientRect();
-          return {stageWidth:frame.width,cardWidth:card.clientWidth,offset:Math.abs((video.left+video.width/2)-(frame.left+frame.width/2)),height:frame.height};
+          const controls=stage.nextElementSibling;
+          return {stageWidth:frame.width,cardWidth:card.clientWidth,offset:Math.abs((video.left+video.width/2)-(frame.left+frame.width/2)),height:frame.height,cardHeight:card.clientHeight,controlsHeight:controls?.getBoundingClientRect().height??0};
         });
         assert(Math.abs(centering.stageWidth-centering.cardWidth)<=1,`${mode} avatar stage must fill its card: ${JSON.stringify(centering)}`);
         assert(centering.offset<=1,`${mode} video must be horizontally centered: ${JSON.stringify(centering)}`);
@@ -61,9 +62,25 @@ const out=path.resolve(process.env.AVATAR_QA_OUTPUT||'../outputs/avatar-workspac
         const layout=await page.locator('.avatar-workspace').evaluate(node=>({width:node.getBoundingClientRect().width,available:node.closest('main').clientWidth}));
         if(viewport.width>=768)assert(layout.width>=layout.available*.85,`${mode} desktop/tablet must use a wide web workspace`);
         else assert(layout.width<=480,`${mode} mobile portrait layout changed`);
-        assert(geometry.avatar.bottom<=geometry.panel.top+1,`${mode} avatar moved from above`);
+        if(viewport.width>=1025){
+          assert(geometry.avatar.right<=geometry.panel.left+1,`${mode} avatar must be left of the conversation`);
+          assert(Math.abs(geometry.panel.top-geometry.avatar.top)<=1,`${mode} conversation and avatar must be on the same row`);
+          assert(Math.abs(geometry.panel.bottom-geometry.avatar.bottom)<=1,`${mode} avatar and conversation must have the same height`);
+          assert(Math.abs((geometry.panel.right-geometry.panel.left)-(geometry.avatar.right-geometry.avatar.left))<=1,`${mode} avatar and conversation must have the same width`);
+          assert(Math.abs(centering.height+centering.controlsHeight-centering.cardHeight)<=1,`${mode} video stage and controls must fill the avatar card`);
+        }else{
+          assert(geometry.avatar.bottom<=geometry.panel.top+1,`${mode} avatar must remain above the conversation`);
+        }
         assert(geometry.panel.height>=65,`${mode} panel too short ${JSON.stringify(geometry)}`);
-        assert(geometry.panel.bottom<=viewport.height+1,`${mode} below viewport ${JSON.stringify(geometry)}`);
+        if(mode==='reading'&&viewport.height<=500){
+          const body=await page.locator('.avatar-workspace-body').evaluate(node=>({
+            bottom:node.getBoundingClientRect().bottom,
+            scrollRoom:node.scrollHeight-node.clientHeight,
+          }));
+          assert(geometry.panel.bottom-body.scrollRoom<=body.bottom+1,'Short Reading workspace must be able to scroll to the panel bottom');
+        }else{
+          assert(geometry.panel.bottom<=viewport.height+1,`${mode} below viewport ${JSON.stringify(geometry)}`);
+        }
         const before=await page.locator('.avatar-workspace-avatar').boundingBox();
         await page.locator('.avatar-workspace-panel').evaluate(node=>{node.scrollTop=200;});
         assert.deepEqual(await page.locator('.avatar-workspace-avatar').boundingBox(),before,`${mode} avatar scrolled`);
