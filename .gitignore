@@ -36,3 +36,8 @@ dist-ssr
 /dev/nafs/dev/
 /playwright-report/
 /dev/.nafs-qa/
+
+# Synthetic STEP browser screenshots and traces.
+/dev/.step-qa/
+/dev/step/test-results/
+/dev/step/dev/

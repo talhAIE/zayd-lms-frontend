@@ -1,6 +1,6 @@
 # STEP mode implementation plan
 
-Status as of 2026-11-10: Phases 2, 3 and 4 are complete on `feat/step`: production ROW schema, local isolated APIs, and actual production draft content/audio upload are verified. Phase 1 audit/contract deliverables are implemented, but its academic exit gate remains pending eleven Nouns findings; source answers were not silently changed. Production now contains the inactive STEP course, three sections/topics/draft versions, 68 questions, 272 options, private keys, Ants passage, and the private source Listening MP3. STEP stays disabled and unpublished. The user explicitly requested progressing with schema/API/draft import work while content sign-off remains open. Phases 5–8 have not started. No accounts/enrollments, frontend player, or application deployment has been performed.
+Status as of 2026-11-10: Phases 2, 3 and 4 are complete on `feat/step`: production ROW schema, local isolated APIs, and actual production draft content/audio upload are verified. Phase 1 audit/contract deliverables are implemented, but its academic exit gate remains pending eleven Nouns findings; source answers were not silently changed. Production now contains the inactive STEP course, three sections/topics/draft versions, 68 questions, 272 options, private keys, Ants passage, and the private source Listening MP3. STEP stays disabled and unpublished. The user explicitly requested progressing with schema/API/draft import work while content sign-off remains open. Phase 5 frontend navigation/layouts are complete locally; durable assessment actions remain Phase 6. Phases 6–8 have not started. No accounts/enrollments or application deployment has been performed.
 
 ## 1. Agreed outcome
 
@@ -118,15 +118,18 @@ Use current LMS typography, spacing, cards, colors, buttons, sidebar, and respon
 
 ## Phase 5 — Build STEP course navigation and question layouts
 
-- [ ] Add STEP types/service and dedicated components/pages under `src/types/step.contract.ts`, `src/services/stepService.ts`, `src/components/step`, and `src/pages/student/step`, adjusted to existing project conventions.
-- [ ] Add one STEP card to Courses for enrolled students. Fetch STEP independently so disabled, empty, or failed discovery does not blank other courses. Add loading, empty, retry, and denied states.
-- [ ] Implement STEP course -> Grammar/Listening/Reading sections -> selected topic overview. Use backend order/count/state rather than hardcoded source manifests in the client.
-- [ ] Build the one-question MCQ layout, A–D choices, numbered navigation, answer progress, Previous/Next, and final Submit using current LMS styling.
-- [ ] Keep the Listening audio player mounted across question navigation; pause/release it when leaving the topic or changing accounts. Add clear loading, playback failure, retry, and accessible controls.
-- [ ] Show the Reading passage beside the question on desktop and in an accessible panel on mobile. Preserve passage access while answering. Render text safely without importing authoring HTML or private explanations.
-- [ ] Verify long grammar options, blanks, Arabic where authored for learners, mobile widths, touch targets, keyboard navigation, and focus states.
+- [x] Add STEP types/service and dedicated components/pages under `src/types/step.contract.ts`, `src/services/stepService.ts`, `src/components/step`, and `src/pages/student/step`, adjusted to existing project conventions.
+- [x] Add one STEP card to Courses for enrolled students. Fetch STEP independently so disabled, empty, or failed discovery does not blank other courses. Add loading, empty, retry, and denied states.
+- [x] Implement STEP course -> Grammar/Listening/Reading sections -> selected topic overview. Use backend order/count/state rather than hardcoded source manifests in the client.
+- [x] Build the one-question MCQ layout, A–D choices, numbered navigation, answer progress, Previous/Next, and final Submit using current LMS styling.
+- [x] Keep the Listening audio player mounted across question navigation; pause/release it when leaving the topic or changing accounts. Add clear loading, playback failure, retry, and accessible controls.
+- [x] Show the Reading passage beside the question on desktop and in an accessible panel on mobile. Preserve passage access while answering. Render text safely without importing authoring HTML or private explanations.
+- [x] Verify long grammar options, blanks, Arabic where authored for learners, mobile widths, touch targets, keyboard navigation, and focus states.
 
 **Exit criteria:** All three layouts and course hierarchy render correctly in desktop/mobile views and consume the agreed learner-safe API shape. No keys or source packages are bundled into the frontend.
+
+
+**Phase 5 outcome:** Complete locally. Independent STEP course hierarchy, controlled MCQ layouts, persistent Listening audio, responsive Reading passage and owner-bound transport are implemented and browser-verified. Routed existing attempts are read-only and new Start remains disabled until Phase 6 binds durable actions. Types/build, contract parity, bundle isolation and focused STEP plus existing NAFS/Science checks pass; evidence is in frontend `docs/step/phase5-layouts.md` and `phase5-evidence/checks.json`, with backend handoff `docs/step/phase5-status.md`. No push, deployment, production writes, publication or enrollments. Eleven academic findings still block publication.
 
 ## Phase 6 — Connect autosave, resume, and final results
 
@@ -175,7 +178,7 @@ The initial scope is the student STEP course and its three activities. Additiona
 | 2. Production schema | Complete | Production migration `step-phase2-001`: 14 tables; existing 78-table catalog unchanged; recovery/backup evidence and independent verification recorded. 25 offline tests and 85 backend suites pass (692 passed, one skipped). Local commits: backend `9ec3fd1`, frontend `95167a3`. |
 | 3. Backend APIs | Complete locally; not deployed | Independent STEP APIs; 61 focused and 25 offline tests; 90 backend suites passed (749 passed, one skipped). Local commits: backend `b802d5c`, frontend `7cdf3e6`. |
 | 4. Production content/audio upload | Complete; draft only | Actual SQL content: 1 course, 3 sections/topics/versions, 68 questions, 272 options, 68 keys, 1 passage/audio. Private production MP3 checksum/range/access verified; repeat import creates 0 records. 47 offline tests, 62 focused STEP tests and 91 backend suites pass (750 passed, one skipped); types/build/parity pass. STEP disabled; no publication/accounts/enrollments. Local commits only, no push. |
-| 5. Frontend layouts | Not started | |
+| 5. Frontend layouts | Complete locally; not deployed | Independent course hierarchy; controlled Grammar/Listening/Reading layouts; account-safe transport; audio/passage lifecycle; desktop/mobile QA. Frontend phase5-layouts.md and phase5-evidence/checks.json; backend phase5-status.md. Local commits only, no push. |
 | 6. Assessment lifecycle | Not started | |
 | 7. Verification and production integration | Not started | |
 | 8. Client handover | Not started | |
