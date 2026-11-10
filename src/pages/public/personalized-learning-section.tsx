@@ -99,6 +99,34 @@ function RewardsPreview() {
   );
 }
 
+const cefrLevels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'] as const;
+const sampleCefrLevel = 'B1';
+
+function CefrPreview() {
+  return (
+    <div className="personalized-learning__cefr-preview">
+      <div className="personalized-learning__cefr-response">
+        <h3>مثال على إجابة الطالب</h3>
+        <p lang="en" dir="ltr">
+          On weekends, I <mark>play football with my friends</mark> because it <mark>helps me stay active</mark>.
+        </p>
+      </div>
+      <div className="personalized-learning__cefr-scale">
+        <h3 id="personalized-cefr-scale">مقياس <bdi dir="ltr" lang="en">CEFR</bdi></h3>
+        <ol dir="ltr" aria-labelledby="personalized-cefr-scale">
+          {cefrLevels.map(level => (
+            <li key={level} aria-current={level === sampleCefrLevel ? 'true' : undefined}>{level}</li>
+          ))}
+        </ol>
+      </div>
+      <div className="personalized-learning__cefr-result">
+        <h3>المستوى في هذا المثال: <bdi dir="ltr">{sampleCefrLevel}</bdi></h3>
+        <p>يعبّر عن أفكاره بوضوح في مواقف يومية مألوفة.</p>
+      </div>
+    </div>
+  );
+}
+
 const featureCards = [
   {
     id: 'cefr',
@@ -166,10 +194,23 @@ export default function PersonalizedLearningSection() {
 
         <ul className="personalized-learning__features" aria-label="مزايا إضافية مع زيد">
           {featureCards.map(({ id, icon: Icon, title, description }) => (
-            <li className={id === 'cefr' ? "personalized-learning__feature" : "personalized-learning__feature personalized-learning__feature--preview"} key={id}>
+            <li className="personalized-learning__feature personalized-learning__feature--preview" key={id}>
               <span className="personalized-learning__feature-icon" aria-hidden="true"><Icon size={26} /></span>
               <h3>{title}</h3>
               <p>{description}</p>
+              {id === 'cefr' && (
+                <Dialog>
+                  <DialogTrigger type="button" className="personalized-learning__preview-trigger">
+                    <Gauge size={16} aria-hidden="true" />
+                    شاهد مثال التقييم
+                  </DialogTrigger>
+                  <DialogContent className="personalized-learning__preview-dialog personalized-learning__cefr-dialog" lang="ar" dir="rtl">
+                    <DialogTitle>تقييم مستوى اللغة وفق <bdi dir="ltr" lang="en">CEFR</bdi></DialogTitle>
+                    <DialogDescription className="personalized-learning__preview-label">نموذج توضيحي</DialogDescription>
+                    <CefrPreview />
+                  </DialogContent>
+                </Dialog>
+              )}
               {id === 'avatar' && (
                 <Dialog>
                   <DialogTrigger type="button" className="personalized-learning__preview-trigger">
