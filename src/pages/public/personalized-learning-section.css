@@ -99,12 +99,16 @@
   outline-offset: 3px;
 }
 .personalized-learning__preview-dialog[role="dialog"] {
+  display: flex;
+  flex-direction: column;
+  top: var(--demo-visible-center, 50%);
+  height: min(740px, calc(var(--demo-visible-height, 100dvh) - 24px));
   width: min(72rem, calc(100% - 24px));
   max-width: none;
   max-height: calc(100dvh - 24px);
   gap: 12px;
   padding: 16px;
-  overflow: auto;
+  overflow: hidden;
   border-radius: 16px;
 }
 .personalized-learning__preview-dialog > h2 {
@@ -112,10 +116,10 @@
   line-height: 1.5;
   text-align: center;
 }
-.personalized-learning__preview-dialog > video {
+.personalized-learning__preview-dialog video {
   display: block;
   width: 100%;
-  max-height: calc(100dvh - 112px);
+  height: auto;
   border-radius: 8px;
   background: #0b2546;
   object-fit: contain;

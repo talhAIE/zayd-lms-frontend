@@ -2,6 +2,7 @@ import { Suspense, useCallback, useState, type ReactNode } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import LandingDemoCelebration, { type LandingDemoMode } from "./LandingDemoCelebration";
 import LandingOnboarding from "./LandingOnboarding";
+import LandingDemoViewport from "./LandingDemoViewport";
 import type { OnboardingLanguage } from "./landing-onboarding-copy";
 import "./reading-demo.css";
 
@@ -47,15 +48,17 @@ export default function LandingDemoDialog({
             ? (arabic ? "أجب عن الأسئلة لإعداد خطة تناسب أهدافك." : "Answer a few questions about your learning goals.")
             : completed ? "أكملت النشاط وحصلت على 100 نقطة تجريبية." : description}
         </DialogDescription>
-        {onboarding ? (
-          <LandingOnboarding mode={mode} language={language} onLanguageChange={setLanguage} />
-        ) : completed ? (
-          <LandingDemoCelebration mode={mode} onStartOnboarding={() => setOnboarding(true)} />
-        ) : (
-          <Suspense fallback={<p role="status" className="p-10 text-center">{loadingText}</p>}>
-            {children(complete)}
-          </Suspense>
-        )}
+        <LandingDemoViewport key={onboarding ? "onboarding" : completed ? "celebration" : "player"}>
+          {onboarding ? (
+            <LandingOnboarding mode={mode} language={language} onLanguageChange={setLanguage} />
+          ) : completed ? (
+            <LandingDemoCelebration mode={mode} onStartOnboarding={() => setOnboarding(true)} />
+          ) : (
+            <Suspense fallback={<p role="status" className="p-10 text-center">{loadingText}</p>}>
+              {children(complete)}
+            </Suspense>
+          )}
+        </LandingDemoViewport>
       </DialogContent>
     </Dialog>
   );

@@ -9,6 +9,7 @@ import listeningIcon from '@/assets/svgs/listening-mode.png';
 import roleplayIcon from '@/assets/svgs/roleplay-mode.png';
 import { Award, BookOpenCheck, BotMessageSquare, CircleCheck, Gauge, Languages, PenLine, Play, Trophy } from 'lucide-react';
 import './reading-demo.css';
+import LandingDemoViewport from './LandingDemoViewport';
 
 const ReadingDemoModal = lazy(() => import('./ReadingDemoModal'));
 const ListeningDemoModal = lazy(() => import('./ListeningDemoModal'));
@@ -207,7 +208,7 @@ export default function PersonalizedLearningSection() {
                   <DialogContent className="personalized-learning__preview-dialog personalized-learning__cefr-dialog" lang="ar" dir="rtl">
                     <DialogTitle>تقييم مستوى اللغة وفق <bdi dir="ltr" lang="en">CEFR</bdi></DialogTitle>
                     <DialogDescription className="personalized-learning__preview-label">نموذج توضيحي</DialogDescription>
-                    <CefrPreview />
+                    <LandingDemoViewport><CefrPreview /></LandingDemoViewport>
                   </DialogContent>
                 </Dialog>
               )}
@@ -220,7 +221,7 @@ export default function PersonalizedLearningSection() {
                   <DialogContent className="personalized-learning__preview-dialog" lang="ar" dir="rtl">
                     <DialogTitle>معاينة زيد ثلاثي الأبعاد</DialogTitle>
                     <DialogDescription className="sr-only">معاينة صامتة لوضع القراءة مع شخصية زيد ثلاثية الأبعاد.</DialogDescription>
-                    <video src={avatarPreview} autoPlay muted playsInline aria-label="معاينة صامتة لوضع القراءة ثلاثي الأبعاد" />
+                    <LandingDemoViewport><video src={avatarPreview} autoPlay muted playsInline aria-label="معاينة صامتة لوضع القراءة ثلاثي الأبعاد" /></LandingDemoViewport>
                   </DialogContent>
                 </Dialog>
               )}
@@ -233,7 +234,7 @@ export default function PersonalizedLearningSection() {
                   <DialogContent className="personalized-learning__preview-dialog personalized-learning__certificate-dialog" lang="ar" dir="rtl">
                     <DialogTitle>شهادة تقدير وشارة إنجاز</DialogTitle>
                     <DialogDescription className="personalized-learning__preview-label">نموذج توضيحي</DialogDescription>
-                    <CertificateReveal />
+                    <LandingDemoViewport><CertificateReveal /></LandingDemoViewport>
                   </DialogContent>
                 </Dialog>
               )}
@@ -246,7 +247,7 @@ export default function PersonalizedLearningSection() {
                   <DialogContent className="personalized-learning__preview-dialog personalized-learning__rewards-dialog" lang="ar" dir="rtl">
                     <DialogTitle>نقاط ومكافآت تحفيزية</DialogTitle>
                     <DialogDescription className="personalized-learning__preview-label">نموذج توضيحي</DialogDescription>
-                    <RewardsPreview />
+                    <LandingDemoViewport><RewardsPreview /></LandingDemoViewport>
                   </DialogContent>
                 </Dialog>
               )}
