@@ -12,6 +12,7 @@ import { AvatarCourseCard } from '@/components/avatar-reading/AvatarCourseCard';
 import { NafsCourseCards } from '@/components/nafs/NafsCourseCards';
 import type { NafsCourseView } from '@/types/nafs.contract';
 import { StepCourseCard, type StepDiscoveryState } from '@/components/step/StepCourseCard';
+import { TestAccountTools } from '@/components/testing/TestAccountTools';
 
 export default function StudentCourses() {
   const dispatch = useDispatch<AppDispatch>();
@@ -46,6 +47,7 @@ export default function StudentCourses() {
             Select a course to resume your learning.{stepStatus !== 'available' && <> {inProgressCount} course{inProgressCount !== 1 && 's'} in progress.</>}
           </p>
         </div>
+        <TestAccountTools />
       </div>
 
       {/* Enrolled Curriculum */}

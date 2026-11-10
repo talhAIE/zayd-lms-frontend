@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button";
 type TestAccess = { available: false } | {
   available: true;
   program: "step" | "avatar" | "primary";
-  lessonId?: string;
-  items?: { id: string; label: string }[];
 };
 
 export function TestAccountTools() {
@@ -19,7 +17,6 @@ export function TestAccountTools() {
 function Tools({ id, username }: { id: string; username: string }) {
   const [access, setAccess] = useState<TestAccess>({ available: false });
   const [working, setWorking] = useState(false);
-  const [item, setItem] = useState("");
   const [error, setError] = useState("");
   const lifetime = useRef<AbortController | null>(null);
   const pending = useRef(false);
@@ -41,16 +38,15 @@ function Tools({ id, username }: { id: string; username: string }) {
     return () => controller.abort();
   }, [current]);
 
-  async function reset(itemId?: string) {
+  async function reset() {
     if (!access.available || !current() || pending.current) return;
     pending.current = true;
     setWorking(true);
     setError("");
     try {
       const config = { signal: lifetime.current?.signal, scienceSession: current };
-      await apiClient.post(access.program === "step" ? "/testing/reset-step" : "/testing/position-primary",
-        itemId ? { itemId } : {}, config);
-      if (current()) window.location.assign(access.program === "step" ? "/student/courses" : `/student/primary/${encodeURIComponent(access.lessonId!)}`);
+      await apiClient.post("/testing/reset-course", {}, config);
+      if (current()) window.location.reload();
     } catch {
       if (current()) setError("Testing progress could not be reset. Please try again.");
     } finally {
@@ -61,30 +57,11 @@ function Tools({ id, username }: { id: string; username: string }) {
 
   if (!access.available) return null;
   return (
-    <aside aria-label="Testing tools" className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-slate-900">
-      <strong>Testing account</strong>
-      {access.program === "avatar" ? (
-        <span>All 3D topics are available. Use Reset Mode in each player to practise again.</span>
-      ) : (
-        <>
-          <Button size="sm" variant="outline" disabled={working} onClick={() => void reset()}>
-            {working ? "Resetting…" : access.program === "step" ? "Reset my STEP activities" : "Restart Primary lesson"}
-          </Button>
-          {access.program === "primary" && (
-            <>
-              <label className="flex flex-wrap items-center gap-2">
-                Jump to any activity
-                <select className="max-w-full rounded border bg-white p-2" value={item} disabled={working} onChange={event => setItem(event.target.value)}>
-                  <option value="">Choose activity</option>
-                  {access.items?.map(activity => <option key={activity.id} value={activity.id}>{activity.label}</option>)}
-                </select>
-              </label>
-              <Button size="sm" disabled={working || !item} onClick={() => void reset(item)}>Open activity</Button>
-            </>
-          )}
-        </>
-      )}
-      {error && <p role="alert">{error}</p>}
-    </aside>
+    <div className="flex flex-col items-start gap-2 md:items-end">
+      <Button className="bg-[#3B82F6] text-white hover:bg-[#2563EB]" aria-label="Reset course progress" disabled={working} onClick={() => void reset()}>
+        {working ? "Resetting…" : "Reset"}
+      </Button>
+      {error && <p role="alert" className="max-w-xs text-sm text-red-600">{error}</p>}
+    </div>
   );
 }
