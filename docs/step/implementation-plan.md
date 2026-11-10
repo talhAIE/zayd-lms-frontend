@@ -1,6 +1,6 @@
 # STEP mode implementation plan
 
-Status as of 2026-11-10: Phase 1 audit, authoring packages, validators, and API contract are implemented on `feat/step` in both integrated repositories. The full Phase 1 academic exit gate remains pending eleven Nouns content findings; no source answers were silently changed. Phases 2–8 have not started. No STEP production schema, content upload, accounts, runtime integration, or deployment has been performed.
+Status as of 2026-11-10: Phase 1 audit, authoring packages, validators, and API contract are implemented on `feat/step` in both integrated repositories. The full Phase 1 academic exit gate remains pending eleven Nouns content findings; no source answers were silently changed. Phase 2 is complete: fourteen separate STEP tables are applied and verified in production ROW SQL, with STEP disabled. The user explicitly requested Phase 2 schema work while content sign-off remains open. Phases 3–8 have not started. No STEP course/content/audio upload, accounts/enrollments, application integration, or application deployment has been performed.
 
 ## 1. Agreed outcome
 
@@ -78,14 +78,16 @@ Use current LMS typography, spacing, cards, colors, buttons, sidebar, and respon
 
 ## Phase 2 — Add STEP storage and production schema
 
-- [ ] Add STEP-specific models for course, ordered sections/topics, immutable content versions, questions/options, private answer keys, passages, media assets, enrollments, attempts, saved answers, and idempotent mutation receipts. Exact table names can follow repository conventions.
-- [ ] Enforce foreign keys, unique enrollment, unique student/topic attempt, unique question/attempt answer, and stable content version relationships. Bind every attempt to its owner, region, topic, and content snapshot.
-- [ ] Add draft/published/retired publication state and content checksum/version metadata. Existing attempts must retain their original content and scoring snapshot when new versions are imported.
-- [ ] Prepare reviewed additive SQL using the repository's production migration process. Verify the configured production server/database identity without printing credentials; take the appropriate pre-change backup/recovery checkpoint and record schema baseline counts.
-- [ ] Apply only STEP schema additions to production. Do not use database reset, schema replacement, broad `db push`, or automatic table deletion against production.
-- [ ] Verify tables, indexes, constraints, routing, and generated Prisma clients. Keep STEP disabled. Compare existing-mode schema/data baselines to confirm no unintended modification.
+- [x] Add STEP-specific models for course, ordered sections/topics, immutable content versions, questions/options, private answer keys, passages, media assets, enrollments, attempts, saved answers, and idempotent mutation receipts. Fourteen tables include a dedicated schema-migration receipt. Both regional Prisma models validate.
+- [x] Enforce foreign keys, unique enrollment, unique student/topic attempt, unique question/attempt answer, and stable content version relationships. Composite constraints bind every attempt to its owner/course/region/version and every answer/key to the correct question/option/version.
+- [x] Add draft/published/retired publication state and source/package/content hashes. SQL checks and guard triggers protect published content, immutable snapshots, submitted results, and mutation receipts. Approval/open-issue checks prevent unreviewed publication.
+- [x] Prepare reviewed additive SQL using the existing explicit migration process. Verify production server `tutor-lms-prod-sql` / database `zayd_lms_prod`; record retained full/differential/recent log backups, a UTC recovery checkpoint, all 78 existing table counts, and a pre-change schema-catalog digest. No credentials are saved in evidence.
+- [x] Apply only STEP schema additions to production in one transaction with a deployment lock and checksum-pinned receipt. No reset, broad `db push`, table deletion, existing-table ALTER, content/account import, or blob operation occurred.
+- [x] Verify fourteen tables, 112 columns, 38 primary/unique and four lookup indexes, twenty foreign keys, twelve checks, and nine triggers in production. Both clients regenerate; type/build and regression checks pass. STEP storage rejects unprovisioned regions before provider fallback; Saudi is not provisioned. Existing-mode schema digest and deployment-window counts are unchanged. STEP remains disabled and content/enrollment/attempt tables are empty.
 
 **Exit criteria:** Production has the dedicated STEP schema and no STEP course is visible yet. Migration execution and verification are recorded; a migration file alone does not complete this phase.
+
+**Phase 2 outcome:** Complete. Applied migration `step-phase2-001` at 14:22 UTC on 2026-11-10 and independently verified the existing receipt/catalog with `newlyApplied: false`. Backend evidence is in `docs/step/phase2-storage.md` and `docs/step/phase2-evidence`; frontend handoff is `docs/step/phase2-status.md`. All 25 offline STEP tests, 85 backend suites (692 tests passed, one skipped), both project type checks, contract parity, and backend build pass. Production evidence is schema-only; no runtime deployment or live learner flow is claimed. Eleven Phase 1 Nouns findings still block publication.
 
 ## Phase 3 — Build the isolated backend assessment API
 
@@ -165,8 +167,8 @@ The initial scope is the student STEP course and its three activities. Additiona
 
 | Phase | Status | Evidence / commit / production verification |
 | --- | --- | --- |
-| 1. Content and contract | Audit/contract implemented; academic exit pending | 68 questions; 56 verified source checksums; 10 audio decodes; approved Listening transcription; 15 offline content tests; both contract type checks, both project type checks and cross-repo contract parity pass. Publication guard correctly exits 2. Eleven Nouns findings prevent publication. Local commits only; identify final hashes with `git log -1` in each repository. |
-| 2. Production schema | Not started | |
+| 1. Content and contract | Audit/contract implemented; academic exit pending | 68 questions; 56 source hashes; ten audio decodes; approved transcription; fifteen content tests; both type checks and contract parity pass. Publication guard exits 2 for eleven Nouns findings. Local commits: backend `ae79f13`, frontend `12d3734`. |
+| 2. Production schema | Complete | Production migration `step-phase2-001`: 14 tables; existing 78-table catalog unchanged; recovery/backup evidence recorded; independent verification passed. 25 offline STEP tests and 85 backend suites pass (692 passed, one skipped); both type checks, backend build and contract parity pass. STEP disabled; no content/users/blobs added. Local commits only, no push. |
 | 3. Backend APIs | Not started | |
 | 4. Production content/audio upload | Not started | |
 | 5. Frontend layouts | Not started | |
