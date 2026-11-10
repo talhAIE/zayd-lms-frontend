@@ -3,11 +3,11 @@ import avatarPreview from "@/assets/landing-page/3d-avatar-preview.mp4";
 import certificatePreview from "@/assets/landing-page/certificate-preview.png";
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import "./personalized-learning-section.css";
-import { lazy, Suspense, useCallback, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import readingIcon from '@/assets/svgs/reading-mode.png';
 import listeningIcon from '@/assets/svgs/listening-mode.png';
 import roleplayIcon from '@/assets/svgs/roleplay-mode.png';
-import { Award, BookOpenCheck, BotMessageSquare, Gauge, Languages, PenLine, Play, RotateCcw, Trophy } from 'lucide-react';
+import { Award, BookOpenCheck, BotMessageSquare, CircleCheck, Gauge, Languages, PenLine, Play, Trophy } from 'lucide-react';
 import './reading-demo.css';
 
 const ReadingDemoModal = lazy(() => import('./ReadingDemoModal'));
@@ -28,25 +28,74 @@ const demos = [
 
 function CertificateReveal() {
   const [artworkReady, setArtworkReady] = useState(false);
-  const [reveal, setReveal] = useState(0);
 
   return (
-    <>
-      <figure className="personalized-learning__certificate" data-ready={artworkReady} key={reveal}>
-        <img src={certificatePreview} alt="تصميم شهادة تقدير من زيد" width={1280} height={906} onLoad={() => setArtworkReady(true)} />
-        <div className="personalized-learning__certificate-copy" lang="en" dir="ltr">
-          <strong>Noor Ali</strong>
-          <p>For completing a Zayd reading activity</p>
-        </div>
-        <span className="personalized-learning__certificate-stamp" role="img" aria-label="شارة نجم القراءة">
-          <Award aria-hidden="true" />
-        </span>
-      </figure>
-      <button type="button" className="personalized-learning__certificate-replay" onClick={() => setReveal(value => value + 1)} disabled={!artworkReady}>
-        <RotateCcw size={16} aria-hidden="true" />
-        أعد العرض
-      </button>
-    </>
+    <figure className="personalized-learning__certificate" data-ready={artworkReady}>
+      <img src={certificatePreview} alt="تصميم شهادة تقدير من زيد" width={1280} height={906} onLoad={() => setArtworkReady(true)} />
+      <p className="personalized-learning__certificate-copy" lang="en" dir="ltr">For completing a Zayd reading activity</p>
+      <span className="personalized-learning__certificate-stamp" role="img" aria-label="شارة نجم القراءة">
+        <Award aria-hidden="true" />
+      </span>
+    </figure>
+  );
+}
+
+const startingPoints = 200;
+const earnedPoints = 50;
+const finalPoints = startingPoints + earnedPoints;
+const sampleLeaders = [
+  { id: 'layan', name: 'ليان', points: 320 },
+  { id: 'omar', name: 'عمر', points: 285 },
+];
+const sampleNeighbor = { id: 'neighbor', name: 'ريم', points: 235 };
+
+function RewardsPreview() {
+  const [points, setPoints] = useState(startingPoints);
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setPoints(finalPoints);
+      return;
+    }
+
+    const startedAt = performance.now();
+    let frame: number;
+
+    function updatePoints(now: number) {
+      const progress = Math.min(1, Math.max(0, (now - startedAt - 650) / 1000));
+      setPoints(startingPoints + Math.floor(earnedPoints * progress));
+      if (progress < 1) frame = requestAnimationFrame(updatePoints);
+    }
+
+    frame = requestAnimationFrame(updatePoints);
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  const advanced = points === finalPoints;
+  const learner = { id: 'learner', name: 'نورة', points };
+  const leaderboard = advanced
+    ? [...sampleLeaders, learner, sampleNeighbor]
+    : [...sampleLeaders, sampleNeighbor, learner];
+
+  return (
+    <div className="personalized-learning__rewards-preview">
+      <div className="personalized-learning__rewards-summary">
+        <p><CircleCheck size={19} aria-hidden="true" /> اكتمل نشاط القراءة</p>
+        <span className="personalized-learning__points-earned"><bdi dir="ltr">+{earnedPoints}</bdi> نقطة</span>
+        <p>رصيد نورة <strong className="personalized-learning__points-total"><bdi dir="ltr">{points}</bdi></strong> نقطة</p>
+      </div>
+      <h3 id="personalized-sample-leaderboard">لوحة الشرف</h3>
+      <ol className="personalized-learning__sample-leaderboard" aria-labelledby="personalized-sample-leaderboard" data-advanced={advanced}>
+        {leaderboard.map((entry, index) => (
+          <li key={entry.id} data-learner={entry.id}>
+            <bdi dir="ltr" className="personalized-learning__sample-rank">{index + 1}</bdi>
+            <span>{entry.name}</span>
+            <span><bdi dir="ltr">{entry.points}</bdi> نقطة</span>
+          </li>
+        ))}
+      </ol>
+      <p className="sr-only" aria-live="polite">{advanced ? 'ارتفعت نورة من المركز الرابع إلى المركز الثالث.' : ''}</p>
+    </div>
   );
 }
 
@@ -117,7 +166,7 @@ export default function PersonalizedLearningSection() {
 
         <ul className="personalized-learning__features" aria-label="مزايا إضافية مع زيد">
           {featureCards.map(({ id, icon: Icon, title, description }) => (
-            <li className={id === 'avatar' || id === 'certificates' ? "personalized-learning__feature personalized-learning__feature--preview" : "personalized-learning__feature"} key={id}>
+            <li className={id === 'cefr' ? "personalized-learning__feature" : "personalized-learning__feature personalized-learning__feature--preview"} key={id}>
               <span className="personalized-learning__feature-icon" aria-hidden="true"><Icon size={26} /></span>
               <h3>{title}</h3>
               <p>{description}</p>
@@ -130,7 +179,7 @@ export default function PersonalizedLearningSection() {
                   <DialogContent className="personalized-learning__preview-dialog" lang="ar" dir="rtl">
                     <DialogTitle>معاينة زيد ثلاثي الأبعاد</DialogTitle>
                     <DialogDescription className="sr-only">معاينة صامتة لوضع القراءة مع شخصية زيد ثلاثية الأبعاد.</DialogDescription>
-                    <video src={avatarPreview} autoPlay muted playsInline controls aria-label="معاينة صامتة لوضع القراءة ثلاثي الأبعاد" />
+                    <video src={avatarPreview} autoPlay muted playsInline aria-label="معاينة صامتة لوضع القراءة ثلاثي الأبعاد" />
                   </DialogContent>
                 </Dialog>
               )}
@@ -142,8 +191,21 @@ export default function PersonalizedLearningSection() {
                   </DialogTrigger>
                   <DialogContent className="personalized-learning__preview-dialog personalized-learning__certificate-dialog" lang="ar" dir="rtl">
                     <DialogTitle>شهادة تقدير وشارة إنجاز</DialogTitle>
-                    <DialogDescription className="personalized-learning__certificate-label">نموذج توضيحي</DialogDescription>
+                    <DialogDescription className="personalized-learning__preview-label">نموذج توضيحي</DialogDescription>
                     <CertificateReveal />
+                  </DialogContent>
+                </Dialog>
+              )}
+              {id === 'rewards' && (
+                <Dialog>
+                  <DialogTrigger type="button" className="personalized-learning__preview-trigger">
+                    <Trophy size={16} aria-hidden="true" />
+                    شاهد كيف تعمل النقاط
+                  </DialogTrigger>
+                  <DialogContent className="personalized-learning__preview-dialog personalized-learning__rewards-dialog" lang="ar" dir="rtl">
+                    <DialogTitle>نقاط ومكافآت تحفيزية</DialogTitle>
+                    <DialogDescription className="personalized-learning__preview-label">نموذج توضيحي</DialogDescription>
+                    <RewardsPreview />
                   </DialogContent>
                 </Dialog>
               )}
