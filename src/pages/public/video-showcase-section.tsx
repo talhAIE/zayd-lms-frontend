@@ -11,7 +11,7 @@ export default function VideoShowcaseSection({ videoSrc }: VideoShowcaseSectionP
     <section id="zayd-demo" className="demo-showcase" dir="rtl" lang="ar" aria-labelledby="demo-heading">
       <div className="demo-showcase__container">
         <header className="demo-showcase__heading-group">
-          <p className="demo-showcase__eyebrow">70 ثانية تكفي لفهم الفكرة</p>
+          <p className="demo-showcase__eyebrow">دقيقة واحدة تكفي لفهم الفكرة</p>
           <h2 id="demo-heading" className="demo-showcase__heading">
             شاهد زيد وهو{" "}
             <span className="demo-showcase__heading-ending">يصنع <span className="demo-showcase__heading-accent">الفرق</span></span>
