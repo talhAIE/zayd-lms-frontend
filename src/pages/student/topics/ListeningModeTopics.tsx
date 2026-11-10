@@ -1,4 +1,8 @@
+import { useAvatarWorkspace } from '@/components/avatar-reading/useAvatarWorkspace';
+import { GradedAnswerButton } from '@/components/learning/AnswerFeedback';
+import { AvatarSpeechHighlight } from '@/components/avatar-reading/AvatarSpeechHighlight';
 import { useState, useEffect, useRef } from 'react';
+import type { AvatarReadingTransport } from '@/components/avatar-reading/AvatarReadingContext';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ChevronLeft, Clock, Check, Pause, Play, ChevronDown, ChevronUp } from 'lucide-react';
 import { toast } from 'sonner';
@@ -8,6 +12,7 @@ import { ContentPolicyWarningModal } from '@/components/ui/ContentPolicyWarningM
 import { useLearningProgressRefresh } from '@/hooks/useLearningProgressRefresh';
 import { useAudioPlayback } from '@/hooks/useAudioPlayback';
 import AudioPlayer from '../AudioPlayer';
+import { useAvatarListeningPlayback } from '@/components/avatar-reading/useAvatarListeningPlayback';
 
 function isOptionCorrect(mcq: any, answer: number | string | undefined) {
   if (answer === undefined || answer === null || answer === -1) {
@@ -54,15 +59,21 @@ function isOptionCorrect(mcq: any, answer: number | string | undefined) {
   return true;
 }
 
-export default function ListeningModeTopics() {
+export default function ListeningModeTopics({ avatar, demo }: {
+  avatar?: {topicId:string;title:string};
+  demo?: { lessonModeId: string; transport: AvatarReadingTransport; onClose: () => void; onComplete: () => void };
+} = {}) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const lessonModeId = searchParams.get('modeId') || '';
+  const avatarWorkspaceRef = useAvatarWorkspace(Boolean(avatar));
+  const lessonModeId = demo?.lessonModeId || avatar?.topicId || searchParams.get('modeId') || '';
+  const backToTopics = () => demo ? demo.onClose() : avatar ? navigate('/student/3d-avatar/listening', {replace:true}) : navigate(-1);
   const lessonId = searchParams.get('lessonId') || '';
   const courseId = searchParams.get('courseId') || undefined;
   const unitId = searchParams.get('unitId') || undefined;
   const refreshLearningProgress = useLearningProgressRefresh();
   const { 
+    playingAudioId: topicPlayingId,
     isCurrentlyPlaying: isTopicPlaying, 
     loadingAudioId: topicLoadingId, 
     audioProgress: topicProgress, 
@@ -83,9 +94,16 @@ export default function ListeningModeTopics() {
   
   const {
     modeSessionId,
+    isSessionLoading,
+    sessionLoadError,
+    reloadSession,
     listeningPayload,
     mcqList,
     mcqResult,
+    mcqAnswerFeedback,
+    isCheckingMcqAnswer,
+    checkMcqAnswer,
+    clearMcqAnswerFeedback,
     isCompleted,
     isAccountBlocked,
     sessionStatus,
@@ -98,32 +116,37 @@ export default function ListeningModeTopics() {
     restartSession
   } = useModeSession({ 
     lessonModeId,
+    transport: demo?.transport,
+    ephemeral: Boolean(demo),
     onCompleted: async () => {
-      await refreshLearningProgress(lessonId, { courseId, unitId });
+      if (demo) { demo.onComplete(); return; }
+      if (!avatar) await refreshLearningProgress(lessonId, { courseId, unitId });
       setIsJustCompleted(true);
       setShowCompletionModal(true);
     }
   });
 
   useEffect(() => {
-    if (isCompleted && !isJustCompleted) {
+    if (!demo && isCompleted && !isJustCompleted) {
       setShowCompletionModal(true);
     }
-  }, [isCompleted, isJustCompleted]);
+  }, [isCompleted, isJustCompleted, demo]);
 
   const hasStartedRef = useRef(false);
 
   useEffect(() => {
-    if (modeSessionId && !listeningPayload && !hasStartedRef.current) {
+    // The isolated HTTP start/restart response already includes listening_payload.
+    if (!avatar && !demo && modeSessionId && !listeningPayload && !hasStartedRef.current) {
       hasStartedRef.current = true;
       startListening();
     }
-  }, [modeSessionId, listeningPayload, startListening]);
+  }, [modeSessionId, listeningPayload, startListening, avatar, demo]);
 
   useEffect(() => {
     // A full topic-audio play is required at both listening stages. Entering
     // the question stage deliberately resets this so the learner completes a
     // second listen before the quiz can be unlocked.
+    if (demo) pauseTopic();
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       narratorSpeechRef.current = null;
@@ -136,7 +159,7 @@ export default function ListeningModeTopics() {
       setHasListenedToAudio(false);
       setHasStartedAudio(false);
     }
-  }, [listeningPayload?.stage]);
+  }, [listeningPayload?.stage, demo, pauseTopic]);
 
   useEffect(() => {
     setCurrentMcqIndex(0);
@@ -150,10 +173,11 @@ export default function ListeningModeTopics() {
   }, [mcqResult]);
 
   useEffect(() => {
+    if (demo && topicPlayingId !== 'listening_topic_audio') return;
     if (isTopicPlaying || topicLoadingId) {
       setHasStartedAudio(true);
     }
-  }, [isTopicPlaying, topicLoadingId]);
+  }, [isTopicPlaying, topicLoadingId, demo, topicPlayingId]);
 
   useEffect(() => {
     if (modeSessionId) {
@@ -184,12 +208,53 @@ export default function ListeningModeTopics() {
   const isQuestionStage = listeningPayload?.stage === 'question';
   const isTranscriptStage = listeningPayload?.stage === 'transcript';
   const topicAudioUrl = listeningPayload?.kbAudioUrl;
+  const narratorAudioUrl = isTranscriptStage ? listeningPayload?.transcriptAudioUrl : isQuestionStage ? listeningPayload?.questionAudioUrl : listeningPayload?.narrationAudioUrl;
+  const avatarPlayback = useAvatarListeningPlayback(
+    avatar ? topicAudioUrl : undefined,
+    avatar ? narratorAudioUrl : undefined,
+    avatar ? listeningPayload?.narrationVideoUrl : undefined,
+    listeningPayload?.stage,
+    () => setHasListenedToAudio(true),
+  );
+  const topicPlaying = avatar ? avatarPlayback.track === 'topic' && avatarPlayback.playing : isTopicPlaying && (!demo || topicPlayingId === 'listening_topic_audio');
+  const narratorPlaying = avatar ? avatarPlayback.track === 'narrator' && avatarPlayback.playing : demo ? isTopicPlaying && topicPlayingId === 'listening_demo_narrator' : isNarratorTextPlaying;
+  const narratorTextRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const text = narratorTextRef.current, panel = text?.closest('.avatar-workspace-panel');
+    if (!avatar || !narratorPlaying || !text || !panel) return;
+    const parent = panel.getBoundingClientRect(), child = text.getBoundingClientRect();
+    if (child.top < parent.top || child.bottom > parent.bottom)
+      panel.scrollTo({ top: panel.scrollTop + child.top - parent.top - 12, behavior: 'auto' });
+  }, [avatar?.topicId, narratorPlaying]);
+  useEffect(() => {
+    if (!avatar) return;
+    if (avatarPlayback.playing || avatarPlayback.loading) setHasStartedAudio(true);
+    if (isCompleted || isAccountBlocked) avatarPlayback.pause();
+  }, [avatar, avatarPlayback.playing, avatarPlayback.loading, avatarPlayback.pause, isCompleted, isAccountBlocked, listeningPayload?.stage]);
   const narratorText = isTranscriptStage
     ? listeningPayload?.transcript
     : isQuestionStage ? listeningPayload?.questionText : listeningPayload?.narrationText;
   const isRequiredListeningStage =
     listeningPayload?.stage === 'initial' || isQuestionStage;
   const nextStageUnlocked = isTranscriptStage || hasListenedToAudio;
+
+  // Guest demos submit to their isolated API; authenticated/3D lessons retain
+  // the newer server-checked feedback flow from fix/accgrade10.
+  const handleQuizAction = (mcq: any, answer: number | string | undefined, isLast: boolean) => {
+    if (isAccountBlocked || isCheckingMcqAnswer) return;
+    if (demo) {
+      if (!isOptionCorrect(mcq, answer)) {
+        toast.error('Incorrect answer. Please try again.');
+        return;
+      }
+    } else if (mcqAnswerFeedback[mcq.id]?.isCorrect !== true) {
+      if (answer !== undefined) checkMcqAnswer(mcq.id, answer);
+      return;
+    }
+    if (isLast) submitMcqs(mcqList.map((_, index) => selectedAnswers[index] ?? -1));
+    else setCurrentMcqIndex(index => index + 1);
+  };
+
   const listenNumber = isQuestionStage ? 2 : 1;
   const topicAudioTitle = isQuestionStage
     ? 'Listen Again (2 of 2)'
@@ -199,6 +264,12 @@ export default function ListeningModeTopics() {
 
   const toggleNarratorTextSpeech = () => {
     if (!narratorText) return;
+    if (avatar) { void avatarPlayback.toggle('narrator'); return; }
+    if (demo && narratorAudioUrl) {
+      window.speechSynthesis?.cancel();
+      toggleTopic('listening_demo_narrator', narratorAudioUrl);
+      return;
+    }
 
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
       toast.error('Narrator text playback is not available in this browser.');
@@ -238,17 +309,20 @@ export default function ListeningModeTopics() {
     setIsNarratorTextPlaying(false);
   };
 
+  const showDemoLoadState = Boolean(demo && (isSessionLoading || sessionLoadError || !modeSessionId || !listeningPayload));
+
   return (
-    <div className="w-full max-w-[1207px] mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)] border border-gray-100 shadow-sm relative">
+    <div ref={avatarWorkspaceRef} className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'avatar-workspace avatar-listening-workspace max-w-[1440px] min-w-0' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
       
       <TopicCompletionModal 
         isOpen={showCompletionModal}
         isJustCompleted={isJustCompleted}
         onFinish={() => {
           setShowCompletionModal(false);
-          navigate(-1);
+          backToTopics();
         }}
         onRetake={() => {
+          if (avatar) avatarPlayback.restart();
           setShowCompletionModal(false);
           setCurrentMcqIndex(0);
           setSelectedAnswers({});
@@ -266,27 +340,28 @@ export default function ListeningModeTopics() {
       />
 
       {/* Header Progress Group */}
-      <div className="flex flex-col gap-2.5 pb-3">
+      <div className={`flex flex-col shrink-0 gap-2.5 pb-3 ${avatar ? 'avatar-workspace-header' : ''}`}>
         
         {/* Top Bar */}
         <div className="flex flex-row justify-between items-center px-4 md:px-6 py-4 bg-white border-b border-[#E5E7EB]">
           
-          <div className="flex-1 flex justify-start">
+          <div className={`${avatar ? 'shrink-0' : 'flex-1'} flex justify-start`}>
             <button 
-              onClick={() => navigate(-1)}
+              onClick={backToTopics}
+              aria-label={demo ? 'Close listening demo' : 'Back to lessons'}
               className="flex justify-center items-center w-10 h-10 bg-white border border-[#E5E7EB] shadow-[0px_1px_4px_rgba(0,0,0,0.06)] rounded-full hover:bg-gray-50 transition-colors"
             >
               <ChevronLeft className="w-5 h-5 text-[#282828]" />
             </button>
           </div>
           
-          <div className="flex-1 flex justify-center items-center gap-4">
-            <h1 className="text-[20px] font-bold leading-[20px] tracking-[-0.3px] text-[#282828]">
-              Listening Mode
+          <div className={`flex-1 flex items-center gap-4 ${avatar ? 'min-w-0 px-3 sm:px-4' : 'justify-center'}`}>
+            <h1 className={`${avatar ? 'text-base leading-6 sm:text-xl' : 'text-[20px] leading-[20px]'} font-bold tracking-[-0.3px] text-[#282828]`}>
+              {avatar ? avatar.title : 'Listening Mode'}
             </h1>
           </div>
           
-          <div className="flex-1 flex justify-end items-center gap-3">
+          <div className={`${avatar ? 'shrink-0' : 'flex-1'} flex justify-end items-center gap-3`}>
             {sessionStatus.remainingSeconds !== null && (
               <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#F97316]/30 rounded-full">
                 <Clock className="w-3.5 h-3.5 text-[#F97316]" />
@@ -313,10 +388,17 @@ export default function ListeningModeTopics() {
       </div>
 
       {/* Main Split Content */}
-      <div className="flex flex-col md:flex-row px-4 md:px-8 gap-4 flex-1 min-h-0 pb-6">
+      {showDemoLoadState && <div className="flex flex-1 min-h-0 flex-col items-center justify-center gap-4 p-6 text-center" role={sessionLoadError ? 'alert' : 'status'}>
+        <p>{sessionLoadError || 'Loading listening practice…'}</p>
+        <div className="flex gap-3">
+          {sessionLoadError && <button type="button" onClick={reloadSession} className="rounded-full bg-blue-500 px-6 py-2 font-semibold text-white">Retry</button>}
+          <button type="button" onClick={backToTopics} className="rounded-full border px-6 py-2">Close demo</button>
+        </div>
+      </div>}
+      <div className={`${showDemoLoadState ? 'hidden' : 'flex'} flex-col min-h-0 pb-6 ${avatar ? 'avatar-workspace-body flex-1 gap-2 px-2 sm:px-4' : 'md:flex-row px-4 md:px-8 gap-4 flex-1'}`}>
         
         {/* Mode Sidebar */}
-        <div className="flex flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0">
+        {!avatar && <div className="flex flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0">
           <div 
             className="px-4 pb-2 md:pb-2.5 flex justify-between items-center cursor-pointer md:cursor-default"
             onClick={() => window.innerWidth < 768 && setIsStepsExpanded(!isStepsExpanded)}
@@ -406,14 +488,34 @@ export default function ListeningModeTopics() {
           <div className="w-full h-[1px] bg-[#E5E7EB]/70" />
           </div>
 
-        </div>
+        </div>}
 
+        {avatar && (
+          <aside className="avatar-workspace-avatar flex w-full min-w-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]" aria-label="3D Listening avatar">
+            <div className="avatar-workspace-stage relative overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#F0F7FF]">
+              <video ref={avatarPlayback.videoRef} src={listeningPayload?.narrationVideoUrl} muted playsInline preload="auto"
+                className="absolute left-1/2 top-0 aspect-video h-[145%] w-auto max-w-none -translate-x-1/2"
+                aria-label={`${avatar.title} avatar narration`} onLoadedMetadata={avatarPlayback.synchronize} />
+              {avatarPlayback.videoState !== 'ready' && <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#F8FAFC] p-4 text-center text-sm text-slate-600" role={avatarPlayback.videoState === 'error' ? 'alert' : 'status'}>
+                <p>{avatarPlayback.videoState === 'error' ? 'Avatar unavailable. You can still play the audio.' : 'Loading avatar…'}</p>
+                {avatarPlayback.videoState === 'error' && <button type="button" onClick={avatarPlayback.retryVideo} className="rounded-full border border-blue-300 bg-white px-4 py-2 font-semibold text-blue-600">Retry avatar</button>}
+              </div>}
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t bg-white px-3 py-2.5 sm:px-4">
+              <button type="button" disabled={!topicAudioUrl || isAccountBlocked || isCompleted}
+                onClick={() => { void avatarPlayback.toggle('topic'); }} className="rounded-full bg-[#3B82F6] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
+                {avatarPlayback.track === 'topic' && avatarPlayback.loading ? 'Loading…' : topicPlaying ? 'Pause audio' : 'Play audio'}
+              </button>
+              <button type="button" onClick={avatarPlayback.restart} className="text-sm text-[#475569]">Restart audio</button>
+            </div>
+          </aside>
+        )}
         {/* Workspace Main */}
-        <div className="flex flex-col flex-1 gap-4 min-h-0 overflow-y-auto">
+        <div className={`flex flex-col gap-4 min-h-0 overflow-y-auto ${avatar ? 'avatar-workspace-panel flex-1 min-w-0 rounded-2xl border border-[#E5E7EB] bg-white p-3 sm:p-4' : 'flex-1'}`}>
           
           {/* Audio Player Card */}
           {topicAudioUrl && listeningPayload?.stage !== 'quiz' && (
-            <div className="flex flex-col p-4 px-5 gap-3.5 bg-white border-2 border-[#5C9DFF] rounded-xl">
+            <div className={`listening-audio-card flex flex-col p-4 px-5 gap-3.5 bg-white border-2 border-[#5C9DFF] rounded-xl ${avatar ? 'shrink-0' : ''}`}>
               <div className="flex flex-row justify-between items-center w-full">
                 <span className="font-bold text-[14px] leading-[18px] text-[#5C9DFF]">
                   {topicAudioTitle}
@@ -421,13 +523,15 @@ export default function ListeningModeTopics() {
               </div>
               <AudioPlayer
                 audioSrc={topicAudioUrl}
-                isPlaying={isTopicPlaying}
-                isLoading={!!topicLoadingId}
-                progress={topicProgress}
-                duration={topicDuration}
+                ariaLabel={demo ? topicPlaying ? 'Pause demo story' : 'Play demo story' : undefined}
+                isPlaying={topicPlaying}
+                isLoading={avatar ? avatarPlayback.track === 'topic' && avatarPlayback.loading : !!topicLoadingId}
+                progress={avatar ? avatarPlayback.position : demo && topicPlayingId !== 'listening_topic_audio' ? 0 : topicProgress}
+                duration={avatar ? avatarPlayback.duration : demo && topicPlayingId !== 'listening_topic_audio' ? 0 : topicDuration}
                 onTogglePlay={() => {
                   stopNarratorTextSpeech();
-                  toggleTopic('listening_topic_audio', topicAudioUrl, () => setHasListenedToAudio(true));
+                  if (avatar) { void avatarPlayback.toggle('topic'); }
+                  else toggleTopic('listening_topic_audio', topicAudioUrl, () => setHasListenedToAudio(true));
                 }}
                 variant="gradient"
                 className="max-w-full"
@@ -445,23 +549,24 @@ export default function ListeningModeTopics() {
           
           {/* The backend exposes a transcript only at its approved retry stage. */}
           {narratorText && listeningPayload?.stage !== 'quiz' && (
-            <div className="flex flex-col p-5 px-6 gap-2 flex-1 bg-[#F8F9FA] rounded-2xl">
+            <div className="listening-narrator flex flex-col p-5 px-6 gap-2 flex-1 bg-[#F8F9FA] rounded-2xl">
               <div className="flex items-center gap-1.5 mb-1">
                 <div className="w-2 h-2 bg-[#5C9DFF] rounded-full" />
                 <span className="font-semibold text-[12px] leading-[15px] text-[#6E748F]">{isTranscriptStage ? 'Transcript for retry' : 'Narrator'}</span>
               </div>
               
-              <div className="p-3.5 px-4 bg-white border-[1.5px] border-[#DBEAFE] shadow-[0px_2px_8px_rgba(0,0,0,0.06)] rounded-tr-xl rounded-br-xl rounded-bl-xl rounded-tl-sm w-full">
+              <div ref={narratorTextRef} aria-current={avatar && narratorPlaying ? 'true' : undefined}
+                className="listening-narrator-content p-3.5 px-4 bg-white border-[1.5px] border-[#DBEAFE] shadow-[0px_2px_8px_rgba(0,0,0,0.06)] rounded-tr-xl rounded-br-xl rounded-bl-xl rounded-tl-sm w-full">
                 <p className="font-normal text-[14px] leading-[22px] text-[#0F1450]">
-                  {narratorText}
+                  <AvatarSpeechHighlight active={Boolean(avatar && narratorPlaying)}>{narratorText}</AvatarSpeechHighlight>
                 </p>
                 <button
                   type="button"
                   onClick={toggleNarratorTextSpeech}
-                  aria-label={isNarratorTextPlaying ? 'Pause narrator text' : 'Play narrator text'}
+                  aria-label={narratorPlaying ? 'Pause narrator text' : 'Play narrator text'}
                   className="mt-3 flex items-center text-[#0F1450] transition-colors hover:text-[#2563EB]"
                 >
-                  {isNarratorTextPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+                  {narratorPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
                 </button>
             </div>
               </div>
@@ -469,7 +574,7 @@ export default function ListeningModeTopics() {
 
           {/* MCQs Area (Figma Spec) */}
           {listeningPayload?.stage === 'quiz' && mcqList && mcqList.length > 0 && (
-            <div className="w-full bg-white border border-[#E5E7EB] shadow-[0px_4px_12px_rgba(0,0,0,0.04)] rounded-[12px] p-6 flex flex-col gap-6 flex-shrink-0 font-['Outfit',sans-serif]">
+            <div className="listening-quiz w-full bg-white border border-[#E5E7EB] shadow-[0px_4px_12px_rgba(0,0,0,0.04)] rounded-[12px] p-6 flex flex-col gap-6 flex-shrink-0 font-['Outfit',sans-serif]">
               
               {/* Quiz Header Row */}
               <div className="flex flex-row justify-between items-center w-full">
@@ -481,7 +586,7 @@ export default function ListeningModeTopics() {
                   {/* Text Stack */}
                   <div className="flex flex-col gap-0.5">
                     <span className="font-['Outfit'] font-semibold text-[11px] leading-[14px] tracking-[1.2px] text-[#6E748F] uppercase">
-                      STEP 4: QUIZ
+                      {demo ? 'STEP 3: QUIZ' : 'STEP 4: QUIZ'}
                     </span>
                     <h3 className="font-['Outfit'] font-bold text-[18px] leading-[23px] text-[#0F1450]">
                       Test Your Knowledge
@@ -499,6 +604,8 @@ export default function ListeningModeTopics() {
               {(() => {
                 const mcq = mcqList[currentMcqIndex] || mcqList[0];
                 const currentAnswer = selectedAnswers[currentMcqIndex];
+                const answerFeedback = mcqAnswerFeedback[mcq.id];
+                const hasCorrectAnswer = answerFeedback?.isCorrect === true;
 
                 return (
                   <div className="flex flex-col gap-4 w-full">
@@ -508,16 +615,26 @@ export default function ListeningModeTopics() {
                     </h4>
 
                     {/* Options List */}
-                    <div className="flex flex-col gap-2 w-full">
+                    <div className="flex flex-col gap-2 w-full" role={demo ? 'radiogroup' : undefined} aria-label={demo ? mcq.question : undefined}>
                       {mcq.options.map((opt, oIdx) => {
                         const optVal = typeof opt === 'string' ? oIdx : opt.id;
                         const isSelected = currentAnswer === optVal;
                         const optLabel = typeof opt === 'string' ? opt : opt.text;
 
                         return (
-                          <div
-                            key={oIdx}
-                            onClick={() => setSelectedAnswers(prev => ({ ...prev, [currentMcqIndex]: optVal }))}
+                          <GradedAnswerButton
+                            key={`${mcq.id}:${oIdx}`}
+                            type="button"
+                            feedbackKey={answerFeedback}
+                            result={isSelected ? answerFeedback?.isCorrect : null}
+                            aria-pressed={demo ? undefined : isSelected}
+                            role={demo ? 'radio' : undefined}
+                            aria-checked={demo ? isSelected : undefined}
+                            disabled={hasCorrectAnswer || isCheckingMcqAnswer || isAccountBlocked}
+                            onClick={() => {
+                              clearMcqAnswerFeedback(mcq.id);
+                              setSelectedAnswers(prev => ({ ...prev, [currentMcqIndex]: optVal }));
+                            }}
                             className={`w-full p-[14px_16px] rounded-[10px] flex flex-row items-center gap-3 cursor-pointer transition-all ${
                               isSelected
                                 ? 'bg-[#3B82F6] border border-[#3B82F6] text-white shadow-sm'
@@ -527,48 +644,41 @@ export default function ListeningModeTopics() {
                             <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
                               isSelected ? 'bg-white' : 'border-[1.5px] border-[#9CA3AF]'
                             }`}>
-                              {isSelected && <Check className="w-2.5 h-2.5 text-[#3B82F6] stroke-[3]" />}
+                              {isSelected && answerFeedback?.isCorrect === false
+                                ? <span className="text-[13px] font-bold text-[#DC2626]">×</span>
+                                : isSelected && <Check className={`w-2.5 h-2.5 ${hasCorrectAnswer ? 'text-[#16A34A]' : 'text-[#3B82F6]'} stroke-[3]`} />}
                             </div>
-                            <span className={`text-[14px] leading-[18px] flex-1 ${isSelected ? 'font-bold text-white' : 'font-normal text-[#0F1450]'}`}>
+                            <span className={`text-[14px] leading-[18px] flex-1 ${isSelected && answerFeedback ? 'font-bold' : isSelected ? 'font-bold text-white' : 'font-normal text-[#0F1450]'}`}>
                               {optLabel}
                             </span>
-                          </div>
+                          </GradedAnswerButton>
                         );
                       })}
                     </div>
+
+                    {answerFeedback && <p role="status" className={`text-sm font-semibold ${hasCorrectAnswer ? 'text-emerald-800' : 'text-red-800'}`}>{answerFeedback.message}</p>}
 
                     {/* Action Button */}
                     <div className="flex justify-end pt-2">
                       {currentMcqIndex < mcqList.length - 1 ? (
                         <button
                           onClick={() => {
-                            const isCorrect = isOptionCorrect(mcq, currentAnswer);
-                            if (!isCorrect) {
-                              toast.error('Incorrect answer. Please try again.');
-                              return;
-                            }
-                            setCurrentMcqIndex(prev => prev + 1);
+                            handleQuizAction(mcq, currentAnswer, false);
                           }}
-                          disabled={currentAnswer === undefined || isAccountBlocked}
+                          disabled={currentAnswer === undefined || isAccountBlocked || isCheckingMcqAnswer}
                           className="px-6 py-2.5 bg-[#3B82F6] text-white rounded-full font-['Outfit'] font-semibold text-[14px] hover:bg-[#2563EB] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         >
-                          Next Question
+                          {demo || hasCorrectAnswer ? 'Next Question' : isCheckingMcqAnswer ? 'Checking…' : 'Check Answer'}
                         </button>
                       ) : (
                         <button
                           onClick={() => {
-                            const isCorrect = isOptionCorrect(mcq, currentAnswer);
-                            if (!isCorrect) {
-                              toast.error('Incorrect answer. Please try again.');
-                              return;
-                            }
-                            const answers = mcqList.map((_, idx) => selectedAnswers[idx] ?? -1);
-                            submitMcqs(answers);
+                            handleQuizAction(mcq, currentAnswer, true);
                           }}
-                          disabled={Object.keys(selectedAnswers).length < mcqList.length || isAccountBlocked}
+                          disabled={currentAnswer === undefined || isAccountBlocked || isCheckingMcqAnswer}
                           className="px-6 py-2.5 bg-[#3B82F6] text-white rounded-full font-['Outfit'] font-semibold text-[14px] hover:bg-[#2563EB] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         >
-                          Submit Answers
+                          {demo || hasCorrectAnswer ? 'Submit Answers' : isCheckingMcqAnswer ? 'Checking…' : 'Check Answer'}
                         </button>
                       )}
                     </div>
@@ -581,10 +691,10 @@ export default function ListeningModeTopics() {
           
           {/* The server decides which listening stage comes next, including retry. */}
           {listeningPayload?.stage && listeningPayload.stage !== 'quiz' && listeningPayload.stage !== 'completed' && (
-            <div className="flex justify-center items-center pt-2 mt-auto">
+            <div className="listening-next flex justify-center items-center pt-2 mt-auto">
               {nextStageUnlocked ? (
                 <button
-                  onClick={() => nextListeningStage()}
+                  onClick={() => { if (avatar) avatarPlayback.pause(); nextListeningStage(); }}
                   disabled={isAccountBlocked}
                   className="flex justify-center items-center w-full max-w-[200px] h-[52px] bg-[#3B82F6] hover:bg-[#2563EB] disabled:bg-[#E5E7EB] disabled:text-[#9CA3AF] transition-colors rounded-full font-bold text-[16px] leading-[20px] text-white"
                 >

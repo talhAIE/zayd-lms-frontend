@@ -1,339 +1,136 @@
-import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import navLogoPng from "@/assets/zayd-logo.png";
-import { useLanguage } from "@/components/language-provider";
+import { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
+import navLogoPng from "@/assets/landing-page/logo.png";
 
-const menuItems = [
-  { name: "Home", href: "#home", isRoute: false },
-  { name: "Features", href: "#features", isRoute: false },
-  { name: "How It Works", href: "#how-it-works", isRoute: false },
-  // { name: "Testimonials", href: "#testimonials", isRoute: false },
-  { name: "Pricing", href: "#pricing", isRoute: false },
-  { name: "FAQ", href: "#faq", isRoute: false },
-  { name: "Contact Us", href: "/contact-us", isRoute: true },
+const navItems = [
+  { name: "الرئيسية", href: "#home" },
+  { name: "المنهج", href: "#curriculum" },
+  { name: "الحياة اليومية", href: "#life" },
+  { name: "للمدارس", href: "#schools" },
+  { name: "الأسئلة الشائعة", href: "#faq" },
 ];
 
+const focusStyle = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2681E9] focus-visible:ring-offset-4 focus-visible:ring-offset-[#EFF5FF]";
+
 export default function Navbar() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
-  const { language, setLanguage } = useLanguage();
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const isMainPath = location.pathname === "/" || location.pathname === "/chinese";
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const scrollToSection = (href: string, isRoute: boolean = false) => {
-    if (isRoute) {
-      navigate(href);
-      setIsMobileMenuOpen(false);
-      return;
-    }
-    if (href === "#home") {
-      if (!isMainPath) {
-        navigate("/");
-        setTimeout(() => {
-          window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-          });
-        }, 100);
-      } else {
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        });
-      }
-    } else {
-      if (!isMainPath) {
-        navigate("/");
-        setTimeout(() => {
-          const element = document.querySelector(href);
-          if (element) {
-            element.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          }
-        }, 100);
-      } else {
-        const element = document.querySelector(href);
-        if (element) {
-          element.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        }
-      }
-    }
-    setIsMobileMenuOpen(false);
-  };
+  const [activeItem, setActiveItem] = useState("الرئيسية");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (!isMainPath) {
-      return;
-    }
-
-    const handleScroll = () => {
-      const sections = menuItems
-        .filter((item) => !item.isRoute)
-        .map((item) => item.href.substring(1));
-      const scrollPosition = window.scrollY + 100;
-
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = document.getElementById(sections[i]);
-        if (section && section.offsetTop <= scrollPosition) {
-          setActiveSection(sections[i]);
-          break;
-        }
-      }
+    if (!mobileMenuOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileMenuOpen(false);
     };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [mobileMenuOpen]);
 
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isMainPath]);
+  const handleScroll = (href: string, name: string) => {
+    setActiveItem(name);
+    setMobileMenuOpen(false);
+    const target = document.querySelector(href);
+    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "instant" : "smooth";
+    if (href === "#home") {
+      window.scrollTo({ top: 0, behavior });
+    } else if (target) {
+      window.scrollTo({
+        top: target.getBoundingClientRect().top + window.scrollY - 86,
+        behavior,
+      });
+    }
+  };
 
   return (
-    <nav className="w-full md:py-4 py-8 shadow-sm sticky top-0 bg-white z-[9999]">
-      <div className="flex items-center w-full px-4 relative">
-        <div
-          className="absolute left-4 md:relative md:left-auto w-20 h-8 md:w-28 md:h-12 flex items-center cursor-pointer z-10"
-          dir="ltr"
-          onClick={() => scrollToSection("#home")}
+    <header className="sticky top-0 z-50 w-full bg-[#EFF5FF] font-ibm-plex" dir="rtl">
+      <div className="mx-auto flex h-[86px] w-full max-w-[1180px] items-center justify-between gap-5 px-6 max-[360px]:gap-2 max-[360px]:px-3 sm:px-[60px] lg:px-6">
+        <a
+          href="#home"
+          onClick={(event) => {
+            event.preventDefault();
+            handleScroll("#home", "الرئيسية");
+          }}
+          className={`shrink-0 rounded-sm ${focusStyle}`}
         >
-          <img
-            src={navLogoPng}
-            alt="Zayd AI Logo"
-            className="w-full h-full object-contain"
-          />
-        </div>
+          <img src={navLogoPng} alt="زيد — الرئيسية" className="h-[56px] w-[45px] object-contain" />
+        </a>
 
-        {/* Mobile/Tablet language toggle centered between logo and menu */}
-        <div className="lg:hidden absolute left-1/2 -translate-x-1/2">
-          <button
-            onClick={() => setLanguage(language === "ar" ? "en" : "ar")}
-            className="text-sm text-gray-700 hover:text-[#058BF4] transition-colors px-2 py-1"
-          >
-            العربية | English
-          </button>
-        </div>
-
-        {/* Centered blue background menu */}
-        <ul className="hidden lg:flex gap-6 bg-[#E1EEFF] px-6 py-2 rounded-full text-gray-700 font-medium mx-auto">
-          {menuItems.map((item) => {
-            const sectionId = item.href.substring(1);
-            const isActive = item.isRoute 
-              ? location.pathname === item.href
-              : isMainPath && activeSection === sectionId;
-            
-            if (item.isRoute) {
-              return (
-                <li key={item.name}>
-                  <Link
-                    to={item.href}
-                    className={`cursor-pointer px-3 py-1 rounded-full transition-colors block ${
-                      isActive ? "bg-[#058BF4] text-white" : "hover:text-blue-800"
-                    }`}
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              );
-            }
-            
-            return (
-              <li
-                key={item.name}
-                className={`cursor-pointer px-3 py-1 rounded-full transition-colors ${
-                  isActive ? "bg-[#058BF4] text-white" : "hover:text-blue-800"
-                }`}
-                onClick={() => scrollToSection(item.href, item.isRoute)}
-              >
-                {item.name}
-              </li>
-            );
-          })}
-        </ul>
-
-        {/* Desktop buttons - far right */}
-        <div className="hidden lg:flex gap-2 items-center">
-          <button
-            onClick={() => setLanguage(language === "ar" ? "en" : "ar")}
-            className="text-sm text-gray-700 hover:text-[#058BF4] transition-colors px-2 py-1"
-          >
-            العربية | English
-          </button>
-          <Link to="/login">
-            <Button
-              variant="outline"
-              className="rounded-full text-black border-[#058BF4]"
-            >
-              Sign In
-            </Button>
-          </Link>
-          {/* <Button className="rounded-full bg-[#058BF4]">Sign Up</Button> */}
-        </div>
-
-        {/* Mobile/Tablet hamburger menu button */}
-        <button
-          className="lg:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1 shrink-0 absolute right-4"
-          onClick={toggleMobileMenu}
-          aria-label="Toggle mobile menu"
-        >
-          <span
-            className={`block w-6 h-0.5 bg-gray-700 transition-all duration-300 ${
-              isMobileMenuOpen ? "rotate-45 translate-y-1.5" : ""
-            }`}
-          />
-          <span
-            className={`block w-6 h-0.5 bg-gray-700 transition-all duration-300 ${
-              isMobileMenuOpen ? "opacity-0" : ""
-            }`}
-          />
-          <span
-            className={`block w-6 h-0.5 bg-gray-700 transition-all duration-300 ${
-              isMobileMenuOpen ? "-rotate-45 -translate-y-1.5" : ""
-            }`}
-          />
-        </button>
-      </div>
-
-      {/* Mobile/Tablet menu overlay */}
-      <div
-        className={`lg:hidden fixed inset-0 z-50 bg-white transition-all duration-300 ease-in-out ${
-          isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
-      >
-        <div
-          className={`flex flex-col h-full transition-transform duration-300 ease-in-out ${
-            isMobileMenuOpen ? "translate-y-0" : "translate-y-full"
-          }`}
-        >
-          {/* Mobile header with logo and close button */}
-          <div className="flex justify-between items-center p-4 border-b relative">
-            <div
-              className="absolute left-4 w-20 h-8 md:w-28 md:h-12 flex items-center cursor-pointer z-10"
-              dir="ltr"
-              onClick={() => scrollToSection("#home")}
-            >
-              <img
-                src={navLogoPng}
-                alt="Zayd AI Logo"
-                className="w-full h-full object-contain"
-              />
-            </div>
-            <button
-              onClick={toggleMobileMenu}
-              className="w-8 h-8 flex items-center justify-center"
-              aria-label="Close mobile menu"
-            >
-              <span className="text-2xl">&times;</span>
-            </button>
-          </div>
-
-          {/* Mobile navigation items */}
-          <div className="flex-1 flex flex-col justify-center items-center space-y-6 py-8">
-            {menuItems.map((item, index) => {
-              const sectionId = item.href.substring(1);
-              const isActive = item.isRoute 
-                ? location.pathname === item.href
-                : isMainPath && activeSection === sectionId;
-              
-              if (item.isRoute) {
-                return (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className={`text-xl font-medium transition-all duration-300 ${
-                      isActive
-                        ? "text-[#058BF4]"
-                        : "text-gray-700 hover:text-[#058BF4]"
-                    } ${
-                      isMobileMenuOpen
-                        ? "opacity-100 translate-y-0"
-                        : "opacity-0 translate-y-4"
-                    }`}
-                    style={{
-                      transitionDelay: isMobileMenuOpen
-                        ? `${index * 100}ms`
-                        : "0ms",
-                    }}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                );
-              }
-              
-              return (
-                <button
-                  key={item.name}
-                  className={`text-xl font-medium transition-all duration-300 ${
-                    isActive
-                      ? "text-[#058BF4]"
-                      : "text-gray-700 hover:text-[#058BF4]"
-                  } ${
-                    isMobileMenuOpen
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-4"
-                  }`}
-                  style={{
-                    transitionDelay: isMobileMenuOpen
-                      ? `${index * 100}ms`
-                      : "0ms",
-                  }}
-                  onClick={() => scrollToSection(item.href, item.isRoute)}
-                >
-                  {item.name}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Mobile/Tablet buttons */}
-          <div
-            className={`flex flex-col gap-3 p-6 border-t transition-all duration-300 ${
-              isMobileMenuOpen
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-4"
-            }`}
-            style={{
-              transitionDelay: isMobileMenuOpen ? "400ms" : "0ms",
-            }}
-          >
-            <button
-              onClick={() => {
-                setLanguage(language === "ar" ? "en" : "ar");
-                setIsMobileMenuOpen(false);
+        <nav aria-label="التنقل الرئيسي" className="hidden items-center gap-6 min-[820px]:flex">
+          {navItems.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              aria-current={activeItem === item.name ? "location" : undefined}
+              onClick={(event) => {
+                event.preventDefault();
+                handleScroll(item.href, item.name);
               }}
-              className="text-sm text-gray-700 hover:text-[#058BF4] transition-colors px-2 py-1 text-center"
+              className={`whitespace-nowrap rounded-sm py-2 text-[13px] leading-5 transition-colors ${focusStyle} ${
+                activeItem === item.name
+                  ? "font-bold text-[#5999ED]"
+                  : "font-medium text-[#414141] hover:text-[#5999ED]"
+              }`}
             >
-              العربية | English
-            </button>
-            <Link to="/login">
-              <Button
-                variant="outline"
-                className="rounded-full text-black border-[#058BF4] w-full"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Sign In
-              </Button>
-            </Link>
-            {/* <Button
-              className="rounded-full bg-[#058BF4] w-full"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Sign Up
-            </Button> */}
-          </div>
+              {item.name}
+            </a>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-1">
+          <a
+            href="#pricing"
+            onClick={(event) => {
+              event.preventDefault();
+              handleScroll("#pricing", "الأسعار");
+            }}
+            className={`inline-flex h-[30px] min-w-[68px] items-center justify-center rounded-full bg-[#50CFC4] px-4 text-[12px] font-medium text-white transition-colors hover:bg-[#38BEB3] ${focusStyle}`}
+          >
+            الأسعار
+          </a>
+          <Link
+            to="/login"
+            className={`inline-flex h-[30px] min-w-[96px] items-center justify-center rounded-full bg-[#5999ED] px-5 text-[12px] font-bold text-white transition-colors hover:bg-[#4085DD] ${focusStyle}`}
+          >
+            جرب زيـــد
+          </Link>
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? "إغلاق القائمة" : "فتح القائمة"}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="landing-mobile-navigation"
+            className={`mr-2 flex h-9 w-9 items-center justify-center rounded-full text-[#414141] hover:bg-[#DFEAFC] min-[820px]:hidden ${focusStyle}`}
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
       </div>
-    </nav>
+
+      {mobileMenuOpen && (
+        <nav
+          id="landing-mobile-navigation"
+          aria-label="التنقل على الهاتف"
+          className="absolute inset-x-0 top-full flex flex-col gap-1 border-t border-[#DFEAFC] bg-[#EFF5FF] px-6 py-4 shadow-sm min-[820px]:hidden"
+        >
+          {navItems.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              aria-current={activeItem === item.name ? "location" : undefined}
+              onClick={(event) => {
+                event.preventDefault();
+                handleScroll(item.href, item.name);
+              }}
+              className={`rounded-lg px-3 py-3 text-[14px] ${focusStyle} ${
+                activeItem === item.name ? "font-bold text-[#5999ED]" : "text-[#414141] hover:bg-[#DFEAFC]"
+              }`}
+            >
+              {item.name}
+            </a>
+          ))}
+        </nav>
+      )}
+    </header>
   );
 }

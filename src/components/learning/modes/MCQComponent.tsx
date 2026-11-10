@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Check, X } from 'lucide-react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { GradedAnswerButton, gradedAttemptKey } from '../AnswerFeedback';
 import { LearningComponent } from '@/services/learningService';
 
 function emphasizedText(value: string, terms: unknown) {
@@ -47,7 +47,6 @@ export default function MCQComponent({
   disabled = false,
   approvedAnswers = [],
 }: MCQComponentProps) {
-  const reducedMotion = useReducedMotion();
   const prompt = component.content?.prompt || component.title || component.description || '';
   
   const rawOptions = component.options || component.content?.options || [];
@@ -85,25 +84,18 @@ export default function MCQComponent({
   );
   const [selectedValue, setSelectedValue] = useState(attemptResponseId);
   const [hasNewSelection, setHasNewSelection] = useState(false);
-  const submissionKey = component.attempt?.submittedAt && component.attempt?.isCorrect !== null
-    ? `${component.attempt.id}:${component.attempt.attemptNumber}:${component.attempt.submittedAt}:${component.attempt.status}`
-    : null;
-  const lastSubmission = useRef(submissionKey);
-  const [animatedSubmission, setAnimatedSubmission] = useState<string | null>(null);
+  const submissionKey = gradedAttemptKey(component);
 
   useEffect(() => {
-    if (!submissionKey || submissionKey === lastSubmission.current) return;
+    if (!submissionKey) return;
     // Preserve the submitted choice for immediate feedback, including the final
     // incorrect attempt. Only a deliberate selection starts the next retry.
     setSelectedValue(attemptResponseId);
     setHasNewSelection(false);
-    setAnimatedSubmission(submissionKey);
-    lastSubmission.current = submissionKey;
   }, [submissionKey, attemptResponseId]);
 
   const locallySubmitted = !hasNewSelection && attemptResponseId === selectedValue &&
     (component.attempt?.isCorrect === true || component.attempt?.isCorrect === false);
-  const animateResult = !reducedMotion && animatedSubmission === submissionKey && locallySubmitted;
 
   const handleSelect = (val: string) => {
     if (disabled || isSubmitted) return;
@@ -158,14 +150,13 @@ export default function MCQComponent({
           }
 
           return (
-            <motion.button
+            <GradedAnswerButton
               key={opt.value}
               type="button"
               onClick={() => handleSelect(opt.value)}
               disabled={disabled || isSubmitted}
-              animate={animateResult && incorrect ? { x: [0, -5, 5, -3, 3, 0] } : { x: 0 }}
-              transition={{ duration: 0.35 }}
-              onAnimationComplete={() => { if (incorrect) setAnimatedSubmission(null); }}
+              feedbackKey={submissionKey}
+              result={isSelected && locallySubmitted ? component.attempt?.isCorrect : null}
               aria-label={`${opt.prefix}. ${opt.label}${correct ? ' — Correct answer' : incorrect ? ' — Incorrect answer' : ''}`}
               aria-pressed={isSelected}
               className={`w-full text-left rounded-[14px] border p-4 md:p-5 flex items-center justify-between gap-4 transition-all duration-150 cursor-pointer disabled:cursor-not-allowed ${containerStyle}`}
@@ -177,9 +168,9 @@ export default function MCQComponent({
               </div>
 
               {correct && (
-                <motion.div key={animatedSubmission ?? 'saved-correct'} animate={animateResult && !isRevealedCorrect ? { scale: [1, 1.35, 1] } : { scale: 1 }} transition={{ duration: 0.4 }} onAnimationComplete={() => setAnimatedSubmission(null)} className="w-6 h-6 rounded-full bg-[#10B981] text-white flex items-center justify-center flex-shrink-0">
+                <div className="w-6 h-6 rounded-full bg-[#10B981] text-white flex items-center justify-center flex-shrink-0">
                   <Check className="w-4 h-4" />
-                </motion.div>
+                </div>
               )}
 
               {incorrect && (
@@ -187,7 +178,7 @@ export default function MCQComponent({
                   <X className="w-4 h-4" />
                 </div>
               )}
-            </motion.button>
+            </GradedAnswerButton>
           );
         })}
       </div>

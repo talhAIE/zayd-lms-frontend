@@ -1,0 +1,129 @@
+.future-skills {
+  padding: 44px 6.5vw 60px;
+  background: #fff;
+  font-family: "IBM Plex Sans Arabic", sans-serif;
+}
+
+.future-skills__container {
+  max-width: 1280px;
+  margin-inline: auto;
+  container-type: inline-size;
+}
+
+.future-skills__card {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 8.5%;
+  min-height: 24cqw;
+  padding: 1.8cqw 4cqw;
+  border-radius: 3.5cqw;
+  background: linear-gradient(90deg, #5bd4c7 0%, #3481df 100%);
+}
+
+.future-skills__copy {
+  min-width: 0;
+  text-align: right;
+}
+
+.future-skills__eyebrow {
+  display: inline-block;
+  padding: .45cqw 2cqw;
+  border-radius: 999px;
+  background: #fff;
+  color: #44b9ca;
+  font-size: 1.4cqw;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.future-skills__heading {
+  margin: 1.2cqw 0 0;
+  color: #f3e8e8;
+  font-size: 4.3cqw;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.future-skills__heading > span {
+  display: block;
+}
+
+.future-skills__description {
+  margin: .8cqw 0 0;
+  color: #fff;
+  font-size: clamp(14px, 1.5cqw, 19px);
+  font-weight: 400;
+  line-height: 1.75;
+}
+
+.future-skills__tags {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5cqw 1cqw;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transform: translateY(1.5cqw);
+}
+
+.future-skills__tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.8cqw;
+  padding: .6cqw .9cqw;
+  border-radius: 999px;
+  background: #fff;
+  color: #4ac7bf;
+  font-size: clamp(12px, 1.5cqw, 19px);
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.future-skills__tag:last-child {
+  grid-column: span 2;
+}
+
+@media (max-width: 699px) {
+  .future-skills {
+    padding: 24px 18px 36px;
+  }
+
+  .future-skills__card {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+    padding: 22px;
+    border-radius: 26px;
+  }
+
+  .future-skills__eyebrow {
+    padding: 5px 13px;
+    font-size: 12px;
+  }
+
+  .future-skills__heading {
+    margin-top: 16px;
+    font-size: clamp(28px, 7.5vw, 38px);
+    line-height: 1.3;
+  }
+
+  .future-skills__description {
+    margin-top: 10px;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .future-skills__tags {
+    gap: 12px 8px;
+    transform: none;
+  }
+
+  .future-skills__tag {
+    min-height: 38px;
+    padding: 8px 5px;
+    font-size: 11px;
+  }
+}

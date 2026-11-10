@@ -1,0 +1,139 @@
+{
+  "phase": "P9",
+  "verifiedAtUtc": "2026-11-07T15:31:29.400Z",
+  "status": "nine_faq_review_implementation_verified_dependencies_open",
+  "counts": {
+    "complete": 11,
+    "partial": 2,
+    "blocked": 1,
+    "total": 14
+  },
+  "requirements": [
+    {
+      "id": "S13-HEADER",
+      "status": "complete_implementation_verified",
+      "implementation": "src/pages/public/faq-section.tsx / faq-section.css",
+      "evidence": "planning/landing-p9/browser-evidence.json and screenshots",
+      "businessDraftApprovalImplied": false
+    },
+    {
+      "id": "S13-FAQ1",
+      "status": "complete_implementation_verified",
+      "implementation": "src/pages/public/faq-section.tsx / faq-section.css",
+      "evidence": "planning/landing-p9/browser-evidence.json and screenshots",
+      "businessDraftApprovalImplied": false
+    },
+    {
+      "id": "S13-FAQ2",
+      "status": "complete_implementation_verified",
+      "implementation": "src/pages/public/faq-section.tsx / faq-section.css",
+      "evidence": "planning/landing-p9/browser-evidence.json and screenshots",
+      "businessDraftApprovalImplied": false
+    },
+    {
+      "id": "S13-FAQ3",
+      "status": "complete_implementation_verified",
+      "implementation": "src/pages/public/faq-section.tsx / faq-section.css",
+      "evidence": "planning/landing-p9/browser-evidence.json and screenshots",
+      "businessDraftApprovalImplied": false
+    },
+    {
+      "id": "S13-FAQ4",
+      "status": "complete_implementation_verified",
+      "implementation": "src/pages/public/faq-section.tsx / faq-section.css",
+      "evidence": "planning/landing-p9/browser-evidence.json and screenshots",
+      "businessDraftApprovalImplied": false
+    },
+    {
+      "id": "S13-FAQ5",
+      "status": "complete_implementation_verified",
+      "implementation": "src/pages/public/faq-section.tsx / faq-section.css",
+      "evidence": "planning/landing-p9/browser-evidence.json and screenshots",
+      "businessDraftApprovalImplied": false
+    },
+    {
+      "id": "S13-FAQ6",
+      "status": "complete_implementation_verified",
+      "implementation": "src/pages/public/faq-section.tsx / faq-section.css",
+      "evidence": "planning/landing-p9/browser-evidence.json and screenshots",
+      "businessDraftApprovalImplied": false
+    },
+    {
+      "id": "S13-FAQ8",
+      "status": "complete_implementation_verified",
+      "implementation": "src/pages/public/faq-section.tsx / faq-section.css",
+      "evidence": "planning/landing-p9/browser-evidence.json and screenshots",
+      "businessDraftApprovalImplied": false
+    },
+    {
+      "id": "S13-FAQ9",
+      "status": "complete_implementation_verified",
+      "implementation": "src/pages/public/faq-section.tsx / faq-section.css",
+      "evidence": "planning/landing-p9/browser-evidence.json and screenshots",
+      "businessDraftApprovalImplied": false
+    },
+    {
+      "id": "S13-ACCORDION",
+      "status": "complete_implementation_verified",
+      "implementation": "src/pages/public/faq-section.tsx / faq-section.css",
+      "evidence": "planning/landing-p9/browser-evidence.json and screenshots",
+      "businessDraftApprovalImplied": false
+    },
+    {
+      "id": "S14-FOOTER-PRESERVE",
+      "status": "complete_implementation_verified",
+      "implementation": "Existing footer.tsx/.css/assets preserved unchanged",
+      "evidence": "planning/landing-p9/browser-evidence.json and screenshots",
+      "businessDraftApprovalImplied": false
+    },
+    {
+      "id": "S13-FAQ7",
+      "status": "partial_count_approval_open",
+      "verified": "Supplied package copy and shared 199/199/299 annual SAR prices match pricing cards.",
+      "dependency": "D01 broader topic count remains unresolved; current count 40 retained."
+    },
+    {
+      "id": "S14-CTA-PRESERVE",
+      "status": "partial_primary_routing_unresolved",
+      "verified": "Original source/styles/copy/labels and both hrefs preserved.",
+      "dependency": "E03 missing /auth/register route remains deferred."
+    },
+    {
+      "id": "S14-CONTACTS",
+      "status": "blocked_deferred_by_user",
+      "verified": "Existing placeholder mailto/tel preserved; no official contact data invented.",
+      "dependency": "D10 reply: keep unresolved"
+    }
+  ],
+  "fullOriginalPhaseComplete": false,
+  "independentImplementationComplete": true,
+  "overallReleaseReviewOpen": "D09 supplied FAQ drafts require final business review.",
+  "checks": {
+    "typeScript": true,
+    "targetedEslint": true,
+    "finalProductionBuild": true,
+    "fiveViewportBrowserChecks": true,
+    "keyboardCases": 45,
+    "sharedPriceConsistency": true,
+    "sourceScope": true,
+    "diffCheck": true
+  },
+  "changedApplicationFiles": [
+    "src/pages/public/faq-section.css",
+    "src/pages/public/faq-section.tsx"
+  ],
+  "newAssets": [],
+  "newDependencies": [],
+  "finalCtaFooterUnchanged": true,
+  "contactSubmissionPerformed": false,
+  "visualReview": [
+    "faq-default-1440.png",
+    "faq-packages-320.png",
+    "faq-320-forced-colors.png",
+    "footer-320.png"
+  ],
+  "P7ModelConsumerDependencyClosed": true,
+  "p10Readiness": "Independent audit may begin when requested; full closure requires remaining decisions or accepted deferrals. P10 not started.",
+  "otherPhasesImplemented": false,
+  "commitPushDeploy": false
+}

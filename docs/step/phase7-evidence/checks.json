@@ -1,0 +1,158 @@
+{
+  "phase": 7,
+  "capturedAt": "2026-11-10T16:32:57.113Z",
+  "sourceRevision": "57ade3e66a24c3f21a8511362c00ee73974a174f",
+  "step": {
+    "passed": 40,
+    "failed": 0,
+    "command": "pnpm exec playwright test --config dev/step/playwright.config.ts",
+    "note": "Executed before adding the six separate Primary isolation tests"
+  },
+  "primary": {
+    "passed": 6,
+    "failed": 0,
+    "widths": [
+      390,
+      1440
+    ],
+    "grades": [
+      1,
+      2,
+      3
+    ]
+  },
+  "nafs": {
+    "passed": 55,
+    "failed": 0,
+    "scope": "Synthetic courses, student, recovery, transport, session and teacher suites only; real-database suites excluded"
+  },
+  "otherModeChecks": [
+    {
+      "name": "avatar-reading-check",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "name": "avatar-listening-check",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "name": "avatar-listening-replay-check",
+      "passed": true,
+      "exitCode": 0,
+      "initialFailure": "Missing local preview/video prerequisite",
+      "rerun": "Existing local fixture and Vite preview supplied; no application change"
+    },
+    {
+      "name": "avatar-roleplay-check",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "name": "avatar-roleplay-keyboard-check",
+      "passed": true,
+      "exitCode": 0,
+      "initialFailure": "Missing local preview/video prerequisite",
+      "rerun": "Existing local fixture and Vite preview supplied; no application change"
+    },
+    {
+      "name": "answer-feedback-check",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "name": "mcq-feedback-check",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "name": "certificates-check",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "name": "reading-finish-check",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "name": "grammar-completeness-check",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "name": "science-service-check",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "name": "science-practice-check",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "name": "writing-review-check",
+      "passed": true,
+      "exitCode": 0
+    }
+  ],
+  "build": true,
+  "typescript": true,
+  "contractParity": true,
+  "privateAuthoringAndTestBundleIsolation": true,
+  "artifacts": [
+    {
+      "file": "assets/GrammarDemoModal-CmRMghyf.js",
+      "sha256": "30dd7784f23b7ed4552b9db4e89d08fc237a34d3a55baad68d79d3976bc74468"
+    },
+    {
+      "file": "assets/index-CaSfxFSG.css",
+      "sha256": "32e6f7d0cc39e435206dee8a9be30b534f631904b079a3b31350e47c9ec0e423"
+    },
+    {
+      "file": "assets/index-Cx8u63or.js",
+      "sha256": "7b34e4714bd2b9c394c9ea264e90ce89888b2aba414a595511c73caa3d289233"
+    },
+    {
+      "file": "assets/ListeningDemoModal-C9axX8Ur.js",
+      "sha256": "b659d735f1f8efc1bafdc10d6f6513e09bcd95570ef0a2f9874f236bbdd1abe1"
+    },
+    {
+      "file": "assets/pdf.worker.min-DKQKFyKK.js",
+      "sha256": "feabdf309770ed24bba31a5467836cdc8cf639c705af27d52b585b041bb8527b"
+    },
+    {
+      "file": "assets/ReadingDemoModal-DUOEswED.js",
+      "sha256": "bba3a0322091f71471ab97568e5ca51d62827688a96c7f4ac5ef8f19fa92a166"
+    },
+    {
+      "file": "assets/readingDemoService-D-jfiR5x.js",
+      "sha256": "57ea38a9f5a0ca2be398c6a7158da20d417dcac4644ca784e4282bda68382f96"
+    },
+    {
+      "file": "assets/RoleplayDemoModal-jeD1E6W0.js",
+      "sha256": "4a0b5facd3c22c4b4c504f0c7332d0367c9cdd35e24df9d06c8b4d56c4c84e5e"
+    },
+    {
+      "file": "assets/VocabularyDemoModal-Cz591R74.js",
+      "sha256": "88cb18e123d66c7ea618b722b7e17365c8dc06399394c9a1e16d0245f2db6ae3"
+    },
+    {
+      "file": "assets/WritingDemoModal-DRihmx0E.js",
+      "sha256": "428eb4cbe1ec719c2ed6f077719a47a7151073551b3699b8e03eb27b28647bab"
+    }
+  ],
+  "production": {
+    "deployed": false,
+    "mutations": 0,
+    "liveLearnerAcceptance": false,
+    "readback": "Backend docs/step/phase7-evidence/production-readback.json"
+  },
+  "phaseComplete": false,
+  "remaining": [
+    "Resolve eleven Nouns academic findings and revalidate reviewed package",
+    "Obtain a deployment route compatible with no-push instruction; verify deployed revisions and live settings/health",
+    "Production test students/enrollments, publication/activation and HTTP/browser/device acceptance"
+  ]
+}

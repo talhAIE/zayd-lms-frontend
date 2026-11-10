@@ -1,5 +1,11 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { readingFeedbackAction, loadViewedReadingFeedback, saveViewedReadingFeedback } from '@/utils/readingVocabularyFeedback';
+import { useAvatarWorkspace } from '@/components/avatar-reading/useAvatarWorkspace';
+import { GradedAnswerButton } from '@/components/learning/AnswerFeedback';
+import { readingNarration } from '@/components/avatar-reading/readingNarration';
+import { readingPracticePresentation } from '@/utils/readingPracticePresentation';
+import { useState, useEffect, useRef, useCallback, useContext } from 'react';
+import { AvatarReadingContext } from '@/components/avatar-reading/AvatarReadingContext';
+import { useAvatarPassage } from '@/components/avatar-reading/useAvatarPassage';
+import { readingFeedbackAction, readingFeedbackNeedsAttention, loadViewedReadingFeedback, saveViewedReadingFeedback } from '@/utils/readingVocabularyFeedback';
 import { readingPracticeSpeechText, readingPracticeAudioUrl } from '@/utils/readingPracticeAudio';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BarChart3, ChevronLeft, Mic, Square, Trash2, Check, MessageCircle, Pause, Play, LoaderCircle, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
@@ -17,6 +23,7 @@ import { fetchLessonModes, fetchUnitLessons } from '@/services/learningService';
 import { getLearningModePath, getNextLessonPath, isLockedLearningItem } from '@/utils/learning-navigation';
 import SpeechAssessmentModal, { isSpeechAssessment, SpeechAssessment } from '@/components/ui/SpeechAssessmentModal';
 import ReactMarkdown from 'react-markdown';
+import type { AvatarReadingTransport } from '@/components/avatar-reading/AvatarReadingContext';
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -82,14 +89,18 @@ function HighlightedReadingSentence({ text, vocabularyTerms, vocabularyCards, on
   vocabularyCards: ReadingVocabularyCard[];
   onVocabularyClick: (card: ReadingVocabularyCard) => void;
 }) {
-  const terms = [...new Set(vocabularyTerms.map((term) => term.trim()).filter(Boolean))]
+  // Authored sentences can carry emphasis independently of vocabulary metadata.
+  // Normalize here so initial, resumed and feedback prompts share one renderer.
+  const emphasizedTerms = [...text.matchAll(/\*\*([\s\S]+?)\*\*/g)].map(match => match[1]);
+  const displayText = text.replace(/\*\*([\s\S]+?)\*\*/g, '$1');
+  const terms = [...new Set([...vocabularyTerms, ...emphasizedTerms].map((term) => term.trim()).filter(Boolean))]
     .sort((left, right) => right.length - left.length);
-  if (terms.length === 0) return <>{text}</>;
+  if (terms.length === 0) return <>{displayText}</>;
 
   const pattern = new RegExp(`(${terms.map(escapeRegExp).join('|')})`, 'gi');
   const termSet = new Set(terms.map((term) => term.toLowerCase()));
   const cardByTerm = new Map(vocabularyCards.map((card) => [card.word.trim().toLowerCase(), card]));
-  return <>{text.split(pattern).map((part, index) =>
+  return <>{displayText.split(pattern).map((part, index) =>
     termSet.has(part.toLowerCase())
       ? cardByTerm.get(part.toLowerCase())
         ? <button key={index} type="button" onClick={() => onVocabularyClick(cardByTerm.get(part.toLowerCase())!)} className="cursor-pointer font-semibold text-[#3B82F6] underline decoration-[#93C5FD] decoration-2 underline-offset-2 transition-colors hover:text-[#2563EB] focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563EB]/40" aria-label={`Open vocabulary flashcard for ${part}`}>{part}</button>
@@ -98,15 +109,21 @@ function HighlightedReadingSentence({ text, vocabularyTerms, vocabularyCards, on
   )}</>;
 }
 
-export default function ReadingModeTopics() {
+export default function ReadingModeTopics({ avatar, demo }: {
+  avatar?: { topicId: string; title: string; restartCompleted?: boolean; onSessionReady?: () => void };
+  demo?: { lessonModeId: string; transport: AvatarReadingTransport; onClose: () => void; onComplete: () => void };
+} = {}) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const lessonModeId = searchParams.get('modeId') || '';
+  const avatarWorkspaceRef = useAvatarWorkspace(Boolean(avatar));
+  const lessonModeId = demo?.lessonModeId || avatar?.topicId || searchParams.get('modeId') || '';
+  const avatarTransport = useContext(AvatarReadingContext);
+  const feedbackStorageKey = `${avatarTransport?.storagePrefix ?? ''}${lessonModeId}`;
   const lessonId = searchParams.get('lessonId') || '';
   const courseId = searchParams.get('courseId') || undefined;
   const unitId = searchParams.get('unitId') || undefined;
   const refreshLearningProgress = useLearningProgressRefresh();
-  const allLessonsPath = courseId && unitId
+  const allLessonsPath = avatar ? '/student/3d-avatar/reading' : courseId && unitId
     ? '/student/courses/' + courseId + '/units/' + unitId
     : '/student/courses';
   
@@ -117,16 +134,16 @@ export default function ReadingModeTopics() {
   const [isJustCompleted, setIsJustCompleted] = useState(false);
   const [activeFeedback, setActiveFeedback] = useState<string | null>(null);
   const [activeFeedbackTarget, setActiveFeedbackTarget] = useState<ReadingFeedbackTarget | undefined>();
-  const [viewedFeedbackIds, setViewedFeedbackIds] = useState(() => loadViewedReadingFeedback(lessonModeId));
+  const [viewedFeedbackIds, setViewedFeedbackIds] = useState(() => demo ? new Set<string>() : loadViewedReadingFeedback(feedbackStorageKey));
   const openReadingFeedback = useCallback((id: string, feedback: string, target?: ReadingFeedbackTarget) => {
     setActiveFeedback(feedback);
     setActiveFeedbackTarget(target);
     setViewedFeedbackIds(previous => {
       const next = new Set(previous).add(id);
-      saveViewedReadingFeedback(lessonModeId, next);
+      if (!demo) saveViewedReadingFeedback(feedbackStorageKey, next);
       return next;
     });
-  }, [lessonModeId]);
+  }, [feedbackStorageKey, demo]);
   const [activeAssessment, setActiveAssessment] = useState<SpeechAssessment | null>(null);
   const [activeVocabularyCard, setActiveVocabularyCard] = useState<ReadingVocabularyCard | null>(null);
   const [hasStartedShadowReading, setHasStartedShadowReading] = useState(false);
@@ -135,19 +152,35 @@ export default function ReadingModeTopics() {
   const [isFallbackSpeechPaused, setIsFallbackSpeechPaused] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const fallbackSpeechRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const demoAliveRef = useRef(true);
+  useEffect(() => {
+    demoAliveRef.current = true;
+    return () => { demoAliveRef.current = false; };
+  }, []);
   const {
     isRecording,
+    isStartingRecording,
+    recordingError,
     isProcessingRecording,
     recordTime,
     startRecording,
     stopRecording,
     cancelRecording
-  } = useAudioRecorder({ detectSilence: true });
+  } = useAudioRecorder({
+    detectSilence: true,
+    // Do not classify a quiet guest microphone as missing speech. Let the
+    // existing speech engine assess any meaningful captured signal.
+    silenceThreshold: demo ? 0.00001 : undefined,
+    silenceMessage: demo ? 'Your microphone recorded silence. Check the microphone selected in Chrome and its input volume, then try again.' : undefined,
+  });
 
   const {
     modeSessionId,
     chatHistory,
     contentPayload,
+    sessionLoadError,
+    isSessionLoading,
+    reloadSession,
     mcqList,
     mcqAnswerFeedback,
     isCheckingMcqAnswer,
@@ -174,12 +207,51 @@ export default function ReadingModeTopics() {
     restartSession
   } = useModeSession({ 
     lessonModeId,
+    transport: demo?.transport,
+    ephemeral: Boolean(demo),
+    restartCompleted: avatar?.restartCompleted,
     onCompleted: async () => {
-      await refreshLearningProgress(lessonId, { courseId, unitId });
+      if (demo) { demo.onComplete(); return; }
+      if (!avatar) await refreshLearningProgress(lessonId, { courseId, unitId });
       setIsJustCompleted(true);
       setShowCompletionModal(true);
     }
   });
+
+  const demoSubmitted = useRef(false);
+  useEffect(() => {
+    if (!demo || demoSubmitted.current || mcqList.length !== 1) return;
+    if (mcqAnswerFeedback[mcqList[0].id]?.isCorrect) {
+      demoSubmitted.current = true;
+      submitMcqs([selectedAnswers[0] ?? -1]);
+    }
+  }, [demo, mcqAnswerFeedback, mcqList, selectedAnswers, submitMcqs]);
+
+  const stopAvatarPracticeAudio = () => {
+    stopAudio();
+    fallbackSpeechRef.current = null;
+    window.speechSynthesis?.cancel();
+    setFallbackSpeechMessageId(null);
+    setIsFallbackSpeechPaused(false);
+  };
+  useEffect(() => {
+    if (modeSessionId && contentPayload && !sessionLoadError) avatar?.onSessionReady?.();
+  }, [modeSessionId, contentPayload, sessionLoadError, avatar?.onSessionReady]);
+  const avatarPracticeId = avatar && !isRecording && !isAccountBlocked && !showCompletionModal && !isCompleted
+    ? fallbackSpeechMessageId && !isFallbackSpeechPaused ? fallbackSpeechMessageId
+      : isCurrentlyPlaying && chatHistory.some(message => message.id === playingAudioId && message.role === 'assistant') ? playingAudioId : null
+    : null;
+  const avatarPassage = useAvatarPassage(
+    avatar ? contentPayload?.contentAudioUrl : undefined,
+    avatar ? contentPayload?.narrationVideoUrl : undefined,
+    markReadingPassageListened,
+    { id: avatarPracticeId, stop: stopAvatarPracticeAudio },
+  );
+  useEffect(() => {
+    if (avatar && (isRecording || isAccountBlocked || showCompletionModal || isCompleted)) {
+      avatarPassage.pause(); stopAvatarPracticeAudio();
+    }
+  }, [avatar?.topicId, isRecording, isAccountBlocked, showCompletionModal, isCompleted]);
 
   useEffect(() => {
     // A generic completed flag alone is not enough to show the revisit
@@ -197,8 +269,8 @@ export default function ReadingModeTopics() {
 
   useEffect(() => {
     setHasStartedShadowReading(false);
-    setViewedFeedbackIds(loadViewedReadingFeedback(lessonModeId));
-  }, [lessonModeId]);
+    setViewedFeedbackIds(demo ? new Set<string>() : loadViewedReadingFeedback(feedbackStorageKey));
+  }, [lessonModeId, feedbackStorageKey, Boolean(demo)]);
 
   useEffect(() => {
     const latest = [...chatHistory].reverse().find(message => message.role === 'assistant');
@@ -222,6 +294,10 @@ export default function ReadingModeTopics() {
   const handleStopRecording = async () => {
     if (cooldown || isTyping || isAccountBlocked) return;
     const res = await stopRecording();
+    if (demo && !demoAliveRef.current) {
+      if (res?.audioUrl.startsWith('blob:')) URL.revokeObjectURL(res.audioUrl);
+      return;
+    }
     if (res) {
       if (await sendAudio(res.audioBase64, res.format, res.audioUrl)) triggerCooldown();
     }
@@ -294,6 +370,7 @@ export default function ReadingModeTopics() {
   };
 
   const togglePracticeAudio = (messageId: string, audioUrl?: string | null) => {
+    if (avatar) avatarPassage.pause();
     if (audioUrl) toggleStoredAudio(messageId, audioUrl);
     else toast.error('Tony Hopeful audio is unavailable. Reload this activity to retry.');
   };
@@ -327,6 +404,9 @@ export default function ReadingModeTopics() {
   );
   const step1Completed = initialPassComplete;
   const step1Active = !step1Completed;
+  useEffect(() => {
+    if (avatar && !step1Active) avatarPassage.pause();
+  }, [avatar, step1Active, avatarPassage.pause]);
   const step2Completed = (mcqList && mcqList.length > 0) || isCompleted;
   const step2Active = step1Completed && !step2Completed;
   const step3Completed = isCompleted;
@@ -336,6 +416,17 @@ export default function ReadingModeTopics() {
     : `${getProgressPercentage()}% Complete`;
 
   const isChatActive = !step1Active && (!mcqList || mcqList.length === 0);
+  const replayingAvatarPassage = Boolean(avatar && !step1Active && avatarPassage.playing);
+  useEffect(() => {
+    const panel = chatContainerRef.current;
+    if (!avatarPracticeId || !panel) return;
+    const sentence = Array.from(panel.querySelectorAll<HTMLElement>('[data-avatar-practice-sentence]'))
+      .find(node => node.dataset.avatarPracticeSentence === avatarPracticeId);
+    if (!sentence) return;
+    const parent = panel.getBoundingClientRect(), child = sentence.getBoundingClientRect();
+    if (child.top < parent.top + 12 || child.bottom > parent.bottom - 12)
+      panel.scrollTo({ top: panel.scrollTop + child.top - parent.top - 16, behavior: 'auto' });
+  }, [avatarPracticeId]);
   const readingPassageText = (() => {
     const blocks = contentPayload?.readingPresentation?.blocks;
     if (Array.isArray(blocks) && blocks.length > 0) {
@@ -354,6 +445,14 @@ export default function ReadingModeTopics() {
   })();
 
   const togglePassageAudio = () => {
+    if (avatar) {
+      stopAudio();
+      window.speechSynthesis?.cancel();
+      setFallbackSpeechMessageId(null);
+      setIsFallbackSpeechPaused(false);
+      void avatarPassage.toggle();
+      return;
+    }
     const audioUrl = contentPayload?.contentAudioUrl;
     if (audioUrl) {
       if (fallbackSpeechMessageId) {
@@ -372,6 +471,7 @@ export default function ReadingModeTopics() {
   };
 
   const toggleStoredAudio = (messageId: string, audioUrl: string, onEnd?: () => void) => {
+    if (avatar) avatarPassage.pause();
     if (fallbackSpeechMessageId) {
       window.speechSynthesis.cancel();
       fallbackSpeechRef.current = null;
@@ -383,6 +483,8 @@ export default function ReadingModeTopics() {
 
   const finishMode = async () => {
     setShowCompletionModal(false);
+    if (demo) { demo.onClose(); return; }
+    if (avatar) { navigate(allLessonsPath, { replace: true }); return; }
     if (courseId && unitId && lessonId) {
       try {
         const context = { courseId, unitId, lessonId };
@@ -425,18 +527,29 @@ export default function ReadingModeTopics() {
   ].filter((card, index, cards) =>
     cards.findIndex((candidate) => candidate.word.toLowerCase() === card.word.toLowerCase()) === index,
   );
+  const cleanAvatarText = (text: string) => avatar ? text.replace(/\*\*([\s\S]*?)\*\*/g, '$1') : text;
+  const passageContent = cleanAvatarText(contentPayload?.passage || contentPayload?.content || (contentPayload?.sentences ? contentPayload.sentences.join('\n\n') : ''));
   const readingPresentation = contentPayload?.readingPresentation
     ? { ...contentPayload.readingPresentation, vocabularyCards }
     : undefined;
+  if (avatar && readingPresentation?.blocks) {
+    readingPresentation.blocks = readingPresentation.blocks.map((block: { text?: string; heading?: string; speaker?: string }) => ({
+      ...block,
+      text: block.text ? cleanAvatarText(block.text) : block.text,
+    }));
+  }
+
+  const showAvatarSessionState = Boolean((avatar || demo) && (isSessionLoading || sessionLoadError || !modeSessionId || !contentPayload));
 
   return (
-    <div className="w-full max-w-[1207px] mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)] border border-gray-100 shadow-sm relative">
+    <div ref={avatarWorkspaceRef} className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar ? 'avatar-workspace avatar-reading-workspace max-w-[1440px] min-w-0' : 'max-w-[1207px] h-[100dvh] md:h-[794px] max-h-[calc(100vh-40px)]'}`}>
       
       <TopicCompletionModal 
         isOpen={showCompletionModal}
         isJustCompleted={isJustCompleted}
         onFinish={() => { void finishMode(); }}
         onRetake={() => {
+          if (avatar) avatarPassage.restart();
           setShowCompletionModal(false);
           setCurrentMcqIndex(0);
           setSelectedAnswers({});
@@ -474,27 +587,28 @@ export default function ReadingModeTopics() {
       />
 
       {/* Header Progress Group */}
-      <div className="flex flex-col gap-2.5 pb-3">
+      <div className={`flex flex-col shrink-0 gap-2.5 pb-3 ${avatar ? 'avatar-workspace-header' : ''}`}>
         
         {/* Top Bar */}
         <div className="flex flex-row justify-between items-center px-4 md:px-6 py-4 bg-white border-b border-[#E5E7EB]">
           
-          <div className="flex-1 flex justify-start">
+          <div className={`${avatar ? 'shrink-0' : 'flex-1'} flex justify-start`}>
             <button 
-              onClick={() => navigate(allLessonsPath, { replace: true })}
+              onClick={() => demo ? demo.onClose() : navigate(allLessonsPath, { replace: true })}
+              aria-label={demo ? 'Close reading demo' : 'Back to lessons'}
               className="flex justify-center items-center w-10 h-10 bg-white border border-[#E5E7EB] shadow-[0px_1px_4px_rgba(0,0,0,0.06)] rounded-full hover:bg-gray-50 transition-colors"
             >
               <ChevronLeft className="w-5 h-5 text-[#282828]" />
             </button>
           </div>
           
-          <div className="flex-1 flex justify-center">
-            <h1 className="text-[20px] font-bold leading-[20px] tracking-[-0.3px] text-[#282828]">
-              Reading Mode
+          <div className={`flex-1 flex ${avatar ? 'min-w-0 px-3 sm:px-4' : 'justify-center'}`}>
+            <h1 className={`${avatar ? 'text-base leading-6 sm:text-xl' : 'text-[20px] leading-[20px]'} font-bold tracking-[-0.3px] text-[#282828]`}>
+              {avatar ? avatar.title : 'Reading Mode'}
             </h1>
           </div>
           
-          <div className="flex-1 flex justify-end items-center gap-3">
+          <div className={`${avatar ? 'shrink-0' : 'flex-1'} flex justify-end items-center gap-3`}>
             {sessionStatus.remainingSeconds !== null && (
               <div className="flex flex-row items-center px-4 py-2 gap-2 bg-[#FEF1E8] rounded-full h-[42px]">
                 <span className="font-semibold text-[13px] leading-[16px] text-[#F97316]">
@@ -520,10 +634,20 @@ export default function ReadingModeTopics() {
       </div>
 
       {/* Main Split Content */}
-      <div className="flex flex-col md:flex-row px-4 md:px-8 gap-4 flex-1 min-h-0 pb-6">
+      {showAvatarSessionState && (
+        <div className="flex flex-1 min-h-0 flex-col items-center justify-center gap-4 p-6 text-center" role={sessionLoadError ? 'alert' : 'status'}>
+          {!sessionLoadError && <LoaderCircle className="h-6 w-6 animate-spin text-blue-500" aria-hidden="true" />}
+          <p>{sessionLoadError || 'Loading reading practice…'}</p>
+          <div className="flex flex-wrap justify-center gap-3">
+            {sessionLoadError && <button type="button" onClick={reloadSession} className="rounded-full bg-blue-500 px-6 py-2 font-semibold text-white">Retry</button>}
+            <button type="button" onClick={() => demo ? demo.onClose() : navigate(allLessonsPath)} className="rounded-full border px-6 py-2">{demo ? 'Close demo' : 'Back to topics'}</button>
+          </div>
+        </div>
+      )}
+      <div className={`${showAvatarSessionState ? 'hidden' : 'flex'} flex-col min-h-0 pb-6 ${avatar ? 'avatar-workspace-body flex-1 gap-2 px-2 sm:px-4' : 'md:flex-row px-4 md:px-8 gap-4 flex-1'}`}>
         
         {/* Mode Sidebar */}
-        <div className="flex flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0">
+        {!avatar && <div className="flex flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0">
           <div 
             className="px-4 pb-2 md:pb-2.5 flex justify-between items-center cursor-pointer md:cursor-default"
             onClick={() => window.innerWidth < 768 && setIsStepsExpanded(!isStepsExpanded)}
@@ -621,8 +745,30 @@ export default function ReadingModeTopics() {
 
         </div>
 
+        }
+        {avatar && (
+          <aside className="avatar-workspace-avatar flex w-full min-w-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]" aria-label="3D Reading avatar">
+            <div className="avatar-workspace-stage relative overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#F0F7FF]">
+            <video ref={avatarPassage.videoRef} src={contentPayload?.narrationVideoUrl} muted playsInline preload="auto"
+              className="absolute left-1/2 top-0 aspect-video h-[145%] w-auto max-w-none -translate-x-1/2"
+              aria-label={`${avatar.title} avatar narration`}
+              onLoadedMetadata={avatarPassage.synchronize} />
+            {avatarPassage.videoState !== 'ready' && <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#F8FAFC] p-4 text-center text-sm text-slate-600" role={avatarPassage.videoState === 'error' ? 'alert' : 'status'}>
+              <p>{avatarPassage.videoState === 'error' ? 'The avatar could not load. Please try again.' : 'Loading avatar…'}</p>
+              {avatarPassage.videoState === 'error' && <button type="button" onClick={avatarPassage.retryVideo} className="rounded-full border border-blue-300 bg-white px-4 py-2 font-semibold text-blue-600">Retry avatar</button>}
+            </div>}
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t bg-white px-3 py-2.5 sm:px-4">
+              <button type="button" disabled={!contentPayload?.contentAudioUrl || isAccountBlocked}
+                onClick={togglePassageAudio} className="rounded-full bg-[#3B82F6] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
+                {avatarPassage.loading ? 'Loading…' : avatarPassage.playing ? 'Pause passage' : 'Play passage'}
+              </button>
+              <button type="button" onClick={avatarPassage.restart} className="text-sm text-[#475569]">Restart passage</button>
+            </div>
+          </aside>
+        )}
         {/* Workspace Main */}
-        <div className={`flex flex-col flex-1 gap-4 min-h-0 pr-1 ${(isChatActive || step1Active) ? '' : 'overflow-y-auto'}`}>
+        <div className={`flex flex-col gap-4 min-h-0 ${avatar ? 'avatar-workspace-panel flex-1 min-w-0 rounded-2xl border border-[#E5E7EB] bg-white p-3 sm:p-4' : 'flex-1 pr-1'} ${(isChatActive || step1Active) ? avatar ? 'overflow-hidden' : '' : 'overflow-y-auto'}`}>
           
           {/* Reading Passage Card */}
           {contentPayload && (
@@ -631,16 +777,17 @@ export default function ReadingModeTopics() {
             (contentPayload.sentences && contentPayload.sentences.length > 0) ||
             (contentPayload.readingPresentation?.blocks?.length > 0)
           ) && (
-            <div className={`flex flex-col gap-4 min-h-0 ${step1Active ? 'flex-1' : 'flex-shrink-0'}`}>
+            <div className={`flex flex-col gap-4 min-h-0 ${step1Active || replayingAvatarPassage ? 'flex-1' : 'flex-shrink-0'}`}>
               <ReadingPassageCard 
-                content={contentPayload.passage || contentPayload.content || (contentPayload.sentences ? contentPayload.sentences.join('\n\n') : '')}
+                content={passageContent}
+                narration={avatar ? readingNarration(avatar.topicId, contentPayload.contentAudioUrl, passageContent, avatarPassage.duration, avatarPracticeId ? -1 : avatarPassage.position) : undefined}
                 audioUrl={contentPayload.contentAudioUrl}
                 readingPresentation={readingPresentation}
                 onVocabularyClick={setActiveVocabularyCard}
-                showAudioControl={Boolean(readingPassageText)}
-                isPlaying={playingAudioId === 'reading-passage' && isCurrentlyPlaying}
+                showAudioControl={!avatar && Boolean(readingPassageText)}
+                isPlaying={avatar ? avatarPassage.playing : playingAudioId === 'reading-passage' && isCurrentlyPlaying}
                 onToggleAudio={togglePassageAudio}
-                forceExpanded={step1Active}
+                forceExpanded={step1Active || replayingAvatarPassage}
                 collapsibleMode="accordion"
               />
               {step1Active && (
@@ -658,10 +805,10 @@ export default function ReadingModeTopics() {
           )}
 
           {/* Chat History Area (Shown during Chatting stage, hidden during Quiz stage to prevent squishing) */}
-          {!step1Active && (!mcqList || mcqList.length === 0) && (
+          {!step1Active && !replayingAvatarPassage && (!mcqList || mcqList.length === 0) && (
             <div 
               ref={chatContainerRef}
-              className="flex flex-col p-5 px-6 gap-3 flex-1 min-h-[150px] bg-[#F8F9FA] rounded-2xl overflow-y-auto"
+              className="reading-practice-history flex flex-col p-5 px-6 gap-3 flex-1 min-h-[150px] bg-[#F8F9FA] rounded-2xl overflow-y-auto"
             >
               <div className="w-full bg-[#EFF6FF] border border-[#BFDBFE] rounded-xl px-4 py-3 flex items-start gap-3 text-[#1E40AF] text-[13px] leading-relaxed font-medium shadow-sm flex-shrink-0">
                 <span className="text-lg leading-none">📖</span>
@@ -697,10 +844,15 @@ export default function ReadingModeTopics() {
               {chatHistory.map((msg, index) => (
                 (() => {
                   const practiceSpeechText = msg.role === 'assistant' ? readingPracticeSpeechText(msg) : null;
+                  const practiceDisplay = avatar && msg.role === 'assistant' ? readingPracticePresentation(msg.content, practiceSpeechText) : null;
                   const practiceAudioUrl = msg.role === 'assistant' ? readingPracticeAudioUrl(msg) : null;
                   const hasSpeechFallback = Boolean(practiceSpeechText && !practiceAudioUrl);
                   const isFallbackSpeechPlaying = fallbackSpeechMessageId === msg.id;
+                  const practiceTextPlaying = Boolean(avatar && msg.role === 'assistant' && (
+                    (playingAudioId === msg.id && isCurrentlyPlaying) || (isFallbackSpeechPlaying && !isFallbackSpeechPaused)
+                  ));
                   const hasSavedSpeechAssessment = isSpeechAssessment(msg.assessments);
+                  const feedbackNeedsAttention = readingFeedbackNeedsAttention(msg.readingVocabularyFeedback, msg.readingFeedbackTarget, viewedFeedbackIds.has(msg.id));
                   // Browser object URLs are available only for the live
                   // attempt. On resume, use the stored recording when it is
                   // available and retain a transcript-to-speech fallback when
@@ -723,10 +875,23 @@ export default function ReadingModeTopics() {
                       <p className="mb-2 text-xs font-semibold text-red-700" role="status">Sentence {msg.readingFeedbackTarget.sentenceIndex + 1}: Incorrect</p>
                     )}
                     <div className="text-[13px] leading-[18px] text-[#0F1450] whitespace-pre-wrap break-words">
-                      {practiceSpeechText && msg.content.endsWith(`"${practiceSpeechText}"`) ? (
+                      {practiceDisplay ? (
+                        <>
+                          <p className="mb-2">{practiceDisplay.instruction}</p>
+                          <p>"<span data-avatar-practice-sentence={msg.id}
+                            aria-current={practiceTextPlaying ? 'true' : undefined}
+                            className={practiceTextPlaying ? 'avatar-reading-highlight' : undefined}>
+                            <HighlightedReadingSentence text={practiceDisplay.sentence} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={setActiveVocabularyCard} />
+                          </span>"</p>
+                        </>
+                      ) : practiceSpeechText && msg.content.endsWith(`"${practiceSpeechText}"`) ? (
                         <>
                           <p className="mb-2">{msg.content.slice(0, -practiceSpeechText.length - 2).trim()}</p>
-                          <p>"<HighlightedReadingSentence text={practiceSpeechText} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={setActiveVocabularyCard} />"</p>
+                          <p>"<span data-avatar-practice-sentence={avatar ? msg.id : undefined}
+                            aria-current={avatarPracticeId === msg.id ? 'true' : undefined}
+                            className={avatarPracticeId === msg.id ? 'avatar-reading-highlight' : undefined}>
+                            <HighlightedReadingSentence text={practiceSpeechText} vocabularyTerms={vocabularyTerms} vocabularyCards={vocabularyCards} onVocabularyClick={setActiveVocabularyCard} />
+                          </span>"</p>
                         </>
                       ) : <ReactMarkdown
                         components={{
@@ -826,11 +991,11 @@ export default function ReadingModeTopics() {
                         <button
                           type="button"
                           onClick={() => openReadingFeedback(msg.id, msg.feedback!, msg.readingFeedbackTarget)}
-                          className={`flex items-center gap-1.5 text-[#5C9DFF] hover:text-[#4A8BEB] transition-colors font-semibold text-[12px] leading-[15px] ${readingFeedbackAction(msg.readingVocabularyFeedback, viewedFeedbackIds.has(msg.id)) === 'glow' ? 'reading-vocabulary-feedback-glow' : ''}`}
-                          aria-label={readingFeedbackAction(msg.readingVocabularyFeedback, viewedFeedbackIds.has(msg.id)) === 'glow' ? 'View feedback to correct your vocabulary reading' : 'View feedback'}
+                          className="flex items-center gap-1.5 text-[#5C9DFF] hover:text-[#4A8BEB] transition-colors font-semibold text-[12px] leading-[15px]"
+                          aria-label={feedbackNeedsAttention ? 'View feedback to correct your reading' : 'View feedback'}
                         >
                           <MessageCircle className="w-3.5 h-3.5" />
-                          <span>View Feedback</span>
+                          <span className={feedbackNeedsAttention ? 'reading-feedback-text-pulse' : undefined}>View Feedback</span>
                         </button>
                       )}
                     </div>
@@ -916,8 +1081,11 @@ export default function ReadingModeTopics() {
                         const isIncorrectSelection = isSelected && answerFeedback?.isCorrect === false;
 
                         return (
-                          <button
-                            key={oIdx}
+                          <GradedAnswerButton
+                            key={`${mcq.id}:${oIdx}`}
+                            feedbackKey={answerFeedback}
+                            result={isSelected ? answerFeedback?.isCorrect : null}
+                            disabled={hasCorrectAnswer || isCheckingMcqAnswer || isAccountBlocked}
                             type="button"
                             onClick={() => {
                               if (hasCorrectAnswer) return;
@@ -948,7 +1116,7 @@ export default function ReadingModeTopics() {
                             }`}>
                               {optLabel}
                             </span>
-                          </button>
+                          </GradedAnswerButton>
                         );
                       })}
                     </div>
@@ -1035,8 +1203,8 @@ export default function ReadingModeTopics() {
           )}
 
           {/* Input Bar (Shown only during Chatting stage) */}
-          {!step1Active && (!mcqList || mcqList.length === 0) && (
-            <div className="flex flex-row items-center px-5 py-4 gap-3 bg-white border border-[#E5E7EB] rounded-2xl flex-shrink-0">
+          {!step1Active && !replayingAvatarPassage && (!mcqList || mcqList.length === 0) && (
+            <div className="reading-recorder flex flex-row items-center px-5 py-4 gap-3 bg-white border border-[#E5E7EB] rounded-2xl flex-shrink-0">
               {isRecording ? (
                 <div className="flex-1 flex items-center justify-between px-4 py-2 bg-[#FEF1E8] border border-[#F97316]/30 rounded-[10px]">
                   <div className="flex items-center gap-2">
@@ -1064,21 +1232,31 @@ export default function ReadingModeTopics() {
                 </div>
               ) : (
                 <>
-                  <input
-                    type="text"
-                    placeholder={isProcessingRecording ? "Checking recording..." : cooldown ? "Please wait..." : "Record the sentence (up to 3 minutes)..."}
-                    value=""
-                    readOnly
-                    aria-label="Reading responses must be recorded with the microphone"
-                    className="flex-1 px-4 py-3 bg-white border border-[#E5E7EB] rounded-[10px] text-[14px] text-[#282828] placeholder-[#6E748F]/60 focus:outline-none focus:border-[#5C9DFF] focus:ring-1 focus:ring-[#5C9DFF] transition-all"
-                  />
+                  <div className="min-w-0 flex-1 px-4 py-3 bg-white border border-[#E5E7EB] rounded-[10px]">
+                    <p id="reading-recording-instruction" aria-live="polite" className="whitespace-normal break-words text-[14px] leading-5 text-[#6E748F]">
+                      {isStartingRecording ? 'Opening microphone… Allow access if your browser asks.'
+                        : recordingError ? recordingError
+                        : isAccountBlocked ? 'Recording is unavailable for this account.'
+                        : !modeSessionId ? 'Connecting to reading practice…'
+                        : isProcessingRecording ? 'Checking recording…'
+                        : isReconcilingAudio ? 'Restoring your previous recording…'
+                        : isTyping ? 'Assessing your recording…'
+                        : hasPendingAudio ? 'Retry or discard your previous recording before recording again.'
+                        : cooldown ? 'Please wait…'
+                        : 'Record the sentence (up to 3 minutes)…'}
+                    </p>
+                  </div>
                   <button
-                    onClick={startRecording}
-                    disabled={!modeSessionId || cooldown || isProcessingRecording || isTyping || isAccountBlocked || hasPendingAudio}
-                    className="flex justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={() => { if (avatar) { avatarPassage.pause(); stopAudio(); } startRecording(); }}
+                    disabled={isStartingRecording || !modeSessionId || cooldown || isProcessingRecording || isTyping || isAccountBlocked || hasPendingAudio}
+                    aria-label={isStartingRecording ? 'Opening microphone' : 'Record your reading response'}
+                    aria-busy={isStartingRecording}
+                    aria-describedby="reading-recording-instruction"
+                    className="flex shrink-0 justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Mic className="w-5 h-5" />
+                    {isStartingRecording ? <LoaderCircle className="w-5 h-5 animate-spin" aria-hidden="true" /> : <Mic className="w-5 h-5" />}
                   </button>
+                  {isStartingRecording && <button type="button" onClick={cancelRecording} className="text-sm font-semibold text-[#475569]" aria-label="Cancel microphone startup">Cancel</button>}
                 </>
               )}
             </div>

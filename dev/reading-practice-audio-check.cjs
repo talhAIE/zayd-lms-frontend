@@ -34,6 +34,7 @@ assert.deepEqual(spoken, [target], 'Browser fallback must preserve the entire ta
 assert.ok(practiceDeclaration);
 const played = [], errors = [];
 vm.runInNewContext(compile(`const ${practiceDeclaration}; togglePracticeAudio('sentence', 'tony-hopeful-audio'); togglePracticeAudio('old', null); togglePracticeAudio('initial');`), {
+  avatar: undefined,
   toggleStoredAudio: (...args) => played.push(args),
   toast: { error: message => errors.push(message) },
   toggleInitialReadingPromptSpeech: () => { throw Error('Practice must never use a browser voice'); },

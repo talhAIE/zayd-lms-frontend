@@ -9,6 +9,17 @@ export function readingFeedbackAction(feedback: ReadingVocabularyFeedback | unde
   return feedback.action === 'glow' || feedback.action === 'open' ? feedback.action : undefined;
 }
 
+export function readingFeedbackNeedsAttention(
+  feedback: ReadingVocabularyFeedback | undefined,
+  target: { status: 'correct' | 'retry' | 'incorrect' } | undefined,
+  viewed: boolean,
+) {
+  if (viewed) return false;
+  return readingFeedbackAction(feedback, false) === 'glow'
+    || target?.status === 'retry'
+    || target?.status === 'incorrect';
+}
+
 export function loadViewedReadingFeedback(lessonModeId: string): Set<string> {
   try {
     const ids = JSON.parse(sessionStorage.getItem(`reading-feedback-viewed:${lessonModeId}`) || '[]');

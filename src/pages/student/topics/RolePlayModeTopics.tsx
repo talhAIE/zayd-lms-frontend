@@ -1,3 +1,5 @@
+import { useAvatarWorkspace } from '@/components/avatar-reading/useAvatarWorkspace';
+import { AvatarSpeechHighlight } from '@/components/avatar-reading/AvatarSpeechHighlight';
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BarChart3, ChevronLeft, Mic, Clock, Lightbulb, MessageCircle, Send, Square, Trash2, Pause, Play, LoaderCircle, ChevronDown, ChevronUp } from 'lucide-react';
@@ -14,21 +16,29 @@ import SpeechAssessmentModal, { isSpeechAssessment, SpeechAssessment } from '@/c
 import { toast } from 'sonner';
 import { fetchUnitLessons } from '@/services/learningService';
 import { getNextLessonPath } from '@/utils/learning-navigation';
+import { useAvatarSpeakingVideo } from '@/components/avatar-reading/useAvatarSpeakingVideo';
+import type { AvatarReadingTransport } from '@/components/avatar-reading/AvatarReadingContext';
 
-export default function RolePlayModeTopics() {
+export default function RolePlayModeTopics({avatar, demo}:{
+  avatar?:{topicId:string;title:string};
+  demo?: { lessonModeId: string; transport: AvatarReadingTransport; onClose: () => void; onComplete: () => void };
+}={}) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const lessonModeId = searchParams.get('modeId') || '';
+  const avatarWorkspaceRef = useAvatarWorkspace(Boolean(avatar), true);
+  const lessonModeId = demo?.lessonModeId || avatar?.topicId || searchParams.get('modeId') || '';
   const lessonId = searchParams.get('lessonId') || '';
   const courseId = searchParams.get('courseId') || undefined;
   const unitId = searchParams.get('unitId') || undefined;
   const refreshLearningProgress = useLearningProgressRefresh();
-  const allLessonsPath = courseId && unitId
+  const allLessonsPath = avatar ? '/student/3d-avatar/roleplay' : courseId && unitId
     ? '/student/courses/' + courseId + '/units/' + unitId
     : '/student/courses';
-  const { playingAudioId, isCurrentlyPlaying, loadingAudioId, toggleAudio, stopAudio } = useAudioPlayback();
+  const { playingAudioId, isCurrentlyPlaying, loadingAudioId, failedAudioId, toggleAudio, stopAudio } = useAudioPlayback();
   const [fallbackSpeechMessageId, setFallbackSpeechMessageId] = useState<string | null>(null);
+  const [pendingSpeechMessageId, setPendingSpeechMessageId] = useState<string | null>(null);
   const fallbackSpeechRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const fallbackSpeechTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   
   const [inputValue, setInputValue] = useState('');
   const [isScenarioExpanded, setIsScenarioExpanded] = useState(false);
@@ -43,16 +53,25 @@ export default function RolePlayModeTopics() {
   const [activeAssessment, setActiveAssessment] = useState<SpeechAssessment | null>(null);
   const [hintOpenForMessageId, setHintOpenForMessageId] = useState<string | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const demoAliveRef = useRef(true);
+  useEffect(() => { demoAliveRef.current = true; return () => { demoAliveRef.current = false; }; }, []);
 
   const {
     isRecording,
+    isStartingRecording,
+    isProcessingRecording,
     recordTime,
     startRecording,
     stopRecording,
     cancelRecording
-  } = useAudioRecorder();
+  } = useAudioRecorder({ detectSilence: Boolean(demo), silenceThreshold: demo ? 0.00001 : undefined,
+    silenceMessage: demo ? 'Your microphone recorded silence. Check the selected microphone and input volume, then try again.' : undefined });
 
   const {
+    modeSessionId,
+    isSessionLoading,
+    sessionLoadError,
+    reloadSession,
     chatHistory,
     contentPayload,
     roleplayProgress,
@@ -68,21 +87,51 @@ export default function RolePlayModeTopics() {
     restartSession
   } = useModeSession({ 
     lessonModeId,
+    transport: demo?.transport,
+    ephemeral: Boolean(demo),
     onCompleted: async () => {
-      await refreshLearningProgress(lessonId, { courseId, unitId });
+      if (demo) { demo.onComplete(); return; }
+      if (!avatar) await refreshLearningProgress(lessonId, { courseId, unitId });
       setIsJustCompleted(true);
       setShowCompletionModal(true);
     }
   });
 
+  const stopRoleplayMedia = () => {
+    stopAudio();fallbackSpeechRef.current=null;
+    if(fallbackSpeechTimerRef.current)clearTimeout(fallbackSpeechTimerRef.current);
+    fallbackSpeechTimerRef.current=null;
+    window.speechSynthesis?.cancel();setFallbackSpeechMessageId(null);setPendingSpeechMessageId(null);
+  };
+  const avatarSpeaking=Boolean(avatar&&!isRecording&&!isAccountBlocked&&!showCompletionModal&&(
+    fallbackSpeechMessageId || (isCurrentlyPlaying && (playingAudioId==='roleplay-scenario'||chatHistory.some(m=>m.id===playingAudioId&&m.role==='assistant')))
+  ));
+  const avatarVideoRef=useAvatarSpeakingVideo(avatar?contentPayload?.narrationVideoUrl:undefined,avatarSpeaking,stopRoleplayMedia);
+  const activeAvatarMessage = avatarSpeaking ? fallbackSpeechMessageId || playingAudioId : null;
   useEffect(() => {
-    if (isCompleted && !isJustCompleted) {
+    const panel = chatContainerRef.current;
+    if (!avatar || !panel || !activeAvatarMessage) return;
+    const message = Array.from(panel.querySelectorAll<HTMLElement>('[data-avatar-message]'))
+      .find(node => node.dataset.avatarMessage === activeAvatarMessage);
+    if (!message) return;
+    const parent = panel.getBoundingClientRect(), child = message.getBoundingClientRect();
+    if (child.top < parent.top || child.bottom > parent.bottom)
+      panel.scrollTo({ top: panel.scrollTop + child.top - parent.top - 12, behavior: 'auto' });
+  }, [avatar?.topicId, activeAvatarMessage]);
+  useEffect(()=>{
+    if(avatar&&(isRecording||isAccountBlocked||showCompletionModal))stopRoleplayMedia();
+  },[avatar,isRecording,isAccountBlocked,showCompletionModal]);
+
+  useEffect(() => {
+    if (!demo && isCompleted && !isJustCompleted) {
       setShowCompletionModal(true);
     }
-  }, [isCompleted, isJustCompleted]);
+  }, [isCompleted, isJustCompleted, demo]);
 
   useEffect(() => {
     return () => {
+      fallbackSpeechRef.current = null;
+      if (fallbackSpeechTimerRef.current) clearTimeout(fallbackSpeechTimerRef.current);
       window.speechSynthesis?.cancel();
     };
   }, []);
@@ -104,34 +153,65 @@ export default function RolePlayModeTopics() {
       return;
     }
 
-    if (fallbackSpeechMessageId === messageId) {
-      window.speechSynthesis.cancel();
-      fallbackSpeechRef.current = null;
-      setFallbackSpeechMessageId(null);
-      return;
-    }
-
+    const isSameMessage = fallbackSpeechMessageId === messageId || pendingSpeechMessageId === messageId;
+    fallbackSpeechRef.current = null;
+    if (fallbackSpeechTimerRef.current) clearTimeout(fallbackSpeechTimerRef.current);
+    fallbackSpeechTimerRef.current = null;
+    setFallbackSpeechMessageId(null);
+    setPendingSpeechMessageId(null);
     stopAudio();
     window.speechSynthesis.cancel();
+    if (isSameMessage) return;
 
     const utterance = new SpeechSynthesisUtterance(content);
     utterance.rate = 0.9;
-    utterance.onend = () => {
+    utterance.lang = 'en-US';
+    const finish = (failed: boolean) => {
+      if (fallbackSpeechRef.current !== utterance) return;
+      if (fallbackSpeechTimerRef.current) clearTimeout(fallbackSpeechTimerRef.current);
+      fallbackSpeechTimerRef.current = null;
       fallbackSpeechRef.current = null;
-      setFallbackSpeechMessageId((current) => (current === messageId ? null : current));
+      setFallbackSpeechMessageId(null);
+      setPendingSpeechMessageId(null);
+      if (failed) toast.error('Audio could not start. Please try playing the message again.');
     };
-    utterance.onerror = () => {
-      fallbackSpeechRef.current = null;
-      setFallbackSpeechMessageId((current) => (current === messageId ? null : current));
+    utterance.onstart = () => {
+      if (fallbackSpeechRef.current !== utterance) return;
+      if (fallbackSpeechTimerRef.current) clearTimeout(fallbackSpeechTimerRef.current);
+      fallbackSpeechTimerRef.current = null;
+      setPendingSpeechMessageId(null);
+      setFallbackSpeechMessageId(messageId);
     };
+    utterance.onend = () => finish(false);
+    utterance.onerror = () => finish(true);
 
     fallbackSpeechRef.current = utterance;
-    setFallbackSpeechMessageId(messageId);
-    window.speechSynthesis.speak(utterance);
+    setPendingSpeechMessageId(messageId);
+    fallbackSpeechTimerRef.current = setTimeout(() => {
+      if (fallbackSpeechRef.current !== utterance) return;
+      finish(true);
+      window.speechSynthesis.cancel();
+    }, 10000);
+    try {
+      window.speechSynthesis.resume();
+      window.speechSynthesis.speak(utterance);
+    } catch { finish(true); }
+  };
+
+  const toggleStoredAudio = (messageId: string, audioUrl: string) => {
+    fallbackSpeechRef.current = null;
+    if (fallbackSpeechTimerRef.current) clearTimeout(fallbackSpeechTimerRef.current);
+    fallbackSpeechTimerRef.current = null;
+    window.speechSynthesis?.cancel();
+    setFallbackSpeechMessageId(null);
+    setPendingSpeechMessageId(null);
+    toggleAudio(messageId, audioUrl);
   };
 
   const finishMode = async () => {
     setShowCompletionModal(false);
+    if (demo) { demo.onClose(); return; }
+    if(avatar){stopRoleplayMedia();navigate(allLessonsPath,{replace:true});return;}
     if (courseId && unitId && lessonId) {
       try {
         const lessons = await fetchUnitLessons(unitId);
@@ -145,6 +225,20 @@ export default function RolePlayModeTopics() {
   };
 
   const step1Completed = isScenarioExpanded || (chatHistory && chatHistory.some(m => m.role === 'user'));
+  useEffect(() => {
+    const history = chatContainerRef.current;
+    if (!avatar || !step1Completed || !history) return;
+    let followingLatest = history.scrollHeight - history.scrollTop - history.clientHeight < 24;
+    const onScroll = () => {
+      followingLatest = history.scrollHeight - history.scrollTop - history.clientHeight < 24;
+    };
+    const observer = new ResizeObserver(() => {
+      if (followingLatest) history.scrollTop = history.scrollHeight;
+    });
+    observer.observe(history);
+    history.addEventListener('scroll', onScroll, { passive: true });
+    return () => { observer.disconnect(); history.removeEventListener('scroll', onScroll); };
+  }, [avatar?.topicId, step1Completed]);
   const step1Active = !step1Completed;
 
   const [cooldown, setCooldown] = useState(false);
@@ -158,6 +252,7 @@ export default function RolePlayModeTopics() {
 
   const handleSend = () => {
     if (!inputValue.trim() || cooldown || isTyping || isAccountBlocked) return;
+    if(avatar || demo)stopRoleplayMedia();
     sendMessage(inputValue);
     setInputValue('');
     triggerCooldown();
@@ -166,6 +261,10 @@ export default function RolePlayModeTopics() {
   const handleStopRecording = async () => {
     if (cooldown || isTyping || isAccountBlocked) return;
     const res = await stopRecording();
+    if (demo && !demoAliveRef.current) {
+      if (res?.audioUrl.startsWith('blob:')) URL.revokeObjectURL(res.audioUrl);
+      return;
+    }
     if (res) {
       sendAudio(res.audioBase64, res.format, res.audioUrl);
       triggerCooldown();
@@ -190,9 +289,12 @@ export default function RolePlayModeTopics() {
     return Math.min(99, Math.round((roleplayProgress.completedTurns / roleplayProgress.requiredTurns) * 100));
   };
 
+  const showDemoLoadState = Boolean(demo && (isSessionLoading || sessionLoadError || !modeSessionId || !contentPayload));
+  const demoRecordingBusy = Boolean(demo && (isStartingRecording || isProcessingRecording));
+
   return (
-    <div
-      className="w-full max-w-[1207px] mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden h-[calc(var(--roleplay-viewport-height)-6rem)] md:h-[794px] md:max-h-[calc(100dvh-7rem)] border border-gray-100 shadow-sm relative"
+    <div ref={avatarWorkspaceRef}
+      className={`w-full mx-auto bg-white rounded-none md:rounded-[24px] flex flex-col font-['Outfit',sans-serif] overflow-hidden border border-gray-100 shadow-sm relative ${avatar?'avatar-workspace max-w-[1440px] min-w-0':'max-w-[1207px] h-[calc(var(--roleplay-viewport-height)-6rem)] md:h-[794px] md:max-h-[calc(100dvh-7rem)]'}`}
       style={{ '--roleplay-viewport-height': `${visibleViewportHeight}px` } as React.CSSProperties}
     >
       
@@ -201,6 +303,7 @@ export default function RolePlayModeTopics() {
         isJustCompleted={isJustCompleted}
         onFinish={() => { void finishMode(); }}
         onRetake={() => {
+          if(avatar)stopRoleplayMedia();
           setShowCompletionModal(false);
           setIsScenarioExpanded(false);
           setIsJustCompleted(false);
@@ -226,27 +329,28 @@ export default function RolePlayModeTopics() {
       />
 
       {/* Header Progress Group */}
-      <div className="flex flex-col flex-shrink-0 gap-2.5 pb-3">
+      <div className={`flex flex-col shrink-0 gap-2.5 pb-3 ${avatar ? 'avatar-workspace-header' : ''}`}>
         
         {/* Top Bar */}
         <div className="flex flex-row justify-between items-center px-4 md:px-6 py-4 bg-white border-b border-[#E5E7EB]">
           
-          <div className="flex-1 flex justify-start">
+          <div className={`${avatar?'shrink-0':'flex-1'} flex justify-start`}>
             <button 
-              onClick={() => navigate(allLessonsPath, { replace: true })}
+              onClick={() => demo ? demo.onClose() : navigate(allLessonsPath, { replace: true })}
+              aria-label={demo ? 'Close roleplay demo' : 'Back to lessons'}
               className="flex justify-center items-center w-10 h-10 bg-white border border-[#E5E7EB] shadow-[0px_1px_4px_rgba(0,0,0,0.06)] rounded-full hover:bg-gray-50 transition-colors"
             >
               <ChevronLeft className="w-5 h-5 text-[#282828]" />
             </button>
           </div>
           
-          <div className="flex-1 flex justify-center items-center gap-4">
-            <h1 className="text-[20px] font-bold leading-[20px] tracking-[-0.3px] text-[#282828]">
-              Roleplay Mode
+          <div className={`flex-1 flex items-center gap-4 ${avatar?'min-w-0 px-3 sm:px-4':'justify-center'}`}>
+            <h1 className={`${avatar?'text-base leading-6 sm:text-xl':'text-[20px] leading-[20px]'} font-bold tracking-[-0.3px] text-[#282828]`}>
+              {avatar?avatar.title:'Roleplay Mode'}
             </h1>
           </div>
           
-          <div className="flex-1 flex justify-end items-center gap-3">
+          <div className={`${avatar?'shrink-0':'flex-1'} flex justify-end items-center gap-3`}>
             {sessionStatus.remainingSeconds !== null && (
               <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FEF1E8] rounded-full">
                 <Clock className="w-3.5 h-3.5 text-[#F97316]" />
@@ -256,7 +360,7 @@ export default function RolePlayModeTopics() {
               </div>
             )}
           </div>
-          <div className="flex-1 flex justify-end items-center gap-2">
+          <div className={`${avatar || demo?'hidden':'flex-1 flex'} justify-end items-center gap-2`}>
             {/* Optional placeholders */}
           </div>
         </div>
@@ -278,10 +382,17 @@ export default function RolePlayModeTopics() {
       </div>
 
       {/* Main Split Content */}
-      <div className="flex flex-col md:flex-row px-3 md:px-8 gap-3 md:gap-4 flex-1 min-h-0 pb-3 md:pb-6">
+      {showDemoLoadState && <div className="flex flex-1 min-h-0 flex-col items-center justify-center gap-4 p-6 text-center" role={sessionLoadError ? 'alert' : 'status'}>
+        <p>{sessionLoadError || 'Loading roleplay practice…'}</p>
+        <div className="flex gap-3">
+          {sessionLoadError && <button type="button" onClick={reloadSession} className="rounded-full bg-blue-500 px-6 py-2 font-semibold text-white">Retry</button>}
+          <button type="button" onClick={() => demo?.onClose()} className="rounded-full border px-6 py-2">Close demo</button>
+        </div>
+      </div>}
+      <div className={`${showDemoLoadState ? 'hidden' : 'flex'} flex-col min-h-0 ${avatar?'avatar-workspace-body flex-1 gap-2 px-2 pb-2 sm:px-4':'md:flex-row px-3 md:px-8 gap-3 md:gap-4 flex-1 pb-3 md:pb-6'}`}>
         
         {/* Mode Sidebar */}
-        <div className={`${isComposerFocused ? 'hidden md:flex' : 'flex'} flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0`}>
+        {!avatar && <div className={`${isComposerFocused ? 'hidden md:flex' : 'flex'} flex-col py-3 md:py-4 w-full md:w-[220px] bg-white border border-[#E5E7EB] rounded-[10px] flex-shrink-0`}>
           <div 
             className="px-4 pb-2 md:pb-2.5 flex justify-between items-center cursor-pointer md:cursor-default"
             onClick={() => window.innerWidth < 768 && setIsStepsExpanded(!isStepsExpanded)}
@@ -375,20 +486,28 @@ export default function RolePlayModeTopics() {
 
         </div>
 
+        }
+        {avatar&&<aside className="avatar-workspace-avatar flex w-full min-w-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]" aria-label="3D Roleplay avatar">
+          <div className="avatar-workspace-stage relative overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#F0F7FF]">
+            <video ref={avatarVideoRef} src={contentPayload?.narrationVideoUrl} muted loop playsInline preload="auto"
+              className="absolute left-1/2 top-0 aspect-video h-[145%] w-auto max-w-none -translate-x-1/2" aria-label={`${avatar.title} avatar animation`} />
+          </div>
+        </aside>}
         {/* Workspace Main */}
-        <div className={`flex flex-col flex-1 gap-3 md:gap-4 min-h-0 pr-1 ${step1Active ? 'overflow-y-auto' : 'overflow-hidden'}`}>
+        <div className={`flex flex-col gap-3 md:gap-4 min-h-0 ${avatar?'avatar-workspace-panel flex-1 min-w-0 rounded-2xl border border-[#E5E7EB] bg-white p-3 sm:p-4':'flex-1 pr-1'} ${step1Active ? 'overflow-y-auto' : 'overflow-hidden'}`}>
           
           {/* Scenario Card */}
           {contentPayload && (contentPayload.passage || contentPayload.content || contentPayload.scenario) && (
-            <div className={`flex flex-col gap-3 min-h-0 pl-1 md:pl-2 ${step1Active ? 'flex-1 mt-2' : 'flex-shrink-0'}`}>
+            <div className={`roleplay-scenario flex flex-col gap-3 min-h-0 pl-1 md:pl-2 ${step1Active ? 'flex-1 mt-2' : 'flex-shrink-0'}`}>
               <ReadingPassageCard 
                 title="Roleplay Scenario"
+                highlightText={Boolean(avatar && activeAvatarMessage === 'roleplay-scenario')}
                 content={contentPayload.passage || contentPayload.content || contentPayload.scenario || ''}
                 audioUrl={contentPayload.contentAudioUrl || contentPayload.narrationAudioUrl || contentPayload.attachmentUrl}
                 readingPresentation={contentPayload.readingPresentation}
                 isPlaying={playingAudioId === 'roleplay-scenario' && isCurrentlyPlaying}
                 onToggleAudio={() =>
-                  toggleAudio(
+                  (avatar?toggleStoredAudio:toggleAudio)(
                     'roleplay-scenario',
                     contentPayload.contentAudioUrl || contentPayload.narrationAudioUrl || contentPayload.attachmentUrl,
                   )
@@ -402,6 +521,7 @@ export default function RolePlayModeTopics() {
                   <button
                     onClick={() => {
                       stopAudio();
+                      if(avatar)stopRoleplayMedia();
                       setIsScenarioExpanded(true);
                     }}
                     className="px-6 py-2.5 bg-[#3B82F6] text-white rounded-full font-['Outfit'] font-semibold text-[14px] hover:bg-[#2563EB] transition-colors shadow-sm"
@@ -415,14 +535,16 @@ export default function RolePlayModeTopics() {
 
           {/* Chat History Area */}
           {!step1Active && (
-          <div className="flex flex-col flex-1 border border-[#E5E7EB] bg-white rounded-xl min-h-0 overflow-hidden ml-1 md:ml-2">
+          <div className="roleplay-conversation flex flex-col flex-1 border border-[#E5E7EB] bg-white rounded-xl min-h-0 overflow-hidden ml-1 md:ml-2">
             <div 
               ref={chatContainerRef}
-              className="flex flex-col p-3 sm:p-5 md:px-6 gap-3 flex-1 min-h-0 bg-[#F8F9FA] overflow-y-auto overscroll-contain"
+              className="roleplay-history flex flex-col p-3 sm:p-5 md:px-6 gap-3 flex-1 min-h-0 bg-[#F8F9FA] overflow-y-auto overscroll-contain"
             >
             {chatHistory.map((msg, index) => (
-              <div 
-                key={msg.id || index} 
+              <div
+                key={msg.id || index}
+                data-avatar-message={avatar && msg.role === 'assistant' ? msg.id : undefined}
+                aria-current={avatar && msg.id === activeAvatarMessage ? 'true' : undefined}
                 className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} gap-1 w-full mt-2`}
               >
                 <div 
@@ -435,7 +557,7 @@ export default function RolePlayModeTopics() {
                   <div className="text-[13px] leading-[18px] text-[#0F1450] whitespace-pre-wrap break-words">
                     <ReactMarkdown
                       components={{
-                        p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
+                        p: ({node, children, ...props}) => <p className="mb-2 last:mb-0" {...props}><AvatarSpeechHighlight active={Boolean(avatar && msg.id === activeAvatarMessage)}>{children}</AvatarSpeechHighlight></p>,
                         ul: ({node, ...props}) => <ul className="list-disc pl-4 mb-2 last:mb-0" {...props} />,
                         ol: ({node, ...props}) => <ol className="list-decimal pl-4 mb-2 last:mb-0" {...props} />,
                         li: ({node, ...props}) => <li className="mb-1 last:mb-0" {...props} />,
@@ -450,7 +572,7 @@ export default function RolePlayModeTopics() {
                     <div className="mt-3 flex items-center justify-end gap-4 border-t border-[#BFDBFE] pt-2.5">
                       <button
                         type="button"
-                        onClick={() => toggleAudio(msg.id, msg.audioUrl || undefined)}
+                        onClick={() => toggleStoredAudio(msg.id, msg.audioUrl!)}
                         className="flex items-center text-[#0F1450] hover:text-[#2563EB] transition-colors"
                         aria-label={playingAudioId === msg.id && isCurrentlyPlaying ? 'Pause your recording' : 'Play your recording'}
                       >
@@ -480,12 +602,12 @@ export default function RolePlayModeTopics() {
                         <button
                           type="button"
                           onClick={() => msg.audioUrl
-                            ? toggleAudio(msg.id, msg.audioUrl)
+                            ? toggleStoredAudio(msg.id, msg.audioUrl)
                             : toggleMessageSpeech(msg.id, msg.content)}
                           className="flex items-center text-[#0F1450] hover:text-[#5C9DFF] transition-colors"
                           aria-label={(msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || fallbackSpeechMessageId === msg.id ? 'Stop AI response' : 'Play AI response'}
                         >
-                          {loadingAudioId === msg.id ? (
+                          {loadingAudioId === msg.id || pendingSpeechMessageId === msg.id ? (
                             <LoaderCircle className="w-5 h-5 animate-spin" />
                           ) : (msg.audioUrl && playingAudioId === msg.id && isCurrentlyPlaying) || fallbackSpeechMessageId === msg.id ? (
                             <Pause className="w-5 h-5" />
@@ -493,6 +615,9 @@ export default function RolePlayModeTopics() {
                             <Play className="w-5 h-5" />
                           )}
                         </button>
+                      )}
+                      {failedAudioId === msg.id && (
+                        <span role="status" className="text-xs text-red-600">Audio could not play. Press play to retry.</span>
                       )}
                       {msg.feedback && (
                         <button
@@ -547,7 +672,7 @@ export default function RolePlayModeTopics() {
           </div>
 
           {/* Input Bar */}
-          <div className="flex flex-row items-center px-3 md:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] md:py-4 gap-3 bg-white border-t border-[#E5E7EB] flex-shrink-0">
+          <div className="roleplay-composer flex flex-row items-center px-3 md:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] md:py-4 gap-3 bg-white border-t border-[#E5E7EB] flex-shrink-0">
             {isRecording ? (
               <div className="flex-1 flex items-center justify-between px-4 py-2 bg-[#FEF1E8] border border-[#F97316]/30 rounded-[10px]">
                 <div className="flex items-center gap-2">
@@ -577,28 +702,30 @@ export default function RolePlayModeTopics() {
               <>
                 <input 
                   type="text" 
-                  placeholder={cooldown ? "Please wait..." : "Write your message..."}
+                  placeholder={demoRecordingBusy ? 'Preparing microphone…' : cooldown ? "Please wait..." : "Write your message..."}
                   value={inputValue}
-                  disabled={cooldown || isTyping || isAccountBlocked}
+                  disabled={cooldown || isTyping || isAccountBlocked || demoRecordingBusy}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyDown}
                   onFocus={() => setIsComposerFocused(true)}
                   onBlur={() => setIsComposerFocused(false)}
-                  className="flex-1 px-4 py-3 bg-white border border-[#E5E7EB] rounded-[10px] text-[14px] text-[#282828] placeholder-[#6E748F]/60 focus:outline-none focus:border-[#5C9DFF] focus:ring-1 focus:ring-[#5C9DFF] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
+                  className="min-w-0 flex-1 px-4 py-3 bg-white border border-[#E5E7EB] rounded-[10px] text-[16px] md:text-[14px] text-[#282828] placeholder-[#6E748F]/60 focus:outline-none focus:border-[#5C9DFF] focus:ring-1 focus:ring-[#5C9DFF] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
                 />
                 {inputValue.trim() ? (
                   <button 
                     onClick={handleSend}
-                    disabled={cooldown || isTyping || isAccountBlocked}
-                    className="flex justify-center items-center w-11 h-11 bg-[#5C9DFF] rounded-full text-white hover:bg-[#4A8BEB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    aria-label={demo ? 'Send roleplay response' : undefined}
+                    disabled={cooldown || isTyping || isAccountBlocked || demoRecordingBusy}
+                    className="flex shrink-0 justify-center items-center w-11 h-11 bg-[#5C9DFF] rounded-full text-white hover:bg-[#4A8BEB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Send className="w-5 h-5" />
                   </button>
                 ) : (
                   <button 
-                    onClick={startRecording}
-                    disabled={cooldown || isTyping || isAccountBlocked}
-                    className="flex justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={() => {if(avatar || demo){stopRoleplayMedia();avatarVideoRef.current?.pause();}startRecording();}}
+                    aria-label={demo ? 'Record roleplay response' : undefined}
+                    disabled={cooldown || isTyping || isAccountBlocked || demoRecordingBusy}
+                    className="flex shrink-0 justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Mic className="w-5 h-5" />
                   </button>

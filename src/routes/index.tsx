@@ -6,15 +6,18 @@ import { StudentLayout } from "@/components/layouts/student-layout";
 import { TeacherLayout } from "@/components/layouts/teacher-layout";
 
 // Public Pages
-// import Main from "@/pages/public/Main";
+import Main from "@/pages/public/Main";
 import MainChinese from "@/pages/public/chinese/Main";
 import ContactUs from "@/pages/public/contact-us";
 import ChineseContactUs from "@/pages/public/chinese/ChineseContactUs";
 
 // Student Pages
 import StudentCourses from "@/pages/student/courses";
+import { PrimaryPage } from '@/pages/student/primary';
 import { NafsStudentSession } from "@/components/nafs/NafsSession";
 import { NafsAttemptPage, NafsOverviewPage } from "@/pages/student/nafs/NafsStudent";
+import { StepSession } from '@/components/step/StepSession';
+import { StepAttemptPage, StepCoursePage, StepSectionPage, StepTopicPage } from '@/pages/student/step/StepStudent';
 import { ScienceSession } from "@/components/science/ScienceSession";
 import { ScienceCoursePage, ScienceUnitPage, ScienceActivityPage } from "@/pages/student/science/ScienceJourney";
 import { SparkScienceCoursePage, SparkScienceUnitPage, SparkScienceActivityPage } from "@/pages/student/science/SparkScienceJourney";
@@ -24,6 +27,7 @@ import UnitOverview from "@/pages/student/unit-overview";
 import Lesson from "@/pages/student/lesson";
 import ComponentModePlay from "@/pages/student/ComponentModePlay";
 import DirectActivityPlay from "@/pages/student/DirectActivityPlay";
+import { AvatarModePage, AvatarTopicsPage, AvatarReadingPage, AvatarListeningPage, AvatarRoleplayPage } from '@/pages/student/avatar-reading/AvatarReadingJourney';
 import StudentDashboard from "@/pages/student/dashboard";
 import DebateModeTopics from "@/pages/student/topics/DebateModeTopics";
 import ReadingModeTopics from "@/pages/student/topics/ReadingModeTopics";
@@ -76,7 +80,8 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/" element={<HomeRedirect />} />
+      <Route path="/" element={<Main />} />
+      <Route path="/home" element={<HomeRedirect />} />
       <Route path="/chinese" element={<MainChinese />} />
       <Route path="/contact-us" element={<ContactUs />} />
       <Route path="/chinese/contact-us" element={<ChineseContactUs />} />
@@ -114,6 +119,22 @@ const AppRoutes = () => {
       /> */}
 
       {/* Student Routes */}
+      <Route path="/student/3d-avatar" element={<StudentLayout><AvatarModePage /></StudentLayout>} />
+      <Route path="/student/3d-avatar/reading" element={<StudentLayout><AvatarTopicsPage /></StudentLayout>} />
+      <Route path="/student/3d-avatar/reading/:topicId" element={<StudentLayout><AvatarReadingPage /></StudentLayout>} />
+      <Route path="/student/3d-avatar/listening" element={<StudentLayout><AvatarTopicsPage mode="listening" /></StudentLayout>} />
+      <Route path="/student/3d-avatar/listening/:topicId" element={<StudentLayout><AvatarListeningPage /></StudentLayout>} />
+      <Route path="/student/3d-avatar/roleplay" element={<StudentLayout><AvatarTopicsPage mode="roleplay" /></StudentLayout>} />
+      <Route path="/student/3d-avatar/roleplay/:topicId" element={<StudentLayout><AvatarRoleplayPage /></StudentLayout>} />
+      <Route path="/student/primary/:lessonId?" element={<PrimaryPage />} />
+      <Route path="/student/step" element={<StudentLayout><StepSession /></StudentLayout>}>
+        <Route path="courses/:courseId" element={<StepCoursePage />} />
+        <Route path="sections/:sectionId" element={<StepSectionPage />} />
+        <Route path="topics/:topicId" element={<StepTopicPage />} />
+        <Route path="attempts/:attemptId" element={<StepAttemptPage />} />
+        <Route index element={<Navigate to="/student/courses" replace />} />
+        <Route path="*" element={<Navigate to="/student/courses" replace />} />
+      </Route>
       <Route path="/student/nafs" element={<StudentLayout><NafsStudentSession /></StudentLayout>}>
         <Route path="assessments/:assessmentId" element={<NafsOverviewPage />} />
         <Route path="attempts/:attemptId" element={<NafsAttemptPage />} />

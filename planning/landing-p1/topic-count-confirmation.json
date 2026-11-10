@@ -1,0 +1,18 @@
+{
+  "confirmedBy": "User request in this chat: number must be shown as 250",
+  "verifiedAtUtc": "2026-11-07T10:27:26.108Z",
+  "results": [
+    {
+      "width": 1440,
+      "value": "+250",
+      "subtitle": "موضوعًا وموقفًا من الحياة",
+      "documentWidth": 1440
+    },
+    {
+      "width": 320,
+      "value": "+250",
+      "subtitle": "موضوعًا وموقفًا من الحياة",
+      "documentWidth": 320
+    }
+  ]
+}

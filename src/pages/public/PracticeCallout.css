@@ -1,0 +1,15 @@
+.practice-callout { padding: 0 6.5vw 64px; color: #0b2546; background: #fff; font-family: "IBM Plex Sans Arabic", sans-serif; }
+.practice-callout__container { max-width: 1368px; margin-inline: auto; padding: 28px 32px; border: 1px solid #bae6fd; border-radius: 24px; background: linear-gradient(110deg, #eafcf8, #e0efff); text-align: center; }
+.practice-callout p { margin: 0 auto; color: #11132f; font-family: "Almarai", sans-serif; font-size: clamp(20px, 1.85vw, 27px); font-weight: 800; line-height: 1.8; text-wrap: pretty; }
+@media (max-width: 849px) {
+  .practice-callout { padding: 0 24px 48px; }
+  .practice-callout__container { padding: 28px; }
+}
+@media (max-width: 559px) {
+  .practice-callout { padding-inline: 18px; }
+  .practice-callout__container { padding: 24px 20px; }
+  .practice-callout p { font-size: 22px; }
+}
+@media (forced-colors: active) {
+  .practice-callout__container { border-color: CanvasText; }
+}

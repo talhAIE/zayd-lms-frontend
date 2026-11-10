@@ -1,241 +1,137 @@
-import { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { motion } from "framer-motion";
-import Female from "@/assets/images/landingpage/femalethinking.png";
-import { useLanguage } from "@/components/language-provider";
+import { useState, type ReactNode } from "react";
+import { CircleChevronDown } from "lucide-react";
+import { landingPricingPlans } from "./landing-content";
+import "./faq-section.css";
+
+interface FAQItem {
+  id: string;
+  question: string;
+  answer: ReactNode;
+}
+
+function BilingualText({ text }: { text: string }) {
+  return text.split(/(Zayd Plus|Zayd Life|Zayd)/g).map((part, index) =>
+    /^Zayd(?: Plus| Life)?$/.test(part) ? <bdi key={index} dir="ltr" lang="en">{part}</bdi> : part
+  );
+}
+
+const packageFaqPlans = [landingPricingPlans[0], landingPricingPlans[2], landingPricingPlans[1]];
+const packageFaqDescriptions = {
+  curriculum: "إذا كان هدفك تحسين أدائك في مناهج المدرسة وممارسة مهارات اللغة الأربع.",
+  life: "إذا كان هدفك استخدام الإنجليزية في الحياة اليومية عبر أكثر من 40 موضوعًا وموقفًا حياتيًا.",
+  plus: "التجربة الكاملة التي تجمع مزايا باقة المنهج وجميع مزايا Zayd Life.",
+} as const;
+
+const faqs: FAQItem[] = [
+  {
+    id: "name-origin",
+    question: 'لماذا اخترنا اسم "زيد Zayd"؟',
+    answer:
+      'يرتبط اسم "زيد" في اللغة العربية بمعنى الزيادة والنماء والتقدّم المستمر؛ وهو ما يمثّله زيد تمامًا، إذ يزيد من فرص الطالب في ممارسة اللغة الإنجليزية، وينمّي مهاراته في التحدث والقراءة والاستماع والكتابة، ويزيد من ثقته في استخدام اللغة في المدرسة والحياة اليومية.',
+  },
+  {
+    id: "what-is-zayd",
+    question: "ما هو زيد؟",
+    answer:
+      "زيد معلّم ذكي لممارسة اللغة الإنجليزية يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه طلاب المرحلتين المتوسطة والثانوية في المدرسة.",
+  },
+  {
+    id: "teacher-role",
+    question: "هل زيد بديل عن معلم اللغة الإنجليزية؟",
+    answer:
+      "لا، زيد لا يستبدل المعلم بل يعزز دوره ويوسّع أثره؛ فهو يمنح كل طالب فرصًا إضافية لممارسة اللغة الإنجليزية بشكل فردي ووفق مستواه وسرعته حول ما يتعلمه بالفعل في المدرسة، مع تغذية راجعة فورية تدعم تقدمه.",
+  },
+  {
+    id: "supported-grades",
+    question: "ما الصفوف التي يخدمها زيد حاليًا؟",
+    answer:
+      "يخدم زيد حاليًا طلاب المرحلتين المتوسطة والثانوية (من الصف الأول المتوسط إلى الصف الثالث الثانوي)، بمحتوى متناغم مع منهج اللغة الإنجليزية المعتمد في المدرسة، بالإضافة إلى مواضيع ومواقف الحياة اليومية.",
+  },
+  {
+    id: "weekly-usage",
+    question: "كم يحتاج الطالب إلى استخدام زيد؟",
+    answer:
+      "يحتاج الطالب إلى نحو ساعة واحدة أسبوعيًا من الممارسة المنتظمة مع زيد؛ ومع الاستمرار خلال عام دراسي واحد، يحصل الطالب على فرص مكثفة لممارسة التحدث بالإنجليزية تعادل تقريبًا ما قد يحصل عليه خلال 10 سنوات في الفصل التقليدي.",
+  },
+  {
+    id: "ai-assessment",
+    question: "كيف يستخدم الذكاء الاصطناعي في تقييم الطالب؟",
+    answer:
+      "يستخدم زيد الذكاء الاصطناعي للتفاعل مع الطالب في مهارات التحدث والقراءة والاستماع والكتابة، وتقديم ملاحظات ذكية وتغذية راجعة فورية لتحسين النطق والطلاقة والأداء، مع تكييف التمارين تلقائيًا وفق مستوى الطالب واحتياجه ومنحه محاولات متكررة حتى الإتقان.",
+  },
+  {
+    id: "packages",
+    question: "ما الفرق بين الباقات الثلاث؟",
+    answer:
+      <ul className="faq__packages">
+        {packageFaqPlans.map((plan) => (
+          <li key={plan.id} data-plan={plan.id}>
+            <strong>
+              {plan.id === "curriculum" ? plan.name : <>باقة <bdi dir="ltr" lang="en">{plan.name}</bdi></>}{" "}
+              (<span className="faq__package-price"><bdi dir="ltr">{plan.price}</bdi> ﷼/سنة</span>{plan.featured && " - الأفضل قيمة"}):
+            </strong>{" "}
+            <BilingualText text={packageFaqDescriptions[plan.id]} />
+          </li>
+        ))}
+      </ul>,
+  },
+  {
+    id: "schools-groups",
+    question: "هل توجد أسعار خاصة للمدارس والمجموعات؟",
+    answer:
+      'نعم، يوفّر زيد أسعارًا خاصة للمدارس واشتراكات للمجموعات الطلابية، مع دعم متكامل للتطبيق داخل المدرسة. يمكنك طلب عرض خاص عبر زر "اطلب عرضًا لمدرستك".',
+  },
+  {
+    id: "teacher-account",
+    question: "هل يدفع المعلم مقابل حسابه؟",
+    answer:
+      "لا، لأن المعلم جزء أساسي من تجربة زيد، يحصل معلمو المدارس المشاركة على حساب خاص مجانًا دون أي تكلفة إضافية لمتابعة تقدم طلابهم وتقارير أدائهم.",
+  },
+];
 
 export default function FAQSection() {
-  const { language } = useLanguage();
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openId, setOpenId] = useState<string | null>("what-is-zayd");
 
-  const faqs = [
-    {
-      question: {
-        en: "Is Zayd suitable for beginners?",
-        ar: "هل زيد مناسب للمبتدئين؟",
-      },
-      answer: {
-        en: "Yes, from A1 to C1 levels.",
-        ar: "نعم، المنصة تغطي جميع المستويات من المبتدئ إلى المتقدم.",
-      },
-    },
-    {
-      question: {
-        en: "Do teachers or students need training?",
-        ar: "هل يحتاج المعلمون أو الطلاب إلى تدريب خاص؟",
-      },
-      answer: {
-        en: "No formal training is required — Zayd AI is designed to be intuitive and teacher-friendly.",
-        ar: "لا، فواجهة المنصة سهلة الاستخدام وصُممت لتكون مريحة ومناسبة للمعلمين والطلاب.",
-      },
-    },
-    {
-      question: {
-        en: "Is Zayd safe for children?",
-        ar: "هل زيد آمن للأطفال؟",
-      },
-      answer: {
-        en: "Absolutely. Zayd complies with strict data safety and privacy standards.",
-        ar: "بالتأكيد. زيد يلتزم بمعايير صارمة لحماية البيانات والخصوصية.",
-      },
-    },
-  ];
-
-  const toggleFAQ = (index: number) =>
-    setOpenIndex(openIndex === index ? null : index);
+  const toggleItem = (id: string) => {
+    setOpenId(current => current === id ? null : id);
+  };
 
   return (
-    <section
-      id="faq"
-      className="relative w-full pt-[3%] pb-32 md:pb-40 lg:pb-52 xl:pb-64 flex items-center justify-center overflow-hidden"
-    >
-      {/* === Main FAQ Content === */}
-      <div className="relative z-10 max-w-7xl w-full mx-auto flex flex-col md:flex-row md:items-start md:justify-between gap-16 px-6 md:px-20">
-        <motion.div
-          className={`absolute top-[3rem] -translate-y-1/2 hidden lg:block ${
-            language === "ar"
-              ? "right-[25rem] max-[1080px]:right-[22rem]"
-              : "left-[25rem] max-[1080px]:left-[22rem]"
-          }`}
-          initial={{ y: 100, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{
-            duration: 0.8,
-            ease: "easeOut",
-            delay: 0.3,
-          }}
-        >
-          <img
-            src={Female}
-            alt="Female"
-            width={200}
-            height={200}
-            className={language === "ar" ? "-scale-x-100" : ""}
-          />
-        </motion.div>
+    <section id="faq" className="faq" dir="rtl" lang="ar" aria-labelledby="faq-heading">
+      <div className="faq__container">
+        <div className="faq__header">
+          <span className="faq__eyebrow">الأسئلــة الشائعــة</span>
+          <h2 id="faq-heading" className="faq__heading">
+            <span>كل ما تحتاج معرفته</span>
+            <span className="faq__heading-accent">قبـــــــــــل البـــــــــــدء</span>
+          </h2>
+        </div>
 
-        {/* Left Side — Title */}
-        <motion.div
-          className="w-full md:w-1/2 flex items-center md:items-start justify-center md:justify-start"
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-          <motion.h2
-            className="font-bold text-center md:text-left"
-            style={{
-              fontFamily: "Geist, sans-serif",
-              fontWeight: 800,
-              fontSize: "48px",
-              lineHeight: "52px",
-              letterSpacing: "-0.01em",
-              color: "#058BF4",
-            }}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-          >
-            {language === "ar" ? (
-              <motion.span
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
-              >
-                الأسئلة الشائعة
-              </motion.span>
-            ) : (
-              <>
-                <motion.span
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+        <div className="faq__list">
+          {faqs.map((faq) => {
+            const isOpen = openId === faq.id;
+            return (
+              <div key={faq.id} className={`faq__item${isOpen ? " faq__item--open" : ""}`}>
+                <h3 className="faq__question-heading">
+                <button
+                  type="button"
+                  id={`faq-question-${faq.id}`}
+                  onClick={() => toggleItem(faq.id)}
+                  className="faq__question"
+                  aria-expanded={isOpen}
+                  aria-controls={`faq-answer-${faq.id}`}
                 >
-                  Frequently Asked
-                </motion.span>
-                <br />
-                <motion.span
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
-                >
-                  Questions
-                </motion.span>
-              </>
-            )}
-          </motion.h2>
-        </motion.div>
-
-        {/* Right Side — Accordion */}
-        <motion.div
-          className="w-full md:w-1/2 border-t border-gray-200 pt-2"
-          initial={{ opacity: 0, x: 50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.5 }}
-        >
-          {faqs.map((faq, index) => (
-            <motion.div
-              key={index}
-              className="border-b border-gray-200 py-5"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{
-                duration: 0.6,
-                ease: "easeOut",
-                delay: 0.6 + index * 0.2,
-              }}
-            >
-              <motion.button
-                onClick={() => toggleFAQ(index)}
-                className={`w-full flex justify-between items-center focus:outline-none group ${
-                  language === "ar" ? "text-right" : "text-left"
-                }`}
-                style={{
-                  fontFamily: "Source Serif 4, serif",
-                  fontWeight: 500,
-                  fontSize: "17px",
-                  lineHeight: "24px",
-                  color: "#000000",
-                }}
-                whileHover={{
-                  scale: 1.02,
-                  transition: { duration: 0.2 },
-                }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <motion.span
-                  animate={{
-                    color: openIndex === index ? "#058BF4" : "#000000",
-                  }}
-                  transition={{ duration: 0.3 }}
-                  className="flex-1"
-                  style={{
-                    textAlign: language === "ar" ? "right" : "left",
-                  }}
-                >
-                  {faq.question[language]}
-                </motion.span>
-                <motion.div
-                  animate={{
-                    rotate: openIndex === index ? 180 : 0,
-                    color: openIndex === index ? "#058BF4" : "#6B7280",
-                  }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {openIndex === index ? (
-                    <ChevronUp className="w-5 h-5 shrink-0" />
-                  ) : (
-                    <ChevronDown className="w-5 h-5 shrink-0" />
-                  )}
-                </motion.div>
-              </motion.button>
-
-              {/* Answer */}
-              <motion.div
-                initial={false}
-                animate={{
-                  height: openIndex === index ? "auto" : 0,
-                  opacity: openIndex === index ? 1 : 0,
-                }}
-                transition={{
-                  duration: 0.4,
-                  ease: "easeInOut",
-                }}
-                className="overflow-hidden"
-              >
-                <motion.p
-                  style={{
-                    fontFamily: "Source Serif 4, serif",
-                    fontWeight: 500,
-                    fontSize: "17px",
-                    lineHeight: "24px",
-                    color: "#555555",
-                    maxWidth: "644px",
-                    textAlign: language === "ar" ? "right" : "left",
-                  }}
-                  initial={{ y: -10, opacity: 0 }}
-                  animate={{
-                    y: openIndex === index ? 0 : -10,
-                    opacity: openIndex === index ? 1 : 0,
-                  }}
-                  transition={{
-                    duration: 0.3,
-                    delay: openIndex === index ? 0.1 : 0,
-                  }}
-                >
-                  {faq.answer[language]}
-                </motion.p>
-              </motion.div>
-            </motion.div>
-          ))}
-        </motion.div>
+                  <span><BilingualText text={faq.question} /></span>
+                  <CircleChevronDown className="faq__chevron" aria-hidden="true" strokeWidth={2.25} />
+                </button>
+                </h3>
+                <div id={`faq-answer-${faq.id}`} className="faq__answer" role="region" aria-labelledby={`faq-question-${faq.id}`} hidden={!isOpen}>
+                  {typeof faq.answer === "string" ? <p>{faq.answer}</p> : faq.answer}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

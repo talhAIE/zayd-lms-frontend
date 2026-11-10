@@ -1,0 +1,541 @@
+{
+  "verifiedAtUtc": "2026-11-07T10:51:40.219Z",
+  "results": [
+    {
+      "width": 320,
+      "checks": {
+        "headingPreserved": true,
+        "subtitleExact": true,
+        "allSixBenefitsExact": true,
+        "correctOriginalIcons": true,
+        "benefitsNotReplacedByDemos": true,
+        "avatarPreserved": true,
+        "unapprovedAdditionsAbsent": true,
+        "noOverflow": true,
+        "rtlThreeColumnOrder": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "heading": [
+          "كل طالب يتعلم",
+          "ويتحدث بطريقته"
+        ],
+        "subtitle": "يمنح زيد كل طالب تجربة تفاعلية تتكيف مع مستواه، وتساعده على ممارسة الإنجليزية والتحسن باستمرار.",
+        "benefits": [
+          {
+            "title": "تعلم مخصص",
+            "body": "يتكيف مع مستوى الطالب واحتياجه.",
+            "iconPosition": "100% 0%",
+            "iconLoaded": true,
+            "x": 166,
+            "y": -123.46875,
+            "controls": 0
+          },
+          {
+            "title": "تغذية راجعة فورية",
+            "body": "ملاحظات ذكية لتحسين الأداء.",
+            "iconPosition": "50% 0%",
+            "iconLoaded": true,
+            "x": 18,
+            "y": -123.46875,
+            "controls": 0
+          },
+          {
+            "title": "ممارسة التحدث",
+            "body": "تطور مهارات النطق والتحدث.",
+            "iconPosition": "0% 0%",
+            "iconLoaded": true,
+            "x": 166,
+            "y": 54.53125,
+            "controls": 0
+          },
+          {
+            "title": "تحسين النطق",
+            "body": "تدريبات لتطوير النطق والطلاقة.",
+            "iconPosition": "100% 100%",
+            "iconLoaded": true,
+            "x": 18,
+            "y": 54.53125,
+            "controls": 0
+          },
+          {
+            "title": "تكرار دون حدود",
+            "body": "محاولات متكررة حتى الإتقان.",
+            "iconPosition": "50% 100%",
+            "iconLoaded": true,
+            "x": 166,
+            "y": 232.53125,
+            "controls": 0
+          },
+          {
+            "title": "بيئة آمنة للتعلم",
+            "body": "ممارسة الإنجليزية بثقة دون خوف من الخطأ.",
+            "iconPosition": "0% 100%",
+            "iconLoaded": true,
+            "x": 18,
+            "y": 232.53125,
+            "controls": 0
+          }
+        ],
+        "avatar": "/src/assets/landing-page/section5.png",
+        "demoButtons": 6,
+        "proposedClaimsVisible": false,
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "errors": []
+    },
+    {
+      "width": 390,
+      "checks": {
+        "headingPreserved": true,
+        "subtitleExact": true,
+        "allSixBenefitsExact": true,
+        "correctOriginalIcons": true,
+        "benefitsNotReplacedByDemos": true,
+        "avatarPreserved": true,
+        "unapprovedAdditionsAbsent": true,
+        "noOverflow": true,
+        "rtlThreeColumnOrder": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "heading": [
+          "كل طالب يتعلم",
+          "ويتحدث بطريقته"
+        ],
+        "subtitle": "يمنح زيد كل طالب تجربة تفاعلية تتكيف مع مستواه، وتساعده على ممارسة الإنجليزية والتحسن باستمرار.",
+        "benefits": [
+          {
+            "title": "تعلم مخصص",
+            "body": "يتكيف مع مستوى الطالب واحتياجه.",
+            "iconPosition": "100% 0%",
+            "iconLoaded": true,
+            "x": 201,
+            "y": -90.90625,
+            "controls": 0
+          },
+          {
+            "title": "تغذية راجعة فورية",
+            "body": "ملاحظات ذكية لتحسين الأداء.",
+            "iconPosition": "50% 0%",
+            "iconLoaded": true,
+            "x": 18,
+            "y": -90.90625,
+            "controls": 0
+          },
+          {
+            "title": "ممارسة التحدث",
+            "body": "تطور مهارات النطق والتحدث.",
+            "iconPosition": "0% 0%",
+            "iconLoaded": true,
+            "x": 201,
+            "y": 87.09375,
+            "controls": 0
+          },
+          {
+            "title": "تحسين النطق",
+            "body": "تدريبات لتطوير النطق والطلاقة.",
+            "iconPosition": "100% 100%",
+            "iconLoaded": true,
+            "x": 18,
+            "y": 87.09375,
+            "controls": 0
+          },
+          {
+            "title": "تكرار دون حدود",
+            "body": "محاولات متكررة حتى الإتقان.",
+            "iconPosition": "50% 100%",
+            "iconLoaded": true,
+            "x": 201,
+            "y": 265.09375,
+            "controls": 0
+          },
+          {
+            "title": "بيئة آمنة للتعلم",
+            "body": "ممارسة الإنجليزية بثقة دون خوف من الخطأ.",
+            "iconPosition": "0% 100%",
+            "iconLoaded": true,
+            "x": 18,
+            "y": 265.09375,
+            "controls": 0
+          }
+        ],
+        "avatar": "/src/assets/landing-page/section5.png",
+        "demoButtons": 6,
+        "proposedClaimsVisible": false,
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "errors": []
+    },
+    {
+      "width": 768,
+      "checks": {
+        "headingPreserved": true,
+        "subtitleExact": true,
+        "allSixBenefitsExact": true,
+        "correctOriginalIcons": true,
+        "benefitsNotReplacedByDemos": true,
+        "avatarPreserved": true,
+        "unapprovedAdditionsAbsent": true,
+        "noOverflow": true,
+        "rtlThreeColumnOrder": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "heading": [
+          "كل طالب يتعلم",
+          "ويتحدث بطريقته"
+        ],
+        "subtitle": "يمنح زيد كل طالب تجربة تفاعلية تتكيف مع مستواه، وتساعده على ممارسة الإنجليزية والتحسن باستمرار.",
+        "benefits": [
+          {
+            "title": "تعلم مخصص",
+            "body": "يتكيف مع مستوى الطالب واحتياجه.",
+            "iconPosition": "100% 0%",
+            "iconLoaded": true,
+            "x": 502,
+            "y": 135.953125,
+            "controls": 0
+          },
+          {
+            "title": "تغذية راجعة فورية",
+            "body": "ملاحظات ذكية لتحسين الأداء.",
+            "iconPosition": "50% 0%",
+            "iconLoaded": true,
+            "x": 278,
+            "y": 135.953125,
+            "controls": 0
+          },
+          {
+            "title": "ممارسة التحدث",
+            "body": "تطور مهارات النطق والتحدث.",
+            "iconPosition": "0% 0%",
+            "iconLoaded": true,
+            "x": 54,
+            "y": 135.953125,
+            "controls": 0
+          },
+          {
+            "title": "تحسين النطق",
+            "body": "تدريبات لتطوير النطق والطلاقة.",
+            "iconPosition": "100% 100%",
+            "iconLoaded": true,
+            "x": 502,
+            "y": 313.953125,
+            "controls": 0
+          },
+          {
+            "title": "تكرار دون حدود",
+            "body": "محاولات متكررة حتى الإتقان.",
+            "iconPosition": "50% 100%",
+            "iconLoaded": true,
+            "x": 278,
+            "y": 313.953125,
+            "controls": 0
+          },
+          {
+            "title": "بيئة آمنة للتعلم",
+            "body": "ممارسة الإنجليزية بثقة دون خوف من الخطأ.",
+            "iconPosition": "0% 100%",
+            "iconLoaded": true,
+            "x": 54,
+            "y": 313.953125,
+            "controls": 0
+          }
+        ],
+        "avatar": "/src/assets/landing-page/section5.png",
+        "demoButtons": 6,
+        "proposedClaimsVisible": false,
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "errors": []
+    },
+    {
+      "width": 1024,
+      "checks": {
+        "headingPreserved": true,
+        "subtitleExact": true,
+        "allSixBenefitsExact": true,
+        "correctOriginalIcons": true,
+        "benefitsNotReplacedByDemos": true,
+        "avatarPreserved": true,
+        "unapprovedAdditionsAbsent": true,
+        "noOverflow": true,
+        "rtlThreeColumnOrder": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "heading": [
+          "كل طالب يتعلم",
+          "ويتحدث بطريقته"
+        ],
+        "subtitle": "يمنح زيد كل طالب تجربة تفاعلية تتكيف مع مستواه، وتساعده على ممارسة الإنجليزية والتحسن باستمرار.",
+        "benefits": [
+          {
+            "title": "تعلم مخصص",
+            "body": "يتكيف مع مستوى الطالب واحتياجه.",
+            "iconPosition": "100% 0%",
+            "iconLoaded": true,
+            "x": 445.5,
+            "y": 335.640625,
+            "controls": 0
+          },
+          {
+            "title": "تغذية راجعة فورية",
+            "body": "ملاحظات ذكية لتحسين الأداء.",
+            "iconPosition": "50% 0%",
+            "iconLoaded": true,
+            "x": 235.75,
+            "y": 335.640625,
+            "controls": 0
+          },
+          {
+            "title": "ممارسة التحدث",
+            "body": "تطور مهارات النطق والتحدث.",
+            "iconPosition": "0% 0%",
+            "iconLoaded": true,
+            "x": 26,
+            "y": 335.640625,
+            "controls": 0
+          },
+          {
+            "title": "تحسين النطق",
+            "body": "تدريبات لتطوير النطق والطلاقة.",
+            "iconPosition": "100% 100%",
+            "iconLoaded": true,
+            "x": 445.5,
+            "y": 507.640625,
+            "controls": 0
+          },
+          {
+            "title": "تكرار دون حدود",
+            "body": "محاولات متكررة حتى الإتقان.",
+            "iconPosition": "50% 100%",
+            "iconLoaded": true,
+            "x": 235.75,
+            "y": 507.640625,
+            "controls": 0
+          },
+          {
+            "title": "بيئة آمنة للتعلم",
+            "body": "ممارسة الإنجليزية بثقة دون خوف من الخطأ.",
+            "iconPosition": "0% 100%",
+            "iconLoaded": true,
+            "x": 26,
+            "y": 507.640625,
+            "controls": 0
+          }
+        ],
+        "avatar": "/src/assets/landing-page/section5.png",
+        "demoButtons": 6,
+        "proposedClaimsVisible": false,
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "checks": {
+        "headingPreserved": true,
+        "subtitleExact": true,
+        "allSixBenefitsExact": true,
+        "correctOriginalIcons": true,
+        "benefitsNotReplacedByDemos": true,
+        "avatarPreserved": true,
+        "unapprovedAdditionsAbsent": true,
+        "noOverflow": true,
+        "rtlThreeColumnOrder": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "heading": [
+          "كل طالب يتعلم",
+          "ويتحدث بطريقته"
+        ],
+        "subtitle": "يمنح زيد كل طالب تجربة تفاعلية تتكيف مع مستواه، وتساعده على ممارسة الإنجليزية والتحسن باستمرار.",
+        "benefits": [
+          {
+            "title": "تعلم مخصص",
+            "body": "يتكيف مع مستوى الطالب واحتياجه.",
+            "iconPosition": "100% 0%",
+            "iconLoaded": true,
+            "x": 619.75,
+            "y": 341.09375,
+            "controls": 0
+          },
+          {
+            "title": "تغذية راجعة فورية",
+            "body": "ملاحظات ذكية لتحسين الأداء.",
+            "iconPosition": "50% 0%",
+            "iconLoaded": true,
+            "x": 349.875,
+            "y": 341.09375,
+            "controls": 0
+          },
+          {
+            "title": "ممارسة التحدث",
+            "body": "تطور مهارات النطق والتحدث.",
+            "iconPosition": "0% 0%",
+            "iconLoaded": true,
+            "x": 80,
+            "y": 341.09375,
+            "controls": 0
+          },
+          {
+            "title": "تحسين النطق",
+            "body": "تدريبات لتطوير النطق والطلاقة.",
+            "iconPosition": "100% 100%",
+            "iconLoaded": true,
+            "x": 619.75,
+            "y": 523.09375,
+            "controls": 0
+          },
+          {
+            "title": "تكرار دون حدود",
+            "body": "محاولات متكررة حتى الإتقان.",
+            "iconPosition": "50% 100%",
+            "iconLoaded": true,
+            "x": 349.875,
+            "y": 523.09375,
+            "controls": 0
+          },
+          {
+            "title": "بيئة آمنة للتعلم",
+            "body": "ممارسة الإنجليزية بثقة دون خوف من الخطأ.",
+            "iconPosition": "0% 100%",
+            "iconLoaded": true,
+            "x": 80,
+            "y": 523.09375,
+            "controls": 0
+          }
+        ],
+        "avatar": "/src/assets/landing-page/section5.png",
+        "demoButtons": 6,
+        "proposedClaimsVisible": false,
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "errors": []
+    }
+  ],
+  "demoResults": [
+    {
+      "width": 320,
+      "name": "وضع المحادثة",
+      "dialogName": "Try Roleplay Mode",
+      "keyboardOpened": true,
+      "renderedContent": "Try Roleplay Mode\n\nOrder at a cafe in three short exchanges. Speak or type your answers. Closing the demo resets the conversation.\n\nRoleplay Mode\n0% Complete\n\nFailed to fetch\n\nRetry\nClose demo\nClose",
+      "escapeClosed": true,
+      "noPageErrors": true
+    },
+    {
+      "width": 320,
+      "name": "وضع الاستماع",
+      "dialogName": "Try Listening Mode",
+      "keyboardOpened": true,
+      "renderedContent": "Try Listening Mode\n\nListen to a short story twice and answer one quiz question. Closing the demo resets your practice.\n\nListening Mode\n0% Complete\n\nFailed to fetch\n\nRetry\nClose demo\nClose",
+      "escapeClosed": true,
+      "noPageErrors": true
+    },
+    {
+      "width": 320,
+      "name": "وضع القراءة",
+      "dialogName": "Try Reading Mode",
+      "keyboardOpened": true,
+      "renderedContent": "Try Reading Mode\n\nListen to a short passage, practise reading three sentences, and answer one question. Closing the demo resets your practice.\n\nReading Mode\n0% Complete\n\nFailed to fetch\n\nRetry\nClose demo\nClose",
+      "escapeClosed": true,
+      "noPageErrors": true
+    },
+    {
+      "width": 320,
+      "name": "وضع القواعد",
+      "dialogName": "Try Grammar Mode",
+      "keyboardOpened": true,
+      "renderedContent": "Try Grammar Mode\n\nLearn am, is, and are, fill three blanks, and answer one question. Closing the demo resets all practice.\n\nGrammar Mode\nQuick practice · am / is / are\n\nFailed to fetch\n\nClose",
+      "escapeClosed": true,
+      "noPageErrors": true
+    },
+    {
+      "width": 320,
+      "name": "وضع الكتابة",
+      "dialogName": "Try Writing Mode",
+      "keyboardOpened": true,
+      "renderedContent": "Try Writing Mode\n\nWrite three short sentences, build your paragraph, and get AI writing feedback. Use fictional details. Closing the demo resets all writing.\n\nWriting Mode\nQuick practice · my daily routine\n\nFailed to fetch\n\nClose",
+      "escapeClosed": true,
+      "noPageErrors": true
+    },
+    {
+      "width": 320,
+      "name": "وضع المفردات",
+      "dialogName": "Try Vocabulary Mode",
+      "keyboardOpened": true,
+      "renderedContent": "Try Vocabulary Mode\n\nReveal three flashcards, match the words to their meanings, and answer one question. Closing resets all practice.\n\nVocabulary Mode\nQuick practice · at the library\n\nFailed to fetch\n\nClose",
+      "escapeClosed": true,
+      "noPageErrors": true
+    },
+    {
+      "width": 1440,
+      "name": "وضع المحادثة",
+      "dialogName": "Try Roleplay Mode",
+      "keyboardOpened": true,
+      "renderedContent": "Try Roleplay Mode\n\nOrder at a cafe in three short exchanges. Speak or type your answers. Closing the demo resets the conversation.\n\nRoleplay Mode\n0% Complete\n\nFailed to fetch\n\nRetry\nClose demo\nClose",
+      "escapeClosed": true,
+      "noPageErrors": true
+    },
+    {
+      "width": 1440,
+      "name": "وضع الاستماع",
+      "dialogName": "Try Listening Mode",
+      "keyboardOpened": true,
+      "renderedContent": "Try Listening Mode\n\nListen to a short story twice and answer one quiz question. Closing the demo resets your practice.\n\nListening Mode\n0% Complete\n\nFailed to fetch\n\nRetry\nClose demo\nClose",
+      "escapeClosed": true,
+      "noPageErrors": true
+    },
+    {
+      "width": 1440,
+      "name": "وضع القراءة",
+      "dialogName": "Try Reading Mode",
+      "keyboardOpened": true,
+      "renderedContent": "Try Reading Mode\n\nListen to a short passage, practise reading three sentences, and answer one question. Closing the demo resets your practice.\n\nReading Mode\n0% Complete\n\nFailed to fetch\n\nRetry\nClose demo\nClose",
+      "escapeClosed": true,
+      "noPageErrors": true
+    },
+    {
+      "width": 1440,
+      "name": "وضع القواعد",
+      "dialogName": "Try Grammar Mode",
+      "keyboardOpened": true,
+      "renderedContent": "Try Grammar Mode\n\nLearn am, is, and are, fill three blanks, and answer one question. Closing the demo resets all practice.\n\nGrammar Mode\nQuick practice · am / is / are\n\nFailed to fetch\n\nClose",
+      "escapeClosed": true,
+      "noPageErrors": true
+    },
+    {
+      "width": 1440,
+      "name": "وضع الكتابة",
+      "dialogName": "Try Writing Mode",
+      "keyboardOpened": true,
+      "renderedContent": "Try Writing Mode\n\nWrite three short sentences, build your paragraph, and get AI writing feedback. Use fictional details. Closing the demo resets all writing.\n\nWriting Mode\nQuick practice · my daily routine\n\nFailed to fetch\n\nClose",
+      "escapeClosed": true,
+      "noPageErrors": true
+    },
+    {
+      "width": 1440,
+      "name": "وضع المفردات",
+      "dialogName": "Try Vocabulary Mode",
+      "keyboardOpened": true,
+      "renderedContent": "Try Vocabulary Mode\n\nReveal three flashcards, match the words to their meanings, and answer one question. Closing resets all practice.\n\nVocabulary Mode\nQuick practice · at the library\n\nFailed to fetch\n\nClose",
+      "escapeClosed": true,
+      "noPageErrors": true
+    }
+  ],
+  "changedExistingSourceFiles": [
+    "src/pages/public/personalized-learning-section.css",
+    "src/pages/public/personalized-learning-section.tsx"
+  ],
+  "sourceScope": true,
+  "passed": true
+}

@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import StudentReportModal from "../ui/StudentReportModal";
 import { SidebarNavLink, type SidebarLabel } from "./SidebarNavLink";
 import { sparkScienceBackTarget } from "@/utils/sparkScienceNavigation";
+import { TestAccountTools } from "@/components/testing/TestAccountTools";
 
 interface StudentLayoutProps {
   children: ReactNode;
@@ -32,8 +33,12 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   }, [isDesktopCollapsed]);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const location = useLocation();
+  const isPrimaryRoute = location.pathname === '/student/primary' || location.pathname.startsWith('/student/primary/');
   const isNafsRoute = location.pathname === '/student/nafs' || location.pathname.startsWith('/student/nafs/');
+  const isStepRoute = location.pathname === '/student/step' || location.pathname.startsWith('/student/step/');
   const isScienceRoute = location.pathname === '/student/science' || location.pathname.startsWith('/student/science/');
+  const isAvatarRoute = location.pathname === '/student/3d-avatar' || location.pathname.startsWith('/student/3d-avatar/');
+  const isAvatarActivity = /^\/student\/3d-avatar\/(reading|listening|roleplay)\/[^/]+$/.test(location.pathname);
   const isScienceActivity = isScienceRoute && location.pathname.includes('/activities/');
   const isSparkScienceActivity = location.pathname.startsWith('/student/science/spark-science/') && isScienceActivity;
   const previousSidebar = useRef(false);
@@ -49,7 +54,16 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   const navigate = useNavigate();
   const scienceBackTarget = sparkScienceBackTarget(location.pathname, location.search);
   const handleBack = () => {
-    if (isNafsRoute) { navigate('/student/courses'); return; }
+    if (isPrimaryRoute || isNafsRoute || isStepRoute) {
+      navigate('/student/courses');
+      return;
+    }
+    if (isAvatarRoute) {
+      navigate(location.pathname === '/student/3d-avatar' ? '/student/courses' :
+        /^\/student\/3d-avatar\/(reading|listening|roleplay)$/.test(location.pathname) ? '/student/3d-avatar' :
+          location.pathname.startsWith('/student/3d-avatar/roleplay/') ? '/student/3d-avatar/roleplay' : location.pathname.startsWith('/student/3d-avatar/listening/') ? '/student/3d-avatar/listening' : '/student/3d-avatar/reading');
+      return;
+    }
     if (scienceBackTarget) navigate(scienceBackTarget);
     else navigate(-1);
   };
@@ -72,10 +86,16 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   };
 
   let formattedTitle;
-  if (isNafsRoute) {
+  if (isStepRoute) {
+    formattedTitle = 'STEP';
+  } else if (isNafsRoute) {
     formattedTitle = 'NAFS';
+  } else if (isAvatarRoute) {
+    formattedTitle = location.pathname === '/student/3d-avatar' ? '3D Avatar Mode' : location.pathname.includes('/roleplay') ? '3D Roleplay' : location.pathname.includes('/listening') ? '3D Listening' : '3D Reading';
   } else if (isScienceRoute) {
     formattedTitle = 'Science';
+  } else if (isPrimaryRoute) {
+    formattedTitle = 'Primary';
   } else if (location.pathname.startsWith("/teacher/student-profile/")) {
     formattedTitle = "Student Profile";
   } else if (location.pathname.includes("/lessons/")) {
@@ -105,7 +125,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   }, [isAuthenticated, user, navigate]);
 
   useEffect(() => {
-    if (user?.role !== "student" || isScienceRoute || isNafsRoute) return;
+    if (user?.role !== "student" || isScienceRoute || isAvatarRoute || isPrimaryRoute || isNafsRoute || isStepRoute) return;
 
     let intervalId: number | undefined;
     let sessionBootstrapInFlight = false;
@@ -186,10 +206,10 @@ export function StudentLayout({ children }: StudentLayoutProps) {
       stop();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [user?.id, user?.role, isScienceRoute, isNafsRoute]);
+  }, [user?.id, user?.role, isScienceRoute, isAvatarRoute, isPrimaryRoute, isNafsRoute, isStepRoute]);
 
   const isActive = (path: string) => {
-    return location.pathname === path || location.pathname.startsWith(`${path}/`) || (path === "/student/courses" && (isScienceRoute || isNafsRoute));
+    return location.pathname === path || location.pathname.startsWith(`${path}/`) || (path === "/student/courses" && (isScienceRoute || isAvatarRoute || isPrimaryRoute || isNafsRoute || isStepRoute));
   };
 
   const handleLogout = async () => {
@@ -301,11 +321,11 @@ export function StudentLayout({ children }: StudentLayoutProps) {
       </nav>
 
       {/* Main content */}
-      <div className={`flex flex-col flex-1 w-full max-w-full overflow-x-hidden transition-all duration-300 ${isDesktopCollapsed ? 'xl:pl-20' : 'xl:pl-64'}`}>
+      <div className={`flex flex-col flex-1 w-full max-w-full ${isPrimaryRoute ? 'overflow-x-clip' : 'overflow-x-hidden'} transition-all duration-300 ${isDesktopCollapsed ? 'xl:pl-20' : 'xl:pl-64'}`}>
         {/* Top header */}
-        <header className={`sticky top-0 z-40 flex xl:hidden items-center justify-between ${isSparkScienceActivity ? 'h-12' : 'h-16'} px-4 bg-background xl:px-8`}>
+        <header className={`sticky top-0 z-40 flex xl:hidden items-center justify-between ${isSparkScienceActivity || isAvatarActivity ? 'h-12 shrink-0' : 'h-16'} px-4 bg-background xl:px-8`}>
           <div className="flex items-center">
-            {scienceBackTarget && (
+            {(scienceBackTarget || isPrimaryRoute) && (
               <Button variant="ghost" size="icon" onClick={handleBack} aria-label="Back">
                 <ChevronLeft className="h-5 w-5" />
               </Button>
@@ -355,7 +375,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
             </svg>
           </Button>
         </header>
-        <header className={`sticky top-0 z-40 hidden xl:flex items-center justify-between bg-background px-8 ${isSparkScienceActivity ? 'h-12 py-2' : 'h-16 py-10'}`}>
+        <header className={`sticky top-0 z-40 hidden xl:flex items-center justify-between bg-background px-8 ${isSparkScienceActivity || isAvatarActivity ? 'h-12 shrink-0 py-2' : 'h-16 py-10'}`}>
           <div className="flex items-center">
             <Button
               variant="ghost"
@@ -406,8 +426,8 @@ export function StudentLayout({ children }: StudentLayoutProps) {
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 w-full max-w-full overflow-x-hidden">
-          <div className={`${isSparkScienceActivity ? 'px-4 py-2' : 'p-4'} w-full max-w-full overflow-x-hidden`}>{children}</div>
+        <main className={`flex-1 w-full max-w-full ${isPrimaryRoute ? 'overflow-x-clip' : 'overflow-x-hidden'}`}>
+          <div className={`${isAvatarActivity ? 'px-2 py-2 sm:px-4' : isSparkScienceActivity ? 'px-4 py-2' : 'p-4'} w-full max-w-full ${isPrimaryRoute ? 'overflow-x-clip' : 'overflow-x-hidden'}`}><TestAccountTools />{children}</div>
         </main>
       </div>
 

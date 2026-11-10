@@ -10,19 +10,19 @@ import {
   getUnits,
 } from '@/redux/slices/learningSlice';
 import { 
-  fetchLessonModeComponents,
+  fetchLessonModeComponents as fetchNormalComponents,
   resetLessonModePractice,
-  submitComponentAttempt,
-  saveComponentAttempt,
-  startLearningComponent,
+  submitComponentAttempt as submitNormalAttempt,
+  saveComponentAttempt as saveNormalAttempt,
+  startLearningComponent as startNormalComponent,
   fetchModeResources,
   interactWithResource,
   submitReflection,
   revealApprovedAnswers,
-  compileWritingParagraph,
-  submitWriting,
-  revealWritingModelAnswer,
-  fetchLatestWritingSubmission,
+  compileWritingParagraph as compileNormalWriting,
+  submitWriting as submitNormalWriting,
+  revealWritingModelAnswer as revealNormalWritingModel,
+  fetchLatestWritingSubmission as fetchNormalWritingSubmission,
   fetchUnitLessons,
   LearningResource,
   ResourceInteractionType,
@@ -34,6 +34,7 @@ import { toast } from 'sonner';
 import { getLearningModePath, getNextLessonPath } from '@/utils/learning-navigation';
 import { useLearningProgressRefresh } from '@/hooks/useLearningProgressRefresh';
 import TopicCompletionModal from '@/components/ui/TopicCompletionModal';
+import { grammarDemoMode, type GrammarDemo } from '@/services/grammarDemoService';
 
 import {
   DropdownComponent,
@@ -78,13 +79,25 @@ const hasIncompletePracticeAttempt = (components: LearningComponent[]) =>
       component.attempt !== null && !component.attempt.completedAt,
   );
 
-export default function ComponentModePlay() {
-  const { courseId, unitId, lessonId, modeId } = useParams<{
+export default function ComponentModePlay({ demo }: { demo?: GrammarDemo } = {}) {
+  const route = useParams<{
     courseId: string;
     unitId: string;
     lessonId: string;
     modeId: string;
   }>();
+  const { courseId, unitId, lessonId } = demo ? {} : route;
+  const demoApi = demo?.api;
+  const demoMode = demo?.mode ?? grammarDemoMode;
+  const modeId = demo ? demoMode.id : route.modeId;
+  const fetchLessonModeComponents = demo?.api.components ?? fetchNormalComponents;
+  const submitComponentAttempt = demo?.api.submit ?? submitNormalAttempt;
+  const saveComponentAttempt = demo?.api.save ?? saveNormalAttempt;
+  const startLearningComponent = demo?.api.start ?? startNormalComponent;
+  const compileWritingParagraph = demo?.writing?.compile ?? compileNormalWriting;
+  const submitWriting = demo?.writing?.review ?? submitNormalWriting;
+  const revealWritingModelAnswer = demo?.writing?.reveal ?? revealNormalWritingModel;
+  const fetchLatestWritingSubmission = demo?.writing?.latest ?? fetchNormalWritingSubmission;
 
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
@@ -95,6 +108,7 @@ export default function ComponentModePlay() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmittingMode, setIsSubmittingMode] = useState(false);
   const [localResponses, setLocalResponses] = useState<Record<string, any>>({});
+  const [fillInValidationComponentId, setFillInValidationComponentId] = useState<string | null>(null);
   const [writingReviewFeedback, setWritingReviewFeedback] = useState<Record<string, Record<string, unknown>>>({});
   const draftSaves = useRef(new Map<string, Promise<void>>());
   const draftRevisions = useRef(new Map<string, number>());
@@ -131,6 +145,7 @@ export default function ComponentModePlay() {
   const [isJustCompleted, setIsJustCompleted] = useState(false);
 
   const handleBack = () => {
+    if (demo) { demo.onClose(); return; }
     const isDirectLesson = currentLesson?.launchBehavior === 'direct_mode' || modes.length <= 1;
     if (isDirectLesson && courseId && unitId) {
       navigate(`/student/courses/${courseId}/units/${unitId}`);
@@ -142,6 +157,7 @@ export default function ComponentModePlay() {
   };
 
   const handleResetMode = async () => {
+    if (demo) return;
     if (!modeId) return;
     setIsSubmittingMode(true);
     try {
@@ -169,6 +185,7 @@ export default function ComponentModePlay() {
   };
 
   const refreshModeState = useCallback(async () => {
+    if (demo) { setComponents(await demo.api.components(demoMode.id)); return []; }
     if (!modeId || !lessonId) return [];
 
     const mode = resolvedMode ?? modes.find((m) => m.id === modeId);
@@ -195,10 +212,20 @@ export default function ComponentModePlay() {
     })));
     await refreshLearningProgress(lessonId, { unitId, courseId });
     return refreshedModes;
-  }, [courseId, dispatch, lessonId, modeId, modes, refreshLearningProgress, resolvedMode, unitId]);
+  }, [demo, courseId, dispatch, lessonId, modeId, modes, refreshLearningProgress, resolvedMode, unitId]);
 
   // Load components & initialize mode session
   useEffect(() => {
+    if (demoApi) {
+      let active = true;
+      setLoading(true); setError(null); setResolvedMode(demoMode);
+      void demoApi.open().then(data => {
+        if (active) { setComponents(data); setCurrentIndex(0); setLocalResponses({}); }
+      }).catch(err => {
+        if (active) setError(err.message || 'Unable to load practice. Close the demo and try again.');
+      }).finally(() => { if (active) setLoading(false); });
+      return () => { active = false; demoApi.close(); };
+    }
     async function loadData() {
       if (!modeId) return;
       setLoading(true);
@@ -339,10 +366,25 @@ export default function ComponentModePlay() {
     }
 
     loadData();
-  }, [dispatch, lessonId, modeId]);
+  }, [demoApi, demoMode, dispatch, lessonId, modeId]);
 
   // Handle component answer submissions
   const handleComponentSubmit = async (componentId: string, response: any) => {
+    const component = components.find(item => item.id === componentId);
+    if (component?.componentType === 'fill_in_the_blank') {
+      const fields = Array.isArray(component.content?.fields) ? component.content.fields : [];
+      const missingIds = fields.filter((field: any) => field && typeof field === 'object' && !Array.isArray(field))
+        .map((field: any, index: number) => typeof field.id === 'string' && field.id ? field.id : `field-${index}`)
+        .filter((id: string) => typeof response?.answers?.[id] !== 'string' || !response.answers[id].trim());
+      if (missingIds.length) {
+        setFillInValidationComponentId(componentId);
+        toast.error('Please fill in all blanks before submitting.');
+        Array.from(document.querySelectorAll<HTMLInputElement>('[data-fill-in-field]'))
+          .find(input => input.dataset.componentId === componentId && input.dataset.fillInField === missingIds[0])?.focus();
+        return;
+      }
+      setFillInValidationComponentId(null);
+    }
     try {
       const formattedResponse =
         typeof response === 'object' && response !== null ? response : { value: response };
@@ -380,8 +422,10 @@ export default function ComponentModePlay() {
       } else {
         toast.success(result.isComplete ? 'Activity completed!' : 'Response submitted.');
       }
+      if (demo?.api.isCompleted()) demo.onComplete();
       return result;
     } catch (err: any) {
+      if (demo && err.name === 'AbortError' && !demo.api.isOpen()) return;
       console.error('Failed to submit component response:', err);
       toast.error(err.response?.data?.message || 'Failed to submit response.');
       throw err;
@@ -526,6 +570,7 @@ export default function ComponentModePlay() {
         },
       };
     } catch (submitError: any) {
+      if (demo && submitError.name === 'AbortError' && !demo.api.isOpen()) return;
       toast.error(
         submitError.response?.data?.message ||
           'Unable to build and review your paragraph.',
@@ -589,6 +634,7 @@ export default function ComponentModePlay() {
   };
 
   const handleCompleteNavigation = async (updatedModesList?: any[]) => {
+    if (demo) { demo.onClose(); return; }
     const activeModes = updatedModesList ?? modes;
     const currentModeIndex = activeModes.findIndex((m: any) => m.id === modeId);
     const nextMode = currentModeIndex !== -1 && currentModeIndex < activeModes.length - 1 
@@ -614,11 +660,26 @@ export default function ComponentModePlay() {
   };
 
   // Complete the entire mode and progress to next mode or lesson roadmap
-  const handleCompleteMode = async () => {
+  const handleCompleteMode = async (acknowledgedComponent?: LearningComponent) => {
+    if (demo) {
+      try { await demo.api.finish(); demo.onComplete(); }
+      catch (err: any) {
+        if (err.name !== 'AbortError' || demo.api.isOpen()) toast.error(err.message || 'Complete the required activities first.');
+      }
+      return;
+    }
     if (!modeId || !lessonId) return;
     const isModeAlreadyCompletedOnBackend = currentMode?.status === 'completed';
     
-    if (!isModeAlreadyCompletedOnBackend && !requiredComponentsComplete) {
+    // The final on-view acknowledgement can finish before React renders its
+    // state update. Validate the returned result rather than the old render.
+    const completionComponents = visibleComponents.map((component) =>
+      component.id === acknowledgedComponent?.id ? acknowledgedComponent : component,
+    );
+    const requiredActivitiesComplete = completionComponents
+      .filter((component) => component.isRequired)
+      .every(isComponentComplete);
+    if (!isModeAlreadyCompletedOnBackend && !requiredActivitiesComplete) {
       toast.error('Complete the required activities before moving on.');
       return;
     }
@@ -700,7 +761,7 @@ export default function ComponentModePlay() {
   );
 
   return (
-    <div className="w-full max-w-[1040px] mx-auto pb-16 flex flex-col gap-6 font-['Outfit',sans-serif]">
+    <div className={`${demo ? 'grammar-demo-player ' : ''}w-full max-w-[1040px] mx-auto pb-16 flex flex-col gap-6 font-['Outfit',sans-serif]`}>
       {/* Mode Header Card with Back and Reset Buttons */}
       <div className="w-full bg-white rounded-none md:rounded-[20px] border border-[#E2E8F0] shadow-sm p-4 md:p-6 flex flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
@@ -708,7 +769,7 @@ export default function ComponentModePlay() {
             type="button"
             onClick={handleBack}
             className="w-10 h-10 rounded-full border border-[#E2E8F0] bg-white flex items-center justify-center text-[#282828] hover:bg-gray-50 transition-all cursor-pointer shadow-sm flex-shrink-0"
-            title={currentLesson?.launchBehavior === 'direct_mode' || modes.length <= 1 ? 'Back to Lessons' : 'Back to Lesson'}
+            title={demo ? `Close ${demoMode.title.replace(' Mode', '')} demo` : currentLesson?.launchBehavior === 'direct_mode' || modes.length <= 1 ? 'Back to Lessons' : 'Back to Lesson'}
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
@@ -718,13 +779,13 @@ export default function ComponentModePlay() {
             </h1>
 
             <span className="text-[13px] font-semibold text-[#64748B] truncate">
-              {currentUnit?.title || 'Unit'}
+              {demo ? demoMode.modeKey === 'vocabulary-mode' ? 'Quick practice · at the library' : demo.writing ? 'Quick practice · my daily routine' : 'Quick practice · am / is / are' : currentUnit?.title || 'Unit'}
               {currentLesson ? ` • ${currentLesson.title}` : ''}
             </span>
           </div>
         </div>
 
-        <button
+        {!demo && <button
           type="button"
           onClick={() => {
             if (canShowCompletedModePopup) {
@@ -742,7 +803,7 @@ export default function ComponentModePlay() {
         >
           <RotateCcw className="w-4 h-4 text-[#5C9DFF]" />
           <span className="hidden sm:inline">Reset Mode</span>
-        </button>
+        </button>}
       </div>
 
       {/* Top Progress Bar */}
@@ -897,7 +958,7 @@ export default function ComponentModePlay() {
                 return <TextVariationComponent key={comp.id} component={comp} groupedComponents={comp.content?.presentation === 'unit_overview' ? overviewVariations : undefined} />;
 
               case 'fill_in_the_blank':
-                return <FillInTheBlankComponent key={comp.id} component={comp} onAnswerChange={(response) => handleComponentChange(comp.id, response)} isSubmitted={isTerminal} />;
+                return <FillInTheBlankComponent key={comp.id} component={comp} onAnswerChange={(response) => handleComponentChange(comp.id, response)} isSubmitted={isTerminal} showValidation={fillInValidationComponentId === comp.id} />;
 
               case 'writing_table':
                 return <WritingTableComponent key={comp.id} component={comp} onAnswerChange={(response) => handleLocalComponentChange(comp.id, response)} onDraftSave={(response) => { void handleComponentChange(comp.id, response); }} onSubmit={(response) => handleComponentSubmit(comp.id, response)} onBusyChange={setIsSubmittingMode} isSubmitted={isTerminal} />;
@@ -987,9 +1048,10 @@ export default function ComponentModePlay() {
                       if (currentIndex < totalCount - 1) {
                         setCurrentIndex((index) => index + 1);
                       } else {
-                        await handleCompleteMode();
+                        await handleCompleteMode(result);
                       }
                     } catch (startError: any) {
+                      if (demo && startError.name === 'AbortError' && !demo.api.isOpen()) return;
                       toast.error(
                         startError.response?.data?.message ||
                           'Unable to record this activity step.',
@@ -1028,7 +1090,8 @@ export default function ComponentModePlay() {
                   const isInput = ['mcq', 'dropdown', 'open_input', 'true_false', 'fill_in_the_blank', 'match_column', 'writing_table', 'reflection'].includes(currentComp.componentType);
                   
                   if (isInput) {
-                    if (!currentResponse || (typeof currentResponse === 'object' && Object.keys(currentResponse).length === 0)) {
+                    if (currentComp.componentType === 'fill_in_the_blank') currentResponse = currentResponse || {};
+                    if (currentComp.componentType !== 'fill_in_the_blank' && (!currentResponse || (typeof currentResponse === 'object' && Object.keys(currentResponse).length === 0))) {
                       toast.error('Please answer the question before submitting.');
                       return;
                     }

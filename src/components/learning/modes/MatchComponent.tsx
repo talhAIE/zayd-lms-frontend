@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useMemo, useCallback, useId } from 'react';
 import { Sparkles, RotateCcw } from 'lucide-react';
 import { LearningComponent } from '@/services/learningService';
+import { GradedAnswerSurface, gradedAttemptKey } from '../AnswerFeedback';
 
 interface MatchComponentProps {
   component: LearningComponent;
@@ -94,6 +95,9 @@ export default function MatchComponent({
   // Submitted activities may show their final connections in the read-only view.
   const [connections, setConnections] = useState<Connections>(() => isSubmitted ? submittedConnections : {});
   const [selectedLeft, setSelectedLeft] = useState<string | null>(null);
+  const [editedSinceGrade, setEditedSinceGrade] = useState(false);
+  const submissionKey = gradedAttemptKey(component);
+  useEffect(() => setEditedSinceGrade(false), [submissionKey]);
 
   useEffect(() => {
     setConnections(isSubmitted ? submittedConnections : {});
@@ -114,6 +118,7 @@ export default function MatchComponent({
 
   const commitConnections = useCallback(
     (nextConnections: Connections) => {
+      setEditedSinceGrade(true);
       setConnections(nextConnections);
       onAnswerChange?.(serialiseConnections(nextConnections));
     },
@@ -213,7 +218,7 @@ export default function MatchComponent({
   }
 
   return (
-    <div className="w-full rounded-[20px] border border-[#E2E8F0] bg-white p-6 font-['Outfit',sans-serif] shadow-[0px_4px_20px_rgba(15,23,42,0.04)] transition-all md:p-8">
+    <GradedAnswerSurface feedbackKey={submissionKey} result={!editedSinceGrade && component.attempt?.submittedAt ? component.attempt.isCorrect : null} className="w-full rounded-[20px] border border-[#E2E8F0] bg-white p-6 font-['Outfit',sans-serif] shadow-[0px_4px_20px_rgba(15,23,42,0.04)] transition-all md:p-8">
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
         <div className="flex flex-col gap-1">
           <span className="text-[11px] font-bold uppercase tracking-wider text-[#2563EB]">{badge}</span>
@@ -341,6 +346,6 @@ export default function MatchComponent({
           </button>
         </div>
       )}
-    </div>
+    </GradedAnswerSurface>
   );
 }

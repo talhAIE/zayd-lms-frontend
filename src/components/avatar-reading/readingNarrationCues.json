@@ -1,0 +1,162 @@
+{
+  "257b6f1d-8623-483c-a5cc-2c50a04c125f": {
+    "audioUrl": "https://aitutorappstorage.blob.core.windows.net/aitutorblob/topic-audio/05b03af9-7909-4003-8179-fb4ccd0020cc.wav",
+    "duration": 55.944,
+    "text": "Parents often complain that they always have to remind their teenage children to do chores.  They believe teens are irresponsible and do not manage their time well.  Teenagers, on the other hand, feel that their parents are always nagging and complaining.  This difference in opinions often causes conflict at home. One main problem is timing.  Parents want chores done immediately, while teens prefer to do them later.  This disagreement usually leads to unnecessary arguments.  Many parents ask important questions such as whether teens should have chores, if families should agree on a list together, and if teens should decide when to do their tasks. Some parents make weekly chore lists to help teens organize schoolwork, housework, and free time.  Others give pocket money only after chores are finished.  In the end, both parents and teens need to reach a compromise and use common sense.",
+    "cues": [
+      {
+        "start": 0.2,
+        "end": 4.1,
+        "from": 0,
+        "to": 91
+      },
+      {
+        "start": 5.26,
+        "end": 8.76,
+        "from": 93,
+        "to": 164
+      },
+      {
+        "start": 9.76,
+        "end": 14.12,
+        "from": 166,
+        "to": 255
+      },
+      {
+        "start": 15.08,
+        "end": 18.18,
+        "from": 257,
+        "to": 315
+      },
+      {
+        "start": 19.18,
+        "end": 20.58,
+        "from": 316,
+        "to": 343
+      },
+      {
+        "start": 21.52,
+        "end": 25.22,
+        "from": 345,
+        "to": 419
+      },
+      {
+        "start": 25.76,
+        "end": 29.2,
+        "from": 421,
+        "to": 478
+      },
+      {
+        "start": 30.72,
+        "end": 39.0,
+        "from": 480,
+        "to": 654
+      },
+      {
+        "start": 40.14,
+        "end": 45.4,
+        "from": 655,
+        "to": 752
+      },
+      {
+        "start": 46.46,
+        "end": 49.06,
+        "from": 754,
+        "to": 810
+      },
+      {
+        "start": 50.3,
+        "end": 54.76,
+        "from": 812,
+        "to": 895
+      }
+    ],
+    "audioSha256": "d3264361eb729ba347774c247c95e36c17f8f587ff8c0edaf4d7ce3bf0ffe456"
+  },
+  "e6d4bc7d-6be1-4f01-9d45-1b94f90e0827": {
+    "audioUrl": "https://aitutorappstorage.blob.core.windows.net/aitutorblob/topic-audio/1df0d91c-06a0-438a-8270-5c56ada0a290.wav",
+    "duration": 75.24,
+    "text": "Louis Armstrong, known as “Satchmo,” became one of the most influential jazz musicians in history through talent, dedication, and perseverance. As a young musician in New Orleans, he admired Joe “King” Oliver, who later became his mentor. Joe saw great promise in Louis and invited him to play in his band. When Louis performed, his music was energetic and joyful. His rhythm was so powerful that it felt almost contagious, spreading excitement throughout the audience. Even after long days of hard labor, Louis practiced and played at night, driven by his dream of becoming a great musician. Soon, Louis and Joe began performing duets, standing side by side on stage. They took turns playing impressive solos, creating music that sounded like a lively conversation between two horns. Their performances drew large crowds who seemed to catch a musical fever whenever Louis played. When Joe moved to Chicago, he encouraged Louis to seek new opportunities. Though leaving home was difficult, Louis accepted the challenge. His fame quickly grew, and audiences around the world embraced his music. Through courage and commitment, Louis Armstrong rose to global success.",
+    "cues": [
+      {
+        "start": 0.0,
+        "end": 8.22,
+        "from": 0,
+        "to": 143
+      },
+      {
+        "start": 9.24,
+        "end": 14.24,
+        "from": 144,
+        "to": 238
+      },
+      {
+        "start": 15.28,
+        "end": 18.62,
+        "from": 239,
+        "to": 306
+      },
+      {
+        "start": 19.44,
+        "end": 22.74,
+        "from": 307,
+        "to": 364
+      },
+      {
+        "start": 23.84,
+        "end": 29.12,
+        "from": 365,
+        "to": 469
+      },
+      {
+        "start": 29.78,
+        "end": 36.62,
+        "from": 470,
+        "to": 592
+      },
+      {
+        "start": 37.68,
+        "end": 42.42,
+        "from": 593,
+        "to": 668
+      },
+      {
+        "start": 43.56,
+        "end": 49.62,
+        "from": 669,
+        "to": 784
+      },
+      {
+        "start": 50.6,
+        "end": 55.42,
+        "from": 785,
+        "to": 880
+      },
+      {
+        "start": 56.12,
+        "end": 60.06,
+        "from": 881,
+        "to": 954
+      },
+      {
+        "start": 61.44,
+        "end": 64.46,
+        "from": 955,
+        "to": 1019
+      },
+      {
+        "start": 65.58,
+        "end": 69.48,
+        "from": 1020,
+        "to": 1093
+      },
+      {
+        "start": 70.5,
+        "end": 73.98,
+        "from": 1094,
+        "to": 1165
+      }
+    ],
+    "audioSha256": "43aca7cc1cae2743c8f6b139de0401e3587717cf8b6ba24afcc59955fb9dd7f1"
+  }
+}

@@ -1,0 +1,7 @@
+# Premium hero classroom photograph
+
+Asset: `hero-classroom-premium.png`. Created with built-in imagegen on 2026-10-30 to match the selected Premium Editorial concept. The hero remains native HTML/CSS; teacher and statistic artwork reuse existing project assets.
+
+## Prompt
+
+Use case: photorealistic-natural. Asset type: classroom photograph to be placed inside a landscape video preview on the Zayd website. Input image is a UI concept reference ONLY; recreate the classroom photography from its left-side video panel, WITHOUT any UI or person. Bright modern blue classroom, warm light oak desk across the bottom third, a slim open silver/dark laptop on the right half facing the viewer at a slight angle, a green plant at far right, a white pencil cup with colored pencils near center, four pastel-colored textbooks stacked near center-left, small notebook on desk. Background: blue board with a pale world map, bookshelf with globe behind right side, daylight through white-framed windows at far right. A softly blurred green indoor plant at far left. Fresh soft daylight, beautiful realistic materials, professional education brand, sophisticated natural photography. Wide 16:9 landscape, straight camera at desk height. The left third should be unobstructed background because an existing teacher cutout will be overlaid there by the website. No people, no teacher, no lettering, no text on books, no logo, no rounded corners, no white border, no play icon, no controls, no website screenshot, no typography, no UI. Fill entire canvas with only the classroom photograph.

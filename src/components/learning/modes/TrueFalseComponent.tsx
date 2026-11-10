@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { GradedAnswerButton, gradedAttemptKey } from '../AnswerFeedback';
 import { Check, X } from 'lucide-react';
 import { LearningComponent } from '@/services/learningService';
 
@@ -40,12 +41,21 @@ export default function TrueFalseComponent({
     return null;
   });
 
-  const attemptResponseId = component.attempt?.response?.optionId || component.attempt?.response?.value || (String(component.attempt?.response?.selectedOption).toLowerCase() === 'true' ? 'true' : 'false');
-  const locallySubmitted = isSubmitted || (component.attempt?.feedback?.submitted && attemptResponseId === selectedValue);
+  const attemptResponseId = component.attempt?.response?.optionId || component.attempt?.response?.value || component.attempt?.response?.selectedOption || null;
+  const [hasNewSelection, setHasNewSelection] = useState(false);
+  const submissionKey = gradedAttemptKey(component);
+  useEffect(() => {
+    if (!submissionKey) return;
+    setSelectedValue(attemptResponseId);
+    setHasNewSelection(false);
+  }, [submissionKey, attemptResponseId]);
+  const locallySubmitted = !hasNewSelection && attemptResponseId === selectedValue &&
+    typeof component.attempt?.isCorrect === 'boolean';
   
   const handleSelect = (val: string) => {
     if (disabled || isSubmitted) return;
     setSelectedValue(val);
+    setHasNewSelection(true);
     onAnswerChange?.(val);
   };
 
@@ -82,7 +92,9 @@ export default function TrueFalseComponent({
 
       {/* Dual Buttons */}
       <div className="grid grid-cols-2 gap-4">
-        <button
+        <GradedAnswerButton
+          feedbackKey={submissionKey}
+          result={selectedValue === trueValue && locallySubmitted ? component.attempt?.isCorrect : null}
           type="button"
           onClick={() => handleSelect(trueValue)}
           disabled={disabled || isSubmitted}
@@ -97,9 +109,11 @@ export default function TrueFalseComponent({
           {selectedValue === trueValue && locallySubmitted && component.attempt?.isCorrect === false && (
             <X className="w-4 h-4 text-[#EF4444]" />
           )}
-        </button>
+        </GradedAnswerButton>
 
-        <button
+        <GradedAnswerButton
+          feedbackKey={submissionKey}
+          result={selectedValue === falseValue && locallySubmitted ? component.attempt?.isCorrect : null}
           type="button"
           onClick={() => handleSelect(falseValue)}
           disabled={disabled || isSubmitted}
@@ -114,7 +128,7 @@ export default function TrueFalseComponent({
           {selectedValue === falseValue && locallySubmitted && component.attempt?.isCorrect === false && (
             <X className="w-4 h-4 text-[#EF4444]" />
           )}
-        </button>
+        </GradedAnswerButton>
       </div>
 
       {/* Optional Submit Button */}

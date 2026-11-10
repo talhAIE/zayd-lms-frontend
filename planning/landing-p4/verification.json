@@ -1,0 +1,115 @@
+{
+  "phase": "P4",
+  "verifiedAtUtc": "2026-11-07T10:53:18.754Z",
+  "status": "authorized_six_benefit_scope_complete_four_additions_deferred_by_user",
+  "p2PrerequisitesSatisfied": true,
+  "p3RemainsUndone": true,
+  "authorizedScopeComplete": true,
+  "fullOriginalPhaseComplete": false,
+  "requirements": [
+    {
+      "id": "S7-HEADER",
+      "status": "complete",
+      "implementation": "src/pages/public/personalized-learning-section.tsx",
+      "evidence": "planning/landing-p4/browser-evidence.json and personalized screenshots"
+    },
+    {
+      "id": "S7-SUBTITLE",
+      "status": "complete",
+      "implementation": "src/pages/public/personalized-learning-section.tsx",
+      "evidence": "planning/landing-p4/browser-evidence.json and personalized screenshots"
+    },
+    {
+      "id": "S7-RENDERING",
+      "status": "complete",
+      "implementation": "src/pages/public/personalized-learning-section.tsx",
+      "evidence": "planning/landing-p4/browser-evidence.json and personalized screenshots"
+    },
+    {
+      "id": "S7-BENEFIT1",
+      "status": "complete",
+      "implementation": "src/pages/public/personalized-learning-section.tsx",
+      "evidence": "planning/landing-p4/browser-evidence.json and personalized screenshots"
+    },
+    {
+      "id": "S7-BENEFIT2",
+      "status": "complete",
+      "implementation": "src/pages/public/personalized-learning-section.tsx",
+      "evidence": "planning/landing-p4/browser-evidence.json and personalized screenshots"
+    },
+    {
+      "id": "S7-BENEFIT3",
+      "status": "complete",
+      "implementation": "src/pages/public/personalized-learning-section.tsx",
+      "evidence": "planning/landing-p4/browser-evidence.json and personalized screenshots"
+    },
+    {
+      "id": "S7-BENEFIT4",
+      "status": "complete",
+      "implementation": "src/pages/public/personalized-learning-section.tsx",
+      "evidence": "planning/landing-p4/browser-evidence.json and personalized screenshots"
+    },
+    {
+      "id": "S7-BENEFIT5",
+      "status": "complete",
+      "implementation": "src/pages/public/personalized-learning-section.tsx",
+      "evidence": "planning/landing-p4/browser-evidence.json and personalized screenshots"
+    },
+    {
+      "id": "S7-BENEFIT6",
+      "status": "complete",
+      "implementation": "src/pages/public/personalized-learning-section.tsx",
+      "evidence": "planning/landing-p4/browser-evidence.json and personalized screenshots"
+    },
+    {
+      "id": "S7-CEFR",
+      "status": "deferred_by_user_unimplemented",
+      "dependency": "D05",
+      "evidence": "planning/landing-p4/decisions.json"
+    },
+    {
+      "id": "S7-AVATAR",
+      "status": "deferred_by_user_unimplemented",
+      "dependency": "D05",
+      "evidence": "planning/landing-p4/decisions.json"
+    },
+    {
+      "id": "S7-CERTIFICATES",
+      "status": "deferred_by_user_unimplemented",
+      "dependency": "D05",
+      "evidence": "planning/landing-p4/decisions.json"
+    },
+    {
+      "id": "S7-REWARDS",
+      "status": "deferred_by_user_unimplemented",
+      "dependency": "D05",
+      "evidence": "planning/landing-p4/decisions.json"
+    }
+  ],
+  "checks": {
+    "typeScript": true,
+    "targetedEslint": true,
+    "productionBuild": true,
+    "fiveViewportBrowserChecks": true,
+    "twelveDemoOpenRenderCloseChecks": true,
+    "sourceScope": true
+  },
+  "changedApplicationFiles": [
+    "src/pages/public/personalized-learning-section.css",
+    "src/pages/public/personalized-learning-section.tsx"
+  ],
+  "newAssets": [],
+  "visualReview": [
+    "personalized-1440.png",
+    "personalized-768.png",
+    "personalized-320.png",
+    "personalized-320-forced-colors.png"
+  ],
+  "limitations": [
+    "Existing demos verified to open, render controls and close; no recording/live assessment tested in P4.",
+    "Four proposed feature claims and layout remain unapproved and absent."
+  ],
+  "p5Readiness": "Excluded by current design/content scope; explicit authorization, D04 prompts and E02 verification needed.",
+  "otherPhasesImplemented": false,
+  "commitPushDeploy": false
+}

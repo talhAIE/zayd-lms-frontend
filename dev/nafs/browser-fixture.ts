@@ -5,7 +5,7 @@ import path from 'node:path';
 import { createHash } from 'node:crypto';
 import type { Page } from '@playwright/test';
 
-export const backend = path.resolve(process.cwd(), '../zayd-lms-backend');
+export const backend = path.resolve(process.cwd(), process.env.NAFS_QA_BACKEND_ROOT || '../zayd-lms-backend');
 export const source = JSON.parse(
   fs.readFileSync(
     path.join(backend, 'content/nafs/learner-content.json'),

@@ -1,0 +1,30 @@
+{
+  "verifiedAtUtc": "2026-11-07T10:04:03.542Z",
+  "scope": "P0 planning/evidence only; no claim of P1 implementation or business approval",
+  "checks": {
+    "currentPdfHashMatches": true,
+    "currentPdfHas29Pages": true,
+    "applicationAndConfigUnchanged": true,
+    "all134RequirementsTracked": true,
+    "exactlyFiveP0ItemsComplete": true,
+    "allLaterPhasesRemainUnimplemented": true,
+    "allTenPdfAndFourEngineeringDecisionsTracked": true,
+    "topicDecisionExplicitlyDeferred": true,
+    "requiredAssetCategoriesInventoried": true,
+    "allScreenshotReferenceFilesExist": true,
+    "allNineFaqDraftsPresent": true,
+    "threeViewportBaselinesSuccessful": true,
+    "finalBrowserObservationsCompleted": true,
+    "existingConversionDefectRemainsExplicit": true,
+    "planningTypeScriptContractPasses": true
+  },
+  "allPassed": true,
+  "applicationFilesChecked": 439,
+  "changedApplicationFiles": [],
+  "baselinePngCount": 16,
+  "expectedBehaviorObservations": 10,
+  "knownDefectObservations": 1,
+  "typeScriptExitCode": 0,
+  "remainingDecision": "D01 deferred by user; all other unconfirmed decisions retain explicit status",
+  "p1Readiness": "Independent P1 work may begin; S3-TOPICS remains blocked pending D01"
+}

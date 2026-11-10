@@ -1,0 +1,27 @@
+.public-landing {
+  --landing-gutter: 6.5vw;
+  --landing-content-width: 1368px;
+}
+
+/* All full-width cards share the same outer edges at every screen size. */
+.public-landing :is(.future-skills, .impact-stats, .pricing, .schools, .final-cta, .site-footer) {
+  padding-inline: var(--landing-gutter);
+}
+
+.public-landing :is(.future-skills__container, .impact-stats__container, .pricing__container, .schools__container, .final-cta__container, .site-footer__container) {
+  width: 100%;
+  max-width: var(--landing-content-width);
+  margin-inline: auto;
+}
+
+@media (max-width: 849px) {
+  .public-landing { --landing-gutter: 24px; }
+}
+
+@media (max-width: 699px) {
+  .public-landing .pricing__plans { width: 100%; max-width: none; }
+}
+
+@media (max-width: 559px) {
+  .public-landing { --landing-gutter: 18px; }
+}

@@ -1,0 +1,28 @@
+{
+  "D01": {
+    "status": "broader_catalog_count_unresolved_question_awaiting_reply",
+    "confirmed": "Hero +250 was previously approved and remains unchanged.",
+    "question": "For P6's Zayd Life/Zayd Plus paragraph, should the daily-life topic count also change from 40 to 250?",
+    "responseAtVerification": null,
+    "implementation": "Retain literal PDF/current paragraph count 40; update independent wording only.",
+    "remaining": "Confirm count for Life/Plus and broader cross-section consistency.",
+    "requirement": "S8-BODY remains partial"
+  },
+  "D06": {
+    "status": "unverified_metrics_missing_approved_unit_scope_date_and_lesson_total",
+    "question": "Provide approved student, practice-time and lesson totals, time unit and reporting date, or keep unresolved.",
+    "responseAtVerification": null,
+    "existingValuesPreserved": { "students": "+1,000", "time": "+2,200", "timeUnit": "hours", "lessons": "+8,600" },
+    "proposalsNotApproved": { "students": "+2,500", "practiceHours": "+5,000", "equivalentPracticeMinutes": "+300,000" },
+    "reportingDate": null,
+    "dataVerificationPerformed": false,
+    "requirementsBlocked": ["S10-STUDENTS", "S10-TIME", "S10-LESSONS"]
+  },
+  "E01": {
+    "status": "audio_motion_additions_deferred_by_existing_user_scope",
+    "missingInputsIfReauthorized": "Six approved clips/transcripts or public-preview endpoint, including the sixth scenario.",
+    "requirement": "S8-PREVIEW",
+    "implemented": false
+  },
+  "p0SnapshotPreserved": true
+}
