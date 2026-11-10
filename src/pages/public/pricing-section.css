@@ -93,7 +93,7 @@
   text-decoration: none;
 }
 .pricing-card__original-price::after { position: absolute; top: 54%; inset-inline: 0; height: 1px; background: currentColor; content: ""; }
-.pricing-card__riyal { display: block; flex-shrink: 0; width: .9em; height: 1em; }
+.pricing-card__riyal { display: inline-block; flex-shrink: 0; direction: rtl; font-family: "IBM Plex Sans Arabic", sans-serif; line-height: 1; white-space: nowrap; }
 .pricing-card__original-price .pricing-card__riyal { font-size: .85em; }
 .pricing-card__price { display: flex; align-items: baseline; justify-content: center; gap: 8px; margin-top: 5px; white-space: nowrap; }
 .pricing-card__price > strong { font-size: clamp(36px, 3.85cqw, 50px); font-weight: 700; line-height: 1.3; }

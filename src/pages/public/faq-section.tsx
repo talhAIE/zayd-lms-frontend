@@ -1,55 +1,99 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { CircleChevronDown } from "lucide-react";
+import { landingPricingPlans } from "./landing-content";
 import "./faq-section.css";
 
 interface FAQItem {
+  id: string;
   question: string;
-  answer: string;
+  answer: ReactNode;
 }
+
+function BilingualText({ text }: { text: string }) {
+  return text.split(/(Zayd Plus|Zayd Life|Zayd)/g).map((part, index) =>
+    /^Zayd(?: Plus| Life)?$/.test(part) ? <bdi key={index} dir="ltr" lang="en">{part}</bdi> : part
+  );
+}
+
+const packageFaqPlans = [landingPricingPlans[0], landingPricingPlans[2], landingPricingPlans[1]];
+const packageFaqDescriptions = {
+  curriculum: "إذا كان هدفك تحسين أدائك في مناهج المدرسة وممارسة مهارات اللغة الأربع.",
+  life: "إذا كان هدفك استخدام الإنجليزية في الحياة اليومية عبر أكثر من 40 موضوعًا وموقفًا حياتيًا.",
+  plus: "التجربة الكاملة التي تجمع مزايا باقة المنهج وجميع مزايا Zayd Life.",
+} as const;
 
 const faqs: FAQItem[] = [
   {
-    question: "ما هو زيــــد؟",
+    id: "name-origin",
+    question: 'لماذا اخترنا اسم "زيد Zayd"؟',
     answer:
-      "زيــــد معلّم ذكي لممارسة اللغة الإنجليزية يساعد الطالب على الحصول على فرص أكبر للتحدث والتفاعل والتغذية الراجعة، مع توافق كامل مع منهج طلاب المرحلتين المتوسطة والثانوية.",
+      'يرتبط اسم "زيد" في اللغة العربية بمعنى الزيادة والنماء والتقدّم المستمر؛ وهو ما يمثّله زيد تمامًا، إذ يزيد من فرص الطالب في ممارسة اللغة الإنجليزية، وينمّي مهاراته في التحدث والقراءة والاستماع والكتابة، ويزيد من ثقته في استخدام اللغة في المدرسة والحياة اليومية.',
   },
   {
-    question: "هل زيــــد بديل عن معلم اللغة الإنجليزية؟",
+    id: "what-is-zayd",
+    question: "ما هو زيد؟",
     answer:
-      "أبدًا، زيــــد لا يستبدل المعلم بل يعزز جهوده؛ حيث يمنح كل طالب فرصة للتحدث والتدريب الفردي والمستمر خارج الحصة لترسيخ ما يتعلمه في المدرسة دون حرج أو خوف من الخطأ.",
+      "زيد معلّم ذكي لممارسة اللغة الإنجليزية يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه طلاب المرحلتين المتوسطة والثانوية في المدرسة.",
   },
   {
-    question: "ما الصفوف التي يخدمها زيــــد حاليًا؟",
+    id: "teacher-role",
+    question: "هل زيد بديل عن معلم اللغة الإنجليزية؟",
     answer:
-      "يخدم زيــــد حاليًا جميع طلاب المرحلة المتوسطة (الأول، الثاني، الثالث المتوسط) والمرحلة الثانوية (المسارات المشتركة والتخصصية)، بالإضافة إلى باقة مواقف الحياة اليومية لجميع المراحل.",
+      "لا، زيد لا يستبدل المعلم بل يعزز دوره ويوسّع أثره؛ فهو يمنح كل طالب فرصًا إضافية لممارسة اللغة الإنجليزية بشكل فردي ووفق مستواه وسرعته حول ما يتعلمه بالفعل في المدرسة، مع تغذية راجعة فورية تدعم تقدمه.",
   },
   {
-    question: "كم يحتاج الطالب إلى استخدام زيــــد؟",
+    id: "supported-grades",
+    question: "ما الصفوف التي يخدمها زيد حاليًا؟",
     answer:
-      "يكفي من 15 إلى 20 دقيقة يوميًا بمعدل ساعة إلى ساعتين أسبوعيًا لإحداث فارق كبير في طلاقة التحدث واستيعاب الدروس وبناء الثقة اللغوية.",
+      "يخدم زيد حاليًا طلاب المرحلتين المتوسطة والثانوية (من الصف الأول المتوسط إلى الصف الثالث الثانوي)، بمحتوى متناغم مع منهج اللغة الإنجليزية المعتمد في المدرسة، بالإضافة إلى مواضيع ومواقف الحياة اليومية.",
   },
   {
+    id: "weekly-usage",
+    question: "كم يحتاج الطالب إلى استخدام زيد؟",
+    answer:
+      "يحتاج الطالب إلى نحو ساعة واحدة أسبوعيًا من الممارسة المنتظمة مع زيد؛ ومع الاستمرار خلال عام دراسي واحد، يحصل الطالب على فرص مكثفة لممارسة التحدث بالإنجليزية تعادل تقريبًا ما قد يحصل عليه خلال 10 سنوات في الفصل التقليدي.",
+  },
+  {
+    id: "ai-assessment",
+    question: "كيف يستخدم الذكاء الاصطناعي في تقييم الطالب؟",
+    answer:
+      "يستخدم زيد الذكاء الاصطناعي للتفاعل مع الطالب في مهارات التحدث والقراءة والاستماع والكتابة، وتقديم ملاحظات ذكية وتغذية راجعة فورية لتحسين النطق والطلاقة والأداء، مع تكييف التمارين تلقائيًا وفق مستوى الطالب واحتياجه ومنحه محاولات متكررة حتى الإتقان.",
+  },
+  {
+    id: "packages",
     question: "ما الفرق بين الباقات الثلاث؟",
     answer:
-      "باقة المنهج تركز بالكامل على مقررات المدرسة، وباقة Zayd Life تركز على مهارات التحدث في أكثر من 40 موقفًا حياتيًا، بينما باقة Zayd Plus هي الشاملة وتجمع المنهج والحياة اليومية معًا بأفضل قيمة.",
+      <ul className="faq__packages">
+        {packageFaqPlans.map((plan) => (
+          <li key={plan.id} data-plan={plan.id}>
+            <strong>
+              {plan.id === "curriculum" ? plan.name : <>باقة <bdi dir="ltr" lang="en">{plan.name}</bdi></>}{" "}
+              (<span className="faq__package-price"><bdi dir="ltr">{plan.price}</bdi> ﷼/سنة</span>{plan.featured && " - الأفضل قيمة"}):
+            </strong>{" "}
+            <BilingualText text={packageFaqDescriptions[plan.id]} />
+          </li>
+        ))}
+      </ul>,
   },
   {
+    id: "schools-groups",
     question: "هل توجد أسعار خاصة للمدارس والمجموعات؟",
     answer:
-      "نعم، نقدم باقات مرنة وخصومات خاصة للمدارس والمجموعات الطلابية الكبيرة، تشمل تقارير متابعة ولوحة تحكم متكاملة للإدارة والمعلمين.",
+      'نعم، يوفّر زيد أسعارًا خاصة للمدارس واشتراكات للمجموعات الطلابية، مع دعم متكامل للتطبيق داخل المدرسة. يمكنك طلب عرض خاص عبر زر "اطلب عرضًا لمدرستك".',
   },
   {
+    id: "teacher-account",
     question: "هل يدفع المعلم مقابل حسابه؟",
     answer:
-      "لا، يحصل جميع معلمي ومعلمات المدارس الشريكة على حساب مجاني متكامل دون أي رسوم إضافية لمتابعة أداء فصولهم وطلابهم.",
+      "لا، لأن المعلم جزء أساسي من تجربة زيد، يحصل معلمو المدارس المشاركة على حساب خاص مجانًا دون أي تكلفة إضافية لمتابعة تقدم طلابهم وتقارير أدائهم.",
   },
 ];
 
 export default function FAQSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openId, setOpenId] = useState<string | null>("what-is-zayd");
 
-  const toggleItem = (index: number) => {
-    setOpenIndex(current => current === index ? null : index);
+  const toggleItem = (id: string) => {
+    setOpenId(current => current === id ? null : id);
   };
 
   return (
@@ -64,25 +108,25 @@ export default function FAQSection() {
         </div>
 
         <div className="faq__list">
-          {faqs.map((faq, index) => {
-            const isOpen = openIndex === index;
+          {faqs.map((faq) => {
+            const isOpen = openId === faq.id;
             return (
-              <div key={faq.question} className={`faq__item${isOpen ? " faq__item--open" : ""}`}>
+              <div key={faq.id} className={`faq__item${isOpen ? " faq__item--open" : ""}`}>
                 <h3 className="faq__question-heading">
                 <button
                   type="button"
-                  id={`faq-question-${index}`}
-                  onClick={() => toggleItem(index)}
+                  id={`faq-question-${faq.id}`}
+                  onClick={() => toggleItem(faq.id)}
                   className="faq__question"
                   aria-expanded={isOpen}
-                  aria-controls={`faq-answer-${index}`}
+                  aria-controls={`faq-answer-${faq.id}`}
                 >
-                  <span>{faq.question}</span>
+                  <span><BilingualText text={faq.question} /></span>
                   <CircleChevronDown className="faq__chevron" aria-hidden="true" strokeWidth={2.25} />
                 </button>
                 </h3>
-                <div id={`faq-answer-${index}`} className="faq__answer" role="region" aria-labelledby={`faq-question-${index}`} hidden={!isOpen}>
-                  <p>{faq.answer}</p>
+                <div id={`faq-answer-${faq.id}`} className="faq__answer" role="region" aria-labelledby={`faq-question-${faq.id}`} hidden={!isOpen}>
+                  {typeof faq.answer === "string" ? <p>{faq.answer}</p> : faq.answer}
                 </div>
               </div>
             );

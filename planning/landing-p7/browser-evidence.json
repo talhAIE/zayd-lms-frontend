@@ -1,0 +1,624 @@
+{
+  "verifiedAtUtc": "2026-11-07T13:45:50.465Z",
+  "results": [
+    {
+      "width": 320,
+      "checks": {
+        "preservedHeader": true,
+        "exactSubtitle": true,
+        "exactThreePlans": true,
+        "existingBenefitsAndCountPreserved": true,
+        "annualSarAndOriginalPriceText": true,
+        "rtlOrderOrStack": true,
+        "plusVisualsPreserved": true,
+        "noOldPrices": true,
+        "routingUnchangedAsRequested": true,
+        "keyboardFocusVisible": true,
+        "noOverflow": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "eyebrow": "عرض لفترة محدودة",
+        "heading": "اختر التجربة المناسبة",
+        "subtitle": "خصم يصل إلى 50% حاليًا على الباقات الثلاث للأفراد.",
+        "cards": [
+          {
+            "name": "باقة المنهج",
+            "description": "إذا كان هدفك تحسين أدائك في مناهج المدرسة",
+            "original": "299",
+            "originalAccessible": "السعر السابق: 299 ريال سعودي",
+            "price": "199",
+            "annualBilling": "ريال سعودي/ سنة",
+            "riyalIcons": 2,
+            "numberDirections": [
+              "ltr",
+              "ltr",
+              "ltr"
+            ],
+            "discount": "خصم 33%",
+            "features": [
+              "محتوى متوافق مع المنهج",
+              "ممارسة التحدث والاستماع والقراءة والكتابة",
+              "تعلّم مخصص",
+              "تغذية راجعة بالذكاء الاصطناعي"
+            ],
+            "action": "ابدأ باقة المنهج",
+            "href": "/auth/register",
+            "featured": false,
+            "x": 18,
+            "y": -175.96875
+          },
+          {
+            "name": "Zayd Plus",
+            "description": "التجربة الكاملة: المنهج الدراسي، والمواضيع والمواقف الحياتية.",
+            "original": "599",
+            "originalAccessible": "السعر السابق: 599 ريال سعودي",
+            "price": "299",
+            "annualBilling": "ريال سعودي/ سنة",
+            "riyalIcons": 2,
+            "numberDirections": [
+              "ltr",
+              "ltr",
+              "ltr"
+            ],
+            "discount": "خصم 50%",
+            "features": [
+              "جميع مزايا باقة المنهج",
+              "جميع مزايا Zayd Life",
+              "أكثر من 40 موقفًا حياتيًا",
+              "تجربة أشمل لبناء الثقة في استخدام اللغة"
+            ],
+            "action": "اختر Zayd Plus",
+            "href": "/auth/register",
+            "featured": true,
+            "x": 18,
+            "y": 484.859375
+          },
+          {
+            "name": "Zayd Life",
+            "description": "إذا كان هدفك استخدام الإنجليزية في الحياة اليومية",
+            "original": "299",
+            "originalAccessible": "السعر السابق: 299 ريال سعودي",
+            "price": "199",
+            "annualBilling": "ريال سعودي/ سنة",
+            "riyalIcons": 2,
+            "numberDirections": [
+              "ltr",
+              "ltr",
+              "ltr"
+            ],
+            "discount": "خصم 33%",
+            "features": [
+              "أكثر من 40 موضوعًا حياتيًا",
+              "محادثات في المطعم والسوق والمطار وغيرها",
+              "ممارسة التحدث في المواقف اليومية",
+              "تغذية راجعة وتكرار المحاولة"
+            ],
+            "action": "ابدأ Zayd Life",
+            "href": "/auth/register",
+            "featured": false,
+            "x": 18,
+            "y": 1012.59375
+          }
+        ],
+        "mascot": "/src/assets/landing-page/pricing-mascot-reference.png",
+        "recommendation": "الأفضل قيمة",
+        "oldPriceVisible": false,
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "focus": [
+        {
+          "focused": true,
+          "visibleOutline": true
+        },
+        {
+          "focused": true,
+          "visibleOutline": true
+        },
+        {
+          "focused": true,
+          "visibleOutline": true
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 390,
+      "checks": {
+        "preservedHeader": true,
+        "exactSubtitle": true,
+        "exactThreePlans": true,
+        "existingBenefitsAndCountPreserved": true,
+        "annualSarAndOriginalPriceText": true,
+        "rtlOrderOrStack": true,
+        "plusVisualsPreserved": true,
+        "noOldPrices": true,
+        "routingUnchangedAsRequested": true,
+        "keyboardFocusVisible": true,
+        "noOverflow": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "eyebrow": "عرض لفترة محدودة",
+        "heading": "اختر التجربة المناسبة",
+        "subtitle": "خصم يصل إلى 50% حاليًا على الباقات الثلاث للأفراد.",
+        "cards": [
+          {
+            "name": "باقة المنهج",
+            "description": "إذا كان هدفك تحسين أدائك في مناهج المدرسة",
+            "original": "299",
+            "originalAccessible": "السعر السابق: 299 ريال سعودي",
+            "price": "199",
+            "annualBilling": "ريال سعودي/ سنة",
+            "riyalIcons": 2,
+            "numberDirections": [
+              "ltr",
+              "ltr",
+              "ltr"
+            ],
+            "discount": "خصم 33%",
+            "features": [
+              "محتوى متوافق مع المنهج",
+              "ممارسة التحدث والاستماع والقراءة والكتابة",
+              "تعلّم مخصص",
+              "تغذية راجعة بالذكاء الاصطناعي"
+            ],
+            "action": "ابدأ باقة المنهج",
+            "href": "/auth/register",
+            "featured": false,
+            "x": 18,
+            "y": -129.1875
+          },
+          {
+            "name": "Zayd Plus",
+            "description": "التجربة الكاملة: المنهج الدراسي، والمواضيع والمواقف الحياتية.",
+            "original": "599",
+            "originalAccessible": "السعر السابق: 599 ريال سعودي",
+            "price": "299",
+            "annualBilling": "ريال سعودي/ سنة",
+            "riyalIcons": 2,
+            "numberDirections": [
+              "ltr",
+              "ltr",
+              "ltr"
+            ],
+            "discount": "خصم 50%",
+            "features": [
+              "جميع مزايا باقة المنهج",
+              "جميع مزايا Zayd Life",
+              "أكثر من 40 موقفًا حياتيًا",
+              "تجربة أشمل لبناء الثقة في استخدام اللغة"
+            ],
+            "action": "اختر Zayd Plus",
+            "href": "/auth/register",
+            "featured": true,
+            "x": 18,
+            "y": 484.359375
+          },
+          {
+            "name": "Zayd Life",
+            "description": "إذا كان هدفك استخدام الإنجليزية في الحياة اليومية",
+            "original": "299",
+            "originalAccessible": "السعر السابق: 299 ريال سعودي",
+            "price": "199",
+            "annualBilling": "ريال سعودي/ سنة",
+            "riyalIcons": 2,
+            "numberDirections": [
+              "ltr",
+              "ltr",
+              "ltr"
+            ],
+            "discount": "خصم 33%",
+            "features": [
+              "أكثر من 40 موضوعًا حياتيًا",
+              "محادثات في المطعم والسوق والمطار وغيرها",
+              "ممارسة التحدث في المواقف اليومية",
+              "تغذية راجعة وتكرار المحاولة"
+            ],
+            "action": "ابدأ Zayd Life",
+            "href": "/auth/register",
+            "featured": false,
+            "x": 18,
+            "y": 1012.09375
+          }
+        ],
+        "mascot": "/src/assets/landing-page/pricing-mascot-reference.png",
+        "recommendation": "الأفضل قيمة",
+        "oldPriceVisible": false,
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "focus": [
+        {
+          "focused": true,
+          "visibleOutline": true
+        },
+        {
+          "focused": true,
+          "visibleOutline": true
+        },
+        {
+          "focused": true,
+          "visibleOutline": true
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 768,
+      "checks": {
+        "preservedHeader": true,
+        "exactSubtitle": true,
+        "exactThreePlans": true,
+        "existingBenefitsAndCountPreserved": true,
+        "annualSarAndOriginalPriceText": true,
+        "rtlOrderOrStack": true,
+        "plusVisualsPreserved": true,
+        "noOldPrices": true,
+        "routingUnchangedAsRequested": true,
+        "keyboardFocusVisible": true,
+        "noOverflow": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "eyebrow": "عرض لفترة محدودة",
+        "heading": "اختر التجربة المناسبة",
+        "subtitle": "خصم يصل إلى 50% حاليًا على الباقات الثلاث للأفراد.",
+        "cards": [
+          {
+            "name": "باقة المنهج",
+            "description": "إذا كان هدفك تحسين أدائك في مناهج المدرسة",
+            "original": "299",
+            "originalAccessible": "السعر السابق: 299 ريال سعودي",
+            "price": "199",
+            "annualBilling": "ريال سعودي/ سنة",
+            "riyalIcons": 2,
+            "numberDirections": [
+              "ltr",
+              "ltr",
+              "ltr"
+            ],
+            "discount": "خصم 33%",
+            "features": [
+              "محتوى متوافق مع المنهج",
+              "ممارسة التحدث والاستماع والقراءة والكتابة",
+              "تعلّم مخصص",
+              "تغذية راجعة بالذكاء الاصطناعي"
+            ],
+            "action": "ابدأ باقة المنهج",
+            "href": "/auth/register",
+            "featured": false,
+            "x": 517.4375,
+            "y": 513.25
+          },
+          {
+            "name": "Zayd Plus",
+            "description": "التجربة الكاملة: المنهج الدراسي، والمواضيع والمواقف الحياتية.",
+            "original": "599",
+            "originalAccessible": "السعر السابق: 599 ريال سعودي",
+            "price": "299",
+            "annualBilling": "ريال سعودي/ سنة",
+            "riyalIcons": 2,
+            "numberDirections": [
+              "ltr",
+              "ltr",
+              "ltr"
+            ],
+            "discount": "خصم 50%",
+            "features": [
+              "جميع مزايا باقة المنهج",
+              "جميع مزايا Zayd Life",
+              "أكثر من 40 موقفًا حياتيًا",
+              "تجربة أشمل لبناء الثقة في استخدام اللغة"
+            ],
+            "action": "اختر Zayd Plus",
+            "href": "/auth/register",
+            "featured": true,
+            "x": 270.71875,
+            "y": 489.640625
+          },
+          {
+            "name": "Zayd Life",
+            "description": "إذا كان هدفك استخدام الإنجليزية في الحياة اليومية",
+            "original": "299",
+            "originalAccessible": "السعر السابق: 299 ريال سعودي",
+            "price": "199",
+            "annualBilling": "ريال سعودي/ سنة",
+            "riyalIcons": 2,
+            "numberDirections": [
+              "ltr",
+              "ltr",
+              "ltr"
+            ],
+            "discount": "خصم 33%",
+            "features": [
+              "أكثر من 40 موضوعًا حياتيًا",
+              "محادثات في المطعم والسوق والمطار وغيرها",
+              "ممارسة التحدث في المواقف اليومية",
+              "تغذية راجعة وتكرار المحاولة"
+            ],
+            "action": "ابدأ Zayd Life",
+            "href": "/auth/register",
+            "featured": false,
+            "x": 24,
+            "y": 513.25
+          }
+        ],
+        "mascot": "/src/assets/landing-page/pricing-mascot-reference.png",
+        "recommendation": "الأفضل قيمة",
+        "oldPriceVisible": false,
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "focus": [
+        {
+          "focused": true,
+          "visibleOutline": true
+        },
+        {
+          "focused": true,
+          "visibleOutline": true
+        },
+        {
+          "focused": true,
+          "visibleOutline": true
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1024,
+      "checks": {
+        "preservedHeader": true,
+        "exactSubtitle": true,
+        "exactThreePlans": true,
+        "existingBenefitsAndCountPreserved": true,
+        "annualSarAndOriginalPriceText": true,
+        "rtlOrderOrStack": true,
+        "plusVisualsPreserved": true,
+        "noOldPrices": true,
+        "routingUnchangedAsRequested": true,
+        "keyboardFocusVisible": true,
+        "noOverflow": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "eyebrow": "عرض لفترة محدودة",
+        "heading": "اختر التجربة المناسبة",
+        "subtitle": "خصم يصل إلى 50% حاليًا على الباقات الثلاث للأفراد.",
+        "cards": [
+          {
+            "name": "باقة المنهج",
+            "description": "إذا كان هدفك تحسين أدائك في مناهج المدرسة",
+            "original": "299",
+            "originalAccessible": "السعر السابق: 299 ريال سعودي",
+            "price": "199",
+            "annualBilling": "ريال سعودي/ سنة",
+            "riyalIcons": 2,
+            "numberDirections": [
+              "ltr",
+              "ltr",
+              "ltr"
+            ],
+            "discount": "خصم 33%",
+            "features": [
+              "محتوى متوافق مع المنهج",
+              "ممارسة التحدث والاستماع والقراءة والكتابة",
+              "تعلّم مخصص",
+              "تغذية راجعة بالذكاء الاصطناعي"
+            ],
+            "action": "ابدأ باقة المنهج",
+            "href": "/auth/register",
+            "featured": false,
+            "x": 677.109375,
+            "y": 533
+          },
+          {
+            "name": "Zayd Plus",
+            "description": "التجربة الكاملة: المنهج الدراسي، والمواضيع والمواقف الحياتية.",
+            "original": "599",
+            "originalAccessible": "السعر السابق: 599 ريال سعودي",
+            "price": "299",
+            "annualBilling": "ريال سعودي/ سنة",
+            "riyalIcons": 2,
+            "numberDirections": [
+              "ltr",
+              "ltr",
+              "ltr"
+            ],
+            "discount": "خصم 50%",
+            "features": [
+              "جميع مزايا باقة المنهج",
+              "جميع مزايا Zayd Life",
+              "أكثر من 40 موقفًا حياتيًا",
+              "تجربة أشمل لبناء الثقة في استخدام اللغة"
+            ],
+            "action": "اختر Zayd Plus",
+            "href": "/auth/register",
+            "featured": true,
+            "x": 371.828125,
+            "y": 506.265625
+          },
+          {
+            "name": "Zayd Life",
+            "description": "إذا كان هدفك استخدام الإنجليزية في الحياة اليومية",
+            "original": "299",
+            "originalAccessible": "السعر السابق: 299 ريال سعودي",
+            "price": "199",
+            "annualBilling": "ريال سعودي/ سنة",
+            "riyalIcons": 2,
+            "numberDirections": [
+              "ltr",
+              "ltr",
+              "ltr"
+            ],
+            "discount": "خصم 33%",
+            "features": [
+              "أكثر من 40 موضوعًا حياتيًا",
+              "محادثات في المطعم والسوق والمطار وغيرها",
+              "ممارسة التحدث في المواقف اليومية",
+              "تغذية راجعة وتكرار المحاولة"
+            ],
+            "action": "ابدأ Zayd Life",
+            "href": "/auth/register",
+            "featured": false,
+            "x": 66.546875,
+            "y": 533
+          }
+        ],
+        "mascot": "/src/assets/landing-page/pricing-mascot-reference.png",
+        "recommendation": "الأفضل قيمة",
+        "oldPriceVisible": false,
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "focus": [
+        {
+          "focused": true,
+          "visibleOutline": true
+        },
+        {
+          "focused": true,
+          "visibleOutline": true
+        },
+        {
+          "focused": true,
+          "visibleOutline": true
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "checks": {
+        "preservedHeader": true,
+        "exactSubtitle": true,
+        "exactThreePlans": true,
+        "existingBenefitsAndCountPreserved": true,
+        "annualSarAndOriginalPriceText": true,
+        "rtlOrderOrStack": true,
+        "plusVisualsPreserved": true,
+        "noOldPrices": true,
+        "routingUnchangedAsRequested": true,
+        "keyboardFocusVisible": true,
+        "noOverflow": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "eyebrow": "عرض لفترة محدودة",
+        "heading": "اختر التجربة المناسبة",
+        "subtitle": "خصم يصل إلى 50% حاليًا على الباقات الثلاث للأفراد.",
+        "cards": [
+          {
+            "name": "باقة المنهج",
+            "description": "إذا كان هدفك تحسين أدائك في مناهج المدرسة",
+            "original": "299",
+            "originalAccessible": "السعر السابق: 299 ريال سعودي",
+            "price": "199",
+            "annualBilling": "ريال سعودي/ سنة",
+            "riyalIcons": 2,
+            "numberDirections": [
+              "ltr",
+              "ltr",
+              "ltr"
+            ],
+            "discount": "خصم 33%",
+            "features": [
+              "محتوى متوافق مع المنهج",
+              "ممارسة التحدث والاستماع والقراءة والكتابة",
+              "تعلّم مخصص",
+              "تغذية راجعة بالذكاء الاصطناعي"
+            ],
+            "action": "ابدأ باقة المنهج",
+            "href": "/auth/register",
+            "featured": false,
+            "x": 952.1875,
+            "y": 496.890625
+          },
+          {
+            "name": "Zayd Plus",
+            "description": "التجربة الكاملة: المنهج الدراسي، والمواضيع والمواقف الحياتية.",
+            "original": "599",
+            "originalAccessible": "السعر السابق: 599 ريال سعودي",
+            "price": "299",
+            "annualBilling": "ريال سعودي/ سنة",
+            "riyalIcons": 2,
+            "numberDirections": [
+              "ltr",
+              "ltr",
+              "ltr"
+            ],
+            "discount": "خصم 50%",
+            "features": [
+              "جميع مزايا باقة المنهج",
+              "جميع مزايا Zayd Life",
+              "أكثر من 40 موقفًا حياتيًا",
+              "تجربة أشمل لبناء الثقة في استخدام اللغة"
+            ],
+            "action": "اختر Zayd Plus",
+            "href": "/auth/register",
+            "featured": true,
+            "x": 522.890625,
+            "y": 459.296875
+          },
+          {
+            "name": "Zayd Life",
+            "description": "إذا كان هدفك استخدام الإنجليزية في الحياة اليومية",
+            "original": "299",
+            "originalAccessible": "السعر السابق: 299 ريال سعودي",
+            "price": "199",
+            "annualBilling": "ريال سعودي/ سنة",
+            "riyalIcons": 2,
+            "numberDirections": [
+              "ltr",
+              "ltr",
+              "ltr"
+            ],
+            "discount": "خصم 33%",
+            "features": [
+              "أكثر من 40 موضوعًا حياتيًا",
+              "محادثات في المطعم والسوق والمطار وغيرها",
+              "ممارسة التحدث في المواقف اليومية",
+              "تغذية راجعة وتكرار المحاولة"
+            ],
+            "action": "ابدأ Zayd Life",
+            "href": "/auth/register",
+            "featured": false,
+            "x": 93.59375,
+            "y": 496.890625
+          }
+        ],
+        "mascot": "/src/assets/landing-page/pricing-mascot-reference.png",
+        "recommendation": "الأفضل قيمة",
+        "oldPriceVisible": false,
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "focus": [
+        {
+          "focused": true,
+          "visibleOutline": true
+        },
+        {
+          "focused": true,
+          "visibleOutline": true
+        },
+        {
+          "focused": true,
+          "visibleOutline": true
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "changedExistingSourceFiles": [
+    "src/pages/public/landing-content.ts",
+    "src/pages/public/pricing-section.tsx"
+  ],
+  "sourceScope": true,
+  "passed": true,
+  "routingRequirementComplete": false,
+  "routingNote": "Known missing /auth/register route is preserved per explicit user deferral; preservation test does not certify a working destination.",
+  "faqNote": "Existing package FAQ contains no prices; nine-question P9 FAQ implementation is untouched. P9 must reuse landingPricingPlans for amounts."
+}

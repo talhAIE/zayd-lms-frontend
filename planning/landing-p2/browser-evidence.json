@@ -1,0 +1,545 @@
+{
+  "capturedAtUtc": "2026-11-07T10:23:13.386Z",
+  "browser": "156.0.8078.81",
+  "httpStatus": 200,
+  "scope": "P2 comparison only; no application interaction added",
+  "widths": [
+    {
+      "width": 1440,
+      "documentWidth": 1440,
+      "lang": "ar",
+      "direction": "rtl",
+      "intro": "المشكلة ليست دائمًا في شرح اللغة، بل في أن كل طالب لا يحصل على الوقت الكافي لممارستها بصورة فردية.",
+      "eyebrow": "يدرس الإنجليزية لسنوات",
+      "heading": "لكــن كــم يتحــدث فعليًــا؟",
+      "frame": {
+        "background": "rgb(241, 245, 249)",
+        "radius": "24px",
+        "padding": "48px 32px"
+      },
+      "classroom": {
+        "heading": "معلم واحد ... وعشرات الطلاب",
+        "description": "مهما بلغت كفاءة المعلم، يظل وقت الحصة محدودًا، مما يقلل فرص ممارسة الإنجليزية بصورة فردية منتظمة لكل طالب.",
+        "badge": "داخل الفصل",
+        "points": [
+          "وقت محدود للتحدث والقراءة والاستماع",
+          "فرص أقل للتكرار والمحاولة وتحسين الأداء",
+          "صعوبة تقديم تغذية راجعة لكل طالب"
+        ],
+        "bounds": {
+          "x": 740,
+          "y": 418,
+          "width": 574.40625,
+          "height": 370.421875,
+          "right": 1314.40625,
+          "bottom": 788.421875
+        },
+        "border": "rgb(254, 205, 211)",
+        "borderWidth": "1px",
+        "background": "rgb(255, 250, 251)",
+        "badgeBackground": "rgb(255, 228, 230)",
+        "badgeColor": "rgb(190, 18, 60)",
+        "icons": [
+          {
+            "className": "lucide lucide-circle-alert",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-alert",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-alert",
+            "hidden": "true"
+          }
+        ]
+      },
+      "zayd": {
+        "heading": "لكل طالب مساحة لممارسة الإنجليزية",
+        "description": "زيد يعزز دور المعلم، ويمنح لكل طالب فرصًا لممارسة الإنجليزية وفق مستواه وسرعته.",
+        "badge": "مع زيد",
+        "points": [
+          "يمارس مهارات اللغة الإنجليزية بتفاعل",
+          "يتلقى تغذية راجعة فورية لتحسين أدائه",
+          "يتقدم وفق مستواه مع فرص متكررة للمحاولة"
+        ],
+        "bounds": {
+          "x": 125.59375,
+          "y": 418,
+          "width": 574.40625,
+          "height": 370.421875,
+          "right": 700,
+          "bottom": 788.421875
+        },
+        "border": "rgb(14, 165, 233)",
+        "borderWidth": "2px",
+        "background": "rgb(255, 255, 255)",
+        "badgeBackground": "rgb(224, 242, 254)",
+        "badgeColor": "rgb(7, 89, 133)",
+        "icons": [
+          {
+            "className": "lucide lucide-circle-check",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-check",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-check",
+            "hidden": "true"
+          }
+        ]
+      },
+      "versus": {
+        "visible": true,
+        "bounds": {
+          "x": 700,
+          "y": 583.203125,
+          "width": 40,
+          "height": 40,
+          "right": 740,
+          "bottom": 623.203125
+        },
+        "pointerEvents": "none",
+        "hidden": "true"
+      },
+      "focusableContent": 0,
+      "overflow": [],
+      "clippedText": []
+    },
+    {
+      "width": 1024,
+      "documentWidth": 1024,
+      "lang": "ar",
+      "direction": "rtl",
+      "intro": "المشكلة ليست دائمًا في شرح اللغة، بل في أن كل طالب لا يحصل على الوقت الكافي لممارستها بصورة فردية.",
+      "eyebrow": "يدرس الإنجليزية لسنوات",
+      "heading": "لكــن كــم يتحــدث فعليًــا؟",
+      "frame": {
+        "background": "rgb(241, 245, 249)",
+        "radius": "24px",
+        "padding": "48px 32px"
+      },
+      "classroom": {
+        "heading": "معلم واحد ... وعشرات الطلاب",
+        "description": "مهما بلغت كفاءة المعلم، يظل وقت الحصة محدودًا، مما يقلل فرص ممارسة الإنجليزية بصورة فردية منتظمة لكل طالب.",
+        "badge": "داخل الفصل",
+        "points": [
+          "وقت محدود للتحدث والقراءة والاستماع",
+          "فرص أقل للتكرار والمحاولة وتحسين الأداء",
+          "صعوبة تقديم تغذية راجعة لكل طالب"
+        ],
+        "bounds": {
+          "x": 532,
+          "y": 354.625,
+          "width": 393.453125,
+          "height": 394.40625,
+          "right": 925.453125,
+          "bottom": 749.03125
+        },
+        "border": "rgb(254, 205, 211)",
+        "borderWidth": "1px",
+        "background": "rgb(255, 250, 251)",
+        "badgeBackground": "rgb(255, 228, 230)",
+        "badgeColor": "rgb(190, 18, 60)",
+        "icons": [
+          {
+            "className": "lucide lucide-circle-alert",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-alert",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-alert",
+            "hidden": "true"
+          }
+        ]
+      },
+      "zayd": {
+        "heading": "لكل طالب مساحة لممارسة الإنجليزية",
+        "description": "زيد يعزز دور المعلم، ويمنح لكل طالب فرصًا لممارسة الإنجليزية وفق مستواه وسرعته.",
+        "badge": "مع زيد",
+        "points": [
+          "يمارس مهارات اللغة الإنجليزية بتفاعل",
+          "يتلقى تغذية راجعة فورية لتحسين أدائه",
+          "يتقدم وفق مستواه مع فرص متكررة للمحاولة"
+        ],
+        "bounds": {
+          "x": 98.546875,
+          "y": 354.625,
+          "width": 393.453125,
+          "height": 394.40625,
+          "right": 492,
+          "bottom": 749.03125
+        },
+        "border": "rgb(14, 165, 233)",
+        "borderWidth": "2px",
+        "background": "rgb(255, 255, 255)",
+        "badgeBackground": "rgb(224, 242, 254)",
+        "badgeColor": "rgb(7, 89, 133)",
+        "icons": [
+          {
+            "className": "lucide lucide-circle-check",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-check",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-check",
+            "hidden": "true"
+          }
+        ]
+      },
+      "versus": {
+        "visible": true,
+        "bounds": {
+          "x": 492,
+          "y": 531.828125,
+          "width": 40,
+          "height": 40,
+          "right": 532,
+          "bottom": 571.828125
+        },
+        "pointerEvents": "none",
+        "hidden": "true"
+      },
+      "focusableContent": 0,
+      "overflow": [],
+      "clippedText": []
+    },
+    {
+      "width": 768,
+      "documentWidth": 768,
+      "lang": "ar",
+      "direction": "rtl",
+      "intro": "المشكلة ليست دائمًا في شرح اللغة، بل في أن كل طالب لا يحصل على الوقت الكافي لممارستها بصورة فردية.",
+      "eyebrow": "يدرس الإنجليزية لسنوات",
+      "heading": "لكــن كــم يتحــدث فعليًــا؟",
+      "frame": {
+        "background": "rgb(241, 245, 249)",
+        "radius": "24px",
+        "padding": "48px 32px"
+      },
+      "classroom": {
+        "heading": "معلم واحد ... وعشرات الطلاب",
+        "description": "مهما بلغت كفاءة المعلم، يظل وقت الحصة محدودًا، مما يقلل فرص ممارسة الإنجليزية بصورة فردية منتظمة لكل طالب.",
+        "badge": "داخل الفصل",
+        "points": [
+          "وقت محدود للتحدث والقراءة والاستماع",
+          "فرص أقل للتكرار والمحاولة وتحسين الأداء",
+          "صعوبة تقديم تغذية راجعة لكل طالب"
+        ],
+        "bounds": {
+          "x": 56,
+          "y": 259.9375,
+          "width": 656,
+          "height": 364.015625,
+          "right": 712,
+          "bottom": 623.953125
+        },
+        "border": "rgb(254, 205, 211)",
+        "borderWidth": "1px",
+        "background": "rgb(255, 250, 251)",
+        "badgeBackground": "rgb(255, 228, 230)",
+        "badgeColor": "rgb(190, 18, 60)",
+        "icons": [
+          {
+            "className": "lucide lucide-circle-alert",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-alert",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-alert",
+            "hidden": "true"
+          }
+        ]
+      },
+      "zayd": {
+        "heading": "لكل طالب مساحة لممارسة الإنجليزية",
+        "description": "زيد يعزز دور المعلم، ويمنح لكل طالب فرصًا لممارسة الإنجليزية وفق مستواه وسرعته.",
+        "badge": "مع زيد",
+        "points": [
+          "يمارس مهارات اللغة الإنجليزية بتفاعل",
+          "يتلقى تغذية راجعة فورية لتحسين أدائه",
+          "يتقدم وفق مستواه مع فرص متكررة للمحاولة"
+        ],
+        "bounds": {
+          "x": 56,
+          "y": 647.953125,
+          "width": 656,
+          "height": 335.625,
+          "right": 712,
+          "bottom": 983.578125
+        },
+        "border": "rgb(14, 165, 233)",
+        "borderWidth": "2px",
+        "background": "rgb(255, 255, 255)",
+        "badgeBackground": "rgb(224, 242, 254)",
+        "badgeColor": "rgb(7, 89, 133)",
+        "icons": [
+          {
+            "className": "lucide lucide-circle-check",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-check",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-check",
+            "hidden": "true"
+          }
+        ]
+      },
+      "versus": {
+        "visible": false,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "right": 0,
+          "bottom": 0
+        },
+        "pointerEvents": "none",
+        "hidden": "true"
+      },
+      "focusableContent": 0,
+      "overflow": [],
+      "clippedText": []
+    },
+    {
+      "width": 390,
+      "documentWidth": 390,
+      "lang": "ar",
+      "direction": "rtl",
+      "intro": "المشكلة ليست دائمًا في شرح اللغة، بل في أن كل طالب لا يحصل على الوقت الكافي لممارستها بصورة فردية.",
+      "eyebrow": "يدرس الإنجليزية لسنوات",
+      "heading": "لكــن كــم يتحــدث فعليًــا؟",
+      "frame": {
+        "background": "rgb(241, 245, 249)",
+        "radius": "24px",
+        "padding": "28px 16px"
+      },
+      "classroom": {
+        "heading": "معلم واحد ... وعشرات الطلاب",
+        "description": "مهما بلغت كفاءة المعلم، يظل وقت الحصة محدودًا، مما يقلل فرص ممارسة الإنجليزية بصورة فردية منتظمة لكل طالب.",
+        "badge": "داخل الفصل",
+        "points": [
+          "وقت محدود للتحدث والقراءة والاستماع",
+          "فرص أقل للتكرار والمحاولة وتحسين الأداء",
+          "صعوبة تقديم تغذية راجعة لكل طالب"
+        ],
+        "bounds": {
+          "x": 34,
+          "y": 43.671875,
+          "width": 322,
+          "height": 361.4375,
+          "right": 356,
+          "bottom": 405.109375
+        },
+        "border": "rgb(254, 205, 211)",
+        "borderWidth": "1px",
+        "background": "rgb(255, 250, 251)",
+        "badgeBackground": "rgb(255, 228, 230)",
+        "badgeColor": "rgb(190, 18, 60)",
+        "icons": [
+          {
+            "className": "lucide lucide-circle-alert",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-alert",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-alert",
+            "hidden": "true"
+          }
+        ]
+      },
+      "zayd": {
+        "heading": "لكل طالب مساحة لممارسة الإنجليزية",
+        "description": "زيد يعزز دور المعلم، ويمنح لكل طالب فرصًا لممارسة الإنجليزية وفق مستواه وسرعته.",
+        "badge": "مع زيد",
+        "points": [
+          "يمارس مهارات اللغة الإنجليزية بتفاعل",
+          "يتلقى تغذية راجعة فورية لتحسين أدائه",
+          "يتقدم وفق مستواه مع فرص متكررة للمحاولة"
+        ],
+        "bounds": {
+          "x": 34,
+          "y": 429.109375,
+          "width": 322,
+          "height": 370.4375,
+          "right": 356,
+          "bottom": 799.546875
+        },
+        "border": "rgb(14, 165, 233)",
+        "borderWidth": "2px",
+        "background": "rgb(255, 255, 255)",
+        "badgeBackground": "rgb(224, 242, 254)",
+        "badgeColor": "rgb(7, 89, 133)",
+        "icons": [
+          {
+            "className": "lucide lucide-circle-check",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-check",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-check",
+            "hidden": "true"
+          }
+        ]
+      },
+      "versus": {
+        "visible": false,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "right": 0,
+          "bottom": 0
+        },
+        "pointerEvents": "none",
+        "hidden": "true"
+      },
+      "focusableContent": 0,
+      "overflow": [],
+      "clippedText": []
+    },
+    {
+      "width": 320,
+      "documentWidth": 320,
+      "lang": "ar",
+      "direction": "rtl",
+      "intro": "المشكلة ليست دائمًا في شرح اللغة، بل في أن كل طالب لا يحصل على الوقت الكافي لممارستها بصورة فردية.",
+      "eyebrow": "يدرس الإنجليزية لسنوات",
+      "heading": "لكــن كــم يتحــدث فعليًــا؟",
+      "frame": {
+        "background": "rgb(241, 245, 249)",
+        "radius": "24px",
+        "padding": "28px 16px"
+      },
+      "classroom": {
+        "heading": "معلم واحد ... وعشرات الطلاب",
+        "description": "مهما بلغت كفاءة المعلم، يظل وقت الحصة محدودًا، مما يقلل فرص ممارسة الإنجليزية بصورة فردية منتظمة لكل طالب.",
+        "badge": "داخل الفصل",
+        "points": [
+          "وقت محدود للتحدث والقراءة والاستماع",
+          "فرص أقل للتكرار والمحاولة وتحسين الأداء",
+          "صعوبة تقديم تغذية راجعة لكل طالب"
+        ],
+        "bounds": {
+          "x": 34,
+          "y": 70.265625,
+          "width": 252,
+          "height": 499.296875,
+          "right": 286,
+          "bottom": 569.5625
+        },
+        "border": "rgb(254, 205, 211)",
+        "borderWidth": "1px",
+        "background": "rgb(255, 250, 251)",
+        "badgeBackground": "rgb(255, 228, 230)",
+        "badgeColor": "rgb(190, 18, 60)",
+        "icons": [
+          {
+            "className": "lucide lucide-circle-alert",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-alert",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-alert",
+            "hidden": "true"
+          }
+        ]
+      },
+      "zayd": {
+        "heading": "لكل طالب مساحة لممارسة الإنجليزية",
+        "description": "زيد يعزز دور المعلم، ويمنح لكل طالب فرصًا لممارسة الإنجليزية وفق مستواه وسرعته.",
+        "badge": "مع زيد",
+        "points": [
+          "يمارس مهارات اللغة الإنجليزية بتفاعل",
+          "يتلقى تغذية راجعة فورية لتحسين أدائه",
+          "يتقدم وفق مستواه مع فرص متكررة للمحاولة"
+        ],
+        "bounds": {
+          "x": 34,
+          "y": 593.5625,
+          "width": 252,
+          "height": 474.703125,
+          "right": 286,
+          "bottom": 1068.265625
+        },
+        "border": "rgb(14, 165, 233)",
+        "borderWidth": "2px",
+        "background": "rgb(255, 255, 255)",
+        "badgeBackground": "rgb(224, 242, 254)",
+        "badgeColor": "rgb(7, 89, 133)",
+        "icons": [
+          {
+            "className": "lucide lucide-circle-check",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-check",
+            "hidden": "true"
+          },
+          {
+            "className": "lucide lucide-circle-check",
+            "hidden": "true"
+          }
+        ]
+      },
+      "versus": {
+        "visible": false,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "right": 0,
+          "bottom": 0
+        },
+        "pointerEvents": "none",
+        "hidden": "true"
+      },
+      "focusableContent": 0,
+      "overflow": [],
+      "clippedText": []
+    }
+  ],
+  "forcedColors": {
+    "cards": 2,
+    "icons": 6,
+    "labels": [
+      "داخل الفصل",
+      "مع زيد"
+    ]
+  },
+  "p1Preservation": {
+    "body": "زيد معلّم ذكي لممارسة اللغة الإنجليزية، يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه في المدرسة.",
+    "ctas": [
+      "جرب زيد Zayd الآن",
+      "زيد Zayd للمدارس"
+    ],
+    "topic": "+40"
+  },
+  "pageErrors": []
+}

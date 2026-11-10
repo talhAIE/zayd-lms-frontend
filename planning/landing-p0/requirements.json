@@ -1,0 +1,953 @@
+{
+  "sourcePdfSha256": "cde12eb809ca248cfab3bd5f3d908498085f0b0ca58ce11020a2e12d4cdf8aa5",
+  "requirements": [
+    {
+      "id": "P0-SOURCE",
+      "phase": "P0",
+      "detail": "Freeze the updated PDF as the working source, identify its detailed S6B/S12B additions, and record all S15 decisions. Keep the earlier PDF as historical context only. Source: pp1-29. Evidence: `planning/landing-p0/source-manifest.json`, `source/pdf-text.txt`; current PDF SHA-256 `cde12eb809ca248cfab3bd5f3d908498085f0b0ca58ce11020a2e12d4cdf8aa5`, 29 pages.",
+      "status": "planning_complete",
+      "evidence": [
+        "planning/landing-p0/README.md"
+      ]
+    },
+    {
+      "id": "P0-BASELINE",
+      "phase": "P0",
+      "detail": "Capture current desktop, tablet and mobile landing-page screenshots and interactions. Record pre-existing differences in unchanged sections, especially S4 video and S5 intro, separately from regressions caused by this work. Source: S1/S4/S14, pp2-6, pp26-27. Evidence: `planning/landing-p0/baseline/` (1440×1000, 768×1024, 390×844); `baseline-report.json`; README observations B01-B13. Ten expected behaviors and one existing conversion defect reproduced; no application fixes made.",
+      "status": "planning_complete",
+      "evidence": [
+        "planning/landing-p0/README.md"
+      ]
+    },
+    {
+      "id": "P0-CONTENT",
+      "phase": "P0",
+      "detail": "Establish typed data for supplied copy, topic count, student/practice/lesson totals, unit labels, pricing, FAQ entries and asset mapping, keeping approval status explicit. A single decision must update every dependent occurrence. Avoid a CMS or broad state-management rewrite. Source: p5, pp18-20, pp24-29. Evidence: planning-only `content-contract.ts` and `content-data.json`, outside `src` and not imported by the app; standalone TypeScript check passed. Business approval is not inferred from supplied draft copy.",
+      "status": "planning_complete",
+      "evidence": [
+        "planning/landing-p0/README.md"
+      ]
+    },
+    {
+      "id": "P0-ASSETS",
+      "phase": "P0",
+      "detail": "Inventory all eight screenshot references, six dialogue clips, two demo prompts, four new feature icons, and optional S12B graphics. Record source, dimensions, suitability, caption/alt text, and whether the asset is supplied or still needed. Source: pp9-15, pp22-23. Evidence: `planning/landing-p0/asset-inventory.json` and `reference-images/`; missing assets remain marked missing, not fabricated.",
+      "status": "planning_complete",
+      "evidence": [
+        "planning/landing-p0/README.md"
+      ]
+    },
+    {
+      "id": "P0-DECISIONS",
+      "phase": "P0",
+      "detail": "Track D01-D10 below and the extra engineering questions E01-E04. Unresolved content must not be represented as approved release content. Source: pp27-29. Evidence: `planning/landing-p0/decisions.json` assigns owner/status/evidence/next action. User explicitly deferred D01; all other unconfirmed choices remain unapproved.",
+      "status": "planning_complete",
+      "evidence": [
+        "planning/landing-p0/README.md"
+      ]
+    },
+    {
+      "id": "S2-PRESERVE",
+      "phase": "P1",
+      "detail": "Preserve character/preview composition, “جاهز نبدأ” tag, grade badge and two-line H1. Verify the tag in the current asset/DOM rather than assuming it exists. Badge: “للطلاب من الأول المتوسط إلى الثالث الثانوي”. H1: “من دراسة الإنجليزية إلى / استخدامها بثقة”, keeping established emphasis/elongation treatment. Source: pp3-4, callouts 1-3.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S2-BODY",
+      "phase": "P1",
+      "detail": "Replace hero paragraph with: “زيد معلّم ذكي لممارسة اللغة الإنجليزية، يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه في المدرسة.” Source: p4, callout 4.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S2-PRIMARY",
+      "phase": "P1",
+      "detail": "Primary CTA becomes “جرب زيد Zayd الآن”; retain the solid blue pill and meaningful destination. Isolate Zayd as LTR within Arabic. Source: p4, callout 5.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S2-SECONDARY",
+      "phase": "P1",
+      "detail": "Secondary CTA becomes “زيد Zayd للمدارس”; retain outlined styling and Schools navigation. Source: p4, callout 6.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S3-CLOCK",
+      "phase": "P1",
+      "detail": "Keep ساعة and clock; subtitle becomes “أسبوعيًا لممارسة الإنجليزية”. Source: p5, callout 1.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S3-TOPICS",
+      "phase": "P1",
+      "detail": "Center metric uses the updated 250+ target and subtitle “موضوعًا وموقفًا من الحياة”, subject to D01 consistency confirmation. Preserve document/check icon. Source: p5, callout 2.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S3-MULTIPLIER",
+      "phase": "P1",
+      "detail": "Keep ×10 and chart icon; subtitle becomes “لممارسة الإنجليزية”. Preserve Clock → Topics → ×10 right-to-left card order. Source: p5, callout 3.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S1-PRESERVE",
+      "phase": "P1",
+      "detail": "Preserve right-side logo, RTL order الرئيسية / المنهج / الحياة اليومية / للمدارس / الأسئلة الشائعة, Pricing and Try Zayd buttons, sticky/mobile behavior and anchors. This is a preservation check, not a navbar redesign. Source: pp2-3, callouts 1-4.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S5-INTRO",
+      "phase": "P2",
+      "detail": "Preserve the reference intro: “يدرس الإنجليزية لسنوات / لكن كم يتحدث فعليًا؟” and “المشكلة ليست دائمًا في شرح اللغة، بل في أن كل طالب لا يحصل على الوقت الكافي لممارستها بصورة فردية.” Current repository intro differs; restore this reference text if P0 chooses exact PDF alignment, otherwise record the accepted pre-existing variance. Source: p6, callout 1.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S5-CONTAINER",
+      "phase": "P2",
+      "detail": "Soft slate/blue container: #F1F5F9 or #EFF6FF, 24px radius, 48px 32px desktop padding; adapt padding on narrow screens. Source: p7, callout 2.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S5-CLASSROOM-STYLE",
+      "phase": "P2",
+      "detail": "Classroom card on the RIGHT: warm rose border #FECDD3; badge background #FFE4E6 and text #BE123C; warning icons retained. Source: p7, callout 2.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S5-ZAYD-STYLE",
+      "phase": "P2",
+      "detail": "Zayd card on the LEFT: white surface, 2px #0EA5E9 border, soft glow shadow; subtle VS badge between cards. On mobile, stack Classroom then Zayd and position/remove decorative overlap safely. Source: p7, callout 2.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S5-CLASSROOM-BODY",
+      "phase": "P2",
+      "detail": "Keep badge “داخل الفصل” and title “معلم واحد ... وعشرات الطلاب”. Body: “مهما بلغت كفاءة المعلم، يظل وقت الحصة محدودًا، مما يقلل فرص ممارسة الإنجليزية بصورة فردية منتظمة لكل طالب.” Source: p7, callout 3.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S5-WARNING-1",
+      "phase": "P2",
+      "detail": "“وقت محدود للتحدث والقراءة والاستماع”. Source: p7, callout 4.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S5-WARNING-2",
+      "phase": "P2",
+      "detail": "“فرص أقل للتكرار والمحاولة وتحسين الأداء”. Source: p7, callout 4.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S5-WARNING-3",
+      "phase": "P2",
+      "detail": "“صعوبة تقديم تغذية راجعة لكل طالب”. Source: p7, callout 4.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S5-ZAYD-TITLE",
+      "phase": "P2",
+      "detail": "Badge “مع زيد”; title “لكل طالب مساحة لممارسة الإنجليزية”. Source: p7, callout 5.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S5-ZAYD-BODY",
+      "phase": "P2",
+      "detail": "“زيد يعزز دور المعلم، ويمنح لكل طالب فرصًا لممارسة الإنجليزية وفق مستواه وسرعته.” Use زيد, not زايد. Source: p8, callout 6.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S5-BENEFIT-1",
+      "phase": "P2",
+      "detail": "“يمارس مهارات اللغة الإنجليزية بتفاعل”. Source: p8, callout 7.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S5-BENEFIT-2",
+      "phase": "P2",
+      "detail": "“يتلقى تغذية راجعة فورية لتحسين أدائه”. Source: p8, callout 7.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S5-BENEFIT-3",
+      "phase": "P2",
+      "detail": "“يتقدم وفق مستواه مع فرص متكررة للمحاولة”. Source: p8, callout 7.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S6-COPY",
+      "phase": "P3",
+      "detail": "Preserve badge, grade headline, body and blue tagline. Exact existing intent: “متوافق بالكامل مع المنهج”; “من الأول المتوسط إلى الثالث الثانوي”; “لا يحتاج الطالب إلى منهج جديد. زيد يحوّل ما يدرسه بالفعل إلى تجربة ممارسة شخصية وتفاعلية تساعده على استخدام اللغة، لا مجرد معرفتها.”; “يتعلمها في المنهج... ويمارسها مع زيد.” Source: p9, callouts 2-5.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S6-SHOWCASE",
+      "phase": "P3",
+      "detail": "Replace/augment the static pill panel with a tablet/laptop frame showing real approved Zayd screens. Use screenshot images, not a live authenticated dashboard or a decorative imitation of app data. Source: pp8-9, callout 1.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S6-TABS",
+      "phase": "P3",
+      "detail": "All eight skill labels remain unchanged and become real accessible tabs: الاستماع والمناقشة، القواعد، الاستماع، المحادثة، القراءة، الكتابة، الصيغة والمعنى والاستخدام، التحدث عن الذات. Preserve RTL reading sequence and responsive wrapping. Source: p9, callout 6.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S6B-SLIDE5",
+      "phase": "P3",
+      "detail": "Include practice-reading-aloud screenshot reference: 31% progress; Reading Passage / Practice Reading / Knowledge Quiz; mic sentence and View Assessment. Suitable for Reading secondary panel and S7 illustration. Source: p10, slide 5.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S6B-SLIDE6",
+      "phase": "P3",
+      "detail": "Map Grammar tab to flashcards: Unit 1 Big Changes, 14% complete, first of eight flip cards. Source: p10, slide 6.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S6B-SLIDE7",
+      "phase": "P3",
+      "detail": "Map Listening tab to audio narration: three steps, waveform, first listen 1 of 2, displayed 00:11/02:14. Source: p10, slide 7.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S6B-SLIDE8",
+      "phase": "P3",
+      "detail": "Map Conversation tab to Roleplay: 3/7 meaningful turns, four remaining, feedback/hint/coaching and mic. Source: p10, slide 8.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S6B-SLIDE9",
+      "phase": "P3",
+      "detail": "Include full reading-passage screenshot with Saudi Vision text, Listen button and Listen to continue CTA. Recommended primary Reading image; expose slide 5 through a secondary Reading view so both supplied reading assets are accounted for. Source: p10, slide 9.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S6B-SLIDE10",
+      "phase": "P3",
+      "detail": "Map Writing tab to guided paragraph builder: five questions, hints and student response textareas, 67% complete. Source: p11, slide 10.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S6B-SLIDE11",
+      "phase": "P3",
+      "detail": "Map Form/Meaning/Function tab to grammar reference table for simple past/past progressive with When: Tense, Structure, Example. Source: p11, slide 11.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S6B-SLIDE12",
+      "phase": "P3",
+      "detail": "Include Debate topic-card screenshot for Listening & Discussion. Self-expression mapping remains D03: approved reuse or a supplied dedicated image. All eight tabs must have intentional mappings; do not invent a ninth screenshot from the PDF. Source: p11, slide 12; p28 item 3.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S6-INTERACTION",
+      "phase": "P3",
+      "detail": "Selected tab changes image/caption; implement tablist/tab/tabpanel semantics, visible focus, selected state, RTL-aware arrow keys and Home/End. Reserve image aspect ratio to avoid jumps; offer zoom/lightbox if screenshot text is otherwise unreadable. This accessibility behavior is the implementation method for the required tabs. Source: pp8-11.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-HEADER",
+      "phase": "P4",
+      "detail": "Preserve “كل طالب يتعلم / ويتحدث بطريقته” and character with tablet. Source: p12, callout 1.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-SUBTITLE",
+      "phase": "P4",
+      "detail": "“يمنح زيد كل طالب تجربة تفاعلية تتكيف مع مستواه، وتساعده على ممارسة الإنجليزية والتحسن باستمرار.” Source: p12, callout 3.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-RENDERING",
+      "phase": "P4",
+      "detail": "Render benefit content from the feature model. Stop replacing every feature title/body with demo-mode title/body. Place demo entry separately or inside the dedicated widget; preserve access to the existing six demos without letting them erase the specified benefits. Source: pp12-14; observed current renderer.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-BENEFIT1",
+      "phase": "P4",
+      "detail": "Pink brain, top-right: “تعلم مخصص” / “يتكيف مع مستوى الطالب واحتياجه.” Source: p12, callout 4.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-BENEFIT2",
+      "phase": "P4",
+      "detail": "Purple chat, top-center: “تغذية راجعة فورية” / “ملاحظات ذكية لتحسين الأداء.” Source: p13, callout 5.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-BENEFIT3",
+      "phase": "P4",
+      "detail": "Speaking head, top-left: “ممارسة التحدث” / “تطور مهارات النطق والتحدث.” Source: p13, callout 6.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-BENEFIT4",
+      "phase": "P4",
+      "detail": "Headphones, bottom-right: “تحسين النطق” / “تدريبات لتطوير النطق والطلاقة.” Source: p13, callout 7.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-BENEFIT5",
+      "phase": "P4",
+      "detail": "Repeat arrows, bottom-center: “تكرار دون حدود” / “محاولات متكررة حتى الإتقان.” Source: p13, callout 8.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-BENEFIT6",
+      "phase": "P4",
+      "detail": "Sprout, bottom-left: “بيئة آمنة للتعلم” / “ممارسة الإنجليزية بثقة دون خوف من الخطأ.” Source: p13, callout 9.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-CEFR",
+      "phase": "P4",
+      "detail": "Proposed new title: “تقييم وفق معيار CEFR العالمي”. Proposed body: “قياس دقيق لمستوى الطالب وفق الإطار الأوروبي المشترك للغات (A1–C2).” Confirm copy and accuracy of advertised assessment scope through D05. Source: pp13-14, callout 10.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-AVATAR",
+      "phase": "P4",
+      "detail": "Proposed new title: “شخصيات تفاعلية ثلاثية الأبعاد (3D Avatar)”. Body: “محادثة حية وتفاعلية مع شخصية زيد الذكية في أوضاع تعلم متنوعة.” Source: p14, callout 11.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-CERTIFICATES",
+      "phase": "P4",
+      "detail": "Proposed new title: “شهادات وشارات إنجاز”. Body: “شهادات إتمام وشارات تحفيزية توثّق تقدم الطالب وإنجازاته في كل مرحلة.” Source: p14, callout 12.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-REWARDS",
+      "phase": "P4",
+      "detail": "Proposed new title: “نقاط ومكافآت تحفيزية”. Body: “نظام نقاط تنافسي ولوحات شرف تكافئ الطالب على الاستمرارية والتفوق.” Source: p14, callout 13.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-DEMO-HEADING",
+      "phase": "P5",
+      "detail": "“جرّب التحدث والقراءة مع زيد الآن” with “(تجربة تفاعلية مباشرة)”. Source: p12, callout 2.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-DEMO-TABS",
+      "phase": "P5",
+      "detail": "Inline/in-section widget with two tabs: “تجربة القراءة” and “تجربة التحدث”. Opening existing independent modals alone is insufficient. Source: p12, callout 2.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-DEMO-PROMPT",
+      "phase": "P5",
+      "detail": "Display the approved short grade-level English sentence/prompt in LTR; use the chosen one-to-two samples from D04. Keep Arabic instructions RTL. Source: p12; p28 item 4.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-DEMO-MIC",
+      "phase": "P5",
+      "detail": "Visible mic control labelled “اضغط للتحدث”; ask for microphone only after visitor action; show real recording/waveform state. Source: p12, callout 2.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-DEMO-FEEDBACK",
+      "phase": "P5",
+      "detail": "Show returned pronunciation score and word-by-word assessment highlighting. PDF 92% is an example, not a fixed result. Provide non-color feedback labels so word status remains understandable. Source: p12, callout 2.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-DEMO-STATES",
+      "phase": "P5",
+      "detail": "Implement idle → requesting mic → recording → processing → feedback → retry, plus denied permission, unsupported recorder, silence, network failure and cancellation. Stop playback/recording when switching tabs, closing or navigating away. These states make the requested real interaction usable. Source: p12; integration requirements.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-DEMO-ISOLATION",
+      "phase": "P5",
+      "detail": "Keep guest data isolated: no account tokens, no student progress writes, no logged-in redirect. Reuse the existing guest transport or add the smallest guest adapter if schema gaps exist. A typed response is not a substitute for the requested voice interaction. Source: pp12,28; existing public-demo service architecture.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S7-DEMO-MOTION",
+      "phase": "P5",
+      "detail": "Waveform/live animations reflect actual playback or recording and respect reduced motion. No autoplay voice, fake ongoing recording, permanently fixed score, or success feedback before assessment completes. Source: p12 and referenced slide 2 note on p28.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S8-FRAME",
+      "phase": "P6",
+      "detail": "Use a distinct container with `linear-gradient(135deg, #F0FDFA 0%, #E0F2FE 100%)`, 28px radius, 56px 40px desktop padding and 1px #BAE6FD border; adapt on mobile. Yellow highlighter is not the production border. Source: p15, callout 1.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S8-PREVIEW",
+      "phase": "P6",
+      "detail": "Add subtle hover-lift plus focus-visible equivalent, audio-preview controls to six scenario cards, one-at-a-time playback, loading/error/replay states and text alternatives. Stop on section/page teardown. Resolve sixth clip via E01. Source: p15, callout 1.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S8-PRESERVE",
+      "phase": "P6",
+      "detail": "Preserve badge “من المنهج إلى الحياة”, headline “الإنجليزية لا تنتهي عند حدود الكتاب”, scenario images and first four labels/order: في المطار / في المطعم / في السوق / أثناء السفر. Source: pp15-16, callouts 2 and 5.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S8-BODY",
+      "phase": "P6",
+      "detail": "“في Zayd Life و Zayd Plus، تمتد ممارسة الإنجليزية إلى أكثر من 40 موضوعًا وموقفًا من الحياة اليومية، لتنمية القدرة على التواصل بثقة في مواقف حقيقية.” The literal final row says 40; substitute the approved global topic count only after D01 resolves. Source: p15, callout 3.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S8-CALLOUT",
+      "phase": "P6",
+      "detail": "“لأن الهدف ليس فقط أن يتعلم الإنجليزية، بل القدرة على استخدامها في الحياة.” Preserve two-line emphasis. Source: p15, callout 4.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S8-SOCIAL",
+      "phase": "P6",
+      "detail": "Fifth label: “في المواقف الاجتماعية”. Source: p16, callout 6.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S8-OTHER",
+      "phase": "P6",
+      "detail": "Sixth label: “ومواقف أخرى كثيرة”. Use the detailed final row; the executive summary's word order differs. Source: p16, callout 7.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S9-PRESERVE",
+      "phase": "P6",
+      "detail": "Preserve gradient banner, “مهارة للمستقبل”, “الإنجليزية ليست مادة دراسية فقط”, and first three white pills: الدراسة الجامعية / المعرفة العالمية / سوق العمل. Source: pp16-17, callouts 1 and 3.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S9-BODY",
+      "phase": "P6",
+      "detail": "“إتقان الإنجليزية يفتح آفاقًا أوسع للتعليم الجامعي والمعرفة والاستعداد لسوق العمل.” Source: p16, callout 2.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S9-TAG4",
+      "phase": "P6",
+      "detail": "Bottom-right pill: “التطوير المهني”. Source: p17, callout 4.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S9-TAG5",
+      "phase": "P6",
+      "detail": "Bottom-left pill: “التواصل الدولي”. Source: p17, callout 5.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S10-PRESERVE",
+      "phase": "P6",
+      "detail": "Preserve “نتيجة فارقة”, 3D comparison graphic and the one-year/ten-year calendar badges. Do not reinterpret the claim as academic study equivalence. Source: pp17-18, callouts 1 and 6.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S10-HEADLINE",
+      "phase": "P6",
+      "detail": "“عام واحد مع زيد يعادل نحو / 10 سنوات من ممارسة التحدث”. Replace تساوي with يعادل. Source: pp17-18, callout 2.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S10-BODY",
+      "phase": "P6",
+      "detail": "“يتيح زيد فرصًا مكثفة للتحدث بالإنجليزية، تعادل تقريبًا ما قد يحصل عليه خلال 10 سنوات في الفصل التقليدي.” Source: p18, callout 3.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S10-DISCLAIMER",
+      "phase": "P6",
+      "detail": "“المقارنة تتعلق بفرص ممارسة الإنجليزية، وليس بسنوات الدراسة.” Keep readable adjacent to the claim. Source: p18, callout 4.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S10-STUDENTS",
+      "phase": "P6",
+      "detail": "Implement approved updated 2,500+ target, label طالب مسجل, using D06 data rather than the stale 1,000+ table. Record verification/source date. Source: p18 callout 5; p28 item 6.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S10-TIME",
+      "phase": "P6",
+      "detail": "Implement either 5,000+ ساعة ممارسة or 300,000+ دقيقة ممارسة according to D06. Ensure numeric formatting, icon and accessible text agree with the selected unit. Source: p28 item 6.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S10-LESSONS",
+      "phase": "P6",
+      "detail": "Resolve and use approved completed-lessons total with درس منجز. Do not declare old 8,600+ newly verified. Source: p18 callout 5; p28 item 6.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S11-HEADER",
+      "phase": "P7",
+      "detail": "Preserve “عرض لفترة محدودة” and “اختر التجربة المناسبة”. Subtitle becomes “خصم يصل إلى 50% حاليًا على الباقات الثلاث للأفراد.” Source: p19, callout 1.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S11-CURRICULUM-COPY",
+      "phase": "P7",
+      "detail": "Keep باقة المنهج. Description: “إذا كان هدفك تحسين أدائك في مناهج المدرسة”. Source: p19, callout 2.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S11-CURRICULUM-PRICE",
+      "phase": "P7",
+      "detail": "Original 299 SAR, active 199 SAR/year, 33% badge. Preserve annual billing and riyal icon. Source: p19, callout 3.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S11-CURRICULUM-KEEP",
+      "phase": "P7",
+      "detail": "Preserve its four benefits: curriculum-aligned content; speaking/listening/reading/writing practice; personalized learning; AI feedback. CTA remains “ابدأ باقة المنهج”. Source: p19, callout 3.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S11-PLUS-PRICE",
+      "phase": "P7",
+      "detail": "Original 599 SAR, active 299 SAR/year, 50% badge. Preserve center placement, Zayd Plus title, best-value marker/mascot, description and “اختر Zayd Plus” action. Source: p20, callout 4.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S11-PLUS-KEEP",
+      "phase": "P7",
+      "detail": "Preserve all Curriculum benefits, all Zayd Life benefits, topic-count benefit and confidence benefit. Make the count follow D01. Source: p20, callout 4.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S11-LIFE-COPY",
+      "phase": "P7",
+      "detail": "Keep Zayd Life. Description: “إذا كان هدفك استخدام الإنجليزية في الحياة اليومية”. Source: p20, callout 5.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S11-LIFE-PRICE",
+      "phase": "P7",
+      "detail": "Original 299 SAR, active 199 SAR/year, 33% badge. Source: p20, callout 6.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S11-LIFE-KEEP",
+      "phase": "P7",
+      "detail": "Preserve four benefits and “ابدأ Zayd Life” CTA; first bullet includes the correct أ in أكثر. Literal count remains subject to D01. Other benefits: restaurant/market/airport conversations; speaking/daily-life situations; feedback/retrying. Source: p20, callout 6.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S11-MODEL",
+      "phase": "P7",
+      "detail": "Replace hardcoded shared 50% badge with explicit per-plan data. Keep outer/center card order Curriculum → Plus → Life in RTL. Use the same active prices in FAQ #7. Discounts are whole-percent display labels from the PDF; do not change the specified prices to force exact percentage arithmetic. Source: pp19-20, p25.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S11-ROUTING",
+      "phase": "P7",
+      "detail": "Wire all three actions to the agreed valid destination with plan intent retained if the target supports it. Preserve labels/style; verify no action falls through `/auth/register` to Home. Source: pricing CTAs pp19-20; existing router gap E03.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12-PRESERVE",
+      "phase": "P8",
+      "detail": "Preserve school badge, teacher/dashboard graphic, “حساب خاص للمعلم مجانًا”, teacher account explanation and “زيد لا يستبدل المعلم... بل يوسّع أثره.” Source: p21, callouts 1-2.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12-HEADLINE",
+      "phase": "P8",
+      "detail": "Keep “مدرستك تدرّس الإنجليزية”; second line becomes “وزيد يمنح كل طالب فرصة لممارستها.” Source: p21, callout 2.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12-BODY",
+      "phase": "P8",
+      "detail": "“يعزز زيد دور المعلم، ويمنح الطلاب فرصًا إضافية لممارسة الإنجليزية، مع تغذية راجعة تدعم تقدمهم.” Source: p21, callout 3.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12-PILL1",
+      "phase": "P8",
+      "detail": "“أسعار خاصة للمدارس”. Source: p21, callout 4.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12-PILL2",
+      "phase": "P8",
+      "detail": "“اشتراكات للمجموعات الطلابية”. Source: p22, callout 5.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12-PILL3",
+      "phase": "P8",
+      "detail": "Preserve “دعم للتطبيق داخل المدرسة”. Source: p22, callout 6.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12-CTA",
+      "phase": "P8",
+      "detail": "“اطلب عرضًا لمدرستك”, keeping the quote/contact flow and left arrow. Source: p22, callout 7.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12-BANNER",
+      "phase": "P8",
+      "detail": "Add a prominent full-width centered strip between Schools-related content and FAQ: “الطالب لا يحتاج إلى مزيد من شرح الإنجليزية بقدر ما يحتاج إلى المزيد من استخدامها.” Detailed new wording uses استخدامها; close D09 before final release. Source: p22, callout 8.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12B-HEADING",
+      "phase": "P8",
+      "detail": "Add “لوحات تحكم ذكية.. قياس دقيق، تدخل أسرع، وتحفيز مستمر”. Source: p22, S12B.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12B-ADMIN-TITLE",
+      "phase": "P8",
+      "detail": "Right card: “للإدارة المدرسية: رؤية شاملة”. Source: p23, card 1.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12B-ADMIN-1",
+      "phase": "P8",
+      "detail": "“لوحة تحكم إدارية: تتيح لك متابعة أداء جميع الفصول والمعلمين في مكان واحد.” Source: p23, card 1.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12B-ADMIN-2",
+      "phase": "P8",
+      "detail": "“تقارير فورية: قياس دقيق لمستوى تطور الطلاب ومدى تفاعل المعلمين مع النظام.” Source: p23, card 1.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12B-ADMIN-3",
+      "phase": "P8",
+      "detail": "“قرارات مبنية على البيانات: اكتشف نقاط الضعف في المنهج وعالجها قبل الاختبارات.” Source: p23, card 1.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12B-TEACHER-TITLE",
+      "phase": "P8",
+      "detail": "Center card: “للمعلم: متابعة أسهل بجهد أقل”. Source: p23, card 2.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12B-TEACHER-1",
+      "phase": "P8",
+      "detail": "“مؤشرات الألوان: تصنيف ذكي للطلاب (أخضر، أصفر، أحمر) لمعرفة من يحتاج للمساعدة فوراً.” Source: p23, card 2.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12B-TEACHER-2",
+      "phase": "P8",
+      "detail": "“تنبيهات سريعة: إرسال توجيهات (Nudges) للطلاب المتعثرين بضغطة زر.” Source: p23, card 2.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12B-TEACHER-3",
+      "phase": "P8",
+      "detail": "“الذكاء الاصطناعي كمساعد: زيد يتولى التصحيح والتقييم، لتتفرغ أنت للتوجيه والدعم.” Source: p23, card 2.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12B-STUDENT-TITLE",
+      "phase": "P8",
+      "detail": "Left card: “للطلاب: متعة الممارسة والتحدي”. Source: p23, card 3.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12B-STUDENT-1",
+      "phase": "P8",
+      "detail": "“نظام نقاط تنافسي: تحويل الممارسة اليومية إلى تحدٍ ممتع يكافئ الطالب على استمراريته.” Source: p23, card 3.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12B-STUDENT-2",
+      "phase": "P8",
+      "detail": "“لوحات شرف أسبوعية: إبراز أفضل 20 طالباً لتحفيز التنافس الإيجابي.” Source: p23, card 3.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12B-STUDENT-3",
+      "phase": "P8",
+      "detail": "“مكافآت قابلة للاستبدال: يمكن للطلاب استبدال نقاطهم بمكافآت أو امتيازات داخل الفصل، مما يحفز المعلمين والطلاب معاً.” Source: p23, card 3.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S12B-LAYOUT",
+      "phase": "P8",
+      "detail": "Render three clearly differentiated informational cards in Admin → Teacher → Student RTL order; stack in the same reading order on mobile. Add approved imagery only if selected under D08. Do not add fake working Nudge/Redeem buttons to a marketing card. Source: pp22-23; pp28-29 item 8.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S13-HEADER",
+      "phase": "P9",
+      "detail": "Preserve FAQ badge and “كل ما تحتاج معرفته قبل البدء”. Source: p24, callout 1.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S13-FAQ1",
+      "phase": "P9",
+      "detail": "Add name-origin question/answer as first item. Use Appendix A #1. Source: p24, callout 2.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S13-FAQ2",
+      "phase": "P9",
+      "detail": "Keep “ما هو زيد؟” as second item and replace answer with the four-skill, instant-feedback and school-alignment paragraph. Use Appendix A #2. Source: p24, callout 3.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S13-FAQ3",
+      "phase": "P9",
+      "detail": "Teacher-replacement question and supplied answer. Use Appendix A #3. Source: p24, callout 4a.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S13-FAQ4",
+      "phase": "P9",
+      "detail": "Supported-grades question and complete answer spanning pp24-25. Use Appendix A #4. Source: pp24-25, callout 4b.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S13-FAQ5",
+      "phase": "P9",
+      "detail": "Weekly usage question and new one-hour-per-week answer, replacing current 15-20 minutes/day and one-to-two hours/week. Use Appendix A #5. Source: p25, callout 5.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S13-FAQ6",
+      "phase": "P9",
+      "detail": "New AI assessment question/answer immediately AFTER usage, as final item #6. Do not follow the stale figure caption's “after FAQ #4” literally. Use Appendix A #6. Source: p25, callout 6.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S13-FAQ7",
+      "phase": "P9",
+      "detail": "Package comparison uses 199 / 199 / 299 SAR/year and agreed topic count, matching pricing cards. Use Appendix A #7. Source: p25, callout 7a.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S13-FAQ8",
+      "phase": "P9",
+      "detail": "School/group pricing answer refers to the updated “اطلب عرضًا لمدرستك” CTA. Use Appendix A #8. Source: p25, callout 7b.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S13-FAQ9",
+      "phase": "P9",
+      "detail": "Free teacher account answer for participating schools. Use Appendix A #9. Source: p26, callout 7c.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S13-ACCORDION",
+      "phase": "P9",
+      "detail": "Exactly nine items, stable IDs, keyboard activation, aria-expanded/controls and readable long answers. The updated table calls FAQ #2 “Expanded Card”; proposed default is What is Zayd (#2), preserving the original expanded topic rather than opening #1 merely because its index is zero. Record the chosen behavior. Source: pp24-26.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S14-CTA-PRESERVE",
+      "phase": "P9",
+      "detail": "Preserve final banner copy, gradient layout, both labels and school-trial action. Correct the existing invalid primary destination according to E03 without rewriting its visual/copy treatment. Source: p26, callouts 1-3.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S14-FOOTER-PRESERVE",
+      "phase": "P9",
+      "detail": "Preserve brand, “معلّم ذكي لممارسة اللغة الإنجليزية. تعلّم. مارس. أتقن.”, mascot, quick links/order and ©2026 line. Source: p27, callouts 4-6.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "S14-CONTACTS",
+      "phase": "P9",
+      "detail": "Replace placeholder email/phone only with official D10 values; add supplied WhatsApp/social links if required. Verify mailto/tel/HTTPS destinations and bidi display. This is a data substitution requested by S15, not a footer redesign. Source: p27 callout 6; p29 item 10.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "QA-COPY",
+      "phase": "P10",
+      "detail": "Check every changed Arabic string against detailed final rows and Appendix A, including all four proposed feature boxes after approval. Compare normalized content, not PDF's presentation-form encoding. Verify Zayd/Zayd Life/Zayd Plus, CEFR and numbers in mixed RTL/LTR text.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "QA-CONSISTENCY",
+      "phase": "P10",
+      "detail": "Search rendered content and source data for old topic counts, prices, discount claims, impact figures, تساوي, old scenario labels and old FAQ usage claims. Review hits contextually; unrelated student-app content is not automatically part of this landing update.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "QA-PRESERVATION",
+      "phase": "P10",
+      "detail": "Compare S1 navigation, S4 video, unchanged hero/curriculum/scenario/future/impact elements, teacher artwork and S14 CTA/footer against the captured baseline and accepted variances. Check anchors and sticky offsets after new sections change heights.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "QA-INTERACTIVE",
+      "phase": "P10",
+      "detail": "Exercise every screenshot tab, Reading secondary screenshot, demo tab, record/stop/retry/cancel, scenario preview, FAQ and conversion CTA. Verify no dead buttons, overlapping audio or lingering mic streams.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "QA-RESPONSIVE",
+      "phase": "P10",
+      "detail": "Inspect 320, 375/390, 768, 1024 and 1440px widths, landscape and 200% zoom. Check long card copy, screenshot device frames, decimal-free new prices, widget controls, banner wrapping and no horizontal overflow.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "QA-ACCESSIBILITY",
+      "phase": "P10",
+      "detail": "Verify document/section Arabic language, English prompt/screenshot direction, heading hierarchy, accessible tabs, focus order, dialog focus where existing demos remain, icons/control names, feedback text beyond color, reduced motion and adequate contrast.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "QA-PERFORMANCE",
+      "phase": "P10",
+      "detail": "Lazy-load offscreen screenshots/audio and heavy demo code; reserve image dimensions; only request microphone after action; avoid downloading every audio clip on initial load. Compare initial assets/bundle with P0 baseline; do not trade the new showcases for a slower unusable mobile page.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "QA-CHECKS",
+      "phase": "P10",
+      "detail": "Run TypeScript, production build, ESLint and relevant existing demo/audio regressions. Add focused interaction checks for eight tabs, all ten benefits, two demo tabs, six previews, nine FAQ items and per-plan pricing; avoid tests that simply duplicate markup strings without testing behavior/data consistency.",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "QA-TRACEABILITY",
+      "phase": "P10",
+      "detail": "For every requirement ID, attach implementation file(s), verification evidence and final status. A missing asset, unresolved approval or unavailable voice endpoint is still open; “layout implemented” does not equal “requirement complete.”",
+      "status": "not_implemented",
+      "evidence": []
+    },
+    {
+      "id": "QA-HANDOVER",
+      "phase": "P10",
+      "detail": "Produce before/after screenshots, a decision log, known limitations, local run instructions and a final coverage audit. No push/deployment is implied by the planning request.",
+      "status": "not_implemented",
+      "evidence": []
+    }
+  ]
+}

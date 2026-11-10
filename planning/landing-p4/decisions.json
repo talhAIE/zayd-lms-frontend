@@ -1,0 +1,11 @@
+{
+  "decision": "D05",
+  "status": "deferred_by_user",
+  "owner": "User",
+  "evidence": "Reply in this P4 turn: Keep unresolved; implement the six confirmed benefits only",
+  "confirmedScope": "Implement the six supplied benefit cards, subtitle, preserved heading/character and independent existing demo entries.",
+  "unapproved": ["CEFR A1–C2 assessment claim and copy", "3D avatar claim and copy", "Certificates/badges claim and copy", "Points/rewards claim and copy", "Ten-card or six-plus-four composition"],
+  "requirementsDeferred": ["S7-CEFR", "S7-AVATAR", "S7-CERTIFICATES", "S7-REWARDS"],
+  "nextAction": "Await explicit user approval of proposed factual claims, exact copy and composition before implementing these four additions. No further answer is needed for the completed six-benefit scope.",
+  "p0SnapshotPreserved": true
+}

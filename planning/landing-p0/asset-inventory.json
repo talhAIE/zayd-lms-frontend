@@ -1,0 +1,763 @@
+{
+  "capturedAtUtc": "2026-11-07T09:58:06.893251+00:00",
+  "sourcePdfSha256": "cde12eb809ca248cfab3bd5f3d908498085f0b0ca58ce11020a2e12d4cdf8aa5",
+  "existingActiveLandingAssets": [
+    {
+      "path": "src/assets/landing-page/section1.png",
+      "bytes": 473657,
+      "sha256": "7b71cf27a7e7cc6c803b527836a192c51ae420d9ed261661a31925063362b9c3",
+      "width": 555,
+      "height": 993,
+      "format": "PNG",
+      "usedBy": [
+        "src/pages/public/hero-section.tsx"
+      ],
+      "status": "existing asset; not newly approved reference replacement"
+    },
+    {
+      "path": "src/assets/landing-page/hero-classroom-premium.png",
+      "bytes": 1724158,
+      "sha256": "958fc1b7220e6fd7e16c35691919a6170780fcbd02da36b716900123e8c8f7ed",
+      "width": 1672,
+      "height": 941,
+      "format": "PNG",
+      "usedBy": [
+        "src/pages/public/hero-section.tsx"
+      ],
+      "status": "existing asset; not newly approved reference replacement"
+    },
+    {
+      "path": "src/assets/landing-page/stat-chart.png",
+      "bytes": 71490,
+      "sha256": "f474e85ba8a1c4bd6016216d8561269d109456990050c506f6fceb4ae5776b90",
+      "width": 321,
+      "height": 314,
+      "format": "PNG",
+      "usedBy": [
+        "src/pages/public/hero-section.tsx"
+      ],
+      "status": "existing asset; not newly approved reference replacement"
+    },
+    {
+      "path": "src/assets/landing-page/stat-document.png",
+      "bytes": 93031,
+      "sha256": "36441e5ca2da8dc6f97106be3f625ae9adf94065946d5d1adccbc6fa5d0e7e9e",
+      "width": 324,
+      "height": 333,
+      "format": "PNG",
+      "usedBy": [
+        "src/pages/public/hero-section.tsx"
+      ],
+      "status": "existing asset; not newly approved reference replacement"
+    },
+    {
+      "path": "src/assets/landing-page/stat-clock.png",
+      "bytes": 125860,
+      "sha256": "224124847f10cf863ae868c9aaa19540bebf3d4194839ea8bcd9417ad4675f12",
+      "width": 343,
+      "height": 347,
+      "format": "PNG",
+      "usedBy": [
+        "src/pages/public/hero-section.tsx"
+      ],
+      "status": "existing asset; not newly approved reference replacement"
+    },
+    {
+      "path": "src/assets/landing-page/logo.png",
+      "bytes": 192887,
+      "sha256": "a761054cbfabfaa01a1c00b1fa1d5138d95e9d4b18c1098ebb8153c11dce9167",
+      "width": 1888,
+      "height": 2360,
+      "format": "PNG",
+      "usedBy": [
+        "src/pages/public/navbar.tsx",
+        "src/pages/public/footer.tsx"
+      ],
+      "status": "existing asset; not newly approved reference replacement"
+    },
+    {
+      "path": "src/assets/landing-page/section5.png",
+      "bytes": 851278,
+      "sha256": "8b7f4c4f4e6b4d026fbed2692bc4a006dea832b639c99b0f03bbffce6b5d714b",
+      "width": 1024,
+      "height": 1017,
+      "format": "PNG",
+      "usedBy": [
+        "src/pages/public/personalized-learning-section.tsx"
+      ],
+      "status": "existing asset; not newly approved reference replacement"
+    },
+    {
+      "path": "src/assets/landing-page/personalized-feature-icons.png",
+      "bytes": 1662561,
+      "sha256": "8ea29f13e890ac69a25d17e3fa93b85dec98e47200d4f176eee57ace0ca07aee",
+      "width": 1536,
+      "height": 1024,
+      "format": "PNG",
+      "usedBy": [
+        "src/pages/public/personalized-learning-section.tsx"
+      ],
+      "status": "existing asset; not newly approved reference replacement"
+    },
+    {
+      "path": "src/assets/svgs/reading-mode.png",
+      "bytes": 39969,
+      "sha256": "ac78fe0373772a0018bde16616092574ba24a4fd5076746097826f3d8b9cc40d",
+      "width": 232,
+      "height": 232,
+      "format": "PNG",
+      "usedBy": [
+        "src/pages/public/personalized-learning-section.tsx"
+      ],
+      "status": "existing asset; not newly approved reference replacement"
+    },
+    {
+      "path": "src/assets/svgs/listening-mode.png",
+      "bytes": 39984,
+      "sha256": "83dcc8f576744e72719caf0a062fa17fa7d5c9d5f3c99d62e2730ea6db97357e",
+      "width": 232,
+      "height": 232,
+      "format": "PNG",
+      "usedBy": [
+        "src/pages/public/personalized-learning-section.tsx"
+      ],
+      "status": "existing asset; not newly approved reference replacement"
+    },
+    {
+      "path": "src/assets/svgs/roleplay-mode.png",
+      "bytes": 46099,
+      "sha256": "86a8d80d2cfcc2e39c784d2132a34f76ef274b877019e9995a403014e06f049f",
+      "width": 232,
+      "height": 232,
+      "format": "PNG",
+      "usedBy": [
+        "src/pages/public/personalized-learning-section.tsx"
+      ],
+      "status": "existing asset; not newly approved reference replacement"
+    },
+    {
+      "path": "src/assets/landing-page/zayd-life-scenarios.png",
+      "bytes": 1976258,
+      "sha256": "a54db8923ae8939dfc0616b5ff0344bd077136e76e6c23dcc1265693a9c05ed5",
+      "width": 1672,
+      "height": 941,
+      "format": "PNG",
+      "usedBy": [
+        "src/pages/public/zayd-life-section.tsx"
+      ],
+      "status": "existing asset; not newly approved reference replacement"
+    },
+    {
+      "path": "src/assets/landing-page/section7.png",
+      "bytes": 492058,
+      "sha256": "480de08b018d1e9e30a734296cc2d97a4fa94f8feb0097c09cd30d12fc699bee",
+      "width": 895,
+      "height": 646,
+      "format": "PNG",
+      "usedBy": [
+        "src/pages/public/impact-stats-section.tsx"
+      ],
+      "status": "existing asset; not newly approved reference replacement"
+    },
+    {
+      "path": "src/assets/landing-page/metric-students.svg",
+      "bytes": 1640,
+      "sha256": "e83636c87efe4b98d7f1b810bcfa08490b5d227dd1457b185129a205116d8f4d",
+      "viewBox": "0 0 76 64",
+      "usedBy": [
+        "src/pages/public/impact-stats-section.tsx"
+      ],
+      "status": "existing asset; not newly approved reference replacement"
+    },
+    {
+      "path": "src/assets/landing-page/metric-clock.svg",
+      "bytes": 1152,
+      "sha256": "ac3c8a782cb7b4c1e98b859aa29be45f73d175820027d6dc89de50878bf9dd40",
+      "viewBox": "0 0 64 64",
+      "usedBy": [
+        "src/pages/public/impact-stats-section.tsx"
+      ],
+      "status": "existing asset; not newly approved reference replacement"
+    },
+    {
+      "path": "src/assets/landing-page/metric-books.svg",
+      "bytes": 1083,
+      "sha256": "d7b3ca14e8983f43b6280bf9b6fc06d33897c42d08c21c50a08de5a8e8330295",
+      "viewBox": "0 0 72 64",
+      "usedBy": [
+        "src/pages/public/impact-stats-section.tsx"
+      ],
+      "status": "existing asset; not newly approved reference replacement"
+    },
+    {
+      "path": "src/assets/landing-page/pricing-mascot-reference.png",
+      "bytes": 46827,
+      "sha256": "9c2c78ae7b54b2066d4ba5e2b075ebde2b53bea9262f81268c1602c611997d12",
+      "width": 304,
+      "height": 150,
+      "format": "PNG",
+      "usedBy": [
+        "src/pages/public/pricing-section.tsx"
+      ],
+      "status": "existing asset; not newly approved reference replacement"
+    },
+    {
+      "path": "src/assets/landing-page/section9.png",
+      "bytes": 840268,
+      "sha256": "b7d06728a91af23d0715800293d38fb3cbdc6f6b4bbe0f478fa3bac33636cd21",
+      "width": 1103,
+      "height": 712,
+      "format": "PNG",
+      "usedBy": [
+        "src/pages/public/schools-section.tsx"
+      ],
+      "status": "existing asset; not newly approved reference replacement"
+    },
+    {
+      "path": "src/assets/landing-page/section11.png",
+      "bytes": 495117,
+      "sha256": "4405d955233780776fae6e789cf4a499d893fb07b686ede642911f6783e01850",
+      "width": 803,
+      "height": 686,
+      "format": "PNG",
+      "usedBy": [
+        "src/pages/public/footer.tsx"
+      ],
+      "status": "existing asset; not newly approved reference replacement"
+    }
+  ],
+  "requiredScreenshotReferences": [
+    {
+      "id": "screenshot-slide-5",
+      "source": {
+        "file": "planning/landing-p0/reference-images/slides-5-6-pair.png",
+        "width": 1834,
+        "height": 522,
+        "pdfPage": 10,
+        "sha256": "9a7504ff8f99d32eff1e819fa052a5eaa8bc13a08a7ebd014ae22b6571fb1ea9"
+      },
+      "title": "Reading aloud",
+      "tab": "Reading secondary / S7 reference",
+      "proposedAltText": "قراءة جملة بصوت مرتفع مع تقييم النطق",
+      "mappingStatus": "secondary mapping proposed",
+      "availability": "embedded paired reference available; standalone export not supplied",
+      "suitability": "review reference only until original export quality and privacy reviewed; pair contains two screenshots and framing",
+      "individualScreenDimensions": null,
+      "dependency": "D03 / E04"
+    },
+    {
+      "id": "screenshot-slide-6",
+      "source": {
+        "file": "planning/landing-p0/reference-images/slides-5-6-pair.png",
+        "width": 1834,
+        "height": 522,
+        "pdfPage": 10,
+        "sha256": "9a7504ff8f99d32eff1e819fa052a5eaa8bc13a08a7ebd014ae22b6571fb1ea9"
+      },
+      "title": "Grammar flashcards",
+      "tab": "القواعد",
+      "proposedAltText": "بطاقات القواعد في وحدة Big Changes",
+      "mappingStatus": "direct PDF mapping",
+      "availability": "embedded paired reference available; standalone export not supplied",
+      "suitability": "review reference only until original export quality and privacy reviewed; pair contains two screenshots and framing",
+      "individualScreenDimensions": null,
+      "dependency": "D03 / E04"
+    },
+    {
+      "id": "screenshot-slide-7",
+      "source": {
+        "file": "planning/landing-p0/reference-images/slides-7-8-pair.png",
+        "width": 1834,
+        "height": 522,
+        "pdfPage": 10,
+        "sha256": "b9acff558fb070313cbef7bd56ca1425ebb22f377ed9ca12e6d840be624af552"
+      },
+      "title": "Listening narration",
+      "tab": "الاستماع",
+      "proposedAltText": "مقطع استماع مع موجة صوتية وأسئلة فهم",
+      "mappingStatus": "direct PDF mapping",
+      "availability": "embedded paired reference available; standalone export not supplied",
+      "suitability": "review reference only until original export quality and privacy reviewed; pair contains two screenshots and framing",
+      "individualScreenDimensions": null,
+      "dependency": "D03 / E04"
+    },
+    {
+      "id": "screenshot-slide-8",
+      "source": {
+        "file": "planning/landing-p0/reference-images/slides-7-8-pair.png",
+        "width": 1834,
+        "height": 522,
+        "pdfPage": 10,
+        "sha256": "b9acff558fb070313cbef7bd56ca1425ebb22f377ed9ca12e6d840be624af552"
+      },
+      "title": "Roleplay conversation",
+      "tab": "المحادثة",
+      "proposedAltText": "محادثة مع زيد تتضمن تلميحات وتغذية راجعة",
+      "mappingStatus": "direct PDF mapping",
+      "availability": "embedded paired reference available; standalone export not supplied",
+      "suitability": "review reference only until original export quality and privacy reviewed; pair contains two screenshots and framing",
+      "individualScreenDimensions": null,
+      "dependency": "D03 / E04"
+    },
+    {
+      "id": "screenshot-slide-9",
+      "source": {
+        "file": "planning/landing-p0/reference-images/slides-9-10-pair.png",
+        "width": 1834,
+        "height": 522,
+        "pdfPage": 11,
+        "sha256": "5263991fa99e61e8db6b96d041f3b0e905f9ecc9662d9981f3a46399bdd127ae"
+      },
+      "title": "Reading passage",
+      "tab": "القراءة",
+      "proposedAltText": "نص قراءة من المنهج مع خيار الاستماع",
+      "mappingStatus": "direct PDF mapping",
+      "availability": "embedded paired reference available; standalone export not supplied",
+      "suitability": "review reference only until original export quality and privacy reviewed; pair contains two screenshots and framing",
+      "individualScreenDimensions": null,
+      "dependency": "D03 / E04"
+    },
+    {
+      "id": "screenshot-slide-10",
+      "source": {
+        "file": "planning/landing-p0/reference-images/slides-9-10-pair.png",
+        "width": 1834,
+        "height": 522,
+        "pdfPage": 11,
+        "sha256": "5263991fa99e61e8db6b96d041f3b0e905f9ecc9662d9981f3a46399bdd127ae"
+      },
+      "title": "Writing builder",
+      "tab": "الكتابة",
+      "proposedAltText": "بناء فقرة كتابية باستخدام أسئلة إرشادية",
+      "mappingStatus": "direct PDF mapping",
+      "availability": "embedded paired reference available; standalone export not supplied",
+      "suitability": "review reference only until original export quality and privacy reviewed; pair contains two screenshots and framing",
+      "individualScreenDimensions": null,
+      "dependency": "D03 / E04"
+    },
+    {
+      "id": "screenshot-slide-11",
+      "source": {
+        "file": "planning/landing-p0/reference-images/slides-11-12-pair.png",
+        "width": 1834,
+        "height": 522,
+        "pdfPage": 11,
+        "sha256": "e0f8a59d63072ae06f55aa9068b0e3c8203a302c00538fff6ee07ec39927d460"
+      },
+      "title": "Form meaning function",
+      "tab": "الصيغة والمعنى والاستخدام",
+      "proposedAltText": "جدول مرجعي للقواعد والصيغة والمعنى والاستخدام",
+      "mappingStatus": "direct PDF mapping",
+      "availability": "embedded paired reference available; standalone export not supplied",
+      "suitability": "review reference only until original export quality and privacy reviewed; pair contains two screenshots and framing",
+      "individualScreenDimensions": null,
+      "dependency": "D03 / E04"
+    },
+    {
+      "id": "screenshot-slide-12",
+      "source": {
+        "file": "planning/landing-p0/reference-images/slides-11-12-pair.png",
+        "width": 1834,
+        "height": 522,
+        "pdfPage": 11,
+        "sha256": "e0f8a59d63072ae06f55aa9068b0e3c8203a302c00538fff6ee07ec39927d460"
+      },
+      "title": "Debate topics",
+      "tab": "الاستماع والمناقشة / التحدث عن الذات",
+      "proposedAltText": "موضوعات نقاش مصورة لممارسة التحدث",
+      "mappingStatus": "D03 unresolved shared mapping",
+      "availability": "embedded paired reference available; standalone export not supplied",
+      "suitability": "review reference only until original export quality and privacy reviewed; pair contains two screenshots and framing",
+      "individualScreenDimensions": null,
+      "dependency": "D03 / E04"
+    }
+  ],
+  "requiredDialogueClips": [
+    {
+      "id": "dialogue-airport",
+      "label": "في المطار",
+      "source": null,
+      "durationSec": null,
+      "format": null,
+      "transcript": null,
+      "status": "missing input",
+      "proposedControlLabel": "استمع إلى حوار: في المطار",
+      "dependency": "E01",
+      "note": "No approved local dialogue audio/transcript supplied"
+    },
+    {
+      "id": "dialogue-restaurant",
+      "label": "في المطعم",
+      "source": null,
+      "durationSec": null,
+      "format": null,
+      "transcript": null,
+      "status": "missing input",
+      "proposedControlLabel": "استمع إلى حوار: في المطعم",
+      "dependency": "E01",
+      "note": "No approved local dialogue audio/transcript supplied"
+    },
+    {
+      "id": "dialogue-market",
+      "label": "في السوق",
+      "source": null,
+      "durationSec": null,
+      "format": null,
+      "transcript": null,
+      "status": "missing input",
+      "proposedControlLabel": "استمع إلى حوار: في السوق",
+      "dependency": "E01",
+      "note": "No approved local dialogue audio/transcript supplied"
+    },
+    {
+      "id": "dialogue-travel",
+      "label": "أثناء السفر",
+      "source": null,
+      "durationSec": null,
+      "format": null,
+      "transcript": null,
+      "status": "missing input",
+      "proposedControlLabel": "استمع إلى حوار: أثناء السفر",
+      "dependency": "E01",
+      "note": "No approved local dialogue audio/transcript supplied"
+    },
+    {
+      "id": "dialogue-social",
+      "label": "في المواقف الاجتماعية",
+      "source": null,
+      "durationSec": null,
+      "format": null,
+      "transcript": null,
+      "status": "missing input",
+      "proposedControlLabel": "استمع إلى حوار: في المواقف الاجتماعية",
+      "dependency": "E01",
+      "note": "No approved local dialogue audio/transcript supplied"
+    },
+    {
+      "id": "dialogue-other",
+      "label": "ومواقف أخرى كثيرة",
+      "source": null,
+      "durationSec": null,
+      "format": null,
+      "transcript": null,
+      "status": "missing input",
+      "proposedControlLabel": "استمع إلى حوار: ومواقف أخرى كثيرة",
+      "dependency": "E01",
+      "note": "sixth scenario not described in PDF audio category list"
+    }
+  ],
+  "requiredDemoPrompts": [
+    {
+      "id": "reading-prompt",
+      "source": "p12, p28 item 4",
+      "text": null,
+      "status": "exact approved English sentence missing; existing public reading demo is server-provided",
+      "dependency": "D04",
+      "suitability": "Reuse only after product/content review"
+    },
+    {
+      "id": "speaking-prompt",
+      "source": "p12, p28 item 4",
+      "text": null,
+      "status": "exact approved English prompt missing; existing roleplay demo advertises cafe conversation",
+      "dependency": "D04",
+      "suitability": "Cafe scenario is not an approved replacement sentence"
+    }
+  ],
+  "requiredNewFeatureIcons": [
+    {
+      "id": "feature-icon-cefr",
+      "meaning": "CEFR assessment",
+      "source": null,
+      "dimensions": null,
+      "status": "missing approved icon; library-based candidate is a proposal",
+      "candidate": "Lucide Gauge or ChartNoAxesCombined",
+      "altText": "Decorative when adjacent text conveys the feature; use aria-hidden",
+      "dependency": "D05"
+    },
+    {
+      "id": "feature-icon-avatar",
+      "meaning": "3D Avatar modes",
+      "source": null,
+      "dimensions": null,
+      "status": "missing approved icon; library-based candidate is a proposal",
+      "candidate": "Lucide Box or existing approved avatar art",
+      "altText": "Decorative when adjacent text conveys the feature; use aria-hidden",
+      "dependency": "D05"
+    },
+    {
+      "id": "feature-icon-certificates",
+      "meaning": "Certificates and badges",
+      "source": null,
+      "dimensions": null,
+      "status": "missing approved icon; library-based candidate is a proposal",
+      "candidate": "Lucide Award",
+      "altText": "Decorative when adjacent text conveys the feature; use aria-hidden",
+      "dependency": "D05"
+    },
+    {
+      "id": "feature-icon-rewards",
+      "meaning": "Points and rewards",
+      "source": null,
+      "dimensions": null,
+      "status": "missing approved icon; library-based candidate is a proposal",
+      "candidate": "Lucide Trophy",
+      "altText": "Decorative when adjacent text conveys the feature; use aria-hidden",
+      "dependency": "D05"
+    }
+  ],
+  "optionalSmartDashboardGraphics": [
+    {
+      "id": "admin-dashboard",
+      "source": null,
+      "dimensions": null,
+      "status": "no approved standalone admin screenshot supplied; optional per D08",
+      "caption": "لوحة الإدارة المدرسية"
+    },
+    {
+      "id": "teacher-dashboard",
+      "source": "src/assets/landing-page/section9.png",
+      "status": "existing composite illustration available; optional standalone screenshot not selected",
+      "caption": "لوحة متابعة المعلم"
+    },
+    {
+      "id": "student-leaderboard",
+      "source": "src/assets/user-guide/leaderboard/",
+      "status": "existing candidates available; no selected approved image",
+      "caption": "لوحة الشرف والمكافآت"
+    }
+  ],
+  "otherRequiredAssets": [
+    {
+      "id": "promotional-video",
+      "source": null,
+      "status": "missing source; current S4 intentionally disabled preview; preservation baseline, not P0 authoring",
+      "durationTarget": "70 seconds"
+    }
+  ],
+  "localMediaFiles": [
+    {
+      "path": "public/avatar/placeholder.mp4",
+      "bytes": 416349,
+      "sha256": "e6cfe74c4301390c80c97dd8e468a3772cbc897b70b31b5e2e5293211e2c8ccf"
+    }
+  ],
+  "existingGuideScreenshotCandidates": [
+    {
+      "path": "src/assets/user-guide/welcome.png",
+      "bytes": 550624,
+      "sha256": "95c924d44737e4b883b87dda5c6646d9859ffdb854048f5828d1f59c7f0bd4a1",
+      "width": 1092,
+      "height": 1169,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/achievements/1.png",
+      "bytes": 1103829,
+      "sha256": "839a99e367e8c1a590c5f68324541e8a5947bc36735ef47de38078bc7446e7d9",
+      "width": 1753,
+      "height": 1841,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/achievements/2.png",
+      "bytes": 665269,
+      "sha256": "12ed102c04caaca9b3083c2f8928c30897ca61711a8699cd5794262191f286d2",
+      "width": 1351,
+      "height": 1428,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/dashboard/1.png",
+      "bytes": 782575,
+      "sha256": "198ff4cbed668f45bfb800144367917e0128613ae3d44ca133eb4750f9068313",
+      "width": 1470,
+      "height": 1376,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/dashboard/2.png",
+      "bytes": 682349,
+      "sha256": "e41f98a3a46fd49219810b3ad67472a14691f77392bdccd763b43896bb9db674",
+      "width": 1185,
+      "height": 1376,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/dashboard/3.png",
+      "bytes": 662879,
+      "sha256": "b0f54310adf6053538c6c15a7cca5c1f1bb26b8a723113a8ef0ecffcc7054862",
+      "width": 1257,
+      "height": 1341,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/dashboard/4.png",
+      "bytes": 552116,
+      "sha256": "d2f8ccb21a7a1e832d08a7d55acd2aeca2b672b544343ac907095aae4b491966",
+      "width": 1219,
+      "height": 1172,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/dashboard/5.png",
+      "bytes": 870937,
+      "sha256": "0416c6cd645f9e2fdb5f0bf5409202401b4683c6cc6adea67702680315600526",
+      "width": 1942,
+      "height": 1488,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/leaderboard/1.png",
+      "bytes": 782575,
+      "sha256": "198ff4cbed668f45bfb800144367917e0128613ae3d44ca133eb4750f9068313",
+      "width": 1470,
+      "height": 1376,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/leaderboard/2.png",
+      "bytes": 683931,
+      "sha256": "c89a9dbf7da7241d53455261e7181dc14a55717088c3410aabe363990ea82d21",
+      "width": 1415,
+      "height": 1196,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/leaderboard/3.png",
+      "bytes": 1195598,
+      "sha256": "757730574d2105540684d25a9bed8b0edc5b2e41cc5434a245a1114cb3d67bff",
+      "width": 1750,
+      "height": 1669,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/leaderboard/4.png",
+      "bytes": 739021,
+      "sha256": "b252ffdf4ef8dd6f6a10856a5da222e8ba8865b64f831975c5431aa968ba7ab7",
+      "width": 1408,
+      "height": 1674,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/leaderboard/5.png",
+      "bytes": 744219,
+      "sha256": "b428070a1858a61990868001950cc142192fd2fafcc2ddd3b12e8f811442c067",
+      "width": 1680,
+      "height": 1191,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/leaderboard/6.png",
+      "bytes": 700549,
+      "sha256": "851eb2156fba7ae8f8bb2a4bee74461de478cb71bec4cb3d8635adfed5523890",
+      "width": 1534,
+      "height": 1275,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/leaderboard/7.png",
+      "bytes": 778491,
+      "sha256": "c8e4fd0794a5bfee81090a6b09025e253e32f066ea099bcb75e9336735e47cc8",
+      "width": 1367,
+      "height": 1378,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/leaderboard/8.png",
+      "bytes": 763199,
+      "sha256": "66a16b896cb9ffe9cc7259f0468cc99c77e383ad6e3823c4c8793dc43bc48f94",
+      "width": 1451,
+      "height": 1265,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/learning-mode/3d.png",
+      "bytes": 795020,
+      "sha256": "02838f201217dfa24e0b2459c5d82e86ff13e20d25b606c8fb8d60a99e419c62",
+      "width": 1416,
+      "height": 1177,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/learning-mode/chat.png",
+      "bytes": 694102,
+      "sha256": "8d55b264c7d1edc6a6d0a3f3eb6b777f27e371eb47f5941cf8e3ea8c51227cf0",
+      "width": 1282,
+      "height": 1168,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/learning-mode/curriculum.png",
+      "bytes": 630859,
+      "sha256": "2f378db5deebba1f0ffd13a350cb5c12fe8a8073f29bc98ec528c8274d9a793a",
+      "width": 1360,
+      "height": 1522,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/learning-mode/debate.png",
+      "bytes": 711421,
+      "sha256": "ad863b8915273e1ebfcffe13be0ebbaff6d7764902d4b3af889b643ac6455789",
+      "width": 1782,
+      "height": 1299,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/learning-mode/listening.png",
+      "bytes": 626506,
+      "sha256": "7a3ad0f3ff7af3ea4441be8d7de526c83b2fd76ed64c0965146650da22ae4c5f",
+      "width": 1236,
+      "height": 1205,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/learning-mode/photo.png",
+      "bytes": 870083,
+      "sha256": "adb18f69a6e5bb4124f8d2c7dc4dc7ff2171221e97620e9a890ca496d252577d",
+      "width": 1942,
+      "height": 1488,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/learning-mode/reading.png",
+      "bytes": 608425,
+      "sha256": "d9308ce337bee9c3d809fbfccd07e41b28acb039af67801b940635c71b5dc9c4",
+      "width": 1337,
+      "height": 1109,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    },
+    {
+      "path": "src/assets/user-guide/learning-mode/roleplay.png",
+      "bytes": 1915758,
+      "sha256": "52fbf4c33765a66e5e7ebf1b2ff196af2473f1b9207809a4fc06f7eb17914cd8",
+      "width": 2432,
+      "height": 2251,
+      "format": "PNG",
+      "status": "existing guide screenshot; not the approved S6B slide reference; privacy/accuracy unreviewed"
+    }
+  ]
+}

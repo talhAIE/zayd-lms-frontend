@@ -6,8 +6,8 @@ const scenarios = [
   { label: "في المطعم", position: "50% 0%" },
   { label: "في السوق", position: "0% 0%" },
   { label: "أثناء السفر", position: "100% 100%" },
-  { label: "مواقف اجتماعية", position: "50% 100%" },
-  { label: "والمزيد…", position: "0% 100%" },
+  { label: "في المواقف الاجتماعية", position: "50% 100%" },
+  { label: "ومواقف أخرى كثيرة", position: "0% 100%" },
 ];
 
 export default function ZaydLifeSection() {
@@ -21,11 +21,11 @@ export default function ZaydLifeSection() {
             <span className="zayd-life__heading-accent">عند حدود الكتاب</span>
           </h2>
           <p className="zayd-life__description">
-            في <strong><bdi dir="ltr">Zayd Life</bdi> و<bdi dir="ltr">Zayd Plus</bdi></strong>، يستطيع الطالب التدريب على أكثر من 40 موضوعًا وموقفًا من الحياة اليومية، ليستخدم اللغة عندما يحتاج إليها فعلًا.
+            في <strong><bdi dir="ltr">Zayd Life</bdi> و <bdi dir="ltr">Zayd Plus</bdi></strong>، تمتد ممارسة الإنجليزية إلى أكثر من 40 موضوعًا وموقفًا من الحياة اليومية، لتنمية القدرة على التواصل بثقة في مواقف حقيقية.
           </p>
           <p className="zayd-life__message">
-            <span>لأن الهدف ليس فقط أن يعرف الإنجليزية…</span>
-            <span>بل أن يستخدمها.</span>
+            <span>لأن الهدف ليس فقط أن يتعلم الإنجليزية،</span>
+            <span>بل القدرة على استخدامها في الحياة.</span>
           </p>
         </div>
 

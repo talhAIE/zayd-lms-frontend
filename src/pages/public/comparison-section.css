@@ -1,0 +1,55 @@
+.classroom-comparison {
+  padding: 64px var(--landing-gutter, 24px);
+  color: #242424;
+  background: #fff;
+  font-family: "IBM Plex Sans Arabic", sans-serif;
+}
+
+.classroom-comparison__container {
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding: 0;
+}
+
+.classroom-comparison__header { max-width: 900px; margin-inline: auto; text-align: center; }
+.classroom-comparison__eyebrow { margin: 0; color: #242424; font-size: clamp(26px, 2.6vw, 36px); font-weight: 700; line-height: 1.65; }
+.classroom-comparison__eyebrow::before,
+.classroom-comparison__eyebrow::after { content: none; }
+.classroom-comparison__heading { margin: 12px 0 0; color: #369bd0; background: linear-gradient(90deg, #42d3c0, #5791ef); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: clamp(24px, 2.4vw, 34px); font-weight: 700; line-height: 1.6; }
+.classroom-comparison__intro { margin: 12px 0 0; color: #555; font-size: 14px; line-height: 1.9; }
+.classroom-comparison__cards { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; gap: 32px; margin-top: 40px; }
+
+.comparison-card { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; padding: 28px 32px; border: 1px solid #f0eeee; border-radius: 24px; background: #faf8f8; box-shadow: 0 2px 2px rgb(0 0 0 / 16%); }
+.comparison-card--zayd { background: #eaf3fd; }
+.comparison-card__badge { display: inline-block; padding: 3px 16px; border-radius: 999px; background: #ffe0e5; color: #b81435; box-shadow: 0 2px 3px rgb(0 0 0 / 12%); font-size: 11px; font-weight: 700; line-height: 1.7; }
+.comparison-card--zayd .comparison-card__badge { background: #fff; color: #1768d9; }
+.comparison-card__heading { margin: 12px 0 0; font-size: clamp(20px, 1.9vw, 26px); font-weight: 700; line-height: 1.6; }
+.comparison-card__description { margin: 8px 0 0; color: #555; font-size: 14px; line-height: 1.9; }
+.comparison-card__points { display: grid; gap: 8px; width: 100%; margin: 0; padding: 14px 0 0; list-style: none; }
+.comparison-card__points li { display: flex; align-items: flex-start; gap: 8px; color: #555; font-size: 14px; font-weight: 500; line-height: 1.85; }
+.comparison-card__points svg { flex: 0 0 16px; width: 16px; height: 16px; margin-top: 5px; color: #b8586b; }
+.comparison-card--zayd .comparison-card__points svg { color: #079c79; fill: #f5fffb; }
+.classroom-comparison__versus { display: none; }
+
+@media (max-width: 767px) {
+  .classroom-comparison { padding-block: 48px; }
+  .classroom-comparison__cards { grid-template-columns: minmax(0, 1fr); gap: 24px; margin-top: 32px; }
+  .classroom-comparison__versus { display: none; }
+}
+
+@media (max-width: 559px) {
+  .classroom-comparison { padding-block: 36px; }
+  .classroom-comparison__eyebrow { font-size: 26px; }
+  .classroom-comparison__heading { font-size: 24px; }
+  .classroom-comparison__intro, .comparison-card__description { font-size: 14px; }
+  .comparison-card { padding: 24px 18px; border-radius: 20px; }
+  .comparison-card__heading { font-size: 21px; }
+  .comparison-card__points li { font-size: 14px; gap: 10px; }
+}
+
+@media (forced-colors: active) {
+  .classroom-comparison__container, .comparison-card, .comparison-card__badge, .classroom-comparison__versus { border: 1px solid CanvasText; }
+  .comparison-card--zayd { border-width: 2px; box-shadow: none; }
+  .classroom-comparison__heading { background: none; -webkit-text-fill-color: CanvasText; }
+}
