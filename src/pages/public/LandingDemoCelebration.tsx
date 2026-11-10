@@ -62,15 +62,17 @@ function CelebrationArt({ mode }: { mode: LandingDemoMode }) {
   }
 }
 
-export default function LandingDemoCelebration({ mode }: { mode: LandingDemoMode }) {
+export default function LandingDemoCelebration({ mode, onStartOnboarding }: { mode: LandingDemoMode; onStartOnboarding: () => void }) {
   const [points, setPoints] = useState(0);
-  const returnButton = useRef<HTMLButtonElement>(null);
+  const [showInvite, setShowInvite] = useState(false);
+  const celebration = useRef<HTMLDivElement>(null);
   const { badge, title } = celebrations[mode];
 
   useEffect(() => {
-    returnButton.current?.focus();
+    celebration.current?.focus();
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setPoints(completionPoints);
+      setShowInvite(true);
       return;
     }
 
@@ -78,9 +80,11 @@ export default function LandingDemoCelebration({ mode }: { mode: LandingDemoMode
     let frame: number;
 
     function countPoints(now: number) {
-      const progress = Math.min(1, Math.max(0, (now - startedAt - 540) / 860));
+      const elapsed = now - startedAt;
+      const progress = Math.min(1, Math.max(0, (elapsed - 540) / 860));
       setPoints(Math.floor(completionPoints * progress));
-      if (progress < 1) frame = requestAnimationFrame(countPoints);
+      if (elapsed < 1550) frame = requestAnimationFrame(countPoints);
+      else setShowInvite(true);
     }
 
     frame = requestAnimationFrame(countPoints);
@@ -90,7 +94,7 @@ export default function LandingDemoCelebration({ mode }: { mode: LandingDemoMode
   const Seal = mode === "reading" ? Star : Check;
 
   return (
-    <div className="demo-celebration" data-mode={mode}>
+    <div className="demo-celebration" data-mode={mode} ref={celebration} tabIndex={-1}>
       <div className="demo-celebration__art" aria-hidden="true">
         <div className="demo-celebration__confetti">
           {confetti.map((style, index) => <i key={index} style={style} />)}
@@ -105,9 +109,15 @@ export default function LandingDemoCelebration({ mode }: { mode: LandingDemoMode
         <span className="sr-only">{completionPoints} </span>
         نقطة تجريبية
       </p>
-      <DialogClose type="button" ref={returnButton} className="demo-celebration__return">
-        العودة إلى التجارب
-      </DialogClose>
+      {showInvite && (
+        <div className="demo-celebration__invite">
+          <p>هل تريد إعداد خطة تدريب تناسب هدفك؟</p>
+          <div className="landing-onboarding__actions">
+            <DialogClose type="button" className="landing-onboarding__secondary">ليس الآن</DialogClose>
+            <button type="button" className="landing-onboarding__primary" onClick={onStartOnboarding}>ابدأ إعداد خطتي</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

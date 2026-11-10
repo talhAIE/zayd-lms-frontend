@@ -73,17 +73,9 @@
   font-variant-numeric: tabular-nums;
   line-height: 1.2;
 }
-.demo-celebration__return {
-  margin-top: 6px;
-  padding: 10px 22px;
-  border-radius: 999px;
-  background: #1768d9;
-  color: #fff;
-  font-size: 15px;
-  font-weight: 700;
-}
-.demo-celebration__return:hover { background: #0b56ad; }
-.demo-celebration__return:focus-visible { outline: 3px solid #0b56ad; outline-offset: 3px; }
+.demo-celebration__invite { display: grid; gap: 10px; margin-top: 4px; }
+.demo-celebration__invite p { margin: 0; font-weight: 700; }
+.demo-celebration__invite .landing-onboarding__actions { justify-content: center; }
 .demo-celebration__seal {
   position: absolute;
   bottom: 0;
@@ -189,7 +181,4 @@
 }
 @media (max-height: 460px) {
   .demo-celebration { gap: 6px; }
-}
-@media (forced-colors: active) {
-  .demo-celebration__return { border: 1px solid ButtonText; }
 }
