@@ -168,10 +168,10 @@
   text-underline-offset: 3px;
   cursor: pointer;
 }
-.curriculum-overview__image-dialog {
-  width: fit-content;
-  max-width: calc(100% - 32px);
-  max-height: calc(100dvh - 32px);
+.curriculum-overview__image-dialog[role="dialog"] {
+  width: min(90rem, calc(100% - 24px));
+  max-width: none;
+  max-height: calc(100dvh - 24px);
   justify-items: center;
   gap: 12px;
   padding: 16px;
@@ -185,7 +185,7 @@
 }
 .curriculum-overview__image-dialog > img {
   min-width: 0;
-  max-width: 100%;
+  width: 100%;
   max-height: calc(100dvh - 112px);
   object-fit: contain;
 }
