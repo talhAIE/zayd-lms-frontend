@@ -12,7 +12,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "qa:science-spark:release": "node dev/science-release-check.cjs",
-    "qa:science-spark:phase8:preflight": "node dev/science-phase8-preflight.cjs"
+    "qa:science-spark:phase8:preflight": "node dev/science-phase8-preflight.cjs",
+    "qa:nafs": "playwright test --config dev/nafs/playwright.config.ts",
+    "dev:nafs": "node dev/nafs/manual-dev.cjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -89,6 +91,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",
+    "@playwright/test": "^1.64.1",
     "@types/howler": "^2.2.12",
     "@types/node": "^22.7.3",
     "@types/react": "^18.3.9",

@@ -14,6 +14,8 @@ import ChineseContactUs from "@/pages/public/chinese/ChineseContactUs";
 // Student Pages
 import StudentCourses from "@/pages/student/courses";
 import { PrimaryPage } from '@/pages/student/primary';
+import { NafsStudentSession } from "@/components/nafs/NafsSession";
+import { NafsAttemptPage, NafsOverviewPage } from "@/pages/student/nafs/NafsStudent";
 import { ScienceSession } from "@/components/science/ScienceSession";
 import { ScienceCoursePage, ScienceUnitPage, ScienceActivityPage } from "@/pages/student/science/ScienceJourney";
 import { SparkScienceCoursePage, SparkScienceUnitPage, SparkScienceActivityPage } from "@/pages/student/science/SparkScienceJourney";
@@ -123,6 +125,12 @@ const AppRoutes = () => {
       <Route path="/student/3d-avatar/roleplay" element={<StudentLayout><AvatarTopicsPage mode="roleplay" /></StudentLayout>} />
       <Route path="/student/3d-avatar/roleplay/:topicId" element={<StudentLayout><AvatarRoleplayPage /></StudentLayout>} />
       <Route path="/student/primary/:lessonId?" element={<PrimaryPage />} />
+      <Route path="/student/nafs" element={<StudentLayout><NafsStudentSession /></StudentLayout>}>
+        <Route path="assessments/:assessmentId" element={<NafsOverviewPage />} />
+        <Route path="attempts/:attemptId" element={<NafsAttemptPage />} />
+        <Route path="*" element={<Navigate to="/student/courses" replace />} />
+        <Route index element={<Navigate to="/student/courses" replace />} />
+      </Route>
       <Route path="/student/science" element={<ScienceSession />}>
         <Route path="spark-science" element={<SparkScienceCoursePage />} />
         <Route path="spark-science/unit-1" element={<SparkScienceUnitPage />} />

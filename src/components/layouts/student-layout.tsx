@@ -33,6 +33,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const location = useLocation();
   const isPrimaryRoute = location.pathname === '/student/primary' || location.pathname.startsWith('/student/primary/');
+  const isNafsRoute = location.pathname === '/student/nafs' || location.pathname.startsWith('/student/nafs/');
   const isScienceRoute = location.pathname === '/student/science' || location.pathname.startsWith('/student/science/');
   const isAvatarRoute = location.pathname === '/student/3d-avatar' || location.pathname.startsWith('/student/3d-avatar/');
   const isAvatarActivity = /^\/student\/3d-avatar\/(reading|listening|roleplay)\/[^/]+$/.test(location.pathname);
@@ -51,7 +52,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   const navigate = useNavigate();
   const scienceBackTarget = sparkScienceBackTarget(location.pathname, location.search);
   const handleBack = () => {
-    if (isPrimaryRoute) {
+    if (isPrimaryRoute || isNafsRoute) {
       navigate('/student/courses');
       return;
     }
@@ -83,7 +84,9 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   };
 
   let formattedTitle;
-  if (isAvatarRoute) {
+  if (isNafsRoute) {
+    formattedTitle = 'NAFS';
+  } else if (isAvatarRoute) {
     formattedTitle = location.pathname === '/student/3d-avatar' ? '3D Avatar Mode' : location.pathname.includes('/roleplay') ? '3D Roleplay' : location.pathname.includes('/listening') ? '3D Listening' : '3D Reading';
   } else if (isScienceRoute) {
     formattedTitle = 'Science';
@@ -118,7 +121,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   }, [isAuthenticated, user, navigate]);
 
   useEffect(() => {
-    if (user?.role !== "student" || isScienceRoute || isAvatarRoute || isPrimaryRoute) return;
+    if (user?.role !== "student" || isScienceRoute || isAvatarRoute || isPrimaryRoute || isNafsRoute) return;
 
     let intervalId: number | undefined;
     let sessionBootstrapInFlight = false;
@@ -199,10 +202,10 @@ export function StudentLayout({ children }: StudentLayoutProps) {
       stop();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [user?.id, user?.role, isScienceRoute, isAvatarRoute, isPrimaryRoute]);
+  }, [user?.id, user?.role, isScienceRoute, isAvatarRoute, isPrimaryRoute, isNafsRoute]);
 
   const isActive = (path: string) => {
-    return location.pathname === path || location.pathname.startsWith(`${path}/`) || (path === "/student/courses" && (isScienceRoute || isAvatarRoute || isPrimaryRoute));
+    return location.pathname === path || location.pathname.startsWith(`${path}/`) || (path === "/student/courses" && (isScienceRoute || isAvatarRoute || isPrimaryRoute || isNafsRoute));
   };
 
   const handleLogout = async () => {

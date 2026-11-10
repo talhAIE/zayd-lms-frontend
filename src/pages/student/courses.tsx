@@ -9,6 +9,8 @@ import { SparkScienceCourseCard } from '@/components/science/SparkScienceCourseC
 import type { SparkCourse } from '@/services/sparkScienceService';
 import { PrimaryCourseCard } from '@/components/primary/PrimaryCourseCard';
 import { AvatarCourseCard } from '@/components/avatar-reading/AvatarCourseCard';
+import { NafsCourseCards } from '@/components/nafs/NafsCourseCards';
+import type { NafsCourseView } from '@/types/nafs.contract';
 
 export default function StudentCourses() {
   const dispatch = useDispatch<AppDispatch>();
@@ -17,6 +19,7 @@ export default function StudentCourses() {
   const [sparkCourse, setSparkCourse] = useState<SparkCourse | null>(null);
   const [primaryAvailable, setPrimaryAvailable] = useState(false);
   const [avatarAvailable, setAvatarAvailable] = useState(false);
+  const [nafsCourses, setNafsCourses] = useState<NafsCourseView[]>([]);
   const studentName = [user?.firstName, user?.lastName]
     .filter((name): name is string => typeof name === 'string' && name.trim().length > 0)
     .join(' ')
@@ -24,7 +27,7 @@ export default function StudentCourses() {
     || user?.username
     || 'Student';
 
-  const inProgressCount = courses.filter(c => c.progressStatus === 'in_progress').length + (sparkCourse?.status === 'in_progress' ? 1 : 0);
+  const inProgressCount = courses.filter(c => c.progressStatus === 'in_progress').length + (sparkCourse?.status === 'in_progress' ? 1 : 0) + nafsCourses.filter(c => c.state === 'in_progress').length;
 
   useEffect(() => {
     dispatch(getCourses());
@@ -54,9 +57,10 @@ export default function StudentCourses() {
           <AvatarCourseCard onAvailabilityChange={setAvatarAvailable} />
           <PrimaryCourseCard onAvailabilityChange={setPrimaryAvailable} />
           <SparkScienceCourseCard onCourseChange={setSparkCourse} />
+          <NafsCourseCards onCoursesChange={setNafsCourses} />
           {loading && <p className="text-gray-500">Loading courses...</p>}
           {error && <p className="text-red-500">{error}</p>}
-          {!loading && !error && courses.length === 0 && !sparkCourse && !avatarAvailable && !primaryAvailable && (
+          {!loading && !error && courses.length === 0 && !sparkCourse && !avatarAvailable && !primaryAvailable && nafsCourses.length === 0 && (
             <p className="text-gray-500">No curriculum courses available.</p>
           )}
           {!loading && courses.map((course) => (

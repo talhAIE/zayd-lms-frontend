@@ -1,0 +1,60 @@
+{
+  "phase": 5,
+  "status": "implemented-and-verified",
+  "clientDate": "2026-11-04",
+  "backend": {
+    "tests": 48,
+    "passed": 48,
+    "build": "passed"
+  },
+  "frontend": {
+    "tests": 21,
+    "passed": 21,
+    "transportChecks": 9,
+    "dashboardChecks": 9,
+    "realDatabaseTeacherScenarios": 3,
+    "buildAndTypeCheck": "passed",
+    "changedRuntimeLint": {
+      "errors": 0,
+      "existingDashboardWarnings": 5
+    },
+    "visuallyReviewedWidths": [
+      1440,
+      390
+    ]
+  },
+  "localDatabase": {
+    "status": "passed",
+    "normalTablesUnchanged": 44,
+    "originalFormsPublished": 0,
+    "diagnosticQuizzesDeactivated": 12,
+    "submitted": 3
+  },
+  "realTeacherScopes": {
+    "englishForms": 6,
+    "broadTeacherForms": 12,
+    "broadTeacherRows": 13,
+    "deniedTeacherRows": 0
+  },
+  "matchedStudentTeacherScores": [
+    "2/2",
+    "0/2",
+    "1/2"
+  ],
+  "productionWritesThisPhase": false,
+  "pushedOrDeployed": false,
+  "academicFindingsStillPending": 7,
+  "phase6Accepted": false,
+  "testedFileSha256": {
+    "backend/src/modules/nafs/nafs.http.spec.ts": "558b8392137912bc83d098586cb5c3a9e2d9493a6026ee7982d28eae85a6a119",
+    "backend/src/modules/nafs/nafs.service.spec.ts": "5a9da427516c26664c5861245ecd43a1cb28d344589a1b2c56af184d2093e27a",
+    "backend/test/nafs/phase4-browser-server.ts": "4f73968a44ba24f95069e1c659f8928b49481450b43ce2f3122ff2ada3c3faab",
+    "frontend/src/components/nafs/NafsTeacherResults.tsx": "e5bccc3ec6e035d90d113cd79a0f47a17e4a0be9110a5e0327b622c16528b5d1",
+    "frontend/src/services/nafsService.ts": "28f5daec04084b75fc9939843e2065707bc2fec0b9c1c0b81bbcadde660f83c2",
+    "frontend/src/pages/teacher/dashboard.tsx": "b632faf26351dc71d21c8e4d2e89e4db06ee2aa13f694db03053e2a86341c8a3",
+    "frontend/src/components/layouts/teacher-layout.tsx": "c64b4d224bdd9f4e001412f3ebe13ede9db14b3cf6698584700c6f0c8b2bc0e9",
+    "frontend/dev/nafs/teacher.spec.ts": "948351a1c3feab5811d00ab47b15517f55bf27ffc86ef817ecf28b5bc5b00d19",
+    "frontend/dev/nafs/teacher-real-database.spec.ts": "194e8c9c0af7de7f9de295d62aafde797d6373760d6a90477f1579a972031a5a",
+    "frontend/dev/nafs/service.spec.ts": "054e7797fcca490b461b3d483198065b2d0f9f98eac7730a2118b3078795b4f7"
+  }
+}
