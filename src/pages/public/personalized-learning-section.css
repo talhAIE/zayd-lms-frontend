@@ -111,6 +111,12 @@
   overflow: hidden;
   border-radius: 16px;
 }
+.personalized-learning__preview-dialog[role="dialog"]:is(.personalized-learning__cefr-dialog, .personalized-learning__certificate-dialog, .personalized-learning__rewards-dialog) {
+  display: grid;
+  top: 50%;
+  height: auto;
+  overflow: auto;
+}
 .personalized-learning__preview-dialog > h2 {
   padding-inline: 36px;
   line-height: 1.5;
