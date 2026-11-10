@@ -6,6 +6,7 @@ import statChart from "@/assets/landing-page/stat-chart.png";
 import statDocument from "@/assets/landing-page/stat-document.png";
 import statClock from "@/assets/landing-page/stat-clock.png";
 import { landingHeroContent, landingHeroMetrics } from "./landing-content";
+import { LandingCounter } from "./landing-motion";
 import "./hero-section.css";
 
 const metricImages = { clock: statClock, topics: statDocument, multiplier: statChart };
@@ -69,7 +70,7 @@ export default function HeroSection() {
             <li key={stat.id} className="landing-hero__stat">
               <img src={metricImages[stat.id]} alt="" width={84} height={84} />
               <div>
-                <p dir={stat.direction} className="landing-hero__stat-value">{stat.value}</p>
+                <p dir={stat.direction} className="landing-hero__stat-value"><LandingCounter value={stat.value} /></p>
                 <p className="landing-hero__stat-description">{stat.description}</p>
               </div>
             </li>

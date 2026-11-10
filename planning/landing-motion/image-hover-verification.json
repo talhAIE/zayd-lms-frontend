@@ -1,0 +1,164 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "name": "hero",
+      "hover": {
+        "scale": "1.025",
+        "translate": "0px -4px",
+        "transition": "0.35s, 0.35s"
+      },
+      "resting": {
+        "scale": "none",
+        "translate": "none"
+      },
+      "passed": true
+    },
+    {
+      "name": "curriculum",
+      "hover": {
+        "scale": "1.025",
+        "translate": "0px -3px",
+        "transition": "0.35s, 0.35s"
+      },
+      "resting": {
+        "scale": "none",
+        "translate": "none"
+      },
+      "passed": true
+    },
+    {
+      "name": "personalized",
+      "hover": {
+        "scale": "1.025",
+        "translate": "0px -3px",
+        "transition": "0.35s, 0.35s"
+      },
+      "resting": {
+        "scale": "none",
+        "translate": "none"
+      },
+      "passed": true
+    },
+    {
+      "name": "demo icon",
+      "hover": {
+        "scale": "1.025",
+        "translate": "0px -3px",
+        "transition": "0.35s, 0.35s"
+      },
+      "resting": {
+        "scale": "none",
+        "translate": "none"
+      },
+      "passed": true
+    },
+    {
+      "name": "life illustration",
+      "hover": {
+        "scale": "1.025",
+        "translate": "0px -3px",
+        "transition": "0.35s, 0.35s"
+      },
+      "resting": {
+        "scale": "none",
+        "translate": "none"
+      },
+      "passed": true
+    },
+    {
+      "name": "impact artwork",
+      "hover": {
+        "scale": "1.025",
+        "translate": "0px -3px",
+        "transition": "0.35s, 0.35s"
+      },
+      "resting": {
+        "scale": "none",
+        "translate": "none"
+      },
+      "passed": true
+    },
+    {
+      "name": "metric icon",
+      "hover": {
+        "scale": "1.025",
+        "translate": "0px -3px",
+        "transition": "0.35s, 0.35s"
+      },
+      "resting": {
+        "scale": "none",
+        "translate": "none"
+      },
+      "passed": true
+    },
+    {
+      "name": "pricing mascot",
+      "hover": {
+        "scale": "1.025",
+        "translate": "0px -3px",
+        "transition": "0.35s, 0.35s"
+      },
+      "resting": {
+        "scale": "none",
+        "translate": "none"
+      },
+      "passed": true
+    },
+    {
+      "name": "school artwork",
+      "hover": {
+        "scale": "1.025",
+        "translate": "0px -3px",
+        "transition": "0.35s, 0.35s"
+      },
+      "resting": {
+        "scale": "none",
+        "translate": "none"
+      },
+      "passed": true
+    },
+    {
+      "name": "footer mascot",
+      "hover": {
+        "scale": "1.025",
+        "translate": "0px -3px",
+        "transition": "0.35s, 0.35s"
+      },
+      "resting": {
+        "scale": "none",
+        "translate": "none"
+      },
+      "passed": true
+    },
+    {
+      "name": "footer logo",
+      "hover": {
+        "scale": "1.025",
+        "translate": "0px -3px",
+        "transition": "0.35s, 0.35s"
+      },
+      "resting": {
+        "scale": "none",
+        "translate": "none"
+      },
+      "passed": true
+    },
+    {
+      "name": "nav logo",
+      "hover": {
+        "scale": "1.025",
+        "translate": "0px -3px",
+        "transition": "0.35s, 0.35s"
+      },
+      "resting": {
+        "scale": "none",
+        "translate": "none"
+      },
+      "passed": true
+    }
+  ],
+  "reduced": true,
+  "touchStatic": true,
+  "errors": []
+}

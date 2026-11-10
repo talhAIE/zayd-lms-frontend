@@ -124,7 +124,7 @@ export default function CurriculumSection() {
                   <>
                     <div className="curriculum-overview__device">
                       <div className="curriculum-overview__screen">
-                        <img src={preview.src} alt={preview.alt} loading="lazy" decoding="async" />
+                        <img key={preview.src} src={preview.src} alt={preview.alt} loading="lazy" decoding="async" />
                       </div>
                     </div>
                     <div className="curriculum-overview__preview-actions">
