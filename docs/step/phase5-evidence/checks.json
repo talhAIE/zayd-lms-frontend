@@ -1,0 +1,136 @@
+{
+  "phase": 5,
+  "date": "2026-11-10",
+  "branch": "feat/step",
+  "scope": "Local frontend navigation and controlled presentation only",
+  "step": {
+    "command": "pnpm exec playwright test --config dev/step/playwright.config.ts",
+    "passed": 20,
+    "failed": 0,
+    "tests": [
+      {
+        "name": "Courses isolates disabled, empty and failed STEP discovery; retry and hierarchy use API order",
+        "passed": true
+      },
+      {
+        "name": "grammar controlled layout at 390px",
+        "passed": true
+      },
+      {
+        "name": "listening controlled layout at 390px",
+        "passed": true
+      },
+      {
+        "name": "reading controlled layout at 390px",
+        "passed": true
+      },
+      {
+        "name": "grammar controlled layout at 1440px",
+        "passed": true
+      },
+      {
+        "name": "listening controlled layout at 1440px",
+        "passed": true
+      },
+      {
+        "name": "reading controlled layout at 1440px",
+        "passed": true
+      },
+      {
+        "name": "all selections enable controlled submit with no correctness reveal",
+        "passed": true
+      },
+      {
+        "name": "audio retry, expiry and release on leaving routed attempt",
+        "passed": true
+      },
+      {
+        "name": "denied route and account switch hide stale student content",
+        "passed": true
+      },
+      {
+        "name": "routed attempt stays read-only, uses saved selections and releases audio on account switch",
+        "passed": true
+      },
+      {
+        "name": "submitted attempt displays only server final total",
+        "passed": true
+      },
+      {
+        "name": "STEP mutations preserve contract envelopes, request IDs, bounded timeout and shared bearer auth",
+        "passed": true
+      },
+      {
+        "name": "optional 404 discovery is empty, while direct access and server failures stay errors",
+        "passed": true
+      },
+      {
+        "name": "account change or aborted lifetime cancels before a STEP request can be sent",
+        "passed": true
+      },
+      {
+        "name": "a delayed response from a previous student is never delivered to the next session",
+        "passed": true
+      },
+      {
+        "name": "401 refresh reuses the exact save payload and updates bearer authorization once",
+        "passed": true
+      },
+      {
+        "name": "region changes and aborted lifetimes cannot issue requests",
+        "passed": true
+      },
+      {
+        "name": "audio authorization uses attempt-scoped bearer POST and direct safe envelope",
+        "passed": true
+      },
+      {
+        "name": "malformed envelopes and malformed course collections stay retryable errors",
+        "passed": true
+      }
+    ]
+  },
+  "regression": {
+    "nafsTransportPassed": 9,
+    "scienceTransportPassed": 10,
+    "sciencePracticePassed": 28
+  },
+  "checks": {
+    "typescript": true,
+    "productionBuild": true,
+    "contractParity": true,
+    "privateAuthoringImportGuard": true,
+    "bundleMarkerScan": true,
+    "diffWhitespace": true,
+    "eslint": {
+      "errors": 0,
+      "warnings": 5,
+      "note": "Mixed component/hook exports for Fast Refresh; intentional storage revision invalidates memoized owner"
+    }
+  },
+  "visualQA": {
+    "widths": [
+      390,
+      1440
+    ],
+    "layouts": [
+      "grammar",
+      "listening",
+      "reading"
+    ],
+    "fullLmsRoutedListening": true,
+    "screenshotsInspected": true,
+    "localArtifactFolder": "dev/.step-qa"
+  },
+  "buildWarnings": [
+    "Existing PDF.js eval warning",
+    "Existing large bundle chunks"
+  ],
+  "production": {
+    "operations": 0,
+    "deployed": false,
+    "pushed": false,
+    "activated": false
+  },
+  "nextPhase": "Phase 6 binds durable Start, answer saving, submission and recovery; routed attempts currently read-only"
+}

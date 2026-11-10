@@ -4,8 +4,8 @@ import { defineConfig, type ProxyOptions } from 'vite';
 import { readFile } from 'node:fs/promises';
 
 export default defineConfig(({ command }) => ({
-  define: command === 'serve' && (process.env.NAFS_MANUAL_PREVIEW === 'true' || process.env.NAFS_BROWSER_QA === 'true' || process.env.SCIENCE_SPARK_JOURNEY_HARNESS === 'true' || process.env.SPARK_SCIENCE_MOTION_HARNESS === 'true')
-    ? { 'import.meta.env.VITE_API_BASE_URL': JSON.stringify('') } : {},
+  define: command === 'serve' && (process.env.STEP_BROWSER_QA === 'true' || process.env.NAFS_MANUAL_PREVIEW === 'true' || process.env.NAFS_BROWSER_QA === 'true' || process.env.SCIENCE_SPARK_JOURNEY_HARNESS === 'true' || process.env.SPARK_SCIENCE_MOTION_HARNESS === 'true')
+    ? { 'import.meta.env.VITE_API_BASE_URL': JSON.stringify(''), ...(process.env.STEP_BROWSER_QA === 'true' ? { 'import.meta.env.VITE_STEP_LAYOUT_PREVIEW': 'true' } : {}) } : {},
   plugins: [react(), {
     name: 'science-spark-development-harness',
     configureServer(server) {

@@ -11,6 +11,7 @@ import { PrimaryCourseCard } from '@/components/primary/PrimaryCourseCard';
 import { AvatarCourseCard } from '@/components/avatar-reading/AvatarCourseCard';
 import { NafsCourseCards } from '@/components/nafs/NafsCourseCards';
 import type { NafsCourseView } from '@/types/nafs.contract';
+import { StepCourseCard, type StepDiscoveryState } from '@/components/step/StepCourseCard';
 
 export default function StudentCourses() {
   const dispatch = useDispatch<AppDispatch>();
@@ -20,6 +21,7 @@ export default function StudentCourses() {
   const [primaryAvailable, setPrimaryAvailable] = useState(false);
   const [avatarAvailable, setAvatarAvailable] = useState(false);
   const [nafsCourses, setNafsCourses] = useState<NafsCourseView[]>([]);
+  const [stepStatus, setStepStatus] = useState<StepDiscoveryState>('loading');
   const studentName = [user?.firstName, user?.lastName]
     .filter((name): name is string => typeof name === 'string' && name.trim().length > 0)
     .join(' ')
@@ -41,7 +43,7 @@ export default function StudentCourses() {
             Hi {studentName} 👋
           </h1>
           <p className="text-[15px] text-[#949494] leading-[19px]">
-            Select a course to resume your learning. {inProgressCount} course{inProgressCount !== 1 && 's'} in progress.
+            Select a course to resume your learning.{stepStatus !== 'available' && <> {inProgressCount} course{inProgressCount !== 1 && 's'} in progress.</>}
           </p>
         </div>
       </div>
@@ -58,9 +60,10 @@ export default function StudentCourses() {
           <PrimaryCourseCard onAvailabilityChange={setPrimaryAvailable} />
           <SparkScienceCourseCard onCourseChange={setSparkCourse} />
           <NafsCourseCards onCoursesChange={setNafsCourses} />
+          <StepCourseCard onStatusChange={setStepStatus} />
           {loading && <p className="text-gray-500">Loading courses...</p>}
           {error && <p className="text-red-500">{error}</p>}
-          {!loading && !error && courses.length === 0 && !sparkCourse && !avatarAvailable && !primaryAvailable && nafsCourses.length === 0 && (
+          {!loading && !error && courses.length === 0 && !sparkCourse && !avatarAvailable && !primaryAvailable && nafsCourses.length === 0 && stepStatus === 'hidden' && (
             <p className="text-gray-500">No curriculum courses available.</p>
           )}
           {!loading && courses.map((course) => (
