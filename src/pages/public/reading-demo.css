@@ -1,9 +1,14 @@
-.reading-demo-modal.reading-demo-modal { display: flex; width: calc(100vw - 32px); max-width: 1207px; height: min(794px, calc(100dvh - 32px)); max-height: calc(100dvh - 32px); padding: 0; gap: 0; overflow: hidden; border-radius: 24px; background: white; color: #282828; }
-.reading-demo-modal > div.relative { height: 100%; max-height: 100%; min-width: 0; border: 0; border-radius: inherit; }
-.reading-demo-modal > button:last-child { top: 22px; right: 22px; }
+.reading-demo-modal.reading-demo-modal { display: flex; top: var(--demo-visible-center, 50%); width: calc(100vw - 32px); max-width: 1207px; height: min(794px, calc(var(--demo-visible-height, 100dvh) - 32px)); max-height: calc(var(--demo-visible-height, 100dvh) - 32px); padding: 0; gap: 0; overflow: hidden; border-radius: 24px; background: white; color: #282828; }
+.reading-demo-modal > button:last-child { top: 22px; right: 22px; z-index: 10; }
 .reading-demo-modal h1 { white-space: nowrap; font-size: clamp(16px, 2vw, 20px); }
-.grammar-demo-modal .grammar-demo-player { height: 100%; min-height: 0; max-width: none; overflow-y: auto; padding: 24px; overscroll-behavior: contain; }
+.grammar-demo-modal .grammar-demo-player { height: auto; min-height: 0; max-width: none; padding: 20px; gap: 16px; }
 .grammar-demo-player > div:first-child { padding-right: 44px; }
+.landing-demo-viewport { position: relative; flex: 1 1 0; width: 100%; height: 100%; min-width: 0; min-height: 0; overflow: clip; }
+.landing-demo-viewport__content { position: absolute; top: 50%; left: 50%; width: 100%; display: flow-root; transform: translate(-50%, -50%) scale(var(--demo-fit-scale, 1)); transform-origin: center; }
+.reading-demo-modal .landing-demo-viewport__content > div { height: auto; max-height: none; min-width: 0; border: 0; border-radius: inherit; }
+.landing-demo-viewport__content .overflow-y-auto { overflow-y: visible; max-height: none; }
+.landing-demo-celebration-dialog[role="dialog"] { display: flex; flex-direction: column; top: var(--demo-visible-center, 50%); height: min(560px, calc(var(--demo-visible-height, 100dvh) - 24px)); overflow: hidden; }
+.landing-demo-onboarding-dialog[role="dialog"] { height: min(740px, calc(var(--demo-visible-height, 100dvh) - 24px)); }
 @media (max-width: 600px) {
   .writing-demo-modal table { min-width: 0; width: 100%; }
   .writing-demo-modal thead { display: none; }
@@ -18,7 +23,7 @@
 .personalized-learning__demo-trigger > p { margin: 6px 0 0; color: #60646b; font-size: 13px; line-height: 1.75; }
 .personalized-learning__demo-label { margin-top: 8px; color: #1768d9; font-size: 12px; font-weight: 600; }
 @media (max-width: 767px) {
-  .reading-demo-modal.reading-demo-modal { width: 100vw; height: 100dvh; max-height: 100dvh; border: 0; border-radius: 0; }
+  .reading-demo-modal.reading-demo-modal { width: 100vw; height: var(--demo-visible-height, 100dvh); max-height: var(--demo-visible-height, 100dvh); border: 0; border-radius: 0; }
   .reading-demo-modal > button:last-child { top: 25px; right: 15px; }
   .personalized-learning__demo-trigger > h3 { font-size: 14px; }
   .personalized-learning__demo-trigger > p { font-size: 12px; }
