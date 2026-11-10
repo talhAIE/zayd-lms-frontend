@@ -32,6 +32,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   }, [isDesktopCollapsed]);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const location = useLocation();
+  const isPrimaryRoute = location.pathname === '/student/primary' || location.pathname.startsWith('/student/primary/');
   const isScienceRoute = location.pathname === '/student/science' || location.pathname.startsWith('/student/science/');
   const isAvatarRoute = location.pathname === '/student/3d-avatar' || location.pathname.startsWith('/student/3d-avatar/');
   const isAvatarActivity = /^\/student\/3d-avatar\/(reading|listening|roleplay)\/[^/]+$/.test(location.pathname);
@@ -50,6 +51,10 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   const navigate = useNavigate();
   const scienceBackTarget = sparkScienceBackTarget(location.pathname, location.search);
   const handleBack = () => {
+    if (isPrimaryRoute) {
+      navigate('/student/courses');
+      return;
+    }
     if (isAvatarRoute) {
       navigate(location.pathname === '/student/3d-avatar' ? '/student/courses' :
         /^\/student\/3d-avatar\/(reading|listening|roleplay)$/.test(location.pathname) ? '/student/3d-avatar' :
@@ -82,6 +87,8 @@ export function StudentLayout({ children }: StudentLayoutProps) {
     formattedTitle = location.pathname === '/student/3d-avatar' ? '3D Avatar Mode' : location.pathname.includes('/roleplay') ? '3D Roleplay' : location.pathname.includes('/listening') ? '3D Listening' : '3D Reading';
   } else if (isScienceRoute) {
     formattedTitle = 'Science';
+  } else if (isPrimaryRoute) {
+    formattedTitle = 'Primary';
   } else if (location.pathname.startsWith("/teacher/student-profile/")) {
     formattedTitle = "Student Profile";
   } else if (location.pathname.includes("/lessons/")) {
@@ -111,7 +118,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   }, [isAuthenticated, user, navigate]);
 
   useEffect(() => {
-    if (user?.role !== "student" || isScienceRoute || isAvatarRoute) return;
+    if (user?.role !== "student" || isScienceRoute || isAvatarRoute || isPrimaryRoute) return;
 
     let intervalId: number | undefined;
     let sessionBootstrapInFlight = false;
@@ -192,10 +199,10 @@ export function StudentLayout({ children }: StudentLayoutProps) {
       stop();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [user?.id, user?.role, isScienceRoute, isAvatarRoute]);
+  }, [user?.id, user?.role, isScienceRoute, isAvatarRoute, isPrimaryRoute]);
 
   const isActive = (path: string) => {
-    return location.pathname === path || location.pathname.startsWith(`${path}/`) || (path === "/student/courses" && (isScienceRoute || isAvatarRoute));
+    return location.pathname === path || location.pathname.startsWith(`${path}/`) || (path === "/student/courses" && (isScienceRoute || isAvatarRoute || isPrimaryRoute));
   };
 
   const handleLogout = async () => {
@@ -307,11 +314,11 @@ export function StudentLayout({ children }: StudentLayoutProps) {
       </nav>
 
       {/* Main content */}
-      <div className={`flex flex-col flex-1 w-full max-w-full overflow-x-hidden transition-all duration-300 ${isDesktopCollapsed ? 'xl:pl-20' : 'xl:pl-64'}`}>
+      <div className={`flex flex-col flex-1 w-full max-w-full ${isPrimaryRoute ? 'overflow-x-clip' : 'overflow-x-hidden'} transition-all duration-300 ${isDesktopCollapsed ? 'xl:pl-20' : 'xl:pl-64'}`}>
         {/* Top header */}
         <header className={`sticky top-0 z-40 flex xl:hidden items-center justify-between ${isSparkScienceActivity || isAvatarActivity ? 'h-12 shrink-0' : 'h-16'} px-4 bg-background xl:px-8`}>
           <div className="flex items-center">
-            {scienceBackTarget && (
+            {(scienceBackTarget || isPrimaryRoute) && (
               <Button variant="ghost" size="icon" onClick={handleBack} aria-label="Back">
                 <ChevronLeft className="h-5 w-5" />
               </Button>
@@ -412,8 +419,8 @@ export function StudentLayout({ children }: StudentLayoutProps) {
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 w-full max-w-full overflow-x-hidden">
-          <div className={`${isAvatarActivity ? 'px-2 py-2 sm:px-4' : isSparkScienceActivity ? 'px-4 py-2' : 'p-4'} w-full max-w-full overflow-x-hidden`}>{children}</div>
+        <main className={`flex-1 w-full max-w-full ${isPrimaryRoute ? 'overflow-x-clip' : 'overflow-x-hidden'}`}>
+          <div className={`${isAvatarActivity ? 'px-2 py-2 sm:px-4' : isSparkScienceActivity ? 'px-4 py-2' : 'p-4'} w-full max-w-full ${isPrimaryRoute ? 'overflow-x-clip' : 'overflow-x-hidden'}`}>{children}</div>
         </main>
       </div>
 
