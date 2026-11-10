@@ -11,9 +11,10 @@ node_modules
 dist
 dist-ssr
 *.local
-# Keep local docs ignored except the versioned NAFS implementation contract.
+# Keep local docs ignored except versioned NAFS and STEP implementation docs.
 /docs/*
 !/docs/nafs/
+!/docs/step/
 
 # Editor directories and files
 .vscode/*
