@@ -1,0 +1,50 @@
+.smart-dashboards {
+  padding: 0 6.5vw 56px;
+  background: #fff;
+  color: #242424;
+  font-family: "IBM Plex Sans Arabic", sans-serif;
+}
+.smart-dashboards__container { max-width: 1368px; margin-inline: auto; }
+.smart-dashboards__heading { max-width: 900px; margin: 0 auto 32px; font-family: "Almarai", sans-serif; font-size: clamp(26px, 2.6vw, 38px); font-weight: 800; line-height: 1.7; text-align: center; text-wrap: balance; }
+.smart-dashboards__heading-accent { display: block; padding: .12em .1em .18em; line-height: 1.85; color: #258da9; background: linear-gradient(270deg, #4b92e4, #259f9b); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.smart-dashboards__cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; gap: 24px; }
+.dashboard-card { position: relative; isolation: isolate; overflow: hidden; min-width: 0; padding: 24px 26px 38px; border: 1px solid transparent; border-radius: 28px; background: linear-gradient(145deg, #fff, #f0f7ff) padding-box, linear-gradient(135deg, #6be5e2, #75a5ff) border-box; box-shadow: 0 10px 20px rgb(35 126 243 / 13%), 0 2px 4px rgb(35 126 243 / 7%); }
+.dashboard-card::before { position: absolute; top: 0; inset-inline: 0; height: 6px; background: linear-gradient(90deg, #13d1ca, #0868ff); content: ""; }
+.dashboard-card::after { position: absolute; z-index: -1; left: 0; bottom: 0; width: 75%; height: 60px; border-top-right-radius: 100% 100%; background: #e0efff; content: ""; }
+.dashboard-card__icon { display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; margin-inline: auto; border: 1px solid #bad7ff; border-radius: 24px; background: linear-gradient(145deg, #fff, #e9f3ff); color: #079df1; box-shadow: 0 8px 14px rgb(35 126 243 / 18%); }
+.dashboard-card__icon svg { width: 46px; height: 46px; stroke-width: 1.7; }
+.dashboard-card h3 { margin: 22px 0 0; color: #11132f; font-family: "Almarai", sans-serif; font-size: clamp(20px, 1.65vw, 24px); font-weight: 800; line-height: 1.65; text-align: center; text-wrap: balance; }
+.dashboard-card ul { margin: 18px 0 0; padding: 0; list-style: none; }
+.dashboard-card li { position: relative; padding: 14px 22px 14px 0; border-bottom: 1px solid #e1ecf9; color: #30334c; font-size: 16px; line-height: 1.85; }
+.dashboard-card li:last-child { padding-bottom: 0; border-bottom: 0; }
+.dashboard-card li::before { position: absolute; right: 0; top: 24px; width: 9px; height: 9px; border-radius: 50%; background: #0bafbf; content: ""; }
+.dashboard-card strong { color: #11132f; font-weight: 700; }
+@media (min-width: 850px) and (max-width: 1100px) {
+  .smart-dashboards__cards { gap: 16px; }
+  .dashboard-card { padding: 24px 18px 32px; }
+  .dashboard-card h3 { font-size: 19px; }
+  .dashboard-card li { font-size: 14px; padding-inline-start: 18px; }
+  .dashboard-card__icon { width: 70px; height: 70px; border-radius: 21px; }
+  .dashboard-card__icon svg { width: 40px; height: 40px; }
+}
+@media (max-width: 849px) {
+  .smart-dashboards { padding: 0 24px 42px; }
+  .smart-dashboards__cards { grid-template-columns: minmax(0, 1fr); max-width: 660px; margin-inline: auto; }
+}
+@media (max-width: 559px) {
+  .smart-dashboards { padding-inline: 18px; }
+  .smart-dashboards__heading { margin-bottom: 24px; font-size: 25px; }
+  .dashboard-card { padding: 24px 20px 32px; }
+  .dashboard-card h3 { font-size: 20px; }
+  .dashboard-card li { font-size: 14px; }
+  .dashboard-card__icon { width: 72px; height: 72px; border-radius: 22px; }
+  .dashboard-card__icon svg { width: 42px; height: 42px; }
+}
+@media (forced-colors: active) {
+  .smart-dashboards__heading-accent { background: none; -webkit-text-fill-color: CanvasText; }
+  .dashboard-card { border-color: CanvasText; box-shadow: none; }
+  .dashboard-card__icon { border: 1px solid CanvasText; box-shadow: none; }
+  .dashboard-card::before, .dashboard-card::after { display: none; }
+  .dashboard-card li { border-color: CanvasText; }
+  .dashboard-card li::before { background: CanvasText; }
+}

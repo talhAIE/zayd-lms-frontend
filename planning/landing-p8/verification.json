@@ -1,0 +1,195 @@
+{
+  "phase": "P8",
+  "verifiedAtUtc": "2026-11-07T14:30:14.525Z",
+  "status": "review_ui_and_supplied_copy_verified_final_decisions_capability_review_open",
+  "counts": {
+    "complete": 11,
+    "partial": 11,
+    "total": 22
+  },
+  "requirements": [
+    {
+      "id": "S12-PRESERVE",
+      "status": "complete",
+      "implementation": "src/pages/public/schools-section.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json and screenshots"
+    },
+    {
+      "id": "S12-HEADLINE",
+      "status": "complete",
+      "implementation": "src/pages/public/schools-section.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json and screenshots"
+    },
+    {
+      "id": "S12-BODY",
+      "status": "complete",
+      "implementation": "src/pages/public/schools-section.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json and screenshots"
+    },
+    {
+      "id": "S12-PILL1",
+      "status": "complete",
+      "implementation": "src/pages/public/schools-section.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json and screenshots"
+    },
+    {
+      "id": "S12-PILL2",
+      "status": "complete",
+      "implementation": "src/pages/public/schools-section.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json and screenshots"
+    },
+    {
+      "id": "S12-PILL3",
+      "status": "complete",
+      "implementation": "src/pages/public/schools-section.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json and screenshots"
+    },
+    {
+      "id": "S12-CTA",
+      "status": "complete",
+      "implementation": "src/pages/public/schools-section.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json and screenshots"
+    },
+    {
+      "id": "S12B-HEADING",
+      "status": "complete",
+      "implementation": "src/pages/public/SmartDashboardsSection.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json and screenshots"
+    },
+    {
+      "id": "S12B-ADMIN-TITLE",
+      "status": "complete",
+      "implementation": "src/pages/public/SmartDashboardsSection.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json and screenshots"
+    },
+    {
+      "id": "S12B-TEACHER-TITLE",
+      "status": "complete",
+      "implementation": "src/pages/public/SmartDashboardsSection.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json and screenshots"
+    },
+    {
+      "id": "S12B-STUDENT-TITLE",
+      "status": "complete",
+      "implementation": "src/pages/public/SmartDashboardsSection.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json and screenshots"
+    },
+    {
+      "id": "S12B-ADMIN-1",
+      "status": "partial_copy_rendering_verified_capability_review_open",
+      "implementation": "src/pages/public/SmartDashboardsSection.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json",
+      "dependency": "Product capability confirmation; capability-review.json"
+    },
+    {
+      "id": "S12B-ADMIN-2",
+      "status": "partial_copy_rendering_verified_capability_review_open",
+      "implementation": "src/pages/public/SmartDashboardsSection.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json",
+      "dependency": "Product capability confirmation; capability-review.json"
+    },
+    {
+      "id": "S12B-ADMIN-3",
+      "status": "partial_copy_rendering_verified_capability_review_open",
+      "implementation": "src/pages/public/SmartDashboardsSection.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json",
+      "dependency": "Product capability confirmation; capability-review.json"
+    },
+    {
+      "id": "S12B-TEACHER-1",
+      "status": "partial_copy_rendering_verified_capability_review_open",
+      "implementation": "src/pages/public/SmartDashboardsSection.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json",
+      "dependency": "Product capability confirmation; capability-review.json"
+    },
+    {
+      "id": "S12B-TEACHER-2",
+      "status": "partial_copy_rendering_verified_capability_review_open",
+      "implementation": "src/pages/public/SmartDashboardsSection.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json",
+      "dependency": "Product capability confirmation; capability-review.json"
+    },
+    {
+      "id": "S12B-TEACHER-3",
+      "status": "partial_copy_rendering_verified_capability_review_open",
+      "implementation": "src/pages/public/SmartDashboardsSection.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json",
+      "dependency": "Product capability confirmation; capability-review.json"
+    },
+    {
+      "id": "S12B-STUDENT-1",
+      "status": "partial_copy_rendering_verified_capability_review_open",
+      "implementation": "src/pages/public/SmartDashboardsSection.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json",
+      "dependency": "Product capability confirmation; capability-review.json"
+    },
+    {
+      "id": "S12B-STUDENT-2",
+      "status": "partial_copy_rendering_verified_capability_review_open",
+      "implementation": "src/pages/public/SmartDashboardsSection.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json",
+      "dependency": "Product capability confirmation; capability-review.json"
+    },
+    {
+      "id": "S12B-STUDENT-3",
+      "status": "partial_copy_rendering_verified_capability_review_open",
+      "implementation": "src/pages/public/SmartDashboardsSection.tsx",
+      "evidence": "planning/landing-p8/browser-evidence.json",
+      "dependency": "Product capability confirmation; capability-review.json"
+    },
+    {
+      "id": "S12-BANNER",
+      "status": "partial_review_ui_verified_wording_position_unapproved",
+      "implementation": "src/pages/public/PracticeCallout.tsx / .css and Main.tsx",
+      "dependency": "D08/D09",
+      "evidence": "planning/landing-p8/browser-evidence.json"
+    },
+    {
+      "id": "S12B-LAYOUT",
+      "status": "partial_review_layout_verified_placement_unapproved",
+      "implementation": "src/pages/public/SmartDashboardsSection.css and Main.tsx",
+      "dependency": "D08",
+      "evidence": "planning/landing-p8/browser-evidence.json"
+    }
+  ],
+  "fullOriginalPhaseComplete": false,
+  "independentReviewImplementationComplete": true,
+  "checks": {
+    "typeScript": true,
+    "targetedEslint": true,
+    "productionBuild": true,
+    "fiveViewportBrowserChecks": true,
+    "sourceScope": true,
+    "contactRoute": {
+      "destination": "/contact-us",
+      "formVisible": true,
+      "submitted": false
+    },
+    "diffCheck": true
+  },
+  "changedApplicationFiles": [
+    "src/pages/public/Main.tsx",
+    "src/pages/public/schools-section.tsx"
+  ],
+  "newApplicationFiles": [
+    "src/pages/public/PracticeCallout.css",
+    "src/pages/public/PracticeCallout.tsx",
+    "src/pages/public/SmartDashboardsSection.css",
+    "src/pages/public/SmartDashboardsSection.tsx"
+  ],
+  "newImageAssets": [],
+  "visualReview": [
+    "schools-1440.png",
+    "schools-320.png",
+    "smart-dashboards-1440.png",
+    "smart-dashboards-1024.png",
+    "smart-dashboards-320.png",
+    "smart-dashboards-320-forced-colors.png",
+    "practice-callout-1440.png",
+    "practice-callout-320.png"
+  ],
+  "finalApprovalsImplied": false,
+  "p9Readiness": "Independent work can begin when requested, subject to D09/D01/D10/E03. P7 pricing model ready. P9 not started.",
+  "otherPhasesImplemented": false,
+  "commitPushDeploy": false
+}

@@ -1,0 +1,106 @@
+{
+  "phase": "P7",
+  "verifiedAtUtc": "2026-11-07T13:47:31.026Z",
+  "status": "independent_pricing_copy_verified_dependencies_open",
+  "counts": {
+    "complete": 7,
+    "partial": 3,
+    "blocked": 1,
+    "total": 11
+  },
+  "requirements": [
+    {
+      "id": "S11-HEADER",
+      "status": "complete",
+      "implementation": "src/pages/public/pricing-section.tsx and landing-content.ts",
+      "evidence": "planning/landing-p7/browser-evidence.json"
+    },
+    {
+      "id": "S11-CURRICULUM-COPY",
+      "status": "complete",
+      "implementation": "src/pages/public/pricing-section.tsx and landing-content.ts",
+      "evidence": "planning/landing-p7/browser-evidence.json"
+    },
+    {
+      "id": "S11-CURRICULUM-PRICE",
+      "status": "complete",
+      "implementation": "src/pages/public/pricing-section.tsx and landing-content.ts",
+      "evidence": "planning/landing-p7/browser-evidence.json"
+    },
+    {
+      "id": "S11-CURRICULUM-KEEP",
+      "status": "complete",
+      "implementation": "src/pages/public/pricing-section.tsx and landing-content.ts",
+      "evidence": "planning/landing-p7/browser-evidence.json"
+    },
+    {
+      "id": "S11-PLUS-PRICE",
+      "status": "complete",
+      "implementation": "src/pages/public/pricing-section.tsx and landing-content.ts",
+      "evidence": "planning/landing-p7/browser-evidence.json"
+    },
+    {
+      "id": "S11-LIFE-COPY",
+      "status": "complete",
+      "implementation": "src/pages/public/pricing-section.tsx and landing-content.ts",
+      "evidence": "planning/landing-p7/browser-evidence.json"
+    },
+    {
+      "id": "S11-LIFE-PRICE",
+      "status": "complete",
+      "implementation": "src/pages/public/pricing-section.tsx and landing-content.ts",
+      "evidence": "planning/landing-p7/browser-evidence.json"
+    },
+    {
+      "id": "S11-PLUS-KEEP",
+      "status": "partial",
+      "verified": "All existing features/actions preserved; current count 40 retained.",
+      "dependency": "D01 global catalog count"
+    },
+    {
+      "id": "S11-LIFE-KEEP",
+      "status": "partial",
+      "verified": "All existing features/actions preserved; current count 40 retained.",
+      "dependency": "D01 global catalog count"
+    },
+    {
+      "id": "S11-MODEL",
+      "status": "partial",
+      "verified": "Typed numeric shared model, per-plan badges and RTL order.",
+      "dependency": "P9 package FAQ consumer remains unimplemented; existing FAQ contains no amounts."
+    },
+    {
+      "id": "S11-ROUTING",
+      "status": "blocked_deferred_by_user",
+      "dependency": "E03",
+      "knownLimitation": "Preserved /auth/register destination remains missing."
+    }
+  ],
+  "checks": {
+    "typeScript": true,
+    "targetedEslint": true,
+    "productionBuild": true,
+    "fiveViewportBrowserChecks": true,
+    "sourceScope": true,
+    "diffCheck": true
+  },
+  "changedApplicationFiles": [
+    "src/pages/public/landing-content.ts",
+    "src/pages/public/pricing-section.tsx"
+  ],
+  "pricingCssUnchanged": true,
+  "faqAndFinalCtaUnchanged": true,
+  "fullOriginalPhaseComplete": false,
+  "independentAuthorizedWorkComplete": true,
+  "releaseReviewOpen": "D07 subtitle review",
+  "routingRequirementComplete": false,
+  "visualReview": [
+    "pricing-1440.png",
+    "pricing-320.png",
+    "pricing-768.png",
+    "pricing-320-forced-colors.png"
+  ],
+  "p8Readiness": "Independent work can begin when requested; D08/D09 decisions remain. Not started.",
+  "otherPhasesImplemented": false,
+  "commitPushDeploy": false
+}

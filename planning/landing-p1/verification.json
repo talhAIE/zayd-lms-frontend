@@ -1,0 +1,50 @@
+{
+  "verifiedAtUtc": "2026-11-07T10:11:58.612Z",
+  "phase": "P1",
+  "status": "complete",
+  "checks": {
+    "exactBody": true,
+    "exactCtaLabels": true,
+    "englishBrandIsolated": true,
+    "topicDecisionRespected": true,
+    "metricSubtitles": true,
+    "preservedH1AndGrade": true,
+    "noHorizontalOverflow": true,
+    "tagRestored": true,
+    "existingNavigation": true,
+    "noPageErrors": true,
+    "applicationScopeLimited": true
+  },
+  "allVerificationChecksPassed": true,
+  "completedItems": [
+    "S2-PRESERVE",
+    "S2-BODY",
+    "S2-PRIMARY",
+    "S2-SECONDARY",
+    "S3-CLOCK",
+    "S3-MULTIPLIER",
+    "S1-PRESERVE",
+    "S3-TOPICS"
+  ],
+  "openItems": [],
+  "commands": {
+    "typeScript": "tsc -b: passed",
+    "productionBuild": "vite build: passed",
+    "targetedEslint": "hero-section.tsx and landing-content.ts: passed"
+  },
+  "changedFromP0": [
+    "src/pages/public/hero-section.css",
+    "src/pages/public/hero-section.tsx"
+  ],
+  "newApplicationFile": "src/pages/public/landing-content.ts",
+  "laterPhasesStarted": false,
+  "existingBuildWarnings": [
+    "pdfjs-dist eval",
+    "large initial bundle"
+  ],
+  "topicCountAmendment": {
+    "userConfirmed": 250,
+    "evidence": "planning/landing-p1/topic-count-confirmation.json",
+    "note": "Original evidence records the earlier +40 value; this confirmation supersedes that instruction."
+  }
+}

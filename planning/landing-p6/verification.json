@@ -1,0 +1,157 @@
+{
+  "phase": "P6",
+  "status": "independent_design_content_verified_dependencies_open",
+  "verifiedAtUtc": "2026-11-07T13:17:24.620Z",
+  "requirements": [
+    {
+      "id": "S8-FRAME",
+      "status": "complete",
+      "implementation": "src/pages/public/zayd-life-section.tsx / .css",
+      "evidence": "planning/landing-p6/browser-evidence.json and section screenshots"
+    },
+    {
+      "id": "S8-PRESERVE",
+      "status": "complete",
+      "implementation": "src/pages/public/zayd-life-section.tsx / .css",
+      "evidence": "planning/landing-p6/browser-evidence.json and section screenshots"
+    },
+    {
+      "id": "S8-CALLOUT",
+      "status": "complete",
+      "implementation": "src/pages/public/zayd-life-section.tsx / .css",
+      "evidence": "planning/landing-p6/browser-evidence.json and section screenshots"
+    },
+    {
+      "id": "S8-SOCIAL",
+      "status": "complete",
+      "implementation": "src/pages/public/zayd-life-section.tsx / .css",
+      "evidence": "planning/landing-p6/browser-evidence.json and section screenshots"
+    },
+    {
+      "id": "S8-OTHER",
+      "status": "complete",
+      "implementation": "src/pages/public/zayd-life-section.tsx / .css",
+      "evidence": "planning/landing-p6/browser-evidence.json and section screenshots"
+    },
+    {
+      "id": "S9-PRESERVE",
+      "status": "complete",
+      "implementation": "src/pages/public/future-skills-section.tsx / .css",
+      "evidence": "planning/landing-p6/browser-evidence.json and section screenshots"
+    },
+    {
+      "id": "S9-BODY",
+      "status": "complete",
+      "implementation": "src/pages/public/future-skills-section.tsx / .css",
+      "evidence": "planning/landing-p6/browser-evidence.json and section screenshots"
+    },
+    {
+      "id": "S9-TAG4",
+      "status": "complete",
+      "implementation": "src/pages/public/future-skills-section.tsx / .css",
+      "evidence": "planning/landing-p6/browser-evidence.json and section screenshots"
+    },
+    {
+      "id": "S9-TAG5",
+      "status": "complete",
+      "implementation": "src/pages/public/future-skills-section.tsx / .css",
+      "evidence": "planning/landing-p6/browser-evidence.json and section screenshots"
+    },
+    {
+      "id": "S10-PRESERVE",
+      "status": "complete",
+      "implementation": "src/pages/public/impact-stats-section.tsx / .css",
+      "evidence": "planning/landing-p6/browser-evidence.json and section screenshots"
+    },
+    {
+      "id": "S10-HEADLINE",
+      "status": "complete",
+      "implementation": "src/pages/public/impact-stats-section.tsx / .css",
+      "evidence": "planning/landing-p6/browser-evidence.json and section screenshots"
+    },
+    {
+      "id": "S10-BODY",
+      "status": "complete",
+      "implementation": "src/pages/public/impact-stats-section.tsx / .css",
+      "evidence": "planning/landing-p6/browser-evidence.json and section screenshots"
+    },
+    {
+      "id": "S10-DISCLAIMER",
+      "status": "complete",
+      "implementation": "src/pages/public/impact-stats-section.tsx / .css",
+      "evidence": "planning/landing-p6/browser-evidence.json and section screenshots"
+    },
+    {
+      "id": "S8-BODY",
+      "status": "partial",
+      "implementation": "src/pages/public/zayd-life-section.tsx",
+      "verified": "Exact updated wording with current count 40 and LTR brands.",
+      "dependency": "D01 broader catalog count remains unresolved; hero stays +250."
+    },
+    {
+      "id": "S8-PREVIEW",
+      "status": "deferred_by_user_scope",
+      "implemented": false,
+      "dependency": "Design/content-only scope; E01 audio/transcripts absent."
+    },
+    {
+      "id": "S10-STUDENTS",
+      "status": "blocked_missing_approved_data",
+      "implemented": false,
+      "dependency": "D06 verified totals/unit/scope/date; original counters preserved, not approved."
+    },
+    {
+      "id": "S10-TIME",
+      "status": "blocked_missing_approved_data",
+      "implemented": false,
+      "dependency": "D06 verified totals/unit/scope/date; original counters preserved, not approved."
+    },
+    {
+      "id": "S10-LESSONS",
+      "status": "blocked_missing_approved_data",
+      "implemented": false,
+      "dependency": "D06 verified totals/unit/scope/date; original counters preserved, not approved."
+    }
+  ],
+  "counts": {
+    "complete": 13,
+    "partial": 1,
+    "blocked": 3,
+    "deferred": 1,
+    "total": 18
+  },
+  "fullOriginalPhaseComplete": false,
+  "independentAuthorizedWorkComplete": true,
+  "checks": {
+    "typeScript": true,
+    "targetedEslint": true,
+    "productionBuild": true,
+    "fiveViewportBrowserChecks": true,
+    "sourceScope": true,
+    "diffCheck": true
+  },
+  "changedApplicationFiles": [
+    "src/pages/public/future-skills-section.css",
+    "src/pages/public/future-skills-section.tsx",
+    "src/pages/public/impact-stats-section.css",
+    "src/pages/public/impact-stats-section.tsx",
+    "src/pages/public/zayd-life-section.css",
+    "src/pages/public/zayd-life-section.tsx"
+  ],
+  "newAssets": [],
+  "visualReview": [
+    "zayd-life-1440.png",
+    "zayd-life-320.png",
+    "zayd-life-1024.png",
+    "future-skills-768.png",
+    "future-skills-320.png",
+    "future-skills-320-forced-colors.png",
+    "impact-stats-1440.png",
+    "impact-stats-320.png"
+  ],
+  "dataApprovalImplied": false,
+  "openDecisionRecord": "planning/landing-p6/decisions.json",
+  "p7Readiness": "Independent work can begin when requested; D01/D07/E03 remain open. Not started.",
+  "otherPhasesImplemented": false,
+  "commitPushDeploy": false
+}

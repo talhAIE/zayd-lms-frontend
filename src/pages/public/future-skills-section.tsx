@@ -4,8 +4,8 @@ const futureTags = [
   "الدراسة الجامعية",
   "المعرفة العالمية",
   "سوق العمل",
-  "التدريب والتطوير",
-  "التواصل المهني",
+  "التطوير المهني",
+  "التواصل الدولي",
 ];
 
 export default function FutureSkillsSection() {
@@ -20,8 +20,7 @@ export default function FutureSkillsSection() {
               <span>دراسيــة فقــط</span>
             </h2>
             <p className="future-skills__description">
-              ما يتعلمه الطالب اليوم يمكن أن يفتح أمامه فرصًا أكبر غدًا في الدراسة
-              الجامعية والوصول إلى المعرفة والاستعداد لسوق العمل.
+              إتقان الإنجليزية يفتح آفاقًا أوسع للتعليم الجامعي والمعرفة والاستعداد لسوق العمل.
             </p>
           </div>
           <ul className="future-skills__tags" aria-label="مجالات استخدام الإنجليزية">

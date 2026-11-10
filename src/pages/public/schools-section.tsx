@@ -11,17 +11,16 @@ export default function SchoolsSection() {
             <span className="schools__eyebrow">زيد للمدارس والمجموعات</span>
             <h2 id="schools-heading" className="schools__heading">
               <span>مدرستـــك تدرّس الإنجليزيــة</span>
-              <span className="schools__heading-accent">زيــد يجعل كل طالب يمارسها.</span>
+              <span className="schools__heading-accent">وزيد يمنح كل طالب فرصة لممارستها.</span>
             </h2>
             <p className="schools__description">
-              لا تحتاج المدرسة إلى تغيير منهجها أو استبدال معلميها. <strong>زيـــد</strong> يضيف طبقة من الممارسة
-              الفردية والتغذية الراجعة حول ما تقوم به المدرسة بالفعل.
+              يعزز زيد دور المعلم، ويمنح الطلاب فرصًا إضافية لممارسة الإنجليزية، مع تغذية راجعة تدعم تقدمهم.
             </p>
             <ul className="schools__features" aria-label="مزايا المدارس والمجموعات">
-              <li>أسعار خاصة حسب العدد</li><li>مجموعات طلابية</li><li>دعم للتطبيق داخل المدرسة</li>
+              <li>أسعار خاصة للمدارس</li><li>اشتراكات للمجموعات الطلابية</li><li>دعم للتطبيق داخل المدرسة</li>
             </ul>
             <a href="/contact-us" className="schools__action">
-              <span>اطلب عرض المدارس</span><span className="schools__arrow"><ArrowLeft aria-hidden="true" /></span>
+              <span>اطلب عرضًا لمدرستك</span><span className="schools__arrow"><ArrowLeft aria-hidden="true" /></span>
             </a>
           </div>
           <div className="schools__visual">

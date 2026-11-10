@@ -1,0 +1,2061 @@
+{
+  "capturedAt": "2026-11-07T10:00:21.770Z",
+  "base": "http://127.0.0.1:5174",
+  "browser": "156.0.8078.81",
+  "account": "fresh unauthenticated browser context",
+  "motion": "reduced",
+  "scope": "local navigation and FAQ only; no demo session, forms, microphone or authenticated APIs",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 1000,
+      "httpStatus": 200,
+      "documentWidth": 1440,
+      "overflow": false,
+      "faqCount": 7,
+      "video": {
+        "exists": false,
+        "playDisabled": true
+      },
+      "brokenImages": [],
+      "fonts": [
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "unloaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "unloaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "unloaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "unloaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "loaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "loaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "loaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "loaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        }
+      ]
+    },
+    {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024,
+      "httpStatus": 200,
+      "documentWidth": 768,
+      "overflow": false,
+      "faqCount": 7,
+      "video": {
+        "exists": false,
+        "playDisabled": true
+      },
+      "brokenImages": [],
+      "fonts": [
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "unloaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "unloaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "unloaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "unloaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "loaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "loaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "loaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "loaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        }
+      ]
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844,
+      "httpStatus": 200,
+      "documentWidth": 390,
+      "overflow": false,
+      "faqCount": 7,
+      "video": {
+        "exists": false,
+        "playDisabled": true
+      },
+      "brokenImages": [],
+      "fonts": [
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Outfit",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Poppins",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "unloaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "unloaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "unloaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "unloaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "loaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "loaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "loaded"
+        },
+        {
+          "family": "Almarai",
+          "status": "loaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "Nunito",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Sans Arabic",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "status": "unloaded"
+        }
+      ]
+    }
+  ],
+  "interactions": [
+    {
+      "name": "Desktop pricing anchor",
+      "passed": true,
+      "evidence": {
+        "top": 85.546875,
+        "scrollY": 5196
+      }
+    },
+    {
+      "name": "FAQ second item expands and first collapses",
+      "passed": true,
+      "evidence": {
+        "count": 7,
+        "secondExpanded": true,
+        "firstExpanded": false
+      }
+    },
+    {
+      "name": "FAQ item closes",
+      "passed": true,
+      "evidence": "second item collapsed"
+    },
+    {
+      "name": "Hero Try CTA reaches login",
+      "passed": true,
+      "evidence": "/login"
+    },
+    {
+      "name": "Existing pricing registration route behavior",
+      "passed": true,
+      "evidence": {
+        "requested": "/auth/register",
+        "observed": "/",
+        "expectedProductBehavior": false,
+        "note": "Existing dead conversion path: catch-all returns to Home; observation is not an acceptance pass."
+      }
+    },
+    {
+      "name": "tablet menu opens",
+      "passed": true,
+      "evidence": {
+        "expanded": "true",
+        "links": 5
+      }
+    },
+    {
+      "name": "tablet menu Escape closes",
+      "passed": true,
+      "evidence": "closed"
+    },
+    {
+      "name": "tablet Schools anchor closes menu",
+      "passed": true,
+      "evidence": {
+        "top": 86.296875,
+        "scrollY": 7282
+      }
+    },
+    {
+      "name": "mobile menu opens",
+      "passed": true,
+      "evidence": {
+        "expanded": "true",
+        "links": 5
+      }
+    },
+    {
+      "name": "mobile menu Escape closes",
+      "passed": true,
+      "evidence": "closed"
+    },
+    {
+      "name": "mobile Schools anchor closes menu",
+      "passed": true,
+      "evidence": {
+        "top": 86.046875,
+        "scrollY": 8554
+      }
+    }
+  ],
+  "pageErrors": [],
+  "failedRequests": []
+}

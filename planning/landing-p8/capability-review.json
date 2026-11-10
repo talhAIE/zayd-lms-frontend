@@ -1,0 +1,25 @@
+{
+  "scope": "Read-only frontend source inspection; not production feature approval or authenticated/live verification.",
+  "suppliedCopySource": "Updated PDF pages 22-23",
+  "sourceSupport": [
+    {
+      "file": "src/services/teacherService.ts",
+      "observation": "TeacherDashboardData/Summary, student progress and usage fields, filter types, points and achievement rewardClaimed fields exist.",
+      "limit": "Types alone do not verify live availability, report accuracy, school-wide administrator access, color classification or redemption behavior."
+    },
+    {
+      "file": "src/pages/student/Leaderboard.tsx",
+      "observation": "Line 134 filters ranked users through rank 20; line 314 labels the general weekly leaderboard.",
+      "limit": "Frontend weekly/top-20 display support does not establish all school/classroom reward or motivation claims."
+    },
+    {
+      "file": "src/redux/slices/leaderboardSlice.ts",
+      "observation": "Weekly leaderboard request and typed response handling exist.",
+      "limit": "No authenticated backend request or production data validation performed for P8."
+    }
+  ],
+  "notEstablished": ["Live school administration and all-class/teacher oversight", "Reporting precision and data-driven curriculum intervention", "Automatic red/yellow/green student classification", "One-click nudge messaging", "Full claimed AI grading/assessment scope", "Classroom point redemption for rewards or privileges"],
+  "nudgeRedemptionSearch": "No nudge/redeem/redemption implementation hits in the inspected services, teacher pages and student leaderboard scope. This is a limited search, not proof that no implementation exists elsewhere.",
+  "newBackendOrFunctionalControlsAdded": false,
+  "releaseApproval": "Open; product owner must confirm the supplied claims before publishing."
+}

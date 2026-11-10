@@ -1,0 +1,1450 @@
+{
+  "verifiedAtUtc": "2026-11-07T15:29:08.183Z",
+  "expectedCopySource": "Updated PDF Appendix A transcription, ordinary Unicode; original P0 draft approval remains open.",
+  "results": [
+    {
+      "width": 320,
+      "checks": {
+        "nineExactQuestionsAndSuppliedAnswers": true,
+        "defaultWhatIsZaydPreserved": true,
+        "stableUniqueAssociations": true,
+        "headerPreserved": true,
+        "sharedPricesMatchCards": true,
+        "englishNamesIsolated": true,
+        "keyboardAccordionAllNine": true,
+        "noClippedAnswers": true,
+        "priorCtaDestinationsPreserved": true,
+        "contactPlaceholdersPreserved": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "badge": "الأسئلــة الشائعــة",
+        "heading": [
+          "كل ما تحتاج معرفته",
+          "قبـــــــــــل البـــــــــــدء"
+        ],
+        "defaultExpanded": [
+          "faq-question-what-is-zayd"
+        ],
+        "items": [
+          {
+            "question": "لماذا اخترنا اسم \"زيد Zayd\"؟",
+            "answer": "يرتبط اسم \"زيد\" في اللغة العربية بمعنى الزيادة والنماء والتقدّم المستمر؛ وهو ما يمثّله زيد تمامًا، إذ يزيد من فرص الطالب في ممارسة اللغة الإنجليزية، وينمّي مهاراته في التحدث والقراءة والاستماع والكتابة، ويزيد من ثقته في استخدام اللغة في المدرسة والحياة اليومية.",
+            "buttonId": "faq-question-name-origin",
+            "controls": "faq-answer-name-origin",
+            "panelId": "faq-answer-name-origin",
+            "labelledBy": "faq-question-name-origin",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "ما هو زيد؟",
+            "answer": "زيد معلّم ذكي لممارسة اللغة الإنجليزية يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه طلاب المرحلتين المتوسطة والثانوية في المدرسة.",
+            "buttonId": "faq-question-what-is-zayd",
+            "controls": "faq-answer-what-is-zayd",
+            "panelId": "faq-answer-what-is-zayd",
+            "labelledBy": "faq-question-what-is-zayd",
+            "hidden": false,
+            "packages": []
+          },
+          {
+            "question": "هل زيد بديل عن معلم اللغة الإنجليزية؟",
+            "answer": "لا، زيد لا يستبدل المعلم بل يعزز دوره ويوسّع أثره؛ فهو يمنح كل طالب فرصًا إضافية لممارسة اللغة الإنجليزية بشكل فردي ووفق مستواه وسرعته حول ما يتعلمه بالفعل في المدرسة، مع تغذية راجعة فورية تدعم تقدمه.",
+            "buttonId": "faq-question-teacher-role",
+            "controls": "faq-answer-teacher-role",
+            "panelId": "faq-answer-teacher-role",
+            "labelledBy": "faq-question-teacher-role",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "ما الصفوف التي يخدمها زيد حاليًا؟",
+            "answer": "يخدم زيد حاليًا طلاب المرحلتين المتوسطة والثانوية (من الصف الأول المتوسط إلى الصف الثالث الثانوي)، بمحتوى متناغم مع منهج اللغة الإنجليزية المعتمد في المدرسة، بالإضافة إلى مواضيع ومواقف الحياة اليومية.",
+            "buttonId": "faq-question-supported-grades",
+            "controls": "faq-answer-supported-grades",
+            "panelId": "faq-answer-supported-grades",
+            "labelledBy": "faq-question-supported-grades",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "كم يحتاج الطالب إلى استخدام زيد؟",
+            "answer": "يحتاج الطالب إلى نحو ساعة واحدة أسبوعيًا من الممارسة المنتظمة مع زيد؛ ومع الاستمرار خلال عام دراسي واحد، يحصل الطالب على فرص مكثفة لممارسة التحدث بالإنجليزية تعادل تقريبًا ما قد يحصل عليه خلال 10 سنوات في الفصل التقليدي.",
+            "buttonId": "faq-question-weekly-usage",
+            "controls": "faq-answer-weekly-usage",
+            "panelId": "faq-answer-weekly-usage",
+            "labelledBy": "faq-question-weekly-usage",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "كيف يستخدم الذكاء الاصطناعي في تقييم الطالب؟",
+            "answer": "يستخدم زيد الذكاء الاصطناعي للتفاعل مع الطالب في مهارات التحدث والقراءة والاستماع والكتابة، وتقديم ملاحظات ذكية وتغذية راجعة فورية لتحسين النطق والطلاقة والأداء، مع تكييف التمارين تلقائيًا وفق مستوى الطالب واحتياجه ومنحه محاولات متكررة حتى الإتقان.",
+            "buttonId": "faq-question-ai-assessment",
+            "controls": "faq-answer-ai-assessment",
+            "panelId": "faq-answer-ai-assessment",
+            "labelledBy": "faq-question-ai-assessment",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "ما الفرق بين الباقات الثلاث؟",
+            "answer": "باقة المنهج (199 ﷼/سنة): إذا كان هدفك تحسين أدائك في مناهج المدرسة وممارسة مهارات اللغة الأربع.باقة Zayd Life (199 ﷼/سنة): إذا كان هدفك استخدام الإنجليزية في الحياة اليومية عبر أكثر من 40 موضوعًا وموقفًا حياتيًا.باقة Zayd Plus (299 ﷼/سنة - الأفضل قيمة): التجربة الكاملة التي تجمع مزايا باقة المنهج وجميع مزايا Zayd Life.",
+            "buttonId": "faq-question-packages",
+            "controls": "faq-answer-packages",
+            "panelId": "faq-answer-packages",
+            "labelledBy": "faq-question-packages",
+            "hidden": true,
+            "packages": [
+              {
+                "id": "curriculum",
+                "text": "باقة المنهج (199 ﷼/سنة): إذا كان هدفك تحسين أدائك في مناهج المدرسة وممارسة مهارات اللغة الأربع.",
+                "price": "199"
+              },
+              {
+                "id": "life",
+                "text": "باقة Zayd Life (199 ﷼/سنة): إذا كان هدفك استخدام الإنجليزية في الحياة اليومية عبر أكثر من 40 موضوعًا وموقفًا حياتيًا.",
+                "price": "199"
+              },
+              {
+                "id": "plus",
+                "text": "باقة Zayd Plus (299 ﷼/سنة - الأفضل قيمة): التجربة الكاملة التي تجمع مزايا باقة المنهج وجميع مزايا Zayd Life.",
+                "price": "299"
+              }
+            ]
+          },
+          {
+            "question": "هل توجد أسعار خاصة للمدارس والمجموعات؟",
+            "answer": "نعم، يوفّر زيد أسعارًا خاصة للمدارس واشتراكات للمجموعات الطلابية، مع دعم متكامل للتطبيق داخل المدرسة. يمكنك طلب عرض خاص عبر زر \"اطلب عرضًا لمدرستك\".",
+            "buttonId": "faq-question-schools-groups",
+            "controls": "faq-answer-schools-groups",
+            "panelId": "faq-answer-schools-groups",
+            "labelledBy": "faq-question-schools-groups",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "هل يدفع المعلم مقابل حسابه؟",
+            "answer": "لا، لأن المعلم جزء أساسي من تجربة زيد، يحصل معلمو المدارس المشاركة على حساب خاص مجانًا دون أي تكلفة إضافية لمتابعة تقدم طلابهم وتقارير أدائهم.",
+            "buttonId": "faq-question-teacher-account",
+            "controls": "faq-answer-teacher-account",
+            "panelId": "faq-answer-teacher-account",
+            "labelledBy": "faq-question-teacher-account",
+            "hidden": true,
+            "packages": []
+          }
+        ],
+        "brands": [
+          {
+            "text": "Zayd",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Life",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Plus",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Life",
+            "direction": "ltr"
+          }
+        ],
+        "pricing": [
+          {
+            "name": "باقة المنهج",
+            "price": "199"
+          },
+          {
+            "name": "Zayd Plus",
+            "price": "299"
+          },
+          {
+            "name": "Zayd Life",
+            "price": "199"
+          }
+        ],
+        "finalCta": {
+          "text": "جاهز لتجربة زيــــد؟المنهــج نفســه. المعلــم نفسـه.لكن هذه المرة كل طالب يتحدث.امنح الطالب فرصة أكبر للتحدث والممارسة والتفاعل مع الإنجليزية التي يتعلمها اليومويحتاج إليها غدًا في الجامعة وسوق العمل والحياة.جرّب زيــــد الآناطلب تجربة لمدرستك",
+          "links": [
+            {
+              "label": "جرّب زيــــد الآن",
+              "href": "/auth/register"
+            },
+            {
+              "label": "اطلب تجربة لمدرستك",
+              "href": "/contact-us"
+            }
+          ]
+        },
+        "footer": {
+          "text": "معلم ذكي لممارسة اللغة الإنجليزية.تعلّم. مارس. أتقن.روابط سريعةلماذا زيــد؟المنهجالأسعارللمدارستواصل معناinfo@youruniversity.com+9665 000 00000© 2026 Zayd AI. جميع الحقوق محفوظة.",
+          "links": [
+            {
+              "label": "",
+              "href": "#home"
+            },
+            {
+              "label": "لماذا زيــد؟",
+              "href": "#home"
+            },
+            {
+              "label": "المنهج",
+              "href": "#curriculum"
+            },
+            {
+              "label": "الأسعار",
+              "href": "#pricing"
+            },
+            {
+              "label": "للمدارس",
+              "href": "#schools"
+            },
+            {
+              "label": "info@youruniversity.com",
+              "href": "mailto:info@youruniversity.com"
+            },
+            {
+              "label": "+9665 000 00000",
+              "href": "tel:+966500000000"
+            }
+          ]
+        }
+      },
+      "interaction": [
+        {
+          "id": "name-origin",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "what-is-zayd",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "teacher-role",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "supported-grades",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "weekly-usage",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "ai-assessment",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "packages",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "schools-groups",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "teacher-account",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 390,
+      "checks": {
+        "nineExactQuestionsAndSuppliedAnswers": true,
+        "defaultWhatIsZaydPreserved": true,
+        "stableUniqueAssociations": true,
+        "headerPreserved": true,
+        "sharedPricesMatchCards": true,
+        "englishNamesIsolated": true,
+        "keyboardAccordionAllNine": true,
+        "noClippedAnswers": true,
+        "priorCtaDestinationsPreserved": true,
+        "contactPlaceholdersPreserved": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "badge": "الأسئلــة الشائعــة",
+        "heading": [
+          "كل ما تحتاج معرفته",
+          "قبـــــــــــل البـــــــــــدء"
+        ],
+        "defaultExpanded": [
+          "faq-question-what-is-zayd"
+        ],
+        "items": [
+          {
+            "question": "لماذا اخترنا اسم \"زيد Zayd\"؟",
+            "answer": "يرتبط اسم \"زيد\" في اللغة العربية بمعنى الزيادة والنماء والتقدّم المستمر؛ وهو ما يمثّله زيد تمامًا، إذ يزيد من فرص الطالب في ممارسة اللغة الإنجليزية، وينمّي مهاراته في التحدث والقراءة والاستماع والكتابة، ويزيد من ثقته في استخدام اللغة في المدرسة والحياة اليومية.",
+            "buttonId": "faq-question-name-origin",
+            "controls": "faq-answer-name-origin",
+            "panelId": "faq-answer-name-origin",
+            "labelledBy": "faq-question-name-origin",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "ما هو زيد؟",
+            "answer": "زيد معلّم ذكي لممارسة اللغة الإنجليزية يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه طلاب المرحلتين المتوسطة والثانوية في المدرسة.",
+            "buttonId": "faq-question-what-is-zayd",
+            "controls": "faq-answer-what-is-zayd",
+            "panelId": "faq-answer-what-is-zayd",
+            "labelledBy": "faq-question-what-is-zayd",
+            "hidden": false,
+            "packages": []
+          },
+          {
+            "question": "هل زيد بديل عن معلم اللغة الإنجليزية؟",
+            "answer": "لا، زيد لا يستبدل المعلم بل يعزز دوره ويوسّع أثره؛ فهو يمنح كل طالب فرصًا إضافية لممارسة اللغة الإنجليزية بشكل فردي ووفق مستواه وسرعته حول ما يتعلمه بالفعل في المدرسة، مع تغذية راجعة فورية تدعم تقدمه.",
+            "buttonId": "faq-question-teacher-role",
+            "controls": "faq-answer-teacher-role",
+            "panelId": "faq-answer-teacher-role",
+            "labelledBy": "faq-question-teacher-role",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "ما الصفوف التي يخدمها زيد حاليًا؟",
+            "answer": "يخدم زيد حاليًا طلاب المرحلتين المتوسطة والثانوية (من الصف الأول المتوسط إلى الصف الثالث الثانوي)، بمحتوى متناغم مع منهج اللغة الإنجليزية المعتمد في المدرسة، بالإضافة إلى مواضيع ومواقف الحياة اليومية.",
+            "buttonId": "faq-question-supported-grades",
+            "controls": "faq-answer-supported-grades",
+            "panelId": "faq-answer-supported-grades",
+            "labelledBy": "faq-question-supported-grades",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "كم يحتاج الطالب إلى استخدام زيد؟",
+            "answer": "يحتاج الطالب إلى نحو ساعة واحدة أسبوعيًا من الممارسة المنتظمة مع زيد؛ ومع الاستمرار خلال عام دراسي واحد، يحصل الطالب على فرص مكثفة لممارسة التحدث بالإنجليزية تعادل تقريبًا ما قد يحصل عليه خلال 10 سنوات في الفصل التقليدي.",
+            "buttonId": "faq-question-weekly-usage",
+            "controls": "faq-answer-weekly-usage",
+            "panelId": "faq-answer-weekly-usage",
+            "labelledBy": "faq-question-weekly-usage",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "كيف يستخدم الذكاء الاصطناعي في تقييم الطالب؟",
+            "answer": "يستخدم زيد الذكاء الاصطناعي للتفاعل مع الطالب في مهارات التحدث والقراءة والاستماع والكتابة، وتقديم ملاحظات ذكية وتغذية راجعة فورية لتحسين النطق والطلاقة والأداء، مع تكييف التمارين تلقائيًا وفق مستوى الطالب واحتياجه ومنحه محاولات متكررة حتى الإتقان.",
+            "buttonId": "faq-question-ai-assessment",
+            "controls": "faq-answer-ai-assessment",
+            "panelId": "faq-answer-ai-assessment",
+            "labelledBy": "faq-question-ai-assessment",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "ما الفرق بين الباقات الثلاث؟",
+            "answer": "باقة المنهج (199 ﷼/سنة): إذا كان هدفك تحسين أدائك في مناهج المدرسة وممارسة مهارات اللغة الأربع.باقة Zayd Life (199 ﷼/سنة): إذا كان هدفك استخدام الإنجليزية في الحياة اليومية عبر أكثر من 40 موضوعًا وموقفًا حياتيًا.باقة Zayd Plus (299 ﷼/سنة - الأفضل قيمة): التجربة الكاملة التي تجمع مزايا باقة المنهج وجميع مزايا Zayd Life.",
+            "buttonId": "faq-question-packages",
+            "controls": "faq-answer-packages",
+            "panelId": "faq-answer-packages",
+            "labelledBy": "faq-question-packages",
+            "hidden": true,
+            "packages": [
+              {
+                "id": "curriculum",
+                "text": "باقة المنهج (199 ﷼/سنة): إذا كان هدفك تحسين أدائك في مناهج المدرسة وممارسة مهارات اللغة الأربع.",
+                "price": "199"
+              },
+              {
+                "id": "life",
+                "text": "باقة Zayd Life (199 ﷼/سنة): إذا كان هدفك استخدام الإنجليزية في الحياة اليومية عبر أكثر من 40 موضوعًا وموقفًا حياتيًا.",
+                "price": "199"
+              },
+              {
+                "id": "plus",
+                "text": "باقة Zayd Plus (299 ﷼/سنة - الأفضل قيمة): التجربة الكاملة التي تجمع مزايا باقة المنهج وجميع مزايا Zayd Life.",
+                "price": "299"
+              }
+            ]
+          },
+          {
+            "question": "هل توجد أسعار خاصة للمدارس والمجموعات؟",
+            "answer": "نعم، يوفّر زيد أسعارًا خاصة للمدارس واشتراكات للمجموعات الطلابية، مع دعم متكامل للتطبيق داخل المدرسة. يمكنك طلب عرض خاص عبر زر \"اطلب عرضًا لمدرستك\".",
+            "buttonId": "faq-question-schools-groups",
+            "controls": "faq-answer-schools-groups",
+            "panelId": "faq-answer-schools-groups",
+            "labelledBy": "faq-question-schools-groups",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "هل يدفع المعلم مقابل حسابه؟",
+            "answer": "لا، لأن المعلم جزء أساسي من تجربة زيد، يحصل معلمو المدارس المشاركة على حساب خاص مجانًا دون أي تكلفة إضافية لمتابعة تقدم طلابهم وتقارير أدائهم.",
+            "buttonId": "faq-question-teacher-account",
+            "controls": "faq-answer-teacher-account",
+            "panelId": "faq-answer-teacher-account",
+            "labelledBy": "faq-question-teacher-account",
+            "hidden": true,
+            "packages": []
+          }
+        ],
+        "brands": [
+          {
+            "text": "Zayd",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Life",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Plus",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Life",
+            "direction": "ltr"
+          }
+        ],
+        "pricing": [
+          {
+            "name": "باقة المنهج",
+            "price": "199"
+          },
+          {
+            "name": "Zayd Plus",
+            "price": "299"
+          },
+          {
+            "name": "Zayd Life",
+            "price": "199"
+          }
+        ],
+        "finalCta": {
+          "text": "جاهز لتجربة زيــــد؟المنهــج نفســه. المعلــم نفسـه.لكن هذه المرة كل طالب يتحدث.امنح الطالب فرصة أكبر للتحدث والممارسة والتفاعل مع الإنجليزية التي يتعلمها اليومويحتاج إليها غدًا في الجامعة وسوق العمل والحياة.جرّب زيــــد الآناطلب تجربة لمدرستك",
+          "links": [
+            {
+              "label": "جرّب زيــــد الآن",
+              "href": "/auth/register"
+            },
+            {
+              "label": "اطلب تجربة لمدرستك",
+              "href": "/contact-us"
+            }
+          ]
+        },
+        "footer": {
+          "text": "معلم ذكي لممارسة اللغة الإنجليزية.تعلّم. مارس. أتقن.روابط سريعةلماذا زيــد؟المنهجالأسعارللمدارستواصل معناinfo@youruniversity.com+9665 000 00000© 2026 Zayd AI. جميع الحقوق محفوظة.",
+          "links": [
+            {
+              "label": "",
+              "href": "#home"
+            },
+            {
+              "label": "لماذا زيــد؟",
+              "href": "#home"
+            },
+            {
+              "label": "المنهج",
+              "href": "#curriculum"
+            },
+            {
+              "label": "الأسعار",
+              "href": "#pricing"
+            },
+            {
+              "label": "للمدارس",
+              "href": "#schools"
+            },
+            {
+              "label": "info@youruniversity.com",
+              "href": "mailto:info@youruniversity.com"
+            },
+            {
+              "label": "+9665 000 00000",
+              "href": "tel:+966500000000"
+            }
+          ]
+        }
+      },
+      "interaction": [
+        {
+          "id": "name-origin",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "what-is-zayd",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "teacher-role",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "supported-grades",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "weekly-usage",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "ai-assessment",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "packages",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "schools-groups",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "teacher-account",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 768,
+      "checks": {
+        "nineExactQuestionsAndSuppliedAnswers": true,
+        "defaultWhatIsZaydPreserved": true,
+        "stableUniqueAssociations": true,
+        "headerPreserved": true,
+        "sharedPricesMatchCards": true,
+        "englishNamesIsolated": true,
+        "keyboardAccordionAllNine": true,
+        "noClippedAnswers": true,
+        "priorCtaDestinationsPreserved": true,
+        "contactPlaceholdersPreserved": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "badge": "الأسئلــة الشائعــة",
+        "heading": [
+          "كل ما تحتاج معرفته",
+          "قبـــــــــــل البـــــــــــدء"
+        ],
+        "defaultExpanded": [
+          "faq-question-what-is-zayd"
+        ],
+        "items": [
+          {
+            "question": "لماذا اخترنا اسم \"زيد Zayd\"؟",
+            "answer": "يرتبط اسم \"زيد\" في اللغة العربية بمعنى الزيادة والنماء والتقدّم المستمر؛ وهو ما يمثّله زيد تمامًا، إذ يزيد من فرص الطالب في ممارسة اللغة الإنجليزية، وينمّي مهاراته في التحدث والقراءة والاستماع والكتابة، ويزيد من ثقته في استخدام اللغة في المدرسة والحياة اليومية.",
+            "buttonId": "faq-question-name-origin",
+            "controls": "faq-answer-name-origin",
+            "panelId": "faq-answer-name-origin",
+            "labelledBy": "faq-question-name-origin",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "ما هو زيد؟",
+            "answer": "زيد معلّم ذكي لممارسة اللغة الإنجليزية يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه طلاب المرحلتين المتوسطة والثانوية في المدرسة.",
+            "buttonId": "faq-question-what-is-zayd",
+            "controls": "faq-answer-what-is-zayd",
+            "panelId": "faq-answer-what-is-zayd",
+            "labelledBy": "faq-question-what-is-zayd",
+            "hidden": false,
+            "packages": []
+          },
+          {
+            "question": "هل زيد بديل عن معلم اللغة الإنجليزية؟",
+            "answer": "لا، زيد لا يستبدل المعلم بل يعزز دوره ويوسّع أثره؛ فهو يمنح كل طالب فرصًا إضافية لممارسة اللغة الإنجليزية بشكل فردي ووفق مستواه وسرعته حول ما يتعلمه بالفعل في المدرسة، مع تغذية راجعة فورية تدعم تقدمه.",
+            "buttonId": "faq-question-teacher-role",
+            "controls": "faq-answer-teacher-role",
+            "panelId": "faq-answer-teacher-role",
+            "labelledBy": "faq-question-teacher-role",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "ما الصفوف التي يخدمها زيد حاليًا؟",
+            "answer": "يخدم زيد حاليًا طلاب المرحلتين المتوسطة والثانوية (من الصف الأول المتوسط إلى الصف الثالث الثانوي)، بمحتوى متناغم مع منهج اللغة الإنجليزية المعتمد في المدرسة، بالإضافة إلى مواضيع ومواقف الحياة اليومية.",
+            "buttonId": "faq-question-supported-grades",
+            "controls": "faq-answer-supported-grades",
+            "panelId": "faq-answer-supported-grades",
+            "labelledBy": "faq-question-supported-grades",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "كم يحتاج الطالب إلى استخدام زيد؟",
+            "answer": "يحتاج الطالب إلى نحو ساعة واحدة أسبوعيًا من الممارسة المنتظمة مع زيد؛ ومع الاستمرار خلال عام دراسي واحد، يحصل الطالب على فرص مكثفة لممارسة التحدث بالإنجليزية تعادل تقريبًا ما قد يحصل عليه خلال 10 سنوات في الفصل التقليدي.",
+            "buttonId": "faq-question-weekly-usage",
+            "controls": "faq-answer-weekly-usage",
+            "panelId": "faq-answer-weekly-usage",
+            "labelledBy": "faq-question-weekly-usage",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "كيف يستخدم الذكاء الاصطناعي في تقييم الطالب؟",
+            "answer": "يستخدم زيد الذكاء الاصطناعي للتفاعل مع الطالب في مهارات التحدث والقراءة والاستماع والكتابة، وتقديم ملاحظات ذكية وتغذية راجعة فورية لتحسين النطق والطلاقة والأداء، مع تكييف التمارين تلقائيًا وفق مستوى الطالب واحتياجه ومنحه محاولات متكررة حتى الإتقان.",
+            "buttonId": "faq-question-ai-assessment",
+            "controls": "faq-answer-ai-assessment",
+            "panelId": "faq-answer-ai-assessment",
+            "labelledBy": "faq-question-ai-assessment",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "ما الفرق بين الباقات الثلاث؟",
+            "answer": "باقة المنهج (199 ﷼/سنة): إذا كان هدفك تحسين أدائك في مناهج المدرسة وممارسة مهارات اللغة الأربع.باقة Zayd Life (199 ﷼/سنة): إذا كان هدفك استخدام الإنجليزية في الحياة اليومية عبر أكثر من 40 موضوعًا وموقفًا حياتيًا.باقة Zayd Plus (299 ﷼/سنة - الأفضل قيمة): التجربة الكاملة التي تجمع مزايا باقة المنهج وجميع مزايا Zayd Life.",
+            "buttonId": "faq-question-packages",
+            "controls": "faq-answer-packages",
+            "panelId": "faq-answer-packages",
+            "labelledBy": "faq-question-packages",
+            "hidden": true,
+            "packages": [
+              {
+                "id": "curriculum",
+                "text": "باقة المنهج (199 ﷼/سنة): إذا كان هدفك تحسين أدائك في مناهج المدرسة وممارسة مهارات اللغة الأربع.",
+                "price": "199"
+              },
+              {
+                "id": "life",
+                "text": "باقة Zayd Life (199 ﷼/سنة): إذا كان هدفك استخدام الإنجليزية في الحياة اليومية عبر أكثر من 40 موضوعًا وموقفًا حياتيًا.",
+                "price": "199"
+              },
+              {
+                "id": "plus",
+                "text": "باقة Zayd Plus (299 ﷼/سنة - الأفضل قيمة): التجربة الكاملة التي تجمع مزايا باقة المنهج وجميع مزايا Zayd Life.",
+                "price": "299"
+              }
+            ]
+          },
+          {
+            "question": "هل توجد أسعار خاصة للمدارس والمجموعات؟",
+            "answer": "نعم، يوفّر زيد أسعارًا خاصة للمدارس واشتراكات للمجموعات الطلابية، مع دعم متكامل للتطبيق داخل المدرسة. يمكنك طلب عرض خاص عبر زر \"اطلب عرضًا لمدرستك\".",
+            "buttonId": "faq-question-schools-groups",
+            "controls": "faq-answer-schools-groups",
+            "panelId": "faq-answer-schools-groups",
+            "labelledBy": "faq-question-schools-groups",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "هل يدفع المعلم مقابل حسابه؟",
+            "answer": "لا، لأن المعلم جزء أساسي من تجربة زيد، يحصل معلمو المدارس المشاركة على حساب خاص مجانًا دون أي تكلفة إضافية لمتابعة تقدم طلابهم وتقارير أدائهم.",
+            "buttonId": "faq-question-teacher-account",
+            "controls": "faq-answer-teacher-account",
+            "panelId": "faq-answer-teacher-account",
+            "labelledBy": "faq-question-teacher-account",
+            "hidden": true,
+            "packages": []
+          }
+        ],
+        "brands": [
+          {
+            "text": "Zayd",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Life",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Plus",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Life",
+            "direction": "ltr"
+          }
+        ],
+        "pricing": [
+          {
+            "name": "باقة المنهج",
+            "price": "199"
+          },
+          {
+            "name": "Zayd Plus",
+            "price": "299"
+          },
+          {
+            "name": "Zayd Life",
+            "price": "199"
+          }
+        ],
+        "finalCta": {
+          "text": "جاهز لتجربة زيــــد؟المنهــج نفســه. المعلــم نفسـه.لكن هذه المرة كل طالب يتحدث.امنح الطالب فرصة أكبر للتحدث والممارسة والتفاعل مع الإنجليزية التي يتعلمها اليومويحتاج إليها غدًا في الجامعة وسوق العمل والحياة.جرّب زيــــد الآناطلب تجربة لمدرستك",
+          "links": [
+            {
+              "label": "جرّب زيــــد الآن",
+              "href": "/auth/register"
+            },
+            {
+              "label": "اطلب تجربة لمدرستك",
+              "href": "/contact-us"
+            }
+          ]
+        },
+        "footer": {
+          "text": "معلم ذكي لممارسة اللغة الإنجليزية.تعلّم. مارس. أتقن.روابط سريعةلماذا زيــد؟المنهجالأسعارللمدارستواصل معناinfo@youruniversity.com+9665 000 00000© 2026 Zayd AI. جميع الحقوق محفوظة.",
+          "links": [
+            {
+              "label": "",
+              "href": "#home"
+            },
+            {
+              "label": "لماذا زيــد؟",
+              "href": "#home"
+            },
+            {
+              "label": "المنهج",
+              "href": "#curriculum"
+            },
+            {
+              "label": "الأسعار",
+              "href": "#pricing"
+            },
+            {
+              "label": "للمدارس",
+              "href": "#schools"
+            },
+            {
+              "label": "info@youruniversity.com",
+              "href": "mailto:info@youruniversity.com"
+            },
+            {
+              "label": "+9665 000 00000",
+              "href": "tel:+966500000000"
+            }
+          ]
+        }
+      },
+      "interaction": [
+        {
+          "id": "name-origin",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "what-is-zayd",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "teacher-role",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "supported-grades",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "weekly-usage",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "ai-assessment",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "packages",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "schools-groups",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "teacher-account",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1024,
+      "checks": {
+        "nineExactQuestionsAndSuppliedAnswers": true,
+        "defaultWhatIsZaydPreserved": true,
+        "stableUniqueAssociations": true,
+        "headerPreserved": true,
+        "sharedPricesMatchCards": true,
+        "englishNamesIsolated": true,
+        "keyboardAccordionAllNine": true,
+        "noClippedAnswers": true,
+        "priorCtaDestinationsPreserved": true,
+        "contactPlaceholdersPreserved": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "badge": "الأسئلــة الشائعــة",
+        "heading": [
+          "كل ما تحتاج معرفته",
+          "قبـــــــــــل البـــــــــــدء"
+        ],
+        "defaultExpanded": [
+          "faq-question-what-is-zayd"
+        ],
+        "items": [
+          {
+            "question": "لماذا اخترنا اسم \"زيد Zayd\"؟",
+            "answer": "يرتبط اسم \"زيد\" في اللغة العربية بمعنى الزيادة والنماء والتقدّم المستمر؛ وهو ما يمثّله زيد تمامًا، إذ يزيد من فرص الطالب في ممارسة اللغة الإنجليزية، وينمّي مهاراته في التحدث والقراءة والاستماع والكتابة، ويزيد من ثقته في استخدام اللغة في المدرسة والحياة اليومية.",
+            "buttonId": "faq-question-name-origin",
+            "controls": "faq-answer-name-origin",
+            "panelId": "faq-answer-name-origin",
+            "labelledBy": "faq-question-name-origin",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "ما هو زيد؟",
+            "answer": "زيد معلّم ذكي لممارسة اللغة الإنجليزية يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه طلاب المرحلتين المتوسطة والثانوية في المدرسة.",
+            "buttonId": "faq-question-what-is-zayd",
+            "controls": "faq-answer-what-is-zayd",
+            "panelId": "faq-answer-what-is-zayd",
+            "labelledBy": "faq-question-what-is-zayd",
+            "hidden": false,
+            "packages": []
+          },
+          {
+            "question": "هل زيد بديل عن معلم اللغة الإنجليزية؟",
+            "answer": "لا، زيد لا يستبدل المعلم بل يعزز دوره ويوسّع أثره؛ فهو يمنح كل طالب فرصًا إضافية لممارسة اللغة الإنجليزية بشكل فردي ووفق مستواه وسرعته حول ما يتعلمه بالفعل في المدرسة، مع تغذية راجعة فورية تدعم تقدمه.",
+            "buttonId": "faq-question-teacher-role",
+            "controls": "faq-answer-teacher-role",
+            "panelId": "faq-answer-teacher-role",
+            "labelledBy": "faq-question-teacher-role",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "ما الصفوف التي يخدمها زيد حاليًا؟",
+            "answer": "يخدم زيد حاليًا طلاب المرحلتين المتوسطة والثانوية (من الصف الأول المتوسط إلى الصف الثالث الثانوي)، بمحتوى متناغم مع منهج اللغة الإنجليزية المعتمد في المدرسة، بالإضافة إلى مواضيع ومواقف الحياة اليومية.",
+            "buttonId": "faq-question-supported-grades",
+            "controls": "faq-answer-supported-grades",
+            "panelId": "faq-answer-supported-grades",
+            "labelledBy": "faq-question-supported-grades",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "كم يحتاج الطالب إلى استخدام زيد؟",
+            "answer": "يحتاج الطالب إلى نحو ساعة واحدة أسبوعيًا من الممارسة المنتظمة مع زيد؛ ومع الاستمرار خلال عام دراسي واحد، يحصل الطالب على فرص مكثفة لممارسة التحدث بالإنجليزية تعادل تقريبًا ما قد يحصل عليه خلال 10 سنوات في الفصل التقليدي.",
+            "buttonId": "faq-question-weekly-usage",
+            "controls": "faq-answer-weekly-usage",
+            "panelId": "faq-answer-weekly-usage",
+            "labelledBy": "faq-question-weekly-usage",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "كيف يستخدم الذكاء الاصطناعي في تقييم الطالب؟",
+            "answer": "يستخدم زيد الذكاء الاصطناعي للتفاعل مع الطالب في مهارات التحدث والقراءة والاستماع والكتابة، وتقديم ملاحظات ذكية وتغذية راجعة فورية لتحسين النطق والطلاقة والأداء، مع تكييف التمارين تلقائيًا وفق مستوى الطالب واحتياجه ومنحه محاولات متكررة حتى الإتقان.",
+            "buttonId": "faq-question-ai-assessment",
+            "controls": "faq-answer-ai-assessment",
+            "panelId": "faq-answer-ai-assessment",
+            "labelledBy": "faq-question-ai-assessment",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "ما الفرق بين الباقات الثلاث؟",
+            "answer": "باقة المنهج (199 ﷼/سنة): إذا كان هدفك تحسين أدائك في مناهج المدرسة وممارسة مهارات اللغة الأربع.باقة Zayd Life (199 ﷼/سنة): إذا كان هدفك استخدام الإنجليزية في الحياة اليومية عبر أكثر من 40 موضوعًا وموقفًا حياتيًا.باقة Zayd Plus (299 ﷼/سنة - الأفضل قيمة): التجربة الكاملة التي تجمع مزايا باقة المنهج وجميع مزايا Zayd Life.",
+            "buttonId": "faq-question-packages",
+            "controls": "faq-answer-packages",
+            "panelId": "faq-answer-packages",
+            "labelledBy": "faq-question-packages",
+            "hidden": true,
+            "packages": [
+              {
+                "id": "curriculum",
+                "text": "باقة المنهج (199 ﷼/سنة): إذا كان هدفك تحسين أدائك في مناهج المدرسة وممارسة مهارات اللغة الأربع.",
+                "price": "199"
+              },
+              {
+                "id": "life",
+                "text": "باقة Zayd Life (199 ﷼/سنة): إذا كان هدفك استخدام الإنجليزية في الحياة اليومية عبر أكثر من 40 موضوعًا وموقفًا حياتيًا.",
+                "price": "199"
+              },
+              {
+                "id": "plus",
+                "text": "باقة Zayd Plus (299 ﷼/سنة - الأفضل قيمة): التجربة الكاملة التي تجمع مزايا باقة المنهج وجميع مزايا Zayd Life.",
+                "price": "299"
+              }
+            ]
+          },
+          {
+            "question": "هل توجد أسعار خاصة للمدارس والمجموعات؟",
+            "answer": "نعم، يوفّر زيد أسعارًا خاصة للمدارس واشتراكات للمجموعات الطلابية، مع دعم متكامل للتطبيق داخل المدرسة. يمكنك طلب عرض خاص عبر زر \"اطلب عرضًا لمدرستك\".",
+            "buttonId": "faq-question-schools-groups",
+            "controls": "faq-answer-schools-groups",
+            "panelId": "faq-answer-schools-groups",
+            "labelledBy": "faq-question-schools-groups",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "هل يدفع المعلم مقابل حسابه؟",
+            "answer": "لا، لأن المعلم جزء أساسي من تجربة زيد، يحصل معلمو المدارس المشاركة على حساب خاص مجانًا دون أي تكلفة إضافية لمتابعة تقدم طلابهم وتقارير أدائهم.",
+            "buttonId": "faq-question-teacher-account",
+            "controls": "faq-answer-teacher-account",
+            "panelId": "faq-answer-teacher-account",
+            "labelledBy": "faq-question-teacher-account",
+            "hidden": true,
+            "packages": []
+          }
+        ],
+        "brands": [
+          {
+            "text": "Zayd",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Life",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Plus",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Life",
+            "direction": "ltr"
+          }
+        ],
+        "pricing": [
+          {
+            "name": "باقة المنهج",
+            "price": "199"
+          },
+          {
+            "name": "Zayd Plus",
+            "price": "299"
+          },
+          {
+            "name": "Zayd Life",
+            "price": "199"
+          }
+        ],
+        "finalCta": {
+          "text": "جاهز لتجربة زيــــد؟المنهــج نفســه. المعلــم نفسـه.لكن هذه المرة كل طالب يتحدث.امنح الطالب فرصة أكبر للتحدث والممارسة والتفاعل مع الإنجليزية التي يتعلمها اليومويحتاج إليها غدًا في الجامعة وسوق العمل والحياة.جرّب زيــــد الآناطلب تجربة لمدرستك",
+          "links": [
+            {
+              "label": "جرّب زيــــد الآن",
+              "href": "/auth/register"
+            },
+            {
+              "label": "اطلب تجربة لمدرستك",
+              "href": "/contact-us"
+            }
+          ]
+        },
+        "footer": {
+          "text": "معلم ذكي لممارسة اللغة الإنجليزية.تعلّم. مارس. أتقن.روابط سريعةلماذا زيــد؟المنهجالأسعارللمدارستواصل معناinfo@youruniversity.com+9665 000 00000© 2026 Zayd AI. جميع الحقوق محفوظة.",
+          "links": [
+            {
+              "label": "",
+              "href": "#home"
+            },
+            {
+              "label": "لماذا زيــد؟",
+              "href": "#home"
+            },
+            {
+              "label": "المنهج",
+              "href": "#curriculum"
+            },
+            {
+              "label": "الأسعار",
+              "href": "#pricing"
+            },
+            {
+              "label": "للمدارس",
+              "href": "#schools"
+            },
+            {
+              "label": "info@youruniversity.com",
+              "href": "mailto:info@youruniversity.com"
+            },
+            {
+              "label": "+9665 000 00000",
+              "href": "tel:+966500000000"
+            }
+          ]
+        }
+      },
+      "interaction": [
+        {
+          "id": "name-origin",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "what-is-zayd",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "teacher-role",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "supported-grades",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "weekly-usage",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "ai-assessment",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "packages",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "schools-groups",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "teacher-account",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "checks": {
+        "nineExactQuestionsAndSuppliedAnswers": true,
+        "defaultWhatIsZaydPreserved": true,
+        "stableUniqueAssociations": true,
+        "headerPreserved": true,
+        "sharedPricesMatchCards": true,
+        "englishNamesIsolated": true,
+        "keyboardAccordionAllNine": true,
+        "noClippedAnswers": true,
+        "priorCtaDestinationsPreserved": true,
+        "contactPlaceholdersPreserved": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "badge": "الأسئلــة الشائعــة",
+        "heading": [
+          "كل ما تحتاج معرفته",
+          "قبـــــــــــل البـــــــــــدء"
+        ],
+        "defaultExpanded": [
+          "faq-question-what-is-zayd"
+        ],
+        "items": [
+          {
+            "question": "لماذا اخترنا اسم \"زيد Zayd\"؟",
+            "answer": "يرتبط اسم \"زيد\" في اللغة العربية بمعنى الزيادة والنماء والتقدّم المستمر؛ وهو ما يمثّله زيد تمامًا، إذ يزيد من فرص الطالب في ممارسة اللغة الإنجليزية، وينمّي مهاراته في التحدث والقراءة والاستماع والكتابة، ويزيد من ثقته في استخدام اللغة في المدرسة والحياة اليومية.",
+            "buttonId": "faq-question-name-origin",
+            "controls": "faq-answer-name-origin",
+            "panelId": "faq-answer-name-origin",
+            "labelledBy": "faq-question-name-origin",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "ما هو زيد؟",
+            "answer": "زيد معلّم ذكي لممارسة اللغة الإنجليزية يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه طلاب المرحلتين المتوسطة والثانوية في المدرسة.",
+            "buttonId": "faq-question-what-is-zayd",
+            "controls": "faq-answer-what-is-zayd",
+            "panelId": "faq-answer-what-is-zayd",
+            "labelledBy": "faq-question-what-is-zayd",
+            "hidden": false,
+            "packages": []
+          },
+          {
+            "question": "هل زيد بديل عن معلم اللغة الإنجليزية؟",
+            "answer": "لا، زيد لا يستبدل المعلم بل يعزز دوره ويوسّع أثره؛ فهو يمنح كل طالب فرصًا إضافية لممارسة اللغة الإنجليزية بشكل فردي ووفق مستواه وسرعته حول ما يتعلمه بالفعل في المدرسة، مع تغذية راجعة فورية تدعم تقدمه.",
+            "buttonId": "faq-question-teacher-role",
+            "controls": "faq-answer-teacher-role",
+            "panelId": "faq-answer-teacher-role",
+            "labelledBy": "faq-question-teacher-role",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "ما الصفوف التي يخدمها زيد حاليًا؟",
+            "answer": "يخدم زيد حاليًا طلاب المرحلتين المتوسطة والثانوية (من الصف الأول المتوسط إلى الصف الثالث الثانوي)، بمحتوى متناغم مع منهج اللغة الإنجليزية المعتمد في المدرسة، بالإضافة إلى مواضيع ومواقف الحياة اليومية.",
+            "buttonId": "faq-question-supported-grades",
+            "controls": "faq-answer-supported-grades",
+            "panelId": "faq-answer-supported-grades",
+            "labelledBy": "faq-question-supported-grades",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "كم يحتاج الطالب إلى استخدام زيد؟",
+            "answer": "يحتاج الطالب إلى نحو ساعة واحدة أسبوعيًا من الممارسة المنتظمة مع زيد؛ ومع الاستمرار خلال عام دراسي واحد، يحصل الطالب على فرص مكثفة لممارسة التحدث بالإنجليزية تعادل تقريبًا ما قد يحصل عليه خلال 10 سنوات في الفصل التقليدي.",
+            "buttonId": "faq-question-weekly-usage",
+            "controls": "faq-answer-weekly-usage",
+            "panelId": "faq-answer-weekly-usage",
+            "labelledBy": "faq-question-weekly-usage",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "كيف يستخدم الذكاء الاصطناعي في تقييم الطالب؟",
+            "answer": "يستخدم زيد الذكاء الاصطناعي للتفاعل مع الطالب في مهارات التحدث والقراءة والاستماع والكتابة، وتقديم ملاحظات ذكية وتغذية راجعة فورية لتحسين النطق والطلاقة والأداء، مع تكييف التمارين تلقائيًا وفق مستوى الطالب واحتياجه ومنحه محاولات متكررة حتى الإتقان.",
+            "buttonId": "faq-question-ai-assessment",
+            "controls": "faq-answer-ai-assessment",
+            "panelId": "faq-answer-ai-assessment",
+            "labelledBy": "faq-question-ai-assessment",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "ما الفرق بين الباقات الثلاث؟",
+            "answer": "باقة المنهج (199 ﷼/سنة): إذا كان هدفك تحسين أدائك في مناهج المدرسة وممارسة مهارات اللغة الأربع.باقة Zayd Life (199 ﷼/سنة): إذا كان هدفك استخدام الإنجليزية في الحياة اليومية عبر أكثر من 40 موضوعًا وموقفًا حياتيًا.باقة Zayd Plus (299 ﷼/سنة - الأفضل قيمة): التجربة الكاملة التي تجمع مزايا باقة المنهج وجميع مزايا Zayd Life.",
+            "buttonId": "faq-question-packages",
+            "controls": "faq-answer-packages",
+            "panelId": "faq-answer-packages",
+            "labelledBy": "faq-question-packages",
+            "hidden": true,
+            "packages": [
+              {
+                "id": "curriculum",
+                "text": "باقة المنهج (199 ﷼/سنة): إذا كان هدفك تحسين أدائك في مناهج المدرسة وممارسة مهارات اللغة الأربع.",
+                "price": "199"
+              },
+              {
+                "id": "life",
+                "text": "باقة Zayd Life (199 ﷼/سنة): إذا كان هدفك استخدام الإنجليزية في الحياة اليومية عبر أكثر من 40 موضوعًا وموقفًا حياتيًا.",
+                "price": "199"
+              },
+              {
+                "id": "plus",
+                "text": "باقة Zayd Plus (299 ﷼/سنة - الأفضل قيمة): التجربة الكاملة التي تجمع مزايا باقة المنهج وجميع مزايا Zayd Life.",
+                "price": "299"
+              }
+            ]
+          },
+          {
+            "question": "هل توجد أسعار خاصة للمدارس والمجموعات؟",
+            "answer": "نعم، يوفّر زيد أسعارًا خاصة للمدارس واشتراكات للمجموعات الطلابية، مع دعم متكامل للتطبيق داخل المدرسة. يمكنك طلب عرض خاص عبر زر \"اطلب عرضًا لمدرستك\".",
+            "buttonId": "faq-question-schools-groups",
+            "controls": "faq-answer-schools-groups",
+            "panelId": "faq-answer-schools-groups",
+            "labelledBy": "faq-question-schools-groups",
+            "hidden": true,
+            "packages": []
+          },
+          {
+            "question": "هل يدفع المعلم مقابل حسابه؟",
+            "answer": "لا، لأن المعلم جزء أساسي من تجربة زيد، يحصل معلمو المدارس المشاركة على حساب خاص مجانًا دون أي تكلفة إضافية لمتابعة تقدم طلابهم وتقارير أدائهم.",
+            "buttonId": "faq-question-teacher-account",
+            "controls": "faq-answer-teacher-account",
+            "panelId": "faq-answer-teacher-account",
+            "labelledBy": "faq-question-teacher-account",
+            "hidden": true,
+            "packages": []
+          }
+        ],
+        "brands": [
+          {
+            "text": "Zayd",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Life",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Plus",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Life",
+            "direction": "ltr"
+          }
+        ],
+        "pricing": [
+          {
+            "name": "باقة المنهج",
+            "price": "199"
+          },
+          {
+            "name": "Zayd Plus",
+            "price": "299"
+          },
+          {
+            "name": "Zayd Life",
+            "price": "199"
+          }
+        ],
+        "finalCta": {
+          "text": "جاهز لتجربة زيــــد؟المنهــج نفســه. المعلــم نفسـه.لكن هذه المرة كل طالب يتحدث.امنح الطالب فرصة أكبر للتحدث والممارسة والتفاعل مع الإنجليزية التي يتعلمها اليومويحتاج إليها غدًا في الجامعة وسوق العمل والحياة.جرّب زيــــد الآناطلب تجربة لمدرستك",
+          "links": [
+            {
+              "label": "جرّب زيــــد الآن",
+              "href": "/auth/register"
+            },
+            {
+              "label": "اطلب تجربة لمدرستك",
+              "href": "/contact-us"
+            }
+          ]
+        },
+        "footer": {
+          "text": "معلم ذكي لممارسة اللغة الإنجليزية.تعلّم. مارس. أتقن.روابط سريعةلماذا زيــد؟المنهجالأسعارللمدارستواصل معناinfo@youruniversity.com+9665 000 00000© 2026 Zayd AI. جميع الحقوق محفوظة.",
+          "links": [
+            {
+              "label": "",
+              "href": "#home"
+            },
+            {
+              "label": "لماذا زيــد؟",
+              "href": "#home"
+            },
+            {
+              "label": "المنهج",
+              "href": "#curriculum"
+            },
+            {
+              "label": "الأسعار",
+              "href": "#pricing"
+            },
+            {
+              "label": "للمدارس",
+              "href": "#schools"
+            },
+            {
+              "label": "info@youruniversity.com",
+              "href": "mailto:info@youruniversity.com"
+            },
+            {
+              "label": "+9665 000 00000",
+              "href": "tel:+966500000000"
+            }
+          ]
+        }
+      },
+      "interaction": [
+        {
+          "id": "name-origin",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "what-is-zayd",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "teacher-role",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "supported-grades",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "weekly-usage",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "ai-assessment",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "packages",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "schools-groups",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        },
+        {
+          "id": "teacher-account",
+          "opened": true,
+          "closed": true,
+          "focusVisible": true,
+          "tabOrder": true,
+          "overflow": []
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "changedApplicationFiles": [
+    "src/pages/public/faq-section.css",
+    "src/pages/public/faq-section.tsx"
+  ],
+  "sourceScope": true,
+  "passed": true,
+  "businessApprovalImplied": false,
+  "invalidPrimaryRouteFixed": false,
+  "officialContactsSupplied": false
+}

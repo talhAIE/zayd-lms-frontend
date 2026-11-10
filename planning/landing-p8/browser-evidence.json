@@ -1,0 +1,458 @@
+{
+  "verifiedAtUtc": "2026-11-07T14:27:50.994Z",
+  "results": [
+    {
+      "width": 320,
+      "checks": {
+        "schoolHeader": true,
+        "schoolBodyExact": true,
+        "schoolPillsExact": true,
+        "schoolCtaExactAndPreserved": true,
+        "originalSchoolContentPreserved": true,
+        "dashboardHeadingExact": true,
+        "allThreeTitlesNineBulletsExact": true,
+        "informationalCardsOnly": true,
+        "distinctCards": true,
+        "rtlOrStackedOrder": true,
+        "bannerExactOnce": true,
+        "proposedOrderVerifiedNotApproved": true,
+        "noOverflow": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "schoolBadge": "زيد للمدارس والمجموعات",
+        "schoolHeading": [
+          "مدرستـــك تدرّس الإنجليزيــة",
+          "وزيد يمنح كل طالب فرصة لممارستها."
+        ],
+        "schoolBody": "يعزز زيد دور المعلم، ويمنح الطلاب فرصًا إضافية لممارسة الإنجليزية، مع تغذية راجعة تدعم تقدمهم.",
+        "schoolPills": [
+          "أسعار خاصة للمدارس",
+          "اشتراكات للمجموعات الطلابية",
+          "دعم للتطبيق داخل المدرسة"
+        ],
+        "ctaLabel": "اطلب عرضًا لمدرستك",
+        "href": "/contact-us",
+        "arrow": true,
+        "teacherAsset": "/src/assets/landing-page/section9.png",
+        "teacherImageLoaded": true,
+        "teacherNote": "لأن المعلم جزء أساسي من تجربة زيـــد يحصل معلمو المدارس المشاركة على حساب خاص دون تكلفة إضافية.",
+        "teacherMessage": "زيـــد لا يستبدل المعلم.. بل يوسّع أثره.",
+        "dashboardHeading": "لوحات تحكم ذكية.. قياس دقيق، تدخل أسرع، وتحفيز مستمر",
+        "dashboardCards": [
+          {
+            "title": "للإدارة المدرسية: رؤية شاملة",
+            "points": [
+              "لوحة تحكم إدارية: تتيح لك متابعة أداء جميع الفصول والمعلمين في مكان واحد.",
+              "تقارير فورية: قياس دقيق لمستوى تطور الطلاب ومدى تفاعل المعلمين مع النظام.",
+              "قرارات مبنية على البيانات: اكتشف نقاط الضعف في المنهج وعالجها قبل الاختبارات."
+            ],
+            "background": "rgb(237, 245, 255)",
+            "x": 18,
+            "y": -1002.375,
+            "icons": 1
+          },
+          {
+            "title": "للمعلم: متابعة أسهل بجهد أقل",
+            "points": [
+              "مؤشرات الألوان: تصنيف ذكي للطلاب (أخضر، أصفر، أحمر) لمعرفة من يحتاج للمساعدة فوراً.",
+              "تنبيهات سريعة: إرسال توجيهات (Nudges) للطلاب المتعثرين بضغطة زر.",
+              "الذكاء الاصطناعي كمساعد: زيد يتولى التصحيح والتقييم، لتتفرغ أنت للتوجيه والدعم."
+            ],
+            "background": "rgb(238, 250, 247)",
+            "x": 18,
+            "y": -571.59375,
+            "icons": 1
+          },
+          {
+            "title": "للطلاب: متعة الممارسة والتحدي",
+            "points": [
+              "نظام نقاط تنافسي: تحويل الممارسة اليومية إلى تحدٍ ممتع يكافئ الطالب على استمراريته.",
+              "لوحات شرف أسبوعية: إبراز أفضل 20 طالباً لتحفيز التنافس الإيجابي.",
+              "مكافآت قابلة للاستبدال: يمكن للطلاب استبدال نقاطهم بمكافآت أو امتيازات داخل الفصل، مما يحفز المعلمين والطلاب معاً."
+            ],
+            "background": "rgb(247, 242, 252)",
+            "x": 18,
+            "y": -86.21875,
+            "icons": 1
+          }
+        ],
+        "dashboardControls": 0,
+        "dashboardImages": 0,
+        "nudgesDirection": "ltr",
+        "banner": "الطالب لا يحتاج إلى مزيد من شرح الإنجليزية بقدر ما يحتاج إلى المزيد من استخدامها.",
+        "bannerCount": 1,
+        "proposedOrderCorrect": true,
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "errors": []
+    },
+    {
+      "width": 390,
+      "checks": {
+        "schoolHeader": true,
+        "schoolBodyExact": true,
+        "schoolPillsExact": true,
+        "schoolCtaExactAndPreserved": true,
+        "originalSchoolContentPreserved": true,
+        "dashboardHeadingExact": true,
+        "allThreeTitlesNineBulletsExact": true,
+        "informationalCardsOnly": true,
+        "distinctCards": true,
+        "rtlOrStackedOrder": true,
+        "bannerExactOnce": true,
+        "proposedOrderVerifiedNotApproved": true,
+        "noOverflow": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "schoolBadge": "زيد للمدارس والمجموعات",
+        "schoolHeading": [
+          "مدرستـــك تدرّس الإنجليزيــة",
+          "وزيد يمنح كل طالب فرصة لممارستها."
+        ],
+        "schoolBody": "يعزز زيد دور المعلم، ويمنح الطلاب فرصًا إضافية لممارسة الإنجليزية، مع تغذية راجعة تدعم تقدمهم.",
+        "schoolPills": [
+          "أسعار خاصة للمدارس",
+          "اشتراكات للمجموعات الطلابية",
+          "دعم للتطبيق داخل المدرسة"
+        ],
+        "ctaLabel": "اطلب عرضًا لمدرستك",
+        "href": "/contact-us",
+        "arrow": true,
+        "teacherAsset": "/src/assets/landing-page/section9.png",
+        "teacherImageLoaded": true,
+        "teacherNote": "لأن المعلم جزء أساسي من تجربة زيـــد يحصل معلمو المدارس المشاركة على حساب خاص دون تكلفة إضافية.",
+        "teacherMessage": "زيـــد لا يستبدل المعلم.. بل يوسّع أثره.",
+        "dashboardHeading": "لوحات تحكم ذكية.. قياس دقيق، تدخل أسرع، وتحفيز مستمر",
+        "dashboardCards": [
+          {
+            "title": "للإدارة المدرسية: رؤية شاملة",
+            "points": [
+              "لوحة تحكم إدارية: تتيح لك متابعة أداء جميع الفصول والمعلمين في مكان واحد.",
+              "تقارير فورية: قياس دقيق لمستوى تطور الطلاب ومدى تفاعل المعلمين مع النظام.",
+              "قرارات مبنية على البيانات: اكتشف نقاط الضعف في المنهج وعالجها قبل الاختبارات."
+            ],
+            "background": "rgb(237, 245, 255)",
+            "x": 18,
+            "y": -797.40625,
+            "icons": 1
+          },
+          {
+            "title": "للمعلم: متابعة أسهل بجهد أقل",
+            "points": [
+              "مؤشرات الألوان: تصنيف ذكي للطلاب (أخضر، أصفر، أحمر) لمعرفة من يحتاج للمساعدة فوراً.",
+              "تنبيهات سريعة: إرسال توجيهات (Nudges) للطلاب المتعثرين بضغطة زر.",
+              "الذكاء الاصطناعي كمساعد: زيد يتولى التصحيح والتقييم، لتتفرغ أنت للتوجيه والدعم."
+            ],
+            "background": "rgb(238, 250, 247)",
+            "x": 18,
+            "y": -400.625,
+            "icons": 1
+          },
+          {
+            "title": "للطلاب: متعة الممارسة والتحدي",
+            "points": [
+              "نظام نقاط تنافسي: تحويل الممارسة اليومية إلى تحدٍ ممتع يكافئ الطالب على استمراريته.",
+              "لوحات شرف أسبوعية: إبراز أفضل 20 طالباً لتحفيز التنافس الإيجابي.",
+              "مكافآت قابلة للاستبدال: يمكن للطلاب استبدال نقاطهم بمكافآت أو امتيازات داخل الفصل، مما يحفز المعلمين والطلاب معاً."
+            ],
+            "background": "rgb(247, 242, 252)",
+            "x": 18,
+            "y": -3.84375,
+            "icons": 1
+          }
+        ],
+        "dashboardControls": 0,
+        "dashboardImages": 0,
+        "nudgesDirection": "ltr",
+        "banner": "الطالب لا يحتاج إلى مزيد من شرح الإنجليزية بقدر ما يحتاج إلى المزيد من استخدامها.",
+        "bannerCount": 1,
+        "proposedOrderCorrect": true,
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "errors": []
+    },
+    {
+      "width": 768,
+      "checks": {
+        "schoolHeader": true,
+        "schoolBodyExact": true,
+        "schoolPillsExact": true,
+        "schoolCtaExactAndPreserved": true,
+        "originalSchoolContentPreserved": true,
+        "dashboardHeadingExact": true,
+        "allThreeTitlesNineBulletsExact": true,
+        "informationalCardsOnly": true,
+        "distinctCards": true,
+        "rtlOrStackedOrder": true,
+        "bannerExactOnce": true,
+        "proposedOrderVerifiedNotApproved": true,
+        "noOverflow": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "schoolBadge": "زيد للمدارس والمجموعات",
+        "schoolHeading": [
+          "مدرستـــك تدرّس الإنجليزيــة",
+          "وزيد يمنح كل طالب فرصة لممارستها."
+        ],
+        "schoolBody": "يعزز زيد دور المعلم، ويمنح الطلاب فرصًا إضافية لممارسة الإنجليزية، مع تغذية راجعة تدعم تقدمهم.",
+        "schoolPills": [
+          "أسعار خاصة للمدارس",
+          "اشتراكات للمجموعات الطلابية",
+          "دعم للتطبيق داخل المدرسة"
+        ],
+        "ctaLabel": "اطلب عرضًا لمدرستك",
+        "href": "/contact-us",
+        "arrow": true,
+        "teacherAsset": "/src/assets/landing-page/section9.png",
+        "teacherImageLoaded": true,
+        "teacherNote": "لأن المعلم جزء أساسي من تجربة زيـــد يحصل معلمو المدارس المشاركة على حساب خاص دون تكلفة إضافية.",
+        "teacherMessage": "زيـــد لا يستبدل المعلم.. بل يوسّع أثره.",
+        "dashboardHeading": "لوحات تحكم ذكية.. قياس دقيق، تدخل أسرع، وتحفيز مستمر",
+        "dashboardCards": [
+          {
+            "title": "للإدارة المدرسية: رؤية شاملة",
+            "points": [
+              "لوحة تحكم إدارية: تتيح لك متابعة أداء جميع الفصول والمعلمين في مكان واحد.",
+              "تقارير فورية: قياس دقيق لمستوى تطور الطلاب ومدى تفاعل المعلمين مع النظام.",
+              "قرارات مبنية على البيانات: اكتشف نقاط الضعف في المنهج وعالجها قبل الاختبارات."
+            ],
+            "background": "rgb(237, 245, 255)",
+            "x": 54,
+            "y": -585.453125,
+            "icons": 1
+          },
+          {
+            "title": "للمعلم: متابعة أسهل بجهد أقل",
+            "points": [
+              "مؤشرات الألوان: تصنيف ذكي للطلاب (أخضر، أصفر، أحمر) لمعرفة من يحتاج للمساعدة فوراً.",
+              "تنبيهات سريعة: إرسال توجيهات (Nudges) للطلاب المتعثرين بضغطة زر.",
+              "الذكاء الاصطناعي كمساعد: زيد يتولى التصحيح والتقييم، لتتفرغ أنت للتوجيه والدعم."
+            ],
+            "background": "rgb(238, 250, 247)",
+            "x": 54,
+            "y": -255.015625,
+            "icons": 1
+          },
+          {
+            "title": "للطلاب: متعة الممارسة والتحدي",
+            "points": [
+              "نظام نقاط تنافسي: تحويل الممارسة اليومية إلى تحدٍ ممتع يكافئ الطالب على استمراريته.",
+              "لوحات شرف أسبوعية: إبراز أفضل 20 طالباً لتحفيز التنافس الإيجابي.",
+              "مكافآت قابلة للاستبدال: يمكن للطلاب استبدال نقاطهم بمكافآت أو امتيازات داخل الفصل، مما يحفز المعلمين والطلاب معاً."
+            ],
+            "background": "rgb(247, 242, 252)",
+            "x": 54,
+            "y": 75.421875,
+            "icons": 1
+          }
+        ],
+        "dashboardControls": 0,
+        "dashboardImages": 0,
+        "nudgesDirection": "ltr",
+        "banner": "الطالب لا يحتاج إلى مزيد من شرح الإنجليزية بقدر ما يحتاج إلى المزيد من استخدامها.",
+        "bannerCount": 1,
+        "proposedOrderCorrect": true,
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "errors": []
+    },
+    {
+      "width": 1024,
+      "checks": {
+        "schoolHeader": true,
+        "schoolBodyExact": true,
+        "schoolPillsExact": true,
+        "schoolCtaExactAndPreserved": true,
+        "originalSchoolContentPreserved": true,
+        "dashboardHeadingExact": true,
+        "allThreeTitlesNineBulletsExact": true,
+        "informationalCardsOnly": true,
+        "distinctCards": true,
+        "rtlOrStackedOrder": true,
+        "bannerExactOnce": true,
+        "proposedOrderVerifiedNotApproved": true,
+        "noOverflow": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "schoolBadge": "زيد للمدارس والمجموعات",
+        "schoolHeading": [
+          "مدرستـــك تدرّس الإنجليزيــة",
+          "وزيد يمنح كل طالب فرصة لممارستها."
+        ],
+        "schoolBody": "يعزز زيد دور المعلم، ويمنح الطلاب فرصًا إضافية لممارسة الإنجليزية، مع تغذية راجعة تدعم تقدمهم.",
+        "schoolPills": [
+          "أسعار خاصة للمدارس",
+          "اشتراكات للمجموعات الطلابية",
+          "دعم للتطبيق داخل المدرسة"
+        ],
+        "ctaLabel": "اطلب عرضًا لمدرستك",
+        "href": "/contact-us",
+        "arrow": true,
+        "teacherAsset": "/src/assets/landing-page/section9.png",
+        "teacherImageLoaded": true,
+        "teacherNote": "لأن المعلم جزء أساسي من تجربة زيـــد يحصل معلمو المدارس المشاركة على حساب خاص دون تكلفة إضافية.",
+        "teacherMessage": "زيـــد لا يستبدل المعلم.. بل يوسّع أثره.",
+        "dashboardHeading": "لوحات تحكم ذكية.. قياس دقيق، تدخل أسرع، وتحفيز مستمر",
+        "dashboardCards": [
+          {
+            "title": "للإدارة المدرسية: رؤية شاملة",
+            "points": [
+              "لوحة تحكم إدارية: تتيح لك متابعة أداء جميع الفصول والمعلمين في مكان واحد.",
+              "تقارير فورية: قياس دقيق لمستوى تطور الطلاب ومدى تفاعل المعلمين مع النظام.",
+              "قرارات مبنية على البيانات: اكتشف نقاط الضعف في المنهج وعالجها قبل الاختبارات."
+            ],
+            "background": "rgb(237, 245, 255)",
+            "x": 671.15625,
+            "y": -41.5,
+            "icons": 1
+          },
+          {
+            "title": "للمعلم: متابعة أسهل بجهد أقل",
+            "points": [
+              "مؤشرات الألوان: تصنيف ذكي للطلاب (أخضر، أصفر، أحمر) لمعرفة من يحتاج للمساعدة فوراً.",
+              "تنبيهات سريعة: إرسال توجيهات (Nudges) للطلاب المتعثرين بضغطة زر.",
+              "الذكاء الاصطناعي كمساعد: زيد يتولى التصحيح والتقييم، لتتفرغ أنت للتوجيه والدعم."
+            ],
+            "background": "rgb(238, 250, 247)",
+            "x": 368.859375,
+            "y": -41.5,
+            "icons": 1
+          },
+          {
+            "title": "للطلاب: متعة الممارسة والتحدي",
+            "points": [
+              "نظام نقاط تنافسي: تحويل الممارسة اليومية إلى تحدٍ ممتع يكافئ الطالب على استمراريته.",
+              "لوحات شرف أسبوعية: إبراز أفضل 20 طالباً لتحفيز التنافس الإيجابي.",
+              "مكافآت قابلة للاستبدال: يمكن للطلاب استبدال نقاطهم بمكافآت أو امتيازات داخل الفصل، مما يحفز المعلمين والطلاب معاً."
+            ],
+            "background": "rgb(247, 242, 252)",
+            "x": 66.546875,
+            "y": -41.5,
+            "icons": 1
+          }
+        ],
+        "dashboardControls": 0,
+        "dashboardImages": 0,
+        "nudgesDirection": "ltr",
+        "banner": "الطالب لا يحتاج إلى مزيد من شرح الإنجليزية بقدر ما يحتاج إلى المزيد من استخدامها.",
+        "bannerCount": 1,
+        "proposedOrderCorrect": true,
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "checks": {
+        "schoolHeader": true,
+        "schoolBodyExact": true,
+        "schoolPillsExact": true,
+        "schoolCtaExactAndPreserved": true,
+        "originalSchoolContentPreserved": true,
+        "dashboardHeadingExact": true,
+        "allThreeTitlesNineBulletsExact": true,
+        "informationalCardsOnly": true,
+        "distinctCards": true,
+        "rtlOrStackedOrder": true,
+        "bannerExactOnce": true,
+        "proposedOrderVerifiedNotApproved": true,
+        "noOverflow": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "schoolBadge": "زيد للمدارس والمجموعات",
+        "schoolHeading": [
+          "مدرستـــك تدرّس الإنجليزيــة",
+          "وزيد يمنح كل طالب فرصة لممارستها."
+        ],
+        "schoolBody": "يعزز زيد دور المعلم، ويمنح الطلاب فرصًا إضافية لممارسة الإنجليزية، مع تغذية راجعة تدعم تقدمهم.",
+        "schoolPills": [
+          "أسعار خاصة للمدارس",
+          "اشتراكات للمجموعات الطلابية",
+          "دعم للتطبيق داخل المدرسة"
+        ],
+        "ctaLabel": "اطلب عرضًا لمدرستك",
+        "href": "/contact-us",
+        "arrow": true,
+        "teacherAsset": "/src/assets/landing-page/section9.png",
+        "teacherImageLoaded": true,
+        "teacherNote": "لأن المعلم جزء أساسي من تجربة زيـــد يحصل معلمو المدارس المشاركة على حساب خاص دون تكلفة إضافية.",
+        "teacherMessage": "زيـــد لا يستبدل المعلم.. بل يوسّع أثره.",
+        "dashboardHeading": "لوحات تحكم ذكية.. قياس دقيق، تدخل أسرع، وتحفيز مستمر",
+        "dashboardCards": [
+          {
+            "title": "للإدارة المدرسية: رؤية شاملة",
+            "points": [
+              "لوحة تحكم إدارية: تتيح لك متابعة أداء جميع الفصول والمعلمين في مكان واحد.",
+              "تقارير فورية: قياس دقيق لمستوى تطور الطلاب ومدى تفاعل المعلمين مع النظام.",
+              "قرارات مبنية على البيانات: اكتشف نقاط الضعف في المنهج وعالجها قبل الاختبارات."
+            ],
+            "background": "rgb(237, 245, 255)",
+            "x": 944.8125,
+            "y": -56.96875,
+            "icons": 1
+          },
+          {
+            "title": "للمعلم: متابعة أسهل بجهد أقل",
+            "points": [
+              "مؤشرات الألوان: تصنيف ذكي للطلاب (أخضر، أصفر، أحمر) لمعرفة من يحتاج للمساعدة فوراً.",
+              "تنبيهات سريعة: إرسال توجيهات (Nudges) للطلاب المتعثرين بضغطة زر.",
+              "الذكاء الاصطناعي كمساعد: زيد يتولى التصحيح والتقييم، لتتفرغ أنت للتوجيه والدعم."
+            ],
+            "background": "rgb(238, 250, 247)",
+            "x": 519.203125,
+            "y": -56.96875,
+            "icons": 1
+          },
+          {
+            "title": "للطلاب: متعة الممارسة والتحدي",
+            "points": [
+              "نظام نقاط تنافسي: تحويل الممارسة اليومية إلى تحدٍ ممتع يكافئ الطالب على استمراريته.",
+              "لوحات شرف أسبوعية: إبراز أفضل 20 طالباً لتحفيز التنافس الإيجابي.",
+              "مكافآت قابلة للاستبدال: يمكن للطلاب استبدال نقاطهم بمكافآت أو امتيازات داخل الفصل، مما يحفز المعلمين والطلاب معاً."
+            ],
+            "background": "rgb(247, 242, 252)",
+            "x": 93.609375,
+            "y": -56.96875,
+            "icons": 1
+          }
+        ],
+        "dashboardControls": 0,
+        "dashboardImages": 0,
+        "nudgesDirection": "ltr",
+        "banner": "الطالب لا يحتاج إلى مزيد من شرح الإنجليزية بقدر ما يحتاج إلى المزيد من استخدامها.",
+        "bannerCount": 1,
+        "proposedOrderCorrect": true,
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "errors": []
+    }
+  ],
+  "contactCheck": {
+    "destination": "/contact-us",
+    "formVisible": true,
+    "submitted": false
+  },
+  "changedExistingSourceFiles": [
+    "src/pages/public/Main.tsx",
+    "src/pages/public/schools-section.tsx"
+  ],
+  "addedApplicationFiles": [
+    "src/pages/public/PracticeCallout.css",
+    "src/pages/public/PracticeCallout.tsx",
+    "src/pages/public/SmartDashboardsSection.css",
+    "src/pages/public/SmartDashboardsSection.tsx"
+  ],
+  "sourceScope": true,
+  "passed": true,
+  "approvalNote": "Checks verify supplied copy and proposed composition only; D08/D09 and dashboard capability approval are separate."
+}

@@ -1,0 +1,533 @@
+{
+  "capturedAtUtc": "2026-11-07T10:10:35.286Z",
+  "browser": "156.0.8078.81",
+  "httpStatus": 200,
+  "scope": "P1 copy/design and existing local navigation only; no demo or microphone",
+  "widths": [
+    {
+      "width": 1440,
+      "documentWidth": 1440,
+      "body": "زيد معلّم ذكي لممارسة اللغة الإنجليزية، يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه في المدرسة.",
+      "h1": [
+        "من دراسة الإنجليزية إلى",
+        "استخدامها بثقة"
+      ],
+      "grade": "للطلاب من الأول المتوسط إلى الثالث الثانوي",
+      "tag": {
+        "text": "جاهز نبدأ",
+        "bounds": {
+          "x": 77.40452575683594,
+          "y": 121.27230072021484,
+          "width": 84.09719848632812,
+          "height": 49.93976593017578
+        }
+      },
+      "ctas": [
+        {
+          "text": "جرب زيد Zayd الآن",
+          "href": "/login",
+          "bounds": {
+            "x": 1162.703125,
+            "y": 505.390625,
+            "width": 197.296875,
+            "height": 50
+          },
+          "brandDirection": "ltr",
+          "brandLanguage": "en"
+        },
+        {
+          "text": "زيد Zayd للمدارس",
+          "href": "#schools",
+          "bounds": {
+            "x": 985.265625,
+            "y": 505.390625,
+            "width": 165.4375,
+            "height": 50
+          },
+          "brandDirection": "ltr",
+          "brandLanguage": "en"
+        }
+      ],
+      "stats": [
+        {
+          "value": "ساعة",
+          "description": "أسبوعيًا لممارسة الإنجليزية",
+          "x": 924.34375,
+          "icon": "/src/assets/landing-page/stat-clock.png"
+        },
+        {
+          "value": "+40",
+          "description": "موضوعًا وموقفًا من الحياة",
+          "x": 515.671875,
+          "icon": "/src/assets/landing-page/stat-document.png"
+        },
+        {
+          "value": "×10",
+          "description": "لممارسة الإنجليزية",
+          "x": 107.015625,
+          "icon": "/src/assets/landing-page/stat-chart.png"
+        }
+      ],
+      "nav": [
+        {
+          "text": "الرئيسية",
+          "href": "#home"
+        },
+        {
+          "text": "المنهج",
+          "href": "#curriculum"
+        },
+        {
+          "text": "الحياة اليومية",
+          "href": "#life"
+        },
+        {
+          "text": "للمدارس",
+          "href": "#schools"
+        },
+        {
+          "text": "الأسئلة الشائعة",
+          "href": "#faq"
+        }
+      ],
+      "heroImages": [
+        {
+          "src": "/src/assets/landing-page/hero-classroom-premium.png",
+          "alt": "مساحة تعلم حديثة مع كتب وحاسوب لممارسة الإنجليزية",
+          "complete": true,
+          "naturalWidth": 1672
+        },
+        {
+          "src": "/src/assets/landing-page/section1.png",
+          "alt": "المعلم الذكي زيد يرحب بك ويشير إلى تجربة التعلم",
+          "complete": true,
+          "naturalWidth": 555
+        }
+      ],
+      "overflowingHeroElements": []
+    },
+    {
+      "width": 1024,
+      "documentWidth": 1024,
+      "body": "زيد معلّم ذكي لممارسة اللغة الإنجليزية، يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه في المدرسة.",
+      "h1": [
+        "من دراسة الإنجليزية إلى",
+        "استخدامها بثقة"
+      ],
+      "grade": "للطلاب من الأول المتوسط إلى الثالث الثانوي",
+      "tag": {
+        "text": "جاهز نبدأ",
+        "bounds": {
+          "x": 29.404525756835938,
+          "y": 126.91292572021484,
+          "width": 84.09719848632812,
+          "height": 49.93976593017578
+        }
+      },
+      "ctas": [
+        {
+          "text": "جرب زيد Zayd الآن",
+          "href": "/login",
+          "bounds": {
+            "x": 823.546875,
+            "y": 413.875,
+            "width": 168.453125,
+            "height": 46
+          },
+          "brandDirection": "ltr",
+          "brandLanguage": "en"
+        },
+        {
+          "text": "زيد Zayd للمدارس",
+          "href": "#schools",
+          "bounds": {
+            "x": 676.703125,
+            "y": 413.875,
+            "width": 136.84375,
+            "height": 46
+          },
+          "brandDirection": "ltr",
+          "brandLanguage": "en"
+        }
+      ],
+      "stats": [
+        {
+          "value": "ساعة",
+          "description": "أسبوعيًا لممارسة الإنجليزية",
+          "x": 667.671875,
+          "icon": "/src/assets/landing-page/stat-clock.png"
+        },
+        {
+          "value": "+40",
+          "description": "موضوعًا وموقفًا من الحياة",
+          "x": 356.34375,
+          "icon": "/src/assets/landing-page/stat-document.png"
+        },
+        {
+          "value": "×10",
+          "description": "لممارسة الإنجليزية",
+          "x": 45,
+          "icon": "/src/assets/landing-page/stat-chart.png"
+        }
+      ],
+      "nav": [
+        {
+          "text": "الرئيسية",
+          "href": "#home"
+        },
+        {
+          "text": "المنهج",
+          "href": "#curriculum"
+        },
+        {
+          "text": "الحياة اليومية",
+          "href": "#life"
+        },
+        {
+          "text": "للمدارس",
+          "href": "#schools"
+        },
+        {
+          "text": "الأسئلة الشائعة",
+          "href": "#faq"
+        }
+      ],
+      "heroImages": [
+        {
+          "src": "/src/assets/landing-page/hero-classroom-premium.png",
+          "alt": "مساحة تعلم حديثة مع كتب وحاسوب لممارسة الإنجليزية",
+          "complete": true,
+          "naturalWidth": 1672
+        },
+        {
+          "src": "/src/assets/landing-page/section1.png",
+          "alt": "المعلم الذكي زيد يرحب بك ويشير إلى تجربة التعلم",
+          "complete": true,
+          "naturalWidth": 555
+        }
+      ],
+      "overflowingHeroElements": []
+    },
+    {
+      "width": 768,
+      "documentWidth": 768,
+      "body": "زيد معلّم ذكي لممارسة اللغة الإنجليزية، يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه في المدرسة.",
+      "h1": [
+        "من دراسة الإنجليزية إلى",
+        "استخدامها بثقة"
+      ],
+      "grade": "للطلاب من الأول المتوسط إلى الثالث الثانوي",
+      "tag": {
+        "text": "جاهز نبدأ",
+        "bounds": {
+          "x": 101.40452575683594,
+          "y": 411.1160583496094,
+          "width": 84.09719848632812,
+          "height": 49.93975830078125
+        }
+      },
+      "ctas": [
+        {
+          "text": "جرب زيد Zayd الآن",
+          "href": "/login",
+          "bounds": {
+            "x": 496.703125,
+            "y": 323.96875,
+            "width": 197.296875,
+            "height": 50
+          },
+          "brandDirection": "ltr",
+          "brandLanguage": "en"
+        },
+        {
+          "text": "زيد Zayd للمدارس",
+          "href": "#schools",
+          "bounds": {
+            "x": 319.265625,
+            "y": 323.96875,
+            "width": 165.4375,
+            "height": 50
+          },
+          "brandDirection": "ltr",
+          "brandLanguage": "en"
+        }
+      ],
+      "stats": [
+        {
+          "value": "ساعة",
+          "description": "أسبوعيًا لممارسة الإنجليزية",
+          "x": 485,
+          "icon": "/src/assets/landing-page/stat-clock.png"
+        },
+        {
+          "value": "+40",
+          "description": "موضوعًا وموقفًا من الحياة",
+          "x": 283,
+          "icon": "/src/assets/landing-page/stat-document.png"
+        },
+        {
+          "value": "×10",
+          "description": "لممارسة الإنجليزية",
+          "x": 81,
+          "icon": "/src/assets/landing-page/stat-chart.png"
+        }
+      ],
+      "nav": [
+        {
+          "text": "الرئيسية",
+          "href": "#home"
+        },
+        {
+          "text": "المنهج",
+          "href": "#curriculum"
+        },
+        {
+          "text": "الحياة اليومية",
+          "href": "#life"
+        },
+        {
+          "text": "للمدارس",
+          "href": "#schools"
+        },
+        {
+          "text": "الأسئلة الشائعة",
+          "href": "#faq"
+        }
+      ],
+      "heroImages": [
+        {
+          "src": "/src/assets/landing-page/hero-classroom-premium.png",
+          "alt": "مساحة تعلم حديثة مع كتب وحاسوب لممارسة الإنجليزية",
+          "complete": true,
+          "naturalWidth": 1672
+        },
+        {
+          "src": "/src/assets/landing-page/section1.png",
+          "alt": "المعلم الذكي زيد يرحب بك ويشير إلى تجربة التعلم",
+          "complete": true,
+          "naturalWidth": 555
+        }
+      ],
+      "overflowingHeroElements": []
+    },
+    {
+      "width": 390,
+      "documentWidth": 390,
+      "body": "زيد معلّم ذكي لممارسة اللغة الإنجليزية، يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه في المدرسة.",
+      "h1": [
+        "من دراسة الإنجليزية إلى",
+        "استخدامها بثقة"
+      ],
+      "grade": "للطلاب من الأول المتوسط إلى الثالث الثانوي",
+      "tag": {
+        "text": "جاهز نبدأ",
+        "bounds": {
+          "x": 16.025285720825195,
+          "y": 373.8089599609375,
+          "width": 64.02755737304688,
+          "height": 38.007080078125
+        }
+      },
+      "ctas": [
+        {
+          "text": "جرب زيد Zayd الآن",
+          "href": "/login",
+          "bounds": {
+            "x": 207.546875,
+            "y": 291.9375,
+            "width": 164.453125,
+            "height": 46
+          },
+          "brandDirection": "ltr",
+          "brandLanguage": "en"
+        },
+        {
+          "text": "زيد Zayd للمدارس",
+          "href": "#schools",
+          "bounds": {
+            "x": 60.703125,
+            "y": 291.9375,
+            "width": 136.84375,
+            "height": 46
+          },
+          "brandDirection": "ltr",
+          "brandLanguage": "en"
+        }
+      ],
+      "stats": [
+        {
+          "value": "ساعة",
+          "description": "أسبوعيًا لممارسة الإنجليزية",
+          "x": 41,
+          "icon": "/src/assets/landing-page/stat-clock.png"
+        },
+        {
+          "value": "+40",
+          "description": "موضوعًا وموقفًا من الحياة",
+          "x": 41,
+          "icon": "/src/assets/landing-page/stat-document.png"
+        },
+        {
+          "value": "×10",
+          "description": "لممارسة الإنجليزية",
+          "x": 41,
+          "icon": "/src/assets/landing-page/stat-chart.png"
+        }
+      ],
+      "nav": [
+        {
+          "text": "الرئيسية",
+          "href": "#home"
+        },
+        {
+          "text": "المنهج",
+          "href": "#curriculum"
+        },
+        {
+          "text": "الحياة اليومية",
+          "href": "#life"
+        },
+        {
+          "text": "للمدارس",
+          "href": "#schools"
+        },
+        {
+          "text": "الأسئلة الشائعة",
+          "href": "#faq"
+        }
+      ],
+      "heroImages": [
+        {
+          "src": "/src/assets/landing-page/hero-classroom-premium.png",
+          "alt": "مساحة تعلم حديثة مع كتب وحاسوب لممارسة الإنجليزية",
+          "complete": true,
+          "naturalWidth": 1672
+        },
+        {
+          "src": "/src/assets/landing-page/section1.png",
+          "alt": "المعلم الذكي زيد يرحب بك ويشير إلى تجربة التعلم",
+          "complete": true,
+          "naturalWidth": 555
+        }
+      ],
+      "overflowingHeroElements": []
+    },
+    {
+      "width": 320,
+      "documentWidth": 320,
+      "body": "زيد معلّم ذكي لممارسة اللغة الإنجليزية، يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه في المدرسة.",
+      "h1": [
+        "من دراسة الإنجليزية إلى",
+        "استخدامها بثقة"
+      ],
+      "grade": "للطلاب من الأول المتوسط إلى الثالث الثانوي",
+      "tag": {
+        "text": "جاهز نبدأ",
+        "bounds": {
+          "x": 16.025285720825195,
+          "y": 445.4027099609375,
+          "width": 64.02755737304688,
+          "height": 38.007080078125
+        }
+      },
+      "ctas": [
+        {
+          "text": "جرب زيد Zayd الآن",
+          "href": "/login",
+          "bounds": {
+            "x": 18,
+            "y": 308.5,
+            "width": 284,
+            "height": 46
+          },
+          "brandDirection": "ltr",
+          "brandLanguage": "en"
+        },
+        {
+          "text": "زيد Zayd للمدارس",
+          "href": "#schools",
+          "bounds": {
+            "x": 18,
+            "y": 364.5,
+            "width": 284,
+            "height": 46
+          },
+          "brandDirection": "ltr",
+          "brandLanguage": "en"
+        }
+      ],
+      "stats": [
+        {
+          "value": "ساعة",
+          "description": "أسبوعيًا لممارسة الإنجليزية",
+          "x": 41,
+          "icon": "/src/assets/landing-page/stat-clock.png"
+        },
+        {
+          "value": "+40",
+          "description": "موضوعًا وموقفًا من الحياة",
+          "x": 41,
+          "icon": "/src/assets/landing-page/stat-document.png"
+        },
+        {
+          "value": "×10",
+          "description": "لممارسة الإنجليزية",
+          "x": 41,
+          "icon": "/src/assets/landing-page/stat-chart.png"
+        }
+      ],
+      "nav": [
+        {
+          "text": "الرئيسية",
+          "href": "#home"
+        },
+        {
+          "text": "المنهج",
+          "href": "#curriculum"
+        },
+        {
+          "text": "الحياة اليومية",
+          "href": "#life"
+        },
+        {
+          "text": "للمدارس",
+          "href": "#schools"
+        },
+        {
+          "text": "الأسئلة الشائعة",
+          "href": "#faq"
+        }
+      ],
+      "heroImages": [
+        {
+          "src": "/src/assets/landing-page/hero-classroom-premium.png",
+          "alt": "مساحة تعلم حديثة مع كتب وحاسوب لممارسة الإنجليزية",
+          "complete": true,
+          "naturalWidth": 1672
+        },
+        {
+          "src": "/src/assets/landing-page/section1.png",
+          "alt": "المعلم الذكي زيد يرحب بك ويشير إلى تجربة التعلم",
+          "complete": true,
+          "naturalWidth": 555
+        }
+      ],
+      "overflowingHeroElements": []
+    }
+  ],
+  "schoolNavigation": {
+    "top": 102.046875,
+    "focused": true
+  },
+  "videoNavigation": {
+    "top": 101.90625,
+    "focused": true
+  },
+  "menu": {
+    "links": 5,
+    "expanded": "true",
+    "closedWithEscape": true
+  },
+  "primaryDestination": "/login",
+  "pageErrors": []
+}

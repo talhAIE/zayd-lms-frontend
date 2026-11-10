@@ -5,7 +5,7 @@
   color: #242424;
   font-family: "IBM Plex Sans Arabic", sans-serif;
 }
-.zayd-life__container { display: grid; grid-template-columns: minmax(0, .94fr) minmax(0, 1.35fr); align-items: center; gap: clamp(38px, 4.4vw, 64px); max-width: 1280px; margin-inline: auto; }
+.zayd-life__container { display: grid; grid-template-columns: minmax(0, .94fr) minmax(0, 1.35fr); align-items: center; gap: clamp(38px, 4.4vw, 64px); max-width: 1280px; margin-inline: auto; padding: 56px 40px; border: 1px solid #bae6fd; border-radius: 28px; background: linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 100%); }
 .zayd-life__copy { min-width: 0; }
 .zayd-life__eyebrow { display: inline-block; max-width: 100%; margin: 0; padding: 6px 14px; border-radius: 999px; background: linear-gradient(270deg, #2f76d3, #167f7e); color: white; font-size: 12px; font-weight: 600; line-height: 1.65; }
 .zayd-life__heading { margin: 18px 0 0; font-family: "Almarai", sans-serif; font-size: clamp(30px, 3.1vw, 44px); font-weight: 800; line-height: 1.5; }
@@ -33,7 +33,7 @@
 }
 @media (max-width: 849px) {
   .zayd-life { padding: 46px 24px; }
-  .zayd-life__container { grid-template-columns: minmax(0, 1fr); gap: 30px; max-width: 660px; }
+  .zayd-life__container { grid-template-columns: minmax(0, 1fr); gap: 30px; max-width: 660px; padding: 36px 28px; }
   .zayd-life__heading { font-size: clamp(30px, 5.3vw, 40px); }
   .zayd-life__description { max-width: none; }
   .zayd-life__message { font-size: 18px; }
@@ -42,6 +42,7 @@
 }
 @media (max-width: 559px) {
   .zayd-life { padding: 36px 18px; }
+  .zayd-life__container { padding: 28px 18px; }
   .zayd-life__eyebrow { font-size: 11px; padding: 6px 12px; }
   .zayd-life__heading { margin-top: 16px; font-size: clamp(27px, 7vw, 36px); }
   .zayd-life__description { margin-top: 16px; font-size: 14px; }
@@ -53,4 +54,5 @@
 @media (forced-colors: active) {
   .zayd-life__heading-accent { background: none; -webkit-text-fill-color: CanvasText; }
   .zayd-life__label { border: 1px solid ButtonText; }
+  .zayd-life__container { border-color: CanvasText; }
 }
