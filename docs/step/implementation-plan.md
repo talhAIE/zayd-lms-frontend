@@ -1,6 +1,6 @@
 # STEP mode implementation plan
 
-Status as of 2026-11-10: Phase 1 audit, authoring packages, validators, and API contract are implemented on `feat/step` in both integrated repositories. The full Phase 1 academic exit gate remains pending eleven Nouns content findings; no source answers were silently changed. Phase 2 is complete: fourteen separate STEP tables are applied and verified in production ROW SQL, with STEP disabled. The user explicitly requested Phase 2 schema work while content sign-off remains open. Phases 3–8 have not started. No STEP course/content/audio upload, accounts/enrollments, application integration, or application deployment has been performed.
+Status as of 2026-11-10: Phase 1 audit, authoring packages, validators, and API contract are implemented on `feat/step` in both integrated repositories. The full Phase 1 academic exit gate remains pending eleven Nouns content findings; no source answers were silently changed. Phase 2 is complete: fourteen separate STEP tables are applied and verified in production ROW SQL. Phase 3 is complete locally: isolated feature-gated backend APIs, transactions, final-only grading, private audio access and tests are implemented. STEP stays disabled. The user explicitly requested progressing with schema/API work while content sign-off remains open. Phases 4–8 have not started. No STEP course/content/audio upload, accounts/enrollments, frontend player, or application deployment has been performed.
 
 ## 1. Agreed outcome
 
@@ -91,15 +91,17 @@ Use current LMS typography, spacing, cards, colors, buttons, sidebar, and respon
 
 ## Phase 3 — Build the isolated backend assessment API
 
-- [ ] Implement feature-gated course discovery, ordered section/topic discovery, topic overview, start/resume, attempt retrieval, answer save, submit, and result APIs under `/api/v1/step`.
-- [ ] Enforce active student role, enrollment, ownership, regional scope, published content, and feature flag on every operation, including media. Hiding a card is not authorization.
-- [ ] Enforce one attempt per student/topic transactionally, including concurrent Start requests. Snapshot published content and private keys at start; never send keys or explanations to the client.
-- [ ] Add revision-checked saves and stable request IDs for idempotent retries. Handle stale revisions and duplicate requests without losing saved answers or advancing twice.
-- [ ] Submit only complete attempts, calculate marks on the server, and lock further writes. Repeated submission returns the stored result. Return no correctness information before or after submission beyond final total marks.
-- [ ] Add production-private audio delivery using bounded streaming or authorized short-lived blob access. Support browser audio seeking/range behavior, correct content type, ownership checks, expiry/recovery, and limits. Do not load an entire large recording unnecessarily or expose storage credentials.
-- [ ] Add meaningful unit/contract tests using mocks for access denial, content filtering, concurrency, save conflicts, incomplete submission, duplicate submission, and answer-key leakage.
+- [x] Implement the independent `StepModule`, feature-gated course/ordered section/topic discovery, overview, start/resume, attempt retrieval, save, submit and result routes under `/api/v1/step`. Existing global JWT/role guards are reused; no existing mode routes or service behavior are changed.
+- [x] Enforce live active student identity, persistent active enrollment, ownership, ROW regional scope, published/reviewed zero-issue content for starts, and the STEP flag on every operation, including audio access. Existing owned attempts retain their frozen version after retirement; revoked/inactive access is denied.
+- [x] Enforce one attempt per student/topic with unique constraints, Serializable transactions and bounded conflict retries. Snapshot validated content and private correct-option IDs with a digest; whitelist assessment responses so answer keys, source/review data and storage configuration are absent. Audio access intentionally returns only a temporary signed URL and expiry.
+- [x] Implement revision compare-and-swap saves, atomic answer/receipt writes, stable request IDs/payload hashes, exact replay, stale-revision denial and cross-operation request-ID conflict handling. Concurrent saves retain one winner and receipt failures roll back all mutation state.
+- [x] Require all valid, distinct answers, matching revision, and equality with persisted selections before submission. Calculate marks on the server; lock final state, return immutable final results on retry, and refuse later answer writes. No per-question correctness, explanations, answer review, or retake is exposed.
+- [x] Implement authorized private Azure audio access: verify account/container/blob namespace, size/type/SHA metadata and private access; bound metadata requests to ten seconds; mint a read-only single-blob HTTPS SAS for four minutes. Native Azure range requests support seeking without backend audio buffering. Actual production playback/expiry/browser checks remain Phase 7, since content is not uploaded in this phase.
+- [x] Add synthetic transactional service/content/repository tests, real Nest JWT/role/validation HTTP tests, and mocked-storage tests with real local SAS signing. All 61 focused STEP tests pass, including timeout and key-leakage checks.
 
 **Exit criteria:** Backend compiles; focused tests pass; STEP contracts and failure states are implemented independently of NAFS. Actual production HTTP verification follows deployment in Phase 7.
+
+**Phase 3 outcome:** Complete locally. Backend type check/build pass; the full backend regression suite passes 90 suites (749 tests passed, one skipped). The existing 25 offline content/schema/target tests, frontend type check and contract parity also pass. Backend evidence is `docs/step/phase3-api.md` and `docs/step/phase3-evidence/checks.json`; frontend handoff is `docs/step/phase3-status.md`. Production SQL/schema/blob/settings/data are unchanged in this phase, and no application deployment occurred. Phase 4 is next; eleven Nouns findings continue to block publication.
 
 ## Phase 4 — Upload launch content and audio to production
 
@@ -168,8 +170,8 @@ The initial scope is the student STEP course and its three activities. Additiona
 | Phase | Status | Evidence / commit / production verification |
 | --- | --- | --- |
 | 1. Content and contract | Audit/contract implemented; academic exit pending | 68 questions; 56 source hashes; ten audio decodes; approved transcription; fifteen content tests; both type checks and contract parity pass. Publication guard exits 2 for eleven Nouns findings. Local commits: backend `ae79f13`, frontend `12d3734`. |
-| 2. Production schema | Complete | Production migration `step-phase2-001`: 14 tables; existing 78-table catalog unchanged; recovery/backup evidence recorded; independent verification passed. 25 offline STEP tests and 85 backend suites pass (692 passed, one skipped); both type checks, backend build and contract parity pass. STEP disabled; no content/users/blobs added. Local commits only, no push. |
-| 3. Backend APIs | Not started | |
+| 2. Production schema | Complete | Production migration `step-phase2-001`: 14 tables; existing 78-table catalog unchanged; recovery/backup evidence and independent verification recorded. 25 offline tests and 85 backend suites pass (692 passed, one skipped). Local commits: backend `9ec3fd1`, frontend `95167a3`. |
+| 3. Backend APIs | Complete locally; not deployed | Independent STEP APIs; 61 focused STEP tests, 25 offline package/schema/target tests and 90 backend suites pass (749 passed, one skipped). Type checks, build and contract parity pass. No production mutation or upload; STEP disabled. Local commits only, no push. |
 | 4. Production content/audio upload | Not started | |
 | 5. Frontend layouts | Not started | |
 | 6. Assessment lifecycle | Not started | |
