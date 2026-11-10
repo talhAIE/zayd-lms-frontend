@@ -208,7 +208,7 @@ export default function PersonalizedLearningSection() {
                   <DialogContent className="personalized-learning__preview-dialog personalized-learning__cefr-dialog" lang="ar" dir="rtl">
                     <DialogTitle>تقييم مستوى اللغة وفق <bdi dir="ltr" lang="en">CEFR</bdi></DialogTitle>
                     <DialogDescription className="personalized-learning__preview-label">نموذج توضيحي</DialogDescription>
-                    <LandingDemoViewport><CefrPreview /></LandingDemoViewport>
+                    <CefrPreview />
                   </DialogContent>
                 </Dialog>
               )}
@@ -234,7 +234,7 @@ export default function PersonalizedLearningSection() {
                   <DialogContent className="personalized-learning__preview-dialog personalized-learning__certificate-dialog" lang="ar" dir="rtl">
                     <DialogTitle>شهادة تقدير وشارة إنجاز</DialogTitle>
                     <DialogDescription className="personalized-learning__preview-label">نموذج توضيحي</DialogDescription>
-                    <LandingDemoViewport><CertificateReveal /></LandingDemoViewport>
+                    <CertificateReveal />
                   </DialogContent>
                 </Dialog>
               )}
@@ -247,7 +247,7 @@ export default function PersonalizedLearningSection() {
                   <DialogContent className="personalized-learning__preview-dialog personalized-learning__rewards-dialog" lang="ar" dir="rtl">
                     <DialogTitle>نقاط ومكافآت تحفيزية</DialogTitle>
                     <DialogDescription className="personalized-learning__preview-label">نموذج توضيحي</DialogDescription>
-                    <LandingDemoViewport><RewardsPreview /></LandingDemoViewport>
+                    <RewardsPreview />
                   </DialogContent>
                 </Dialog>
               )}
