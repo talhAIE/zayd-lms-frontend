@@ -63,7 +63,7 @@ export interface PrimarySnapshot {
   lesson: PrimaryLesson;
   progress: { completedItems: number; totalItems: number; completed: boolean };
   item: PrimaryItem | null;
-  feedback: { text: string; audioKey?: string; transcript?: string; accepted?: boolean } | null;
+  feedback: { text: string; audioKey?: string; transcript?: string; accepted?: boolean; selectedOptionId?: string } | null;
   selectedModelId: string | null;
   draftId: string | null;
   allowedActions: (PrimaryAction | 'record')[];
