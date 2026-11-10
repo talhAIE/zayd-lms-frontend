@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Mic, Square, Volume2, VolumeX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { GradedAnswerButton } from '@/components/learning/AnswerFeedback';
 import { useAudioRecorder } from '@/hooks/useAudioRecorder';
 import type { PrimaryAction, PrimaryApi, PrimaryItem, PrimarySnapshot, SpokenText, WordCue } from '@/services/primaryService';
 import { usePrimaryPlayback } from './usePrimaryPlayback';
@@ -87,21 +88,31 @@ export function PrimaryActivity({ api, snapshot, blocked, send }: {
       : undefined);
   }
 
-  function spoken({ text, audioKey }: SpokenText, options: { label?: string; confirm?: boolean; showText?: boolean } = {}) {
+  function spoken({ text, audioKey }: SpokenText, options: {
+    label?: string; confirm?: boolean; showText?: boolean; grading?: { result?: boolean; feedbackKey: number };
+  } = {}) {
     const current = playback?.key === audioKey;
-    return (
-      <button type="button" disabled={disabled} onClick={() => playClip(audioKey, options.confirm)}
-        aria-label={options.label}
-        aria-description={options.label ? text : undefined}
-        aria-pressed={current}
-        className="flex min-w-0 items-start gap-2 rounded-xl border border-blue-100 bg-blue-50 px-3 py-2.5 text-left text-slate-900 hover:border-blue-400 focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-60">
+    const props = {
+      type: 'button' as const,
+      disabled,
+      onClick: () => playClip(audioKey, options.confirm),
+      'aria-label': options.label,
+      'aria-description': options.label ? text : undefined,
+      'aria-pressed': current,
+      className: 'flex min-w-0 items-start gap-2 rounded-xl border border-blue-100 bg-blue-50 px-3 py-2.5 text-left text-slate-900 hover:border-blue-400 focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-60',
+    };
+    const label = (
+      <>
         {current ? <VolumeX className="mt-0.5 h-5 w-5 shrink-0 text-blue-600" /> : <Volume2 className="mt-0.5 h-5 w-5 shrink-0 text-blue-600" />}
         <span className="min-w-0 whitespace-pre-wrap break-words">
           {options.label && <span className="mr-2 text-sm font-semibold text-blue-700">{options.label}</span>}
           {options.showText !== false && text}
         </span>
-      </button>
+      </>
     );
+    return options.grading
+      ? <GradedAnswerButton {...props} result={options.grading.result} feedbackKey={options.grading.feedbackKey}>{label}</GradedAnswerButton>
+      : <button {...props}>{label}</button>;
   }
 
   async function finishRecording() {
@@ -206,7 +217,12 @@ export function PrimaryActivity({ api, snapshot, blocked, send }: {
           <p className="text-sm text-slate-600">{practice ? 'Tap an answer to hear it, then choose your answer.' : 'Pick a sentence, then listen and record yourself saying it.'}</p>
           {choices.map((choice) => (
             <div key={choice.id} className="grid grid-cols-[1fr_auto] items-center gap-2">
-              {spoken(choice)}
+              {spoken(choice, practice ? {
+                grading: {
+                  result: feedback?.selectedOptionId === choice.id ? feedback.accepted : undefined,
+                  feedbackKey: snapshot.revision,
+                },
+              } : undefined)}
               <Button variant={choice.id === selectedModelId ? 'secondary' : 'outline'} disabled={disabled || !can(practice ? 'choose' : 'select-model') || choice.id === selectedModelId}
                 aria-label={choice.id === selectedModelId ? `Selected: ${choice.text}` : `Choose: ${choice.text}`}
                 onClick={() => { setPreview(null); action(practice ? 'choose' : 'select-model', choice.id); }}>
