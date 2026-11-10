@@ -1,10 +1,13 @@
 import heroAvatar from "@/assets/landing-page/section5.png";
+import avatarPreview from "@/assets/landing-page/3d-avatar-preview.mp4";
+import certificatePreview from "@/assets/landing-page/certificate-preview.png";
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import "./personalized-learning-section.css";
 import { lazy, Suspense, useCallback, useState } from 'react';
 import readingIcon from '@/assets/svgs/reading-mode.png';
 import listeningIcon from '@/assets/svgs/listening-mode.png';
 import roleplayIcon from '@/assets/svgs/roleplay-mode.png';
-import { Award, BookOpenCheck, BotMessageSquare, Gauge, Languages, PenLine, Trophy } from 'lucide-react';
+import { Award, BookOpenCheck, BotMessageSquare, Gauge, Languages, PenLine, Play, RotateCcw, Trophy } from 'lucide-react';
 import './reading-demo.css';
 
 const ReadingDemoModal = lazy(() => import('./ReadingDemoModal'));
@@ -22,6 +25,30 @@ const demos = [
   { mode: 'writing', title: 'وضع الكتابة', desc: 'اكتب فقرة قصيرة، واحصل على ملاحظات لتحسينها.', icon: null },
   { mode: 'vocabulary', title: 'وضع المفردات', desc: 'تعلّم ثلاث كلمات، وطابق معانيها، واختبر فهمك.', icon: null },
 ] as const;
+
+function CertificateReveal() {
+  const [artworkReady, setArtworkReady] = useState(false);
+  const [reveal, setReveal] = useState(0);
+
+  return (
+    <>
+      <figure className="personalized-learning__certificate" data-ready={artworkReady} key={reveal}>
+        <img src={certificatePreview} alt="تصميم شهادة تقدير من زيد" width={1280} height={906} onLoad={() => setArtworkReady(true)} />
+        <div className="personalized-learning__certificate-copy" lang="en" dir="ltr">
+          <strong>Noor Ali</strong>
+          <p>For completing a Zayd reading activity</p>
+        </div>
+        <span className="personalized-learning__certificate-stamp" role="img" aria-label="شارة نجم القراءة">
+          <Award aria-hidden="true" />
+        </span>
+      </figure>
+      <button type="button" className="personalized-learning__certificate-replay" onClick={() => setReveal(value => value + 1)} disabled={!artworkReady}>
+        <RotateCcw size={16} aria-hidden="true" />
+        أعد العرض
+      </button>
+    </>
+  );
+}
 
 const featureCards = [
   {
@@ -90,10 +117,36 @@ export default function PersonalizedLearningSection() {
 
         <ul className="personalized-learning__features" aria-label="مزايا إضافية مع زيد">
           {featureCards.map(({ id, icon: Icon, title, description }) => (
-            <li className="personalized-learning__feature" key={id}>
+            <li className={id === 'avatar' || id === 'certificates' ? "personalized-learning__feature personalized-learning__feature--preview" : "personalized-learning__feature"} key={id}>
               <span className="personalized-learning__feature-icon" aria-hidden="true"><Icon size={26} /></span>
               <h3>{title}</h3>
               <p>{description}</p>
+              {id === 'avatar' && (
+                <Dialog>
+                  <DialogTrigger type="button" className="personalized-learning__preview-trigger">
+                    <Play size={16} aria-hidden="true" />
+                    شاهد زيد ثلاثي الأبعاد
+                  </DialogTrigger>
+                  <DialogContent className="personalized-learning__preview-dialog" lang="ar" dir="rtl">
+                    <DialogTitle>معاينة زيد ثلاثي الأبعاد</DialogTitle>
+                    <DialogDescription className="sr-only">معاينة صامتة لوضع القراءة مع شخصية زيد ثلاثية الأبعاد.</DialogDescription>
+                    <video src={avatarPreview} autoPlay muted playsInline controls aria-label="معاينة صامتة لوضع القراءة ثلاثي الأبعاد" />
+                  </DialogContent>
+                </Dialog>
+              )}
+              {id === 'certificates' && (
+                <Dialog>
+                  <DialogTrigger type="button" className="personalized-learning__preview-trigger">
+                    <Award size={16} aria-hidden="true" />
+                    شاهد نموذج الشهادة
+                  </DialogTrigger>
+                  <DialogContent className="personalized-learning__preview-dialog personalized-learning__certificate-dialog" lang="ar" dir="rtl">
+                    <DialogTitle>شهادة تقدير وشارة إنجاز</DialogTitle>
+                    <DialogDescription className="personalized-learning__certificate-label">نموذج توضيحي</DialogDescription>
+                    <CertificateReveal />
+                  </DialogContent>
+                </Dialog>
+              )}
             </li>
           ))}
         </ul>
