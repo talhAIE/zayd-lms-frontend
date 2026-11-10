@@ -1,6 +1,6 @@
 # STEP mode implementation plan
 
-Status as of 2026-11-10: Phase 1 audit, authoring packages, validators, and API contract are implemented on `feat/step` in both integrated repositories. The full Phase 1 academic exit gate remains pending eleven Nouns content findings; no source answers were silently changed. Phase 2 is complete: fourteen separate STEP tables are applied and verified in production ROW SQL. Phase 3 is complete locally: isolated feature-gated backend APIs, transactions, final-only grading, private audio access and tests are implemented. STEP stays disabled. The user explicitly requested progressing with schema/API work while content sign-off remains open. Phases 4–8 have not started. No STEP course/content/audio upload, accounts/enrollments, frontend player, or application deployment has been performed.
+Status as of 2026-11-10: Phases 2, 3 and 4 are complete on `feat/step`: production ROW schema, local isolated APIs, and actual production draft content/audio upload are verified. Phase 1 audit/contract deliverables are implemented, but its academic exit gate remains pending eleven Nouns findings; source answers were not silently changed. Production now contains the inactive STEP course, three sections/topics/draft versions, 68 questions, 272 options, private keys, Ants passage, and the private source Listening MP3. STEP stays disabled and unpublished. The user explicitly requested progressing with schema/API/draft import work while content sign-off remains open. Phases 5–8 have not started. No accounts/enrollments, frontend player, or application deployment has been performed.
 
 ## 1. Agreed outcome
 
@@ -105,14 +105,16 @@ Use current LMS typography, spacing, cards, colors, buttons, sidebar, and respon
 
 ## Phase 4 — Upload launch content and audio to production
 
-- [ ] Build a repeatable importer with validation-only, upload/import, verification, and explicit publish operations. Pin the reviewed package checksum and production target before mutation.
-- [ ] Upload Making Plans audio to private production Azure Blob Storage; verify blob length, checksum, content type, and playable audio. Record blob keys without credentials or reusable access tokens.
-- [ ] Import the STEP course, three ordered sections, Nouns, Making Plans, Ants, questions/options, private keys, passage, and media references into STEP production tables in draft state.
-- [ ] Use deterministic source IDs/checksums and transactions so rerunning the same package neither duplicates content nor changes existing attempts. Failed imports must leave no partially published course.
-- [ ] Read the production records back and reconcile counts, question order, keys, passage text, and audio references against the manifest. Verify every referenced asset exists in production storage.
-- [ ] Save an upload report listing actual database identity, package version/checksum, record counts, topic IDs, blob verification, and publication state. Do not mark this phase complete from a local extraction report.
+- [x] Build separate offline validate, explicit production import, read-only verify, and guarded publish modes. Pin sealed package digest `d0547580aa5d8aa0da1568a502d2464154642ad4ce50c1d92807fb3df8f299d9`, production SQL/storage identity, disabled flag, and Phase 2 schema receipt before mutation. Current publish is blocked before production access by the eleven unresolved findings.
+- [x] Upload the original Making Plans MP3 to private production account `zaydlmsprodstore2026`, container `step-private-content`, versioned `step/step-v1/` key. Full read-back verifies 3,802,671 bytes, source SHA-256, MIME and exact signed HTTP 206 byte-range response; anonymous HEAD returns 401. No keys/SAS tokens are recorded and no account-wide CORS/public policy is changed. Browser playback remains Phase 7 acceptance.
+- [x] Import the actual STEP course, three ordered sections/topics/versions, 68 questions, 272 options, 68 private keys, four-paragraph Ants passage and one audio reference into production `zayd_lms_prod`. All versions are draft/academic-pending; course/topics stay inactive, and no enrollment/account/attempt is created.
+- [x] Use RFC UUIDv5 stable identities, source/package/content digests, insert-only comparison, a deployment lock and one SQL transaction. Production repeat import created zero new records and reused rather than overwrote the blob. Tests prove rollback/refusal for partial inserts and mismatched content. Published versions/attempts are not reset.
+- [x] Independently read production SQL/blob content back and reconcile every imported field, count, ordering, source grouping, key/review JSON, passage paragraph and media reference with the sealed plan. The runtime snapshot parser also accepts the exact mapped source content in an offline compatibility test.
+- [x] Record actual production upload, independent verification, zero-new-record repeat import, validation preview and check summaries in `docs/step/phase4-evidence`. The existing 78-table normal-mode schema fingerprint is unchanged; writes target only STEP content and its private blob.
 
 **Exit criteria:** All three launch activities actually exist in production SQL with verified private production audio. They remain draft/unexposed until launch checks; there is no runtime dependency on the Downloads folder or local media.
+
+**Phase 4 outcome:** Complete. Actual production draft import completed at 15:21 UTC on 2026-11-10, with verified private audio, independent read-back and idempotent replay. All 47 offline STEP tests, 62 focused STEP tests and 91 backend suites pass (750 tests passed, one skipped). Both type checks, backend build and contract parity pass. Backend details are `docs/step/phase4-import.md`; frontend handoff is `docs/step/phase4-status.md`. No application deployment, course activation, publication, accounts or enrollments occurred. Eleven Nouns findings still block publication; Phase 5 frontend layouts are next.
 
 ## Phase 5 — Build STEP course navigation and question layouts
 
@@ -171,8 +173,8 @@ The initial scope is the student STEP course and its three activities. Additiona
 | --- | --- | --- |
 | 1. Content and contract | Audit/contract implemented; academic exit pending | 68 questions; 56 source hashes; ten audio decodes; approved transcription; fifteen content tests; both type checks and contract parity pass. Publication guard exits 2 for eleven Nouns findings. Local commits: backend `ae79f13`, frontend `12d3734`. |
 | 2. Production schema | Complete | Production migration `step-phase2-001`: 14 tables; existing 78-table catalog unchanged; recovery/backup evidence and independent verification recorded. 25 offline tests and 85 backend suites pass (692 passed, one skipped). Local commits: backend `9ec3fd1`, frontend `95167a3`. |
-| 3. Backend APIs | Complete locally; not deployed | Independent STEP APIs; 61 focused STEP tests, 25 offline package/schema/target tests and 90 backend suites pass (749 passed, one skipped). Type checks, build and contract parity pass. No production mutation or upload; STEP disabled. Local commits only, no push. |
-| 4. Production content/audio upload | Not started | |
+| 3. Backend APIs | Complete locally; not deployed | Independent STEP APIs; 61 focused and 25 offline tests; 90 backend suites passed (749 passed, one skipped). Local commits: backend `b802d5c`, frontend `7cdf3e6`. |
+| 4. Production content/audio upload | Complete; draft only | Actual SQL content: 1 course, 3 sections/topics/versions, 68 questions, 272 options, 68 keys, 1 passage/audio. Private production MP3 checksum/range/access verified; repeat import creates 0 records. 47 offline tests, 62 focused STEP tests and 91 backend suites pass (750 passed, one skipped); types/build/parity pass. STEP disabled; no publication/accounts/enrollments. Local commits only, no push. |
 | 5. Frontend layouts | Not started | |
 | 6. Assessment lifecycle | Not started | |
 | 7. Verification and production integration | Not started | |

@@ -1,6 +1,6 @@
 # STEP Phase 3 frontend handoff
 
-The separate backend STEP API is implemented locally and remains disabled by default. Production currently has only the empty schema from Phase 2; the Phase 3 application code is not deployed and source content/accounts/audio are not uploaded by this phase. Frontend UI/service implementation remains Phase 5/6 work. Existing mode UI is unchanged.
+The separate backend STEP API is implemented locally and remains disabled by default. At Phase 3 completion, production had only the empty schema from Phase 2. Phase 4 now uploads the draft content/audio, documented in `phase4-status.md`; application deployment and accounts/enrollments are still later rollout work. Frontend UI/service implementation remains Phase 5/6 work. Existing mode UI is unchanged.
 
 Use the unchanged `src/types/step.contract.ts`, which matches the canonical backend contract. The complete routes and recovery semantics are documented in backend `docs/step/phase3-api.md`. Responses use `{ status: true, data: ... }` with the DTO directly in `data`, not `data.attempt`/`data.saved` wrappers.
 
