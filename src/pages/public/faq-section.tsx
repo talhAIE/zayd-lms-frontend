@@ -125,8 +125,10 @@ export default function FAQSection() {
                   <CircleChevronDown className="faq__chevron" aria-hidden="true" strokeWidth={2.25} />
                 </button>
                 </h3>
-                <div id={`faq-answer-${faq.id}`} className="faq__answer" role="region" aria-labelledby={`faq-question-${faq.id}`} hidden={!isOpen}>
+                <div id={`faq-answer-${faq.id}`} className="faq__answer-collapse" role="region" aria-labelledby={`faq-question-${faq.id}`} aria-hidden={!isOpen} data-open={isOpen}>
+                  <div className="faq__answer-inner"><div className="faq__answer">
                   {typeof faq.answer === "string" ? <p>{faq.answer}</p> : faq.answer}
+                  </div></div>
                 </div>
               </div>
             );
