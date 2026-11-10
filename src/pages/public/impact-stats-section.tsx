@@ -3,6 +3,7 @@ import studentsIcon from "@/assets/landing-page/metric-students.svg";
 import clockIcon from "@/assets/landing-page/metric-clock.svg";
 import booksIcon from "@/assets/landing-page/metric-books.svg";
 import "./impact-stats-section.css";
+import { LandingCounter } from "./landing-motion";
 
 const impactStats = [
   { value: "+1,000", label: "طالب مسجل", icon: studentsIcon },
@@ -31,7 +32,7 @@ export default function ImpactStatsSection() {
               {impactStats.map((stat) => (
                 <li key={stat.value} className="impact-comparison__metric">
                   <img src={stat.icon} alt="" aria-hidden="true" width={72} height={64} />
-                  <bdi dir="ltr">{stat.value}</bdi>
+                  <bdi dir="ltr"><LandingCounter value={stat.value} /></bdi>
                   <span>{stat.label}</span>
                 </li>
               ))}

@@ -1,0 +1,39 @@
+.landing-counter { display: inline-grid; font-variant-numeric: tabular-nums; }
+.landing-counter__measure, .landing-counter__value { grid-area: 1 / 1; }
+.landing-counter__measure { visibility: hidden; }
+.curriculum-overview__screen img { animation: landing-preview-enter 400ms ease-out; }
+.curriculum-overview__skill { transition: translate 240ms ease, box-shadow 240ms ease, background-color 240ms ease; }
+.curriculum-overview__skill[aria-selected="true"] { translate: 0 -2px; }
+@keyframes landing-preview-enter {
+  from { opacity: .25; translate: -10px 0; }
+  to { opacity: 1; translate: 0 0; }
+}
+/* Hover movement is scoped to marketing artwork, not authenticated demo UIs.
+   Individual scale/translate leave existing layout transforms untouched. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  :where(.public-landing img, .zayd-life__artwork, .curriculum-overview__image-dialog > img, .personalized-learning__certificate > img) {
+    transition: scale 350ms ease, translate 350ms ease;
+    transform-origin: center;
+  }
+  :where(.public-landing img, .zayd-life__artwork, .curriculum-overview__image-dialog > img, .personalized-learning__certificate > img):hover,
+  .public-landing a:focus-visible img,
+  .personalized-learning__demo-entry:is(:hover, :focus-visible) img,
+  .zayd-life__scenario:hover .zayd-life__artwork,
+  .pricing-card:is(:hover, :focus-within) .pricing-card__mascot img {
+    scale: 1.025;
+    translate: 0 -3px;
+  }
+  .landing-hero__visual:is(:hover, :focus-within) .landing-hero__teacher {
+    scale: 1.025;
+    translate: 0 -4px;
+  }
+  .landing-hero__visual:is(:hover, :focus-within) .landing-hero__classroom {
+    scale: 1.015;
+    translate: none;
+  }
+  .public-landing .pricing-card__mascot img { pointer-events: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .curriculum-overview__screen img { animation: none; }
+  .curriculum-overview__skill { transition: none; translate: none; }
+}

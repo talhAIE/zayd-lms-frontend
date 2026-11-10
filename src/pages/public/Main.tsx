@@ -1,4 +1,6 @@
 import Navbar from "./navbar";
+import { useRef } from "react";
+import { useLandingMotion } from "./useLandingMotion";
 import HeroSection from "./hero-section";
 import VideoShowcaseSection from "./video-showcase-section";
 import landingPageVideo from "@/assets/landing-page/landing-page-video.mp4";
@@ -18,8 +20,10 @@ import Footer from "./footer";
 import "./landing-layout.css";
 
 export default function Main() {
+  const landingRoot = useRef<HTMLDivElement>(null);
+  useLandingMotion(landingRoot);
   return (
-    <div className="public-landing min-h-screen bg-white text-[#07294D] font-ibm-plex selection:bg-[#48D3BF]/30 selection:text-[#07294D] overflow-x-clip" dir="rtl">
+    <div ref={landingRoot} className="public-landing min-h-screen bg-white text-[#07294D] font-ibm-plex selection:bg-[#48D3BF]/30 selection:text-[#07294D] overflow-x-clip" dir="rtl">
       {/* Floating Glassmorphic Navbar */}
       <Navbar />
 
