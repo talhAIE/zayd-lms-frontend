@@ -48,7 +48,7 @@ export default function LandingDemoDialog({
             ? (arabic ? "أجب عن الأسئلة لإعداد خطة تناسب أهدافك." : "Answer a few questions about your learning goals.")
             : completed ? "أكملت النشاط وحصلت على 100 نقطة تجريبية." : description}
         </DialogDescription>
-        <LandingDemoViewport key={onboarding ? "onboarding" : completed ? "celebration" : "player"}>
+        <LandingDemoViewport compact={!completed} key={onboarding ? "onboarding" : completed ? "celebration" : "player"}>
           {onboarding ? (
             <LandingOnboarding mode={mode} language={language} onLanguageChange={setLanguage} />
           ) : completed ? (
