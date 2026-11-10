@@ -87,6 +87,7 @@ export default function ComponentModePlay({ demo }: { demo?: GrammarDemo } = {})
     modeId: string;
   }>();
   const { courseId, unitId, lessonId } = demo ? {} : route;
+  const demoApi = demo?.api;
   const demoMode = demo?.mode ?? grammarDemoMode;
   const modeId = demo ? demoMode.id : route.modeId;
   const fetchLessonModeComponents = demo?.api.components ?? fetchNormalComponents;
@@ -215,15 +216,15 @@ export default function ComponentModePlay({ demo }: { demo?: GrammarDemo } = {})
 
   // Load components & initialize mode session
   useEffect(() => {
-    if (demo) {
+    if (demoApi) {
       let active = true;
       setLoading(true); setError(null); setResolvedMode(demoMode);
-      void demo.api.open().then(data => {
+      void demoApi.open().then(data => {
         if (active) { setComponents(data); setCurrentIndex(0); setLocalResponses({}); }
       }).catch(err => {
         if (active) setError(err.message || 'Unable to load practice. Close the demo and try again.');
       }).finally(() => { if (active) setLoading(false); });
-      return () => { active = false; demo.api.close(); };
+      return () => { active = false; demoApi.close(); };
     }
     async function loadData() {
       if (!modeId) return;
@@ -365,7 +366,7 @@ export default function ComponentModePlay({ demo }: { demo?: GrammarDemo } = {})
     }
 
     loadData();
-  }, [demo, dispatch, lessonId, modeId]);
+  }, [demoApi, demoMode, dispatch, lessonId, modeId]);
 
   // Handle component answer submissions
   const handleComponentSubmit = async (componentId: string, response: any) => {
@@ -421,7 +422,7 @@ export default function ComponentModePlay({ demo }: { demo?: GrammarDemo } = {})
       } else {
         toast.success(result.isComplete ? 'Activity completed!' : 'Response submitted.');
       }
-      if (demo?.api.isCompleted()) demo.onClose();
+      if (demo?.api.isCompleted()) demo.onComplete();
       return result;
     } catch (err: any) {
       if (demo && err.name === 'AbortError' && !demo.api.isOpen()) return;
@@ -661,7 +662,7 @@ export default function ComponentModePlay({ demo }: { demo?: GrammarDemo } = {})
   // Complete the entire mode and progress to next mode or lesson roadmap
   const handleCompleteMode = async (acknowledgedComponent?: LearningComponent) => {
     if (demo) {
-      try { await demo.api.finish(); demo.onClose(); }
+      try { await demo.api.finish(); demo.onComplete(); }
       catch (err: any) {
         if (err.name !== 'AbortError' || demo.api.isOpen()) toast.error(err.message || 'Complete the required activities first.');
       }

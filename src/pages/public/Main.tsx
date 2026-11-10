@@ -1,6 +1,7 @@
 import Navbar from "./navbar";
 import HeroSection from "./hero-section";
 import VideoShowcaseSection from "./video-showcase-section";
+import landingPageVideo from "@/assets/landing-page/landing-page-video.mp4";
 import ComparisonSection from "./comparison-section";
 import CurriculumSection from "./curriculum-section";
 import PersonalizedLearningSection from "./personalized-learning-section";
@@ -26,8 +27,8 @@ export default function Main() {
         {/* Section 1: Hero Experience & Key Stats */}
         <HeroSection />
 
-        {/* Section 2: 70-second Video Demo Showcase */}
-        <VideoShowcaseSection />
+        {/* Section 2: Video Demo Showcase */}
+        <VideoShowcaseSection videoSrc={landingPageVideo} />
 
         {/* Section 3: Classroom vs Zayd Practice Comparison */}
         <ComparisonSection />
