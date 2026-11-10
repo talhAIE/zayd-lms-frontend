@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import StudentReportModal from "../ui/StudentReportModal";
 import { SidebarNavLink, type SidebarLabel } from "./SidebarNavLink";
 import { sparkScienceBackTarget } from "@/utils/sparkScienceNavigation";
+import { TestAccountTools } from "@/components/testing/TestAccountTools";
 
 interface StudentLayoutProps {
   children: ReactNode;
@@ -426,7 +427,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
 
         {/* Main Content */}
         <main className={`flex-1 w-full max-w-full ${isPrimaryRoute ? 'overflow-x-clip' : 'overflow-x-hidden'}`}>
-          <div className={`${isAvatarActivity ? 'px-2 py-2 sm:px-4' : isSparkScienceActivity ? 'px-4 py-2' : 'p-4'} w-full max-w-full ${isPrimaryRoute ? 'overflow-x-clip' : 'overflow-x-hidden'}`}>{children}</div>
+          <div className={`${isAvatarActivity ? 'px-2 py-2 sm:px-4' : isSparkScienceActivity ? 'px-4 py-2' : 'p-4'} w-full max-w-full ${isPrimaryRoute ? 'overflow-x-clip' : 'overflow-x-hidden'}`}><TestAccountTools />{children}</div>
         </main>
       </div>
 
