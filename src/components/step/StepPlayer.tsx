@@ -15,6 +15,7 @@ export interface StepPlayerProps {
   onSelect?: (questionId: string, optionId: string) => void;
   onSubmit?: () => void;
   busy?: boolean;
+  submitDisabled?: boolean;
   saveStatus?: ReactNode;
 }
 function Passage({ passage }: { passage: StepPassage }) {
@@ -51,6 +52,7 @@ export function StepPlayer({
   onSelect,
   onSubmit,
   busy = false,
+  submitDisabled = false,
   saveStatus,
 }: StepPlayerProps) {
   const heading = useRef<HTMLHeadingElement>(null);
@@ -104,7 +106,7 @@ export function StepPlayer({
           <span role="status" aria-live="polite">
             {answered} of {attempt.questions.length} answered
           </span>
-          {saveStatus && <span role="status">{saveStatus}</span>}
+          {saveStatus && <div className="min-w-0 max-w-full">{saveStatus}</div>}
         </div>
         <progress
           aria-label="Answered questions"
@@ -263,6 +265,7 @@ export function StepPlayer({
           onClick={onSubmit}
           disabled={
             !onSubmit ||
+            submitDisabled ||
             readOnly ||
             busy ||
             answered !== attempt.questions.length

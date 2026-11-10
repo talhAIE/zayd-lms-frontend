@@ -1,0 +1,223 @@
+{
+  "phase": 6,
+  "date": "2026-11-10",
+  "branch": "feat/step",
+  "scope": "Local STEP assessment wiring; backend documentation only",
+  "step": {
+    "command": "pnpm exec playwright test --config dev/step/playwright.config.ts",
+    "passed": 40,
+    "failed": 0,
+    "tests": [
+      {
+        "name": "grammar: Start, save, resume, submit and server progress",
+        "passed": true
+      },
+      {
+        "name": "listening: Start, save, resume, submit and server progress",
+        "passed": true
+      },
+      {
+        "name": "reading: Start, save, resume, submit and server progress",
+        "passed": true
+      },
+      {
+        "name": "failed Start retries resume the same server attempt without creating another",
+        "passed": true
+      },
+      {
+        "name": "offline save survives reload with exact request ID and newest answer",
+        "passed": true
+      },
+      {
+        "name": "revision conflict blocks submit and requires review before saving local changes",
+        "passed": true
+      },
+      {
+        "name": "lost submit reply and failed read stay locked across reload then recover server result",
+        "passed": true
+      },
+      {
+        "name": "unsent submit is checked before exact replay after refresh; radios stay locked",
+        "passed": true
+      },
+      {
+        "name": "switching account during a delayed save cannot send queued answers as the next student",
+        "passed": true
+      },
+      {
+        "name": "Courses isolates disabled, empty and failed STEP discovery; retry and hierarchy use API order",
+        "passed": true
+      },
+      {
+        "name": "grammar controlled layout at 390px",
+        "passed": true
+      },
+      {
+        "name": "listening controlled layout at 390px",
+        "passed": true
+      },
+      {
+        "name": "reading controlled layout at 390px",
+        "passed": true
+      },
+      {
+        "name": "grammar controlled layout at 1440px",
+        "passed": true
+      },
+      {
+        "name": "listening controlled layout at 1440px",
+        "passed": true
+      },
+      {
+        "name": "reading controlled layout at 1440px",
+        "passed": true
+      },
+      {
+        "name": "all selections enable controlled submit with no correctness reveal",
+        "passed": true
+      },
+      {
+        "name": "audio retry, expiry and release on leaving routed attempt",
+        "passed": true
+      },
+      {
+        "name": "denied route and account switch hide stale student content",
+        "passed": true
+      },
+      {
+        "name": "routed attempt allows editing, uses saved selections and releases audio on account switch",
+        "passed": true
+      },
+      {
+        "name": "submitted attempt displays only server final total",
+        "passed": true
+      },
+      {
+        "name": "STEP mutations preserve contract envelopes, request IDs, bounded timeout and shared bearer auth",
+        "passed": true
+      },
+      {
+        "name": "optional 404 discovery is empty, while direct access and server failures stay errors",
+        "passed": true
+      },
+      {
+        "name": "account change or aborted lifetime cancels before a STEP request can be sent",
+        "passed": true
+      },
+      {
+        "name": "a delayed response from a previous student is never delivered to the next session",
+        "passed": true
+      },
+      {
+        "name": "401 refresh reuses the exact save payload and updates bearer authorization once",
+        "passed": true
+      },
+      {
+        "name": "region changes and aborted lifetimes cannot issue requests",
+        "passed": true
+      },
+      {
+        "name": "audio authorization uses attempt-scoped bearer POST and direct safe envelope",
+        "passed": true
+      },
+      {
+        "name": "malformed envelopes and malformed course collections stay retryable errors",
+        "passed": true
+      },
+      {
+        "name": "rapid changes coalesce behind a single serial writer and submission waits for saves",
+        "passed": true
+      },
+      {
+        "name": "lost save response retains exact request for retry while newer intent survives",
+        "passed": true
+      },
+      {
+        "name": "refresh restores journal, exact pending ID, content version and question position",
+        "passed": true
+      },
+      {
+        "name": "foreign or different-version journal cannot overlay server answers",
+        "passed": true
+      },
+      {
+        "name": "revision conflict re-reads and requires explicit keep-local choice",
+        "passed": true
+      },
+      {
+        "name": "use saved answers drops recovered intent only after a successful fresh read",
+        "passed": true
+      },
+      {
+        "name": "incomplete or failed saves cannot submit; invalid IDs are ignored",
+        "passed": true
+      },
+      {
+        "name": "lost submit result is recovered by reading same attempt with no second submit",
+        "passed": true
+      },
+      {
+        "name": "uncertain submit locks editing, survives refresh and replays exact body after checking",
+        "passed": true
+      },
+      {
+        "name": "changed revision during uncertain submit never auto-rebases final answers",
+        "passed": true
+      },
+      {
+        "name": "dispose prevents late writes, notifications and follow-up mutations",
+        "passed": true
+      }
+    ]
+  },
+  "regression": {
+    "nafsServiceAndSessionPassed": 19,
+    "scienceTransportPassed": 10,
+    "sciencePracticePassed": 28
+  },
+  "checks": {
+    "typescript": true,
+    "productionBuild": true,
+    "contractParity": true,
+    "privateAuthoringImportGuard": true,
+    "bundleMarkerScan": true,
+    "diffWhitespace": true,
+    "eslint": {
+      "errors": 0,
+      "warnings": 6,
+      "note": "Development Fast Refresh mixed exports and intentional owner memo invalidation"
+    }
+  },
+  "browserJourneys": {
+    "grammarQuestions": 60,
+    "listeningQuestions": 4,
+    "readingQuestions": 4,
+    "mobileReading": true,
+    "refreshAndResume": true,
+    "serverProgress": true,
+    "recovery": [
+      "failed start",
+      "offline exact-save replay",
+      "revision conflict review",
+      "lost submit reply/read",
+      "same-body submit replay after refresh",
+      "account switch during save"
+    ]
+  },
+  "buildWarnings": [
+    "Pre-existing PDF.js eval warning",
+    "Pre-existing large bundle chunks"
+  ],
+  "production": {
+    "operations": 0,
+    "deployed": false,
+    "pushed": false,
+    "activated": false
+  },
+  "limits": [
+    "Browser journals require sessionStorage for reload recovery; failure is shown to the learner",
+    "All browser API and audio use intercepted synthetic fixtures",
+    "Actual deployed HTTP, production audio/device tests and cross-mode acceptance remain Phase 7",
+    "Eleven academic findings still block publication"
+  ]
+}

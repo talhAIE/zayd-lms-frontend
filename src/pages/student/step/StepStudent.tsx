@@ -1,9 +1,13 @@
-import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { CheckCircle2, ClipboardList } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { stepService } from "@/services/stepService";
-import type { StepResult, StepTopicOverview } from "@/types/step.contract";
+import {
+  sameStepOwner,
+  stepErrorMessage,
+  stepService,
+} from "@/services/stepService";
+import type { StepTopicOverview } from "@/types/step.contract";
 import {
   StepFailure,
   StepFrame,
@@ -14,7 +18,8 @@ import {
   useStepResource,
 } from "@/components/step/StepShell";
 import { useStepSession } from "@/components/step/StepSession";
-import { StepPlayer } from "@/components/step/StepPlayer";
+import { StepAttempt, stepJournalKey } from "@/components/step/StepAttempt";
+import { StepResultView } from "@/components/step/StepResult";
 
 export function StepCoursePage() {
   const { courseId = "" } = useParams(),
@@ -223,27 +228,62 @@ export function StepTopicPage() {
       <StepLoading />
     )
   ) : (
-    <StepOverviewView topic={data} />
+    <TopicAction key={data.id} topic={data} />
   );
 }
-export function StepResultView({ result }: { result: StepResult }) {
+function TopicAction({ topic }: { topic: StepTopicOverview }) {
+  const owner = useStepSession(),
+    navigate = useNavigate(),
+    lifetime = useRef<AbortController>(),
+    pending = useRef(false);
+  const [opening, setOpening] = useState(false),
+    [error, setError] = useState("");
+  useEffect(() => {
+    const controller = new AbortController();
+    lifetime.current = controller;
+    return () => controller.abort();
+  }, []);
+  async function open() {
+    const controller = lifetime.current;
+    if (
+      !controller ||
+      pending.current ||
+      !sameStepOwner(owner, controller.signal)
+    )
+      return;
+    pending.current = true;
+    setOpening(true);
+    setError("");
+    try {
+      const a = await stepService.start(owner, controller.signal, topic.id);
+      if (sameStepOwner(owner, controller.signal))
+        navigate(
+          `/student/step/attempts/${encodeURIComponent(a.state === "submitted" ? a.attemptId : a.id)}`,
+        );
+    } catch (e) {
+      if (sameStepOwner(owner, controller.signal))
+        setError(stepErrorMessage(e));
+    } finally {
+      pending.current = false;
+      if (sameStepOwner(owner, controller.signal)) setOpening(false);
+    }
+  }
   return (
-    <StepFrame
-      backTo={`/student/step/topics/${encodeURIComponent(result.topicId)}`}
-      backLabel="Back to activity"
-    >
-      <div className="py-12 text-center">
-        <CheckCircle2
-          className="mx-auto mb-5 h-14 w-14 text-[#4F8DFB]"
-          aria-hidden="true"
-        />
-        <h1 className="text-2xl font-bold">Activity completed</h1>
-        <p className="mt-4 text-4xl font-bold">
-          {result.earnedMarks} / {result.totalMarks}
+    <>
+      <StepOverviewView
+        topic={topic}
+        opening={opening}
+        onOpen={topic.attemptId ? undefined : () => void open()}
+      />
+      {error && (
+        <p
+          role="alert"
+          className="mx-auto max-w-[1087px] px-5 pb-5 text-sm text-red-700"
+        >
+          {error} Retry Start to resume the same attempt.
         </p>
-        <p className="mt-3 text-sm text-slate-600">Final marks</p>
-      </div>
-    </StepFrame>
+      )}
+    </>
   );
 }
 export function StepAttemptPage() {
@@ -253,7 +293,16 @@ export function StepAttemptPage() {
 function Attempt({ id }: { id: string }) {
   const owner = useStepSession(),
     { data, error, retry } = useStepResource(id, stepService.attempt),
-    [index, setIndex] = useState(0);
+    key = stepJournalKey(owner, id);
+  useEffect(() => {
+    if (data?.state === "submitted") {
+      try {
+        sessionStorage.removeItem(key);
+      } catch {
+        /* No draft to restore after a final result. */
+      }
+    }
+  }, [data, key]);
   if (!data)
     return error ? (
       <StepFailure error={error} retry={retry} />
@@ -261,17 +310,5 @@ function Attempt({ id }: { id: string }) {
       <StepLoading />
     );
   if (data.state === "submitted") return <StepResultView result={data} />;
-  // Read-side shell. Phase 6 supplies durable selection/submission callbacks.
-  return (
-    <StepPlayer
-      owner={owner}
-      attempt={data}
-      currentIndex={index}
-      onNavigate={setIndex}
-      selections={Object.fromEntries(
-        data.selections.map((s) => [s.questionId, s.optionId]),
-      )}
-      saveStatus="Saved answers"
-    />
-  );
+  return <StepAttempt key={data.id} owner={owner} initial={data} />;
 }

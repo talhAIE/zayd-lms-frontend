@@ -76,7 +76,7 @@ async function request<T>(
   return response.data.data;
 }
 const id = encodeURIComponent;
-// Transport is prepared here; Phase 6 binds the mutation methods to the session driver.
+// STEP-owned transport; all reads and mutations share the account/lifetime guard.
 export const stepService = {
   courses: async (owner: StepOwner, signal: AbortSignal) => {
     try {

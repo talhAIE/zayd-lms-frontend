@@ -1,6 +1,6 @@
 # STEP mode implementation plan
 
-Status as of 2026-11-10: Phases 2, 3 and 4 are complete on `feat/step`: production ROW schema, local isolated APIs, and actual production draft content/audio upload are verified. Phase 1 audit/contract deliverables are implemented, but its academic exit gate remains pending eleven Nouns findings; source answers were not silently changed. Production now contains the inactive STEP course, three sections/topics/draft versions, 68 questions, 272 options, private keys, Ants passage, and the private source Listening MP3. STEP stays disabled and unpublished. The user explicitly requested progressing with schema/API/draft import work while content sign-off remains open. Phase 5 frontend navigation/layouts are complete locally; durable assessment actions remain Phase 6. Phases 6–8 have not started. No accounts/enrollments or application deployment has been performed.
+Status as of 2026-11-10: Phases 2, 3 and 4 are complete on `feat/step`: production ROW schema, local isolated APIs, and actual production draft content/audio upload are verified. Phase 1 audit/contract deliverables are implemented, but its academic exit gate remains pending eleven Nouns findings; source answers were not silently changed. Production now contains the inactive STEP course, three sections/topics/draft versions, 68 questions, 272 options, private keys, Ants passage, and the private source Listening MP3. STEP stays disabled and unpublished. The user explicitly requested progressing with schema/API/draft import work while content sign-off remains open. Phases 5 and 6 frontend navigation/layouts and durable assessment session wiring are complete locally. Phases 7–8 have not started. No accounts/enrollments or application deployment has been performed.
 
 ## 1. Agreed outcome
 
@@ -133,14 +133,17 @@ Use current LMS typography, spacing, cards, colors, buttons, sidebar, and respon
 
 ## Phase 6 — Connect autosave, resume, and final results
 
-- [ ] Connect Start/Resume/View Result and all assessment actions to STEP APIs. Restore the same attempt, answered state, content version, and current-question position after refresh/navigation.
-- [ ] Serialize/coalesce answer writes safely, show save state, retain unsaved drafts scoped to account/region/attempt, and use stable request IDs for retries.
-- [ ] Handle offline failures, revision conflicts, rapid answer changes, refresh-token retries, and switching accounts. Abort stale requests, clear old account views, and never replay one student's writes as another student.
-- [ ] Disable Submit while answers are incomplete or saves are pending. Drain saves before confirmation/submission; preserve answers on recoverable failures.
-- [ ] Handle an uncertain submit response by checking the same attempt/result before replaying submission. Prevent edits while submission outcome is unresolved.
-- [ ] Show final marks and completion only after server-confirmed submission. Update topic, section, and course progress from backend state. No answer reveal, retry button, or immediate feedback animations.
+- [x] Connect Start/Resume/View Result and all assessment actions to STEP APIs. Restore the same attempt, answered state, content version, and current-question position after refresh/navigation.
+- [x] Serialize/coalesce answer writes safely, show save state, retain unsaved drafts scoped to account/region/attempt, and use stable request IDs for retries.
+- [x] Handle offline failures, revision conflicts, rapid answer changes, refresh-token retries, and switching accounts. Abort stale requests, clear old account views, and never replay one student's writes as another student.
+- [x] Disable Submit while answers are incomplete or saves are pending. Drain saves before confirmation/submission; preserve answers on recoverable failures.
+- [x] Handle an uncertain submit response by checking the same attempt/result before replaying submission. Prevent edits while submission outcome is unresolved.
+- [x] Show final marks and completion only after server-confirmed submission. Update topic, section, and course progress from backend state. No answer reveal, retry button, or immediate feedback animations.
 
 **Exit criteria:** A complete learner journey works for each section, including interrupted-session recovery and final-result recovery. Submission cannot lose a pending answer or create another attempt.
+
+
+**Phase 6 outcome:** Complete locally. Start/resume, serialized/coalesced answer saves, tab-scoped owner/region/attempt/version journals, exact request replay, explicit conflict review, saved-question position, final confirmation and uncertain-submit recovery are wired to STEP APIs. Results/progress are server-confirmed, with no answer reveal or retake. All three full synthetic browser journeys and focused session/transport checks pass, together with type/build, parity/isolation and NAFS/Science regressions. Frontend evidence: `docs/step/phase6-session.md` and `phase6-evidence/checks.json`; backend handoff: `docs/step/phase6-status.md`. No push, deployment, production writes or enrollment; publication remains blocked by eleven academic findings. Phase 7 is next.
 
 ## Phase 7 — Verify builds, isolation, and production integration
 
@@ -179,6 +182,6 @@ The initial scope is the student STEP course and its three activities. Additiona
 | 3. Backend APIs | Complete locally; not deployed | Independent STEP APIs; 61 focused and 25 offline tests; 90 backend suites passed (749 passed, one skipped). Local commits: backend `b802d5c`, frontend `7cdf3e6`. |
 | 4. Production content/audio upload | Complete; draft only | Actual SQL content: 1 course, 3 sections/topics/versions, 68 questions, 272 options, 68 keys, 1 passage/audio. Private production MP3 checksum/range/access verified; repeat import creates 0 records. 47 offline tests, 62 focused STEP tests and 91 backend suites pass (750 passed, one skipped); types/build/parity pass. STEP disabled; no publication/accounts/enrollments. Local commits only, no push. |
 | 5. Frontend layouts | Complete locally; not deployed | Independent course hierarchy; controlled Grammar/Listening/Reading layouts; account-safe transport; audio/passage lifecycle; desktop/mobile QA. Frontend phase5-layouts.md and phase5-evidence/checks.json; backend phase5-status.md. Local commits only, no push. |
-| 6. Assessment lifecycle | Not started | |
+| 6. Assessment lifecycle | Complete locally; not deployed | Start/resume; serial autosaves; owner/region/version-scoped recovery journals; conflict review; safe final submission and recovery; server totals/progress. Frontend phase6-session.md / phase6-evidence/checks.json; backend phase6-status.md. Local commits only; no push. |
 | 7. Verification and production integration | Not started | |
 | 8. Client handover | Not started | |
