@@ -68,5 +68,5 @@ export function createComponentDemoApi(mode: 'grammar' | 'writing' | 'vocabulary
   };
 }
 export const createGrammarDemoApi = () => createComponentDemoApi('grammar');
-export type GrammarDemo = { api: ReturnType<typeof createComponentDemoApi>; onClose: () => void; mode?: LearningLessonMode;
+export type GrammarDemo = { api: ReturnType<typeof createComponentDemoApi>; onClose: () => void; onComplete: () => void; mode?: LearningLessonMode;
   writing?: Pick<ReturnType<typeof createComponentDemoApi>, 'compile' | 'review' | 'reveal' | 'latest'> };

@@ -12,15 +12,15 @@ function visit(node) {
 visit(source);
 const bind = (text, values) => new Function(...Object.keys(values), ts.transpileModule(`const callback = ${text};`, { compilerOptions: { target: ts.ScriptTarget.ES2022 } }).outputText + '; return callback;')(...Object.values(values));
 (async () => {
-  let closes = 0, refreshes = 0, modalChanges = 0;
-  const context = { demo: { onClose: () => closes++ }, avatar: undefined, refreshLearningProgress: async () => refreshes++, lessonId: 'lesson', courseId: 'course', unitId: 'unit', setIsJustCompleted: () => modalChanges++, setShowCompletionModal: () => modalChanges++ };
+  let closes = 0, demoCompletions = 0, refreshes = 0, modalChanges = 0;
+  const context = { demo: { onClose: () => closes++, onComplete: () => demoCompletions++ }, avatar: undefined, refreshLearningProgress: async () => refreshes++, lessonId: 'lesson', courseId: 'course', unitId: 'unit', setIsJustCompleted: () => modalChanges++, setShowCompletionModal: () => modalChanges++ };
   await bind(completed, context)();
-  assert.equal(closes, 1); assert.equal(refreshes, 0); assert.equal(modalChanges, 0);
+  assert.equal(closes, 0); assert.equal(demoCompletions, 1); assert.equal(refreshes, 0); assert.equal(modalChanges, 0);
   await bind(completed, { ...context, demo: undefined })();
   assert.equal(refreshes, 1); assert.equal(modalChanges, 2);
   const navigation = [];
   bind(back, { demo: context.demo, avatar: undefined, navigate: value => navigation.push(value) })();
-  assert.equal(closes, 2); assert.deepEqual(navigation, []);
+  assert.equal(closes, 1); assert.equal(demoCompletions, 1); assert.deepEqual(navigation, []);
   bind(back, { demo: undefined, avatar: undefined, navigate: value => navigation.push(value) })();
   assert.deepEqual(navigation, [-1]);
   for (const isQuestionStage of [false, true]) {
@@ -45,5 +45,5 @@ const bind = (text, values) => new Function(...Object.keys(values), ts.transpile
   assert.deepEqual(runQuiz({ correct: true, last: false }), [['next', 1]]);
   assert.deepEqual(runQuiz({ guest: true, blocked: true }), []);
   assert.deepEqual(runQuiz({ correct: true, checking: true }), []);
-  console.log('Listening demo flow passed: full-listen gate, demo completion/close without LMS updates, normal completion/navigation unchanged.');
+  console.log('Listening demo flow passed: full-listen gate, distinct celebration and close, normal completion/navigation unchanged.');
 })().catch(error => { console.error(error); process.exitCode = 1; });

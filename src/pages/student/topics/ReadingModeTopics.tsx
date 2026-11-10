@@ -111,7 +111,7 @@ function HighlightedReadingSentence({ text, vocabularyTerms, vocabularyCards, on
 
 export default function ReadingModeTopics({ avatar, demo }: {
   avatar?: { topicId: string; title: string; restartCompleted?: boolean; onSessionReady?: () => void };
-  demo?: { lessonModeId: string; transport: AvatarReadingTransport; onClose: () => void };
+  demo?: { lessonModeId: string; transport: AvatarReadingTransport; onClose: () => void; onComplete: () => void };
 } = {}) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -211,7 +211,7 @@ export default function ReadingModeTopics({ avatar, demo }: {
     ephemeral: Boolean(demo),
     restartCompleted: avatar?.restartCompleted,
     onCompleted: async () => {
-      if (demo) { demo.onClose(); return; }
+      if (demo) { demo.onComplete(); return; }
       if (!avatar) await refreshLearningProgress(lessonId, { courseId, unitId });
       setIsJustCompleted(true);
       setShowCompletionModal(true);

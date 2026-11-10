@@ -10,13 +10,13 @@ function visit(node) {
 visit(source);
 const bind = (text, values) => new Function(...Object.keys(values), ts.transpileModule(`const callback = ${text};`, { compilerOptions: { target: ts.ScriptTarget.ES2022 } }).outputText + '; return callback;')(...Object.values(values));
 (async () => {
-  let closes = 0, refreshes = 0, completions = 0;
-  const values = { demo: { onClose: () => closes++ }, avatar: undefined, lessonId: 'lesson', courseId: 'course', unitId: 'unit', refreshLearningProgress: async () => refreshes++, setShowCompletionModal: () => completions++, setIsJustCompleted: () => completions++ };
-  await bind(completed, values)(); assert.equal(closes, 1); assert.equal(refreshes, 0); assert.equal(completions, 0);
+  let closes = 0, demoCompletions = 0, refreshes = 0, completions = 0;
+  const values = { demo: { onClose: () => closes++, onComplete: () => demoCompletions++ }, avatar: undefined, lessonId: 'lesson', courseId: 'course', unitId: 'unit', refreshLearningProgress: async () => refreshes++, setShowCompletionModal: () => completions++, setIsJustCompleted: () => completions++ };
+  await bind(completed, values)(); assert.equal(closes, 0); assert.equal(demoCompletions, 1); assert.equal(refreshes, 0); assert.equal(completions, 0);
   await bind(completed, { ...values, demo: undefined })(); assert.equal(refreshes, 1); assert.equal(completions, 2);
-  await bind(finish, { ...values, navigate: () => { throw new Error('Demo must not navigate to LMS'); } })(); assert.equal(closes, 2);
+  await bind(finish, { ...values, navigate: () => { throw new Error('Demo must not navigate to LMS'); } })(); assert.equal(closes, 1); assert.equal(demoCompletions, 1);
   assert.equal(bind(progress, { isCompleted: false, roleplayProgress: { requiredTurns: 3, completedTurns: 1 } })(), 33);
   assert.equal(bind(progress, { isCompleted: false, roleplayProgress: { requiredTurns: 3, completedTurns: 2 } })(), 67);
   assert.equal(bind(progress, { isCompleted: true, roleplayProgress: { requiredTurns: 3, completedTurns: 3 } })(), 100);
-  console.log('Roleplay demo flow passed: three-turn progress, close without LMS updates, normal completion retained.');
+  console.log('Roleplay demo flow passed: three-turn progress, distinct celebration and close, normal completion retained.');
 })().catch(error => { console.error(error); process.exitCode = 1; });

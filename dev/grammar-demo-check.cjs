@@ -53,16 +53,21 @@ vm.runInNewContext(compile(source), {
     ts.forEachChild(node, visit);
   }
   visit(page);
-  let closes = 0;
-  const demo = { api: { isCompleted: () => true, finish: async () => {} }, onClose: () => closes++ };
+  let closes = 0, demoCompletions = 0, modeComplete = false;
+  const demo = { api: { isCompleted: () => modeComplete, finish: async () => {} }, onClose: () => closes++, onComplete: () => demoCompletions++ };
   const bind = (name, context) => vm.runInNewContext(compile(`(${handlers[name]})`), { demo, ...context });
   await bind('handleCompleteMode', {})();
   bind('handleBack', {})();
-  await bind('handleComponentSubmit', {
+  const submit = bind('handleComponentSubmit', {
     components: [{ id: 'quiz', componentType: 'mcq' }], draftSaves: { current: new Map() },
     submitComponentAttempt: async () => ({ id: 'quiz', isComplete: true, attempt: null }),
     setComponents() {}, setCompletedComponentIds() {}, toast: { success() {}, error() {} }, console,
-  })('quiz', { optionId: 'choice' });
-  assert.equal(closes, 3, 'Guest completion and back close without LMS navigation or progress dispatches');
-  console.log(`${demoMode} demo passed: guest-only API, fresh tokens, abort/late-result cleanup, auto-close, no LMS progress calls.`);
+  });
+  await submit('quiz', { optionId: 'choice' });
+  assert.equal(demoCompletions, 1, 'An intermediate submission does not complete the demo');
+  modeComplete = true;
+  await submit('quiz', { optionId: 'choice' });
+  assert.equal(demoCompletions, 2, 'Confirmed completion shows the celebration');
+  assert.equal(closes, 1, 'Only the back action closes the dialog');
+  console.log(`${demoMode} demo passed: guest-only API, fresh tokens, abort/late-result cleanup, celebration only on completion.`);
 })().catch(error => { console.error(error); process.exitCode = 1; });
