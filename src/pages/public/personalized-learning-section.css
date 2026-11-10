@@ -23,6 +23,20 @@
 .personalized-learning__icon { display: block; flex-shrink: 0; width: 52px; height: 52px; border: 1px solid #e6e2eb; border-radius: 11px; background-color: #fff; background-size: 300% 200%; background-repeat: no-repeat; }
 .personalized-learning__card > h3 { margin: 8px 0 0; font-family: "Almarai", sans-serif; font-size: 17px; font-weight: 700; line-height: 1.65; }
 .personalized-learning__card > p { max-width: 230px; margin: 6px 0 0; color: #60646b; font-size: 13px; line-height: 1.75; text-wrap: pretty; }
+.personalized-learning__demos { margin-top: 32px; padding-top: 24px; border-top: 1px solid #e7e7e9; }
+.personalized-learning__demos > p { margin: 0 0 14px; text-align: center; }
+.personalized-learning__demos > .personalized-learning__demo-label { width: fit-content; max-width: 100%; margin: 0 auto 24px; padding: .12em .1em .18em; color: #1768d9; background: linear-gradient(270deg, #227ad0, #178d91); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: "Almarai", sans-serif; font-size: clamp(24px, 2.2vw, 30px); font-weight: 800; line-height: 1.8; }
+.personalized-learning__demo-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 0; margin: 0; list-style: none; }
+.personalized-learning__demo-list > li { min-width: 0; }
+.personalized-learning__demo-entry { display: flex; align-items: center; gap: 16px; width: 100%; height: 100%; min-height: 124px; padding: 24px 22px; border: 1px solid #dbe7f5; border-radius: 16px; background: #f7fbff; color: inherit; font: inherit; text-align: start; cursor: pointer; }
+.personalized-learning__demo-entry:hover { border-color: #1768d9; background: #edf5ff; }
+.personalized-learning__demo-entry:focus-visible { outline: 3px solid #1768d9; outline-offset: 3px; }
+.personalized-learning__demo-icon { display: flex; align-items: center; justify-content: center; flex: 0 0 48px; color: #1768d9; }
+.personalized-learning__demo-icon img { width: 44px; height: 44px; object-fit: contain; }
+.personalized-learning__demo-icon svg { width: 36px; height: 36px; }
+.personalized-learning__demo-copy { display: block; min-width: 0; }
+.personalized-learning__demo-title { display: block; color: #0b2546; font-weight: 700; font-size: 18px; line-height: 1.8; }
+.personalized-learning__demo-description { display: block; margin-top: 6px; color: #535e6b; font-size: 15px; line-height: 1.85; }
 
 @media (min-width: 850px) and (max-width: 1100px) {
   .personalized-learning { padding-inline: 26px; }
@@ -48,6 +62,7 @@
   .personalized-learning__card > h3 { font-size: 15px; }
   .personalized-learning__card > p { font-size: 12px; }
   .personalized-learning__icon { width: 46px; height: 46px; }
+  .personalized-learning__demo-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 559px) {
   .personalized-learning { padding: 30px 18px 36px; }
@@ -60,8 +75,13 @@
   .personalized-learning__icon { width: 44px; height: 44px; border-radius: 9px; }
   .personalized-learning__figure { max-width: 280px; }
   .personalized-learning__figure::before { border-width: 22px; }
+  .personalized-learning__demo-list { grid-template-columns: minmax(0, 1fr); }
+  .personalized-learning__demo-entry { padding: 22px 18px; gap: 14px; }
 }
 @media (forced-colors: active) {
   .personalized-learning__heading-accent { background: none; -webkit-text-fill-color: CanvasText; }
+  .personalized-learning__demos > .personalized-learning__demo-label { background: none; -webkit-text-fill-color: CanvasText; }
   .personalized-learning__card { border-color: CanvasText; }
+  .personalized-learning__demo-entry { border-color: ButtonText; }
+  .personalized-learning__demo-entry:focus-visible { outline-color: Highlight; }
 }

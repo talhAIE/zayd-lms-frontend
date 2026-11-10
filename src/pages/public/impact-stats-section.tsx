@@ -18,15 +18,14 @@ export default function ImpactStatsSection() {
           <div className="impact-comparison__copy" dir="rtl">
             <span className="impact-comparison__eyebrow">نتيجــة فارقــة</span>
             <h2 id="impact-heading" className="impact-comparison__heading">
-              <span>عام واحد مع زيــــــد تساوي نحو</span>
+              <span>عام واحد مع زيد يعادل نحو</span>
               <span className="impact-comparison__heading-accent">10 سنوات من ممارسة التحدث</span>
             </h2>
             <p className="impact-comparison__description">
-              أظهرت تجارب طلابنا أن الاستخدام المنتظم لـ <bdi dir="ltr">Zayd</bdi> يمكن أن يمنح الطالب حجمًا من ممارسة
-              التحدث والمحادثة باللغة الإنجليزية يعادل تقريبًا ما قد يحصل عليه خلال 10 سنوات في الفصل التقليدي.
+              يتيح زيد فرصًا مكثفة للتحدث بالإنجليزية، تعادل تقريبًا ما قد يحصل عليه خلال 10 سنوات في الفصل التقليدي.
             </p>
             <p className="impact-comparison__footnote">
-              المقارنة تتعلق بحجم فرص ممارسة التحدث والمحادثة الفردية، وليس بعدد سنوات الدراسة الأكاديمية.
+              المقارنة تتعلق بفرص ممارسة الإنجليزية، وليس بسنوات الدراسة.
             </p>
             <ul aria-label="إحصائيات زيد" className="impact-comparison__metrics">
               {impactStats.map((stat) => (

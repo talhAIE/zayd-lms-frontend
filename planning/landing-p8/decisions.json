@@ -1,0 +1,28 @@
+{
+  "D08": {
+    "status": "awaiting_placement_imagery_confirmation_review_default_implemented",
+    "question": "Standalone below Schools, inside Schools, or keep placement unresolved?",
+    "responseAtVerification": null,
+    "reviewChoice": "Schools -> standalone Smart Dashboards cards with icons/no screenshots -> practice banner -> FAQ",
+    "approved": false,
+    "requirementsPartial": ["S12B-LAYOUT", "S12-BANNER"]
+  },
+  "D09": {
+    "status": "awaiting_banner_word_confirmation_updated_detailed_copy_implemented_for_review",
+    "question": "Use استخدامها from the updated PDF or keep final wording unresolved?",
+    "responseAtVerification": null,
+    "reviewChoice": "استخدامها",
+    "approved": false,
+    "faqApprovalImplied": false,
+    "requirementPartial": "S12-BANNER"
+  },
+  "capabilityReview": {
+    "status": "supplied_marketing_copy_rendered_product_capability_confirmation_open",
+    "evidence": "capability-review.json",
+    "liveBackendVerification": false,
+    "owner": "User / product owner",
+    "approvalImplied": false,
+    "requirementsPartial": ["S12B-ADMIN-1", "S12B-ADMIN-2", "S12B-ADMIN-3", "S12B-TEACHER-1", "S12B-TEACHER-2", "S12B-TEACHER-3", "S12B-STUDENT-1", "S12B-STUDENT-2", "S12B-STUDENT-3"]
+  },
+  "p0SnapshotPreserved": true
+}

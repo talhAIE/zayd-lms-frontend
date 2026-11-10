@@ -9,6 +9,8 @@ import FutureSkillsSection from "./future-skills-section";
 import ImpactStatsSection from "./impact-stats-section";
 import PricingSection from "./pricing-section";
 import SchoolsSection from "./schools-section";
+import SmartDashboardsSection from "./SmartDashboardsSection";
+import PracticeCallout from "./PracticeCallout";
 import FAQSection from "./faq-section";
 import FinalCtaSection from "./final-cta-section";
 import Footer from "./footer";
@@ -50,6 +52,9 @@ export default function Main() {
 
         {/* Section 10: Zayd for Schools & Groups */}
         <SchoolsSection />
+
+        <SmartDashboardsSection />
+        <PracticeCallout />
 
         {/* Section 11: Frequently Asked Questions (FAQ) */}
         <FAQSection />

@@ -68,7 +68,7 @@
 .impact-comparison__description {
   margin: 1.2cqw 0 0;
   color: #5b5e66;
-  font-size: 1.35cqw;
+  font-size: clamp(14px, 1.35cqw, 18px);
   font-weight: 500;
   line-height: 1.9;
 }
@@ -76,7 +76,7 @@
 .impact-comparison__footnote {
   margin: 1.5cqw 0 0;
   color: #237ef3;
-  font-size: 1.12cqw;
+  font-size: clamp(12px, 1.12cqw, 16px);
   font-weight: 500;
   line-height: 1.85;
 }

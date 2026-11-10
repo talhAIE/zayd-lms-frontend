@@ -1,0 +1,42 @@
+{
+  "D01": {
+    "status": "broader_catalog_count_unresolved",
+    "implementation": "Keep 40 in the supplied package answer, consistent with existing Life/Plus benefits. Hero remains +250.",
+    "requirementPartial": "S13-FAQ7",
+    "approvalImplied": false
+  },
+  "D09": {
+    "status": "supplied_faq_drafts_implemented_for_review_release_approval_open",
+    "source": "Updated PDF pages 24-26 and plan Appendix A",
+    "implementationCopyVerified": true,
+    "businessApproved": false,
+    "p8BannerDecisionChanged": false
+  },
+  "D10": {
+    "status": "deferred_by_user",
+    "question": "What are the official email, phone/WhatsApp number and social URLs?",
+    "response": "keep unresolved",
+    "implementation": "Preserve current placeholders and all footer design/copy; do not invent official data.",
+    "requirementBlocked": "S14-CONTACTS"
+  },
+  "E03": {
+    "status": "existing_user_deferral_preserved",
+    "evidence": "Prior P7 response: Keep the destination decision unresolved",
+    "implementation": "Preserve final primary /auth/register and school-trial /contact-us.",
+    "knownLimitation": "Primary route is absent and falls back to Home; not fixed by P9.",
+    "requirementPartial": "S14-CTA-PRESERVE"
+  },
+  "accordionDefault": {
+    "choice": "what-is-zayd",
+    "reason": "Preserve the existing expanded topic, now second in the supplied order; PDF labels FAQ #2 Expanded Card.",
+    "businessApprovalRequired": false
+  },
+  "P7PriceConsumer": {
+    "status": "implemented_and_verified_in_p9",
+    "model": "landingPricingPlans",
+    "faqOrder": ["curriculum", "life", "plus"],
+    "annualSarPrices": [199, 199, 299],
+    "P7ApplicationFilesChangedInP9": false
+  },
+  "p0AndP7EvidenceSnapshotsPreserved": true
+}

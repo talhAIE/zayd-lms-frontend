@@ -1,0 +1,2627 @@
+PAGE 1
+Page 1 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+Zayd (زﻳﺪ) Landing Page — Complete UI Update &
+Bilingual Copy Specification
+Top-to-Bottom Visual & Textual Guide for Non-Arabic-Speaking Design & Engineering Teams |
+Comparing Original UI vs. Colleague's Annotated Markup across All 14 Sections
+How to Use This Guide: This specification translates and documents every single section, button, badge,
+card, and handwritten annotation from the Zayd (زﻳﺪ) Arabic landing page from top to bottom. Because
+Arabic is a Right-to-Left (RTL) language, horizontal layouts read from Right to Left (the primary column or
+first card is on the right side of the screen). Every section below includes a side-by-side visual comparison
+with numbered callout circles (1, 2, 3...) that map directly to the rows of the specification table underneath it.
+Developers can copy and paste the exact final Arabic strings directly from the Final Updated Copy (Ready to
+Use) column.
+Executive Summary: All 14 Sections & Colleague's Requested Changes
+Sec # Section Name & Position Change Status Summary of Copy Edits, Pricing Changes & UI/UX
+Notes
+Sec 1 Top Navigation Bar
+Top header bar
+✓ Unchanged Logo on right, 5 navigation links in center-right,
+and 2 CTA buttons (اﻷﺳﻌﺎر Pricing, زﻳﺪ  ﺟﺮب Try
+Zayd) on left. No changes.
+Sec 2 Hero Section
+Main value proposition &
+CTAs
+✎  3 Text Updates Hero paragraph rewritten to highlight all 4 skills
+(speaking, reading, listening, writing), instant
+feedback, and school alignment. Both CTA buttons
+updated to include bilingual Zayd زﻳﺪ branding.
+Sec 3 Key Metrics Bar
+3 blue horizontal stat
+cards
+✎  3 Text Updates All 3 card subtitles refined: Right card (أﺳﺒﻮﻋﻴًﺎ
+اﻹﻧﺠﻠﻴﺰﻳﺔ  ﻟﻤﻤﺎرﺳﺔ,) Center card (ﻣﻦ  وﻣﻮﻗﻔًﺎ  ﻣﻮﺿﻮﻋًﺎ
+اﻟﺤﻴﺎة,) Left card (اﻹﻧﺠﻠﻴﺰﻳﺔ  ﻟﻤﻤﺎرﺳﺔ.)
+Sec 4 70-Second Video
+Banner
+Teal/blue explainer banner
+✓ Unchanged Headline, description, اﻟﻔﻴﺪﻳﻮ  ﺷﺎﻫﺪ (Watch Video)
+button, and video preview thumbnail remain
+unchanged.
+Sec 5 Classroom Problem vs.
+Zayd
+2 side-by-side comparison
+cards
+✎  9 Text Updates
+⚙  1 UI/Design Note
+UI Note: Add visual shape/colors to distinguish this
+section. Copy: Both cards (اﻟﻔﺼﻞ  داﺧﻞ and زﻳﺪ  ﻣﻊ)
+heavily refined; fixes typo زاﻳﺪ → زﻳﺪ.
+Sec 6 Curriculum Alignment
+Grades 7–12 & 8 skill pills
+⚙  1 UI Suggestion UI Note: Colleague suggests placing actual app
+screenshots from inside Zayd in this section.
+Existing copy and 8 blue skill pills unchanged.
+Sec 7 Personalized Learning
+6 feature cards +
+character
+✎  7 Text Updates
+⚙  1 UI Demo Note
+UI Note: Add an interactive real trial/demo with
+Zayd for Reading + Speaking. Copy: Section
+subtitle and all 6 feature cards updated.
+
+PAGE 2
+Page 2 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+Sec # Section Name & Position Change Status Summary of Copy Edits, Pricing Changes & UI/UX
+Notes
+Sec 8 Beyond the Textbook
+6 real-life scenario photo
+cards
+✎  4 Text Updates
+⚙  1 UI/Design Note
+UI Note: Visually distinguish this section (yellow
+frame). Copy: Main paragraph, bottom quote, and
+2 photo card labels (اﻻﺟﺘﻤﺎﻋﻴﺔ  اﻟﻤﻮاﻗﻒ  ﻓﻲ, وﻣﻮاﻗﻒ
+ﻛﺜﻴﺮة  أﺧﺮى) updated.
+Sec 9 Skill for the Future
+Gradient banner & 5 white
+pills
+✎  3 Text Updates Main body paragraph rewritten for stronger impact;
+2 bottom pills changed to اﻟﻤﻬﻨﻲ  اﻟﺘﻄﻮﻳﺮ
+(Professional Development) and اﻟﺪوﻟﻲ  اﻟﺘﻮاﺻﻞ
+(International Communication).
+Sec
+10
+1 Year = 10 Years Impact
+10x comparison & 3 stat
+boxes
+✎  3 Text Updates
+⚙  1 Data Review
+Note
+Headline grammar fixed (ﺗﺴﺎوي → ﻳﻌﺎدل,) main
+paragraph & sub-note condensed. Data Note:
+Bottom 3 stat counters (8,600+ / 2,200+ / 1,000+)
+flagged for review.
+Sec
+11
+Pricing & Packages
+3 subscription pricing
+cards
+$ Prices & Copy
+Updated
+Right & Left Cards: Target audience copy updated;
+price changed from 199 99.5 (50% off) → 299 199
+SAR/yr (33% off).
+Center Card (Zayd Plus): Price changed from 399
+199.5 → 599 299 SAR/yr (50% off).
+Sec
+12
+Zayd for Schools &
+Groups
+B2B school section + new
+banner
+✎  5 Text Updates
+★ 1 New Banner
+Headline, body copy, 2 white pills, and CTA button
+updated. New Element: Full-width callout banner
+added below card emphasizing practice over
+explanation.
+Sec
+13
+FAQ Accordion
+Frequently asked
+questions
+★ 2 New FAQs
+Added
+Added new FAQ #1 at top ("Why did we choose the
+name Zayd?") and new FAQ after #4 ("How does AI
+evaluate the student?"). Existing 7 FAQs kept.
+Sec
+14
+Final CTA Banner &
+Footer
+Bottom conversion card &
+footer
+✓ Unchanged Bottom gradient CTA card and dark-blue footer
+(logo, tagline, quick links, contact info, copyright)
+remain unchanged.
+Section 1: Top Navigation Bar (Header) — No Changes Requested
+Layout & Developer Context: Positioned at the very top of the landing page as a horizontal sticky/static
+header bar. In Arabic Right-to-Left (RTL) flow, the brand logo sits on the far right, the five section anchor
+links sit in the center-right, and the two pill-shaped action buttons sit on the far left. No text or visual edits
+were requested by your colleague in this section.
+Figure 1: Top Navigation Bar — Original UI | Colleague's Annotated File (No changes requested; callouts 1–4 map to the
+table below).
+
+PAGE 3
+Page 3 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(1) Brand Logo
+Far Right of Navbar
+✓
+Unchanged
+ZAYD /  زﻳﺪ
+Zayd Falcon Emblem + Bilingual
+Wordmark
+ZAYD /  زﻳﺪ
+Keep existing SVG/PNG logo asset
+on far right (RTL start).
+(2) 5 Navigation
+Links
+Center-Right (read
+Right-to-Left)
+✓
+Unchanged
+|   اﻟﺤﻴﺎة اﻟﻴﻮﻣﻴﺔ |   اﻟﻤﻨﻬﺞ |  اﻟﺮﺋﻴﺴﻴﺔ
+ اﻷﺳﺌﻠﺔ اﻟﺸﺎﺋﻌﺔ |  ﻟﻠﻤﺪارس
+Home (active blue) | Curriculum |
+Daily Life | For Schools | FAQ
+ اﻟﺤﻴﺎة  |    اﻟﻤﻨﻬﺞ  |   اﻟﺮﺋﻴﺴﻴﺔ
+ اﻷﺳﺌﻠﺔ  |    ﻟﻠﻤﺪارس  |   اﻟﻴﻮﻣﻴﺔ
+اﻟﺸﺎﺋﻌﺔ
+Keep all 5 anchor links in exact RTL
+order.
+(3) Secondary Nav
+Button
+Top Left (Teal Pill)
+✓
+Unchanged
+اﻷﺳﻌﺎر
+"Pricing" (scrolls to Section 11)
+اﻷﺳﻌﺎر
+Teal pill button (#2CC5B3). No
+change.
+(4) Primary Nav
+Button
+Far Left (Blue Pill)
+✓
+Unchanged
+ﺟﺮب زﻳﺪ
+"Try Zayd"
+ﺟﺮب زﻳﺪ
+Royal blue pill button (#2B7DE9).
+No change.
+Section 2: Hero Section — 3 Copy & CTA Updates
+Layout & Developer Context: Positioned directly below the navigation bar as a two-column hero split: the 3D
+Saudi character pointing at a classroom video preview sits on the left, while the grade-level badge, two-line
+main headline, descriptive paragraph, and two CTA buttons sit on the right. Your colleague rewrote the main
+descriptive paragraph to cover all four language skills and updated both CTA buttons to display bilingual زﻳﺪ
+Zayd branding.
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(1) Character
+Floating Tag
+Left — Tilted blue tag
+next to character
+✓
+Unchanged
+ﺟﺎﻫﺰ ﻧﺒﺪأ
+"Ready to start"
+ﺟﺎﻫﺰ ﻧﺒﺪأ
+Keep floating badge next to
+character illustration.
+Figure 2: Hero Section — Callouts (4), (5), and (6) show the rewritten value-proposition paragraph and updated bilingual
+CTA buttons.
+
+PAGE 4
+Page 4 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(2) Target Grade Pill
+Badge
+Right Column — Top
+gradient pill
+✓
+Unchanged
+ﻟﻠﻄﻼب ﻣﻦ اﻷول اﻟﻤﺘﻮﺳﻂ إﱃ اﻟﺜﺎﻟﺚ
+اﻟﺜﺎﻧﻮي
+"For students from 1st Intermediate
+(Grade 7) to 3rd Secondary (Grade
+12)"
+ﻟﻠﻄﻼب ﻣﻦ اﻷول اﻟﻤﺘﻮﺳﻂ إﱃ
+اﻟﺜﺎﻟﺚ اﻟﺜﺎﻧﻮي
+Keep top pill badge unchanged.
+(3) Main Hero
+Headline (H1)
+Right Column — 2-line
+display title
+✓
+Unchanged
+ﻣﻦ دراﺳﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ إﱃ
+اﺳﺘﺨﺪاﻣﻬـــــــﺎ ﺑﺜﻘــــــــﺔ
+"From studying English to using it
+with confidence"
+ﻣﻦ دراﺳﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ إﱃ
+اﺳﺘﺨﺪاﻣﻬـــــــﺎ ﺑﺜﻘــــــــﺔ
+Line 1 in dark navy/black; Line 2 in
+teal-to-blue gradient with kashida
+elongation.
+(4) Hero Body
+Paragraph
+Right Column — Below
+H1 headline
+✎  Text
+Updated
+زﻳﺪ ﻣﻌﻠّﻢ ذﻛﻲ ﻟﻤﻤﺎرﺳﺔ اﻟﻠﻐﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ،
+ ﻟﻠﺘﺤﺪثﺷﺨﺼﻴﺔﻳﻤﻨﺢ ﻛﻞ ﻃﺎﻟﺐ ﺗﺠﺮﺑﺔ 
+واﻟﺘﻔﺎﻋﻞ واﻟﺘﻐﺬﻳﺔ اﻟﺮاﺟﻌﺔ، ﻣﻊ ﺗﻮاﻓﻖ
+ﻛﺎﻣﻞ ﻣﻊ ﻣﻨﻬﺞ اﻟﻠﻐﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ اﻟﺬي
+ﻳﺪرﺳﻪ ﻓﻲ اﻟﻤﺪرﺳﺔ.
+Original: "Zayd is a smart tutor for
+practicing English, giving every
+student a personal experience for
+speaking, interaction, and
+feedback, with full alignment with
+the English curriculum they study
+at school."
+زﻳﺪ ﻣﻌﻠّﻢ ذﻛﻲ ﻟﻤﻤﺎرﺳﺔ اﻟﻠﻐﺔ
+اﻹﻧﺠﻠﻴﺰﻳﺔ، ﻳﻤﻨﺢ ﻛﻞ ﻃﺎﻟﺐ ﺗﺠﺮﺑﺔ
+ﻣﺨﺼﺼﺔ ﻟﻠﺘﺤﺪث واﻟﻘﺮاءة
+واﻻﺳﺘﻤﺎع واﻟﻜﺘﺎﺑﺔ، ﻣﻊ ﺗﻐﺬﻳﺔ راﺟﻌﺔ
+ﻓﻮرﻳﺔ وﻣﺤﺘﻮى ﻣﺘﻨﺎﻏﻢ ﻣﻊ ﻣﺎ
+ﻳﺘﻌﻠﻤﻪ ﻓﻲ اﻟﻤﺪرﺳﺔ.
+Updated Meaning: "Zayd is a
+smart tutor for practicing the
+English language, giving every
+student a customized experience
+for speaking, reading, listening, and
+writing, with instant feedback and
+content harmonized with what they
+learn at school."
+(5) Primary CTA
+Button
+Right Button (Solid
+Blue Pill)
+✎  Text
+Updated
+اﺑﺪأ ﻣﻊ زﻳﺪ اﻵن
+Original: "Start with Zayd now"
+ اﻵنZayd ﺟﺮب زﻳﺪ
+Updated Meaning: "Try Zayd now"
+(Includes both Arabic زﻳﺪ and
+English Zayd).
+(6) Secondary CTA
+Button
+Left of Primary (White
+Outlined Pill)
+✎  Text
+Updated
+زﻳﺪ ﻟﻠﻤﺪارس
+Original: "Zayd for Schools"
+ ﻟﻠﻤﺪارسZayd زﻳﺪ
+Updated Meaning: "Zayd for
+Schools" (Includes bilingual زﻳﺪ
+Zayd).
+Section 3: Key Metrics Bar (3 Blue Stat Cards) — All 3 Subtitles Updated
+Layout & Developer Context: Positioned below the hero section as a horizontal row of three royal-blue
+rounded metric cards read from Right to Left (Clock icon on the right, Document/Checkmark icon in the
+center, Bar-Chart icon on the left). While the large top figures (40+ ,ﺳﺎﻋﺔ, x10) remain unchanged, your
+colleague updated the subtitle phrasing underneath all three cards to explicitly emphasize English practice
+and real-life situations.
+
+PAGE 5
+Page 5 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(1) Right Stat Card
+Clock Icon Card (First
+in RTL)
+✎  Subtitle
+Updated
+ﺳﺎﻋﺔ
+ﻣﻤﺎرﺳﺔ ﻣﻨﺘﻈﻤﺔ أﺳﺒﻮﻋﻴًﺎ
+Title: "1 Hour"
+Original Subtitle: "Regular practice
+weekly"
+ﺳﺎﻋﺔ
+أﺳﺒﻮﻋﻴًﺎ ﻟﻤﻤﺎرﺳﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ
+Title: ﺳﺎﻋﺔ (Unchanged)
+New Subtitle: "Weekly for
+practicing English"
+(2) Center Stat Card
+Document/Checkmark
+Icon Card + PPTX Slide
+1 Note
+✎  Number &
+Subtitle
+Updated
+40+
+ﺣﻴﺎﺗﻴًﺎﻣﻮﺿﻮﻋًﺎ وﻣﻮﻗﻔًﺎ 
+Original: "+40 / Life topics and
+situations"
+PPTX Slide 1 Note: "More than
+250+ topics"
+250+
+ﻣﻮﺿﻮﻋًﺎ وﻣﻮﻗﻔًﺎ ﻣﻦ اﻟﺤﻴﺎة
+Updated Number (from PPTX
+Slide 1 Note): +250 (was +40)
+New Subtitle: "Topics and
+situations from real life" (Also
+confirm updating 40 → 250 in
+Sections 8 & 11).
+(3) Left Stat Card
+Bar Chart Icon Card
+✎  Subtitle
+Updated
+x 10
+ﻣﻤﺎرﺳﺔ أﻛﺜﺮ ﻟﻠﺘﺤﺪث
+Title: "x10"
+Original Subtitle: "More speaking
+practice"
+x 10
+ﻟﻤﻤﺎرﺳﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ
+Title: x10 (Unchanged)
+New Subtitle: "For practicing
+English" (broadens from speaking-
+only to overall English practice).
+Section 4: 70-Second Explainer Video Banner — No Changes Requested
+Layout & Developer Context: Positioned below the three blue stat cards as a full-width rounded container
+with a horizontal teal-to-blue gradient background. The right column contains the headline, supporting copy,
+and white pill CTA button, while the left column displays the embedded video player thumbnail. No changes
+were requested in this section.
+Figure 3: Key Metrics Bar — All three blue stat cards have updated Arabic subtitle phrasing written in red below each
+card.
+Figure 4: 70-Second Video Banner — No text or visual changes requested by colleague.
+
+PAGE 6
+Page 6 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(1) Banner Headline
+Right Column — White
+bold text
+✓
+Unchanged
+ ﺛﺎﻧﻴﺔ ﺗﻜﻔﻲ ﻟﻔﻬﻢ اﻟﻔﻜﺮة70
+"70 seconds are enough to
+understand the idea"
+ ﺛﺎﻧﻴﺔ ﺗﻜﻔﻲ ﻟﻔﻬﻢ اﻟﻔﻜﺮة70
+Keep unchanged.
+(2) Banner Body Text
+Right Column — Below
+headline
+✓
+Unchanged
+ﺷﺎﻫﺪ ﻛﻴﻒ ﻳﻨﺘﻘﻞ اﻟﻄﺎﻟﺐ ﻣﻦ دراﺳﺔ
+اﻹﻧﺠﻠﻴﺰﻳﺔ واﻹﺟﺎﺑﺔ ﻋﻦ اﻷﺳﺌﻠﺔ إﱃ
+اﻟﺘﺤﺪث واﻟﺘﻔﺎﻋﻞ واﺳﺘﺨﺪام اﻟﻠﻐﺔ ﻓﻌﻠﻴًﺎ.
+"Watch how the student moves
+from studying English and
+answering questions to speaking,
+interacting, and actually using the
+language."
+ﺷﺎﻫﺪ ﻛﻴﻒ ﻳﻨﺘﻘﻞ اﻟﻄﺎﻟﺐ ﻣﻦ
+دراﺳﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ واﻹﺟﺎﺑﺔ ﻋﻦ
+اﻷﺳﺌﻠﺔ إﱃ اﻟﺘﺤﺪث واﻟﺘﻔﺎﻋﻞ
+واﺳﺘﺨﺪام اﻟﻠﻐﺔ ﻓﻌﻠﻴًﺎ.
+Keep unchanged.
+(3) Video CTA Button
+& (4) Thumbnail
+Right white pill button
++ Left video box
+✓
+Unchanged
+ﺷﺎﻫﺪ اﻟﻔﻴﺪﻳﻮ
+"Watch the video"
+ﺷﺎﻫﺪ اﻟﻔﻴﺪﻳﻮ
+Keep white button and left video
+player preview unchanged.
+Section 5: Classroom Problem vs. Zayd Solution — 1 UI Note & 9 Copy Updates
+Layout & Developer Context: Positioned below the video banner, starting with a centered three-line header
+followed by two side-by-side comparison cards: the traditional classroom problem on the right (اﻟﻔﺼﻞ  داﺧﻞ
+with pink warning icons) and the Zayd solution on the left (زﻳﺪ  ﻣﻊ with green checkmark icons). Your
+colleague requested a visual/color distinction for the section container and rewrote the descriptions and
+bullet points across both cards (also fixing the spelling of زاﻳﺪ to زﻳﺪ.)
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(1) Section Header &
+Intro
+Centered top headline,
+teal subtitle & subtext
+✓
+Unchanged
+ﻳﺪرس اﻹﻧﺠﻠﻴﺰﻳﺔ ﻟﺴﻨﻮات
+ﻟﻜﻦ ﻛﻢ ﻳﺘﺤﺪث ﻓﻌﻠﻴًﺎ؟
+اﻟﻤﺸﻜﻠﺔ ﻟﻴﺴﺖ داﺋﻤًﺎ ﻓﻲ ﺷﺮح اﻟﻠﻐﺔ، ﺑﻞ 
+ﻓﻲ أن ﻛﻞ ﻃﺎﻟﺐ ﻻ ﻳﺤﺼﻞ ﻋﲆ اﻟﻮﻗﺖ
+اﻟﻜﺎﻓﻲ ﻟﻤﻤﺎرﺳﺘﻬﺎ ﺑﺼﻮرة ﻓﺮدﻳﺔ.
+"Studies English for years / But how
+much do they actually speak? / The
+problem isn't always in explaining
+the language, but that each
+student doesn't get enough time to
+practice it individually."
+ﻳﺪرس اﻹﻧﺠﻠﻴﺰﻳﺔ ﻟﺴﻨﻮات
+ﻟﻜﻦ ﻛﻢ ﻳﺘﺤﺪث ﻓﻌﻠﻴًﺎ؟
+اﻟﻤﺸﻜﻠﺔ ﻟﻴﺴﺖ داﺋﻤًﺎ ﻓﻲ ﺷﺮح 
+اﻟﻠﻐﺔ، ﺑﻞ ﻓﻲ أن ﻛﻞ ﻃﺎﻟﺐ ﻻ ﻳﺤﺼﻞ
+ﻋﲆ اﻟﻮﻗﺖ اﻟﻜﺎﻓﻲ ﻟﻤﻤﺎرﺳﺘﻬﺎ
+ﺑﺼﻮرة ﻓﺮدﻳﺔ.
+Keep all 3 header lines unchanged.
+Figure 5: Classroom Problem vs. Zayd Solution — Callout (2) requests stronger visual/color distinction; Callouts (3)–(7)
+detail extensive copy revisions across both comparison cards.
+
+PAGE 7
+Page 7 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(2) Colleague UI /
+Design Note
+Handwritten note at
+top-right + red circle
+around cards
+⚙  UI /
+Design
+Request
+ﻫﻞ ﻣﻤﻜﻦ وﺿﻊ ﺷﻜﻞ ﺑﺼﺮي أو أﻟﻮان
+ﻟﺘﻤﻴﻴﺰ ﻫﺬا اﻟﻤﻘﻄﻊ ؟
+Handwritten Note: "Can we add a
+visual shape/element or colors to
+distinguish this section?"
+UI/UX Implementation Spec:
+• Wrap Section 5 in a full-width
+soft slate/blue container (#F1F5F9
+or #EFF6FF, border-radius:
+24px, padding: 48px 32px).
+• Style the Right Card (اﻟﻔﺼﻞ  داﺧﻞ)
+with a warm rose-tinted border
+(#FECDD3) and light rose header
+badge (#FFE4E6, text #BE123C).
+• Style the Left Card (زﻳﺪ  ﻣﻊ) with
+an elevated white surface, brand
+blue/teal border (2px solid
+#0EA5E9), soft glow shadow, and a
+subtle "VS" badge between the
+two cards.
+(3) Right Card
+Header & Body
+Right Card: "Inside the
+Classroom"
+✎  Body Text
+Updated
+داﺧﻞ اﻟﻔﺼﻞ
+ﻣﻌﻠﻢ واﺣﺪ ... وﻋﺸﺮات اﻟﻄﻼب
+ ﻛﻔﺎءة اﻟﻤﻌﻠﻢ، ﻳﻈﻞ وﻗﺖﻛﺎﻧﺖﻣﻬﻤﺎ 
+ ﻣﻤﺎرﺳﺔوﻳﺼﻌﺐ ﺗﻘﺪﻳﻢاﻟﺤﺼﺔ ﻣﺤﺪودًا، 
+ ﻟﻜﻞ ﻃﺎﻟﺐ.ﻣﺴﺘﻤﺮةﻓﺮدﻳﺔ 
+"Inside the classroom" | Title: "One
+teacher... and dozens of students" |
+Original Body: "Whatever the
+teacher's competence, class time
+remains limited, and it is hard to
+provide continuous individual
+practice for each student."
+داﺧﻞ اﻟﻔﺼﻞ
+ﻣﻌﻠﻢ واﺣﺪ ... وﻋﺸﺮات اﻟﻄﻼب
+ﻣﻬﻤﺎ ﺑﻠﻐﺖ ﻛﻔﺎءة اﻟﻤﻌﻠﻢ، ﻳﻈﻞ
+وﻗﺖ اﻟﺤﺼﺔ ﻣﺤﺪودًا، ﻣﻤﺎ ﻳﻘﻠﻞ
+ﻓﺮص ﻣﻤﺎرﺳﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ ﺑﺼﻮرة
+ﻓﺮدﻳﺔ ﻣﻨﺘﻈﻤﺔ ﻟﻜﻞ ﻃﺎﻟﺐ.
+Updated Body Meaning: "No
+matter how high the teacher's
+competence reaches, class time
+remains limited, which reduces the
+opportunities to practice English in
+a regular individual manner for
+each student."
+(4) Right Card — 3
+Warning Bullets (!)
+Right Card bottom list
+with pink (!) icons
+✎  All 3
+Bullets
+Updated
+واﻟﻤﺤﺎدﺛﺔ! وﻗﺖ ﻣﺤﺪود ﻟﻠﺘﺤﺪث 
+ﻹﻋﺎدة اﻟﻤﺤﺎوﻟﺔ! ﻓﺮص أﻗﻞ 
+ﺷﺨﺼﻴﺔ! ﺻﻌﻮﺑﺔ ﺗﻘﺪﻳﻢ ﺗﻐﺬﻳﺔ راﺟﻌﺔ 
+ﻟﻠﺠﻤﻴﻊ
+Limited time for speaking and
+conversation
+Fewer opportunities to retry
+Difficulty providing personal
+feedback to everyone
+! وﻗﺖ ﻣﺤﺪود ﻟﻠﺘﺤﺪث واﻟﻘﺮاءة
+واﻻﺳﺘﻤﺎع
+! ﻓﺮص أﻗﻞ ﻟﻠﺘﻜﺮار واﻟﻤﺤﺎوﻟﺔ
+وﺗﺤﺴﻴﻦ اﻷداء
+! ﺻﻌﻮﺑﺔ ﺗﻘﺪﻳﻢ ﺗﻐﺬﻳﺔ راﺟﻌﺔ ﻟﻜﻞ
+ﻃﺎﻟﺐ
+Updated Bullets Meaning:
+Limited time for speaking, reading,
+and listening
+Fewer opportunities for repetition,
+trying, and improving performance
+Difficulty providing feedback to
+every student
+(5) Left Card Badge &
+Title
+Left Card: "With Zayd"
+✎  Title
+Updated
+ﻣﻊ زﻳﺪ
+ﺷﺨﺼﻴﺔ ﻟﻠﻤﻤﺎرﺳﺔﻟﻜﻞ ﻃﺎﻟﺐ ﻣﺴﺎﺣﺔ 
+"With Zayd"
+Original Title: "For every student, a
+personal space for practice"
+ﻣﻊ زﻳﺪ
+ﻟﻜﻞ ﻃﺎﻟﺐ ﻣﺴﺎﺣﺔ ﻟﻤﻤﺎرﺳﺔ
+اﻹﻧﺠﻠﻴﺰﻳﺔ
+Badge: زﻳﺪ  ﻣﻊ (Unchanged)
+Updated Title: "For every student,
+
+PAGE 8
+Page 8 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+a space to practice English"
+(6) Left Card Body
+Paragraph
+Left Card description
+(also fixes typo → زاﻳﺪ
+زﻳﺪ)
+✎  Body
+Rewritten
+زاﻳﺪ ﻻ ﻳﺴﺘﺒﺪل اﻟﻤﻌﻠﻢ؛ ﺑﻞ ﻳﻀﻴﻒ ﻃﺒﻘﺔ
+ﻣﻦ اﻟﻤﻤﺎرﺳﺔ اﻟﻔﺮدﻳﺔ ﺣﻮل ﻣﺎ ﻳﺘﻌﻠﻤﻪ
+اﻟﻄﺎﻟﺐ ﺑﺎﻟﻔﻌﻞ.
+Original: "Zayd does not replace
+the teacher; rather it adds a layer
+of individual practice around what
+the student already learns."
+زﻳﺪ ﻳﻌﺰز دور اﻟﻤﻌﻠﻢ، وﻳﻤﻨﺢ ﻟﻜﻞ
+ﻃﺎﻟﺐ ﻓﺮﺻًﺎ ﻟﻤﻤﺎرﺳﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ 
+وﻓﻖ ﻣﺴﺘﻮاه وﺳﺮﻋﺘﻪ.
+Updated Meaning: "Zayd
+reinforces the teacher's role, and
+gives every student opportunities
+to practice English according to
+their level and pace." (Also fixes
+spelling from زاﻳﺪ to زﻳﺪ.)
+(7) Left Card — 3
+Checkmark Bullets
+(✓)
+Left Card bottom list
+with green (✓) icons
+✎  All 3
+Bullets
+Updated
+ﻳﺘﺤﺪث وﻳﺴﺘﻤﻊ وﻳﻘﺮأ وﻳﻜﺘﺐ وﻳﺘﻔﺎﻋﻞ ✓
+ ﺗﻐﺬﻳﺔ راﺟﻌﺔ ﻓﻮرﻳﺔﻳﺤﺼﻞ ﻋﲆ ✓
+ﻳﻌﻴﺪ اﻟﻤﺤﺎوﻟﺔ وﻳﺘﻘﺪم ﺣﺴﺐ ﻣﺴﺘﻮاه ✓
+Speaks, listens, reads, writes, and
+interacts
+Gets instant feedback
+Retries and progresses according
+to their level
+ ﻳﻤﺎرس ﻣﻬﺎرات اﻟﻠﻐﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ ✓
+ﺑﺘﻔﺎﻋﻞ
+ ﻳﺘﻠﻘﻰ ﺗﻐﺬﻳﺔ راﺟﻌﺔ ﻓﻮرﻳﺔ ✓
+ﻟﺘﺤﺴﻴﻦ أداﺋﻪ
+ ﻳﺘﻘﺪم وﻓﻖ ﻣﺴﺘﻮاه ﻣﻊ ﻓﺮص ✓
+ﻣﺘﻜﺮرة ﻟﻠﻤﺤﺎوﻟﺔ
+Updated Bullets Meaning:
+Practices English language skills
+interactively
+Receives instant feedback to
+improve their performance
+Progresses according to their level
+with repeated opportunities to try
+Section 6: Curriculum Alignment (Grades 7–12) — 1 UI Screenshot Suggestion
+Layout & Developer Context: Positioned below the comparison cards as a two-column split: the right column
+presents the curriculum alignment badge, Grades 7–12 headline, body explanation, and blue tagline, while
+the left column arranges eight blue curriculum-skill pills across three rows. All existing text remains
+unchanged, and your colleague added a yellow note suggesting the inclusion of real UI screenshots from
+inside the Zayd app.
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(1) Colleague UI
+Suggestion
+⚙  UI / Visual
+Addition
+أﻗﺘﺮح وﺿﻊ ﺷﺎﺷﺎت ﻣﻦ داﺧﻞ زﻳﺪ UI/UX Implementation Spec:
+• Replace or augment the static 8-
+pill grid on the left with an
+Figure 6: Curriculum Alignment — Callout (1) highlights the colleague's yellow note suggesting real screenshots from
+inside the Zayd app.
+
+PAGE 9
+Page 9 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+Yellow highlighted note
+above section
+Handwritten Note: "I suggest
+placing screenshots from inside
+Zayd."
+Interactive App Screenshot
+Showcase (tablet/laptop frame
+showing real Zayd screens for a
+middle/high school unit).
+• Make the 8 blue curriculum pills
+(اﻟﻤﺤﺎدﺛﺔ ,اﻟﻘﻮاﻋﺪ ,واﻟﻤﻨﺎﻗﺸﺔ  اﻻﺳﺘﻤﺎع,
+etc.) clickable tabs above or below
+the device frame so clicking each
+skill pill switches the displayed in-
+app screenshot.
+(2) Top Badge & (3)
+Headline
+Right Column —
+Gradient pill & 2-line
+title
+✓
+Unchanged
+ﻣﺘﻮاﻓﻖ ﺑﺎﻟﻜﺎﻣﻞ ﻣﻊ اﻟﻤﻨﻬﺞ
+ﻣﻦ اﻷول اﻟﻤﺘﻮﺳﻂ إﱃ اﻟﺜﺎﻟﺚ اﻟﺜﺎﻧﻮي
+"Fully aligned with the curriculum"
+Headline: "From 1st Intermediate to
+3rd Secondary"
+ﻣﺘﻮاﻓﻖ ﺑﺎﻟﻜﺎﻣﻞ ﻣﻊ اﻟﻤﻨﻬﺞ
+ﻣﻦ اﻷول اﻟﻤﺘﻮﺳﻂ إﱃ اﻟﺜﺎﻟﺚ
+اﻟﺜﺎﻧﻮي
+Keep badge and 2-line headline
+unchanged.
+(4) Body Copy & (5)
+Tagline
+Right Column —
+Paragraph & blue bold
+line
+✓
+Unchanged
+ﻻ ﻳﺤﺘﺎج اﻟﻄﺎﻟﺐ إﱃ ﻣﻨﻬﺞ ﺟﺪﻳﺪ. زﻳﺪ
+ﻳﺤﻮّل ﻣﺎ ﻳﺪرﺳﻪ ﺑﺎﻟﻔﻌﻞ إﱃ ﺗﺠﺮﺑﺔ ﻣﻤﺎرﺳﺔ
+ﺷﺨﺼﻴﺔ وﺗﻔﺎﻋﻠﻴﺔ ﺗﺴﺎﻋﺪه ﻋﲆ اﺳﺘﺨﺪام
+اﻟﻠﻐﺔ، ﻻ ﻣﺠﺮد ﻣﻌﺮﻓﺘﻬﺎ.
+ﻳﺘﻌﻠﻤﻬﺎ ﻓﻲ اﻟﻤﻨﻬﺞ... وﻳﻤﺎرﺳﻬﺎ ﻣﻊ زﻳﺪ.
+"The student doesn't need a new
+curriculum. Zayd transforms what
+they already study into a personal,
+interactive practice experience that
+helps them use the language, not
+just know it. / Learns it in the
+curriculum... and practices it with
+Zayd."
+.ﻻ ﻳﺤﺘﺎج اﻟﻄﺎﻟﺐ إﱃ ﻣﻨﻬﺞ ﺟﺪﻳﺪ
+زﻳﺪ ﻳﺤﻮّل ﻣﺎ ﻳﺪرﺳﻪ ﺑﺎﻟﻔﻌﻞ إﱃ
+ﺗﺠﺮﺑﺔ ﻣﻤﺎرﺳﺔ ﺷﺨﺼﻴﺔ وﺗﻔﺎﻋﻠﻴﺔ
+ﺗﺴﺎﻋﺪه ﻋﲆ اﺳﺘﺨﺪام اﻟﻠﻐﺔ، ﻻ
+ﻣﺠﺮد ﻣﻌﺮﻓﺘﻬﺎ.
+ﻳﺘﻌﻠﻤﻬﺎ ﻓﻲ اﻟﻤﻨﻬﺞ... وﻳﻤﺎرﺳﻬﺎ ﻣﻊ
+زﻳﺪ.
+Keep paragraph and blue tagline
+unchanged.
+(6) 8 Blue Skill Pills
+Left Column — 3 rows
+of blue rounded pills
+(RTL order)
+✓
+Unchanged
+ اﻻﺳﺘﻤﺎع |   اﻟﻘﻮاﻋﺪ |  اﻻﺳﺘﻤﺎع واﻟﻤﻨﺎﻗﺸﺔ
+ اﻟﻜﺘﺎﺑﺔ |   اﻟﻘﺮاءة |  اﻟﻤﺤﺎدﺛﺔ
+ اﻟﺘﺤﺪث |  اﻟﺼﻴﻐﺔ واﻟﻤﻌﻨﻰ واﻻﺳﺘﺨﺪام
+ﻋﻦ اﻟﺬات
+Listening & Discussion | Grammar |
+Listening
+Conversation | Reading | Writing
+Form, Meaning & Function |
+Speaking about Oneself
+|   اﻟﻘﻮاﻋﺪ |  اﻻﺳﺘﻤﺎع واﻟﻤﻨﺎﻗﺸﺔ
+اﻻﺳﺘﻤﺎع
+ اﻟﻜﺘﺎﺑﺔ |   اﻟﻘﺮاءة |  اﻟﻤﺤﺎدﺛﺔ
+|  اﻟﺼﻴﻐﺔ واﻟﻤﻌﻨﻰ واﻻﺳﺘﺨﺪام
+اﻟﺘﺤﺪث ﻋﻦ اﻟﺬات
+Keep all 8 curriculum unit pills
+unchanged.
+Section 6B: Zayd Platform Screenshots from PowerPoint (Slides 5–12) Mapped to Curriculum Pills
+Slide 2 Speaker Note Instruction: "Top arrow section will have screens from Zayd... Screens at end of
+slides." Below are all eight edited Zayd platform screenshots from Slides 5–12 of your PowerPoint, mapped
+directly to the eight curriculum skill pills in Section 6 (and the live Reading/Speaking demo in Section 7) so
+your developers know exactly which screen to display when a user clicks each skill tab.
+
+PAGE 10
+Page 10 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+PPTX Slide # Zayd App Screen Mode Mapped Section 6
+Curriculum Pill (Arabic &
+English)
+Key UI Elements Shown in
+Screenshot
+Slide 5 Reading Mode (Practice
+Reading Aloud)
+أو ﺗﺠﺮﺑﺔ اﻟﺘﺤﺪث) اﻟﻘﺮاءة 
+(7 واﻟﻘﺮاءة ﻓﻲ اﻟﻘﺴﻢ
+Reading / Live Speaking &
+Reading Demo
+31% progress bar; 3 activity
+steps (Reading Passage,
+Practice Reading, Knowledge
+Quiz); sentence prompt read
+aloud via mic + View
+Assessment button.
+Slide 6 Grammar Mode
+(Flashcards)
+اﻟﻘﻮاﻋﺪ
+Grammar
+Unit 1: Big Changes •
+Grammar (14% Complete);
+interactive flip-card (1 of 8):
+"Facts, habits, and permanent
+situations — Tap to flip back".
+Slide 7 Listening Mode (Audio
+Narration)
+اﻻﺳﺘﻤﺎع
+Listening
+3 steps (Audio Narration,
+Comprehension Question,
+Listening Quiz); waveform player
+(First Listen 1 of 2,
+00:11/02:14) + narrator
+instructions.
+Slide 8 Roleplay Mode
+(Conversation)
+اﻟﻤﺤﺎدﺛﺔ
+Conversation
+3/7 meaningful turns • 4
+remaining; real-time AI chat
+with View Feedback, Hint, and
+green What to say coaching
+prompt + mic input.
+Slide 9 Reading Mode (Reading
+Passage)
+اﻟﻘﺮاءة
+Reading
+Full multi-paragraph curriculum
+reading passage (Saudi Arabia
+Vision pillars) with top-right
+Listen audio button and
+Listen to continue CTA.
+Figure 6B-1: Zayd Platform Screenshots (PowerPoint Slides 5 & 6) — Reading Mode (Practice Reading Aloud with AI
+Assessment) and Grammar Mode (Interactive Concept Flashcards).
+Figure 6B-2: Zayd Platform Screenshots (PowerPoint Slides 7 & 8) — Listening Mode (Audio Narration Waveform) and
+Roleplay Mode (Live AI Conversation with Hints & Feedback).
+
+PAGE 11
+Page 11 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+PPTX Slide # Zayd App Screen Mode Mapped Section 6
+Curriculum Pill (Arabic &
+English)
+Key UI Elements Shown in
+Screenshot
+Slide 10 Writing Mode (Build
+Your Paragraph)
+اﻟﻜﺘﺎﺑﺔ
+Writing
+Unit 1: Big Changes •
+Writing (67% Complete);
+guided question prompts with
+hints on left and student
+sentence textareas on right.
+Slide 11 Grammar Mode (Form,
+Meaning & Function)
+اﻟﺼﻴﻐﺔ واﻟﻤﻌﻨﻰ واﻻﺳﺘﺨﺪام
+Form, Meaning, and Function
+Unit 1: Big Changes •
+Form, Meaning, and
+Function; structured grammar
+table (Simple Past and Past
+Progressive with When: Tense,
+Structure, Example).
+Slide 12 Debate Mode (Topic
+Cards)
+ اﻟﺘﺤﺪث/ اﻻﺳﺘﻤﺎع واﻟﻤﻨﺎﻗﺸﺔ 
+ﻋﻦ اﻟﺬات
+Listening & Discussion /
+Speaking about Oneself
+6 illustrated debate & discussion
+topic cards (Better To Be; Oldest
+or youngest child?, How to
+Celebrate?, Life With Robots,
+Using Maps, etc.) with Start
+buttons.
+Additional Platform Modes (PowerPoint Slides 9–12): The second set of four screenshots below illustrates
+full curriculum reading passages with audio playback (Slide 9), guided 5-question paragraph construction in
+Writing Mode (Slide 10), structured grammar reference tables for Form, Meaning, and Function (Slide 11), and
+visual topic cards in Debate Mode (Slide 12).
+Section 7: Personalized Learning (6 Feature Cards) — 1 UI Demo Note & 7 Text
+Updates
+Layout & Developer Context: Positioned below the curriculum section, featuring a centered headline and
+subtitle at the top, the 3D character holding a tablet on the right, and a 3×2 grid of six white feature cards on
+Figure 6C-1: Zayd Platform Screenshots (PowerPoint Slides 9 & 10) — Reading Mode (Full Curriculum Passage with
+Audio) and Writing Mode (Guided Paragraph Builder).
+Figure 6C-2: Zayd Platform Screenshots (PowerPoint Slides 11 & 12) — Grammar Mode (Form, Meaning & Function
+Reference) and Debate Mode (Interactive Discussion Topic Cards).
+
+PAGE 12
+Page 12 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+the left. Your colleague requested an interactive live demo for Reading and Speaking alongside this section,
+rewrote the centered subtitle, and refined the titles and descriptions across all six feature cards.
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(1) Section Headline
+Centered 2-line title
+✓
+Unchanged
+ﻛﻞ ﻃﺎﻟﺐ ﻳﺘﻌﻠﻢ
+وﻳﺘﺤﺪث ﺑﻄﺮﻳﻘﺘﻪ
+"Every student learns / and speaks
+in their own way"
+ﻛﻞ ﻃﺎﻟﺐ ﻳﺘﻌﻠﻢ
+وﻳﺘﺤﺪث ﺑﻄﺮﻳﻘﺘﻪ
+Keep 2-line headline unchanged.
+(2) Colleague UI /
+Feature Note
+Yellow highlighted note
+on top-right
+⚙
+Interactive
+Demo
+Request
++  إﺿﺎﻓﺔ ﺗﺠﺮﺑﺔ ﺣﻘﻴﻘﻴﺔ ﻣﻊ زﻳﺪ ﻟﻠﻘﺮاءة
+اﻟﺘﺤﺪث
+Handwritten Note: "Add a real/live
+trial experience with Zayd for
+Reading + Speaking."
+ﺟﺮّب اﻟﺘﺤﺪث واﻟﻘﺮاءة ﻣﻊ زﻳﺪ اﻵن
+(ﺗﺠﺮﺑﺔ ﺗﻔﺎﻋﻠﻴﺔ ﻣﺒﺎﺷﺮة )
+UI/UX Interactive Demo Spec:
+• Add an interactive 2-tab mini-
+widget (Tab 1: اﻟﻘﺮاءة  ﺗﺠﺮﺑﺔ Reading
+Demo | Tab 2: اﻟﺘﺤﺪث  ﺗﺠﺮﺑﺔ
+Speaking Demo).
+• Display a short grade-level
+English sentence with a
+microphone button (ﻟﻠﺘﺤﺪث  اﺿﻐﻂ /
+"Tap to Speak"), waveform
+animation, and an instant sample AI
+feedback card showing
+pronunciation score (e.g. 92%) and
+word-by-word color highlighting.
+(3) Section Subtitle
+Centered line below
+headline
+✎  Text
+Updated
+ﻷن اﻟﻄﻼب ﻻ ﻳﺘﻌﻠﻤﻮن ﺑﺎﻟﻄﺮﻳﻘﺔ ﻧﻔﺴﻬﺎ،
+ﻳﻤﻨﺢ زﻳﺪ ﻛﻞ ﻃﺎﻟﺐ ﻣﺴﺎﺣﺔ أﻛﺒﺮ ﻟﻠﺘﺠﺮﺑﺔ
+واﻟﺘﻜﺮار واﻟﺘﺤﺴﻦ.
+Original: "Because students do not
+learn the same way, Zayd gives
+every student a larger space for
+experimentation, repetition, and
+improvement."
+ﻳﻤﻨﺢ زﻳﺪ ﻛﻞ ﻃﺎﻟﺐ ﺗﺠﺮﺑﺔ ﺗﻔﺎﻋﻠﻴﺔ
+ﺗﺘﻜﻴﻒ ﻣﻊ ﻣﺴﺘﻮاه، وﺗﺴﺎﻋﺪه ﻋﲆ
+ﻣﻤﺎرﺳﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ واﻟﺘﺤﺴﻦ
+ﺑﺎﺳﺘﻤﺮار.
+Updated Meaning: "Zayd gives
+every student an interactive
+experience that adapts to their
+level, and helps them practice
+English and improve continuously."
+(4) Card 1: Top-Right
+Card
+Pink Brain Icon
+✎  Body
+Updated
+ﺗﻌﻠﻢ ﻣﺨﺼﺺ
+ ﻣﻊ ﻣﺴﺘﻮى اﻟﻄﺎﻟﺐﺗﺠﺮﺑﺔ ﺗﺘﻔﺎﻋﻞ
+واﺣﺘﻴﺎﺟﻪ.
+Title: "Personalized learning"
+Original Body: "An experience that
+interacts with the student's level
+and need."
+ﺗﻌﻠﻢ ﻣﺨﺼﺺ
+ﻳﺘﻜﻴﻒ ﻣﻊ ﻣﺴﺘﻮى اﻟﻄﺎﻟﺐ
+واﺣﺘﻴﺎﺟﻪ.
+Title: ﻣﺨﺼﺺ  ﺗﻌﻠﻢ (Unchanged)
+Updated Body: "Adapts to the
+student's level and needs."
+Figure 7: Personalized Learning — Callout (2) requests an interactive Reading + Speaking demo; Callouts (3)–(9) update
+the subtitle and all 6 feature cards.
+
+PAGE 13
+Page 13 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(5) Card 2: Top-
+Center Card
+Purple Chat Bubble
+Icon
+✎  Body
+Updated
+ﺗﻐﺬﻳﺔ راﺟﻌﺔ ﻓﻮرﻳﺔ
+ﻣﻼﺣﻈﺎت ﺗﺴﺎﻋﺪ اﻟﻄﺎﻟﺐ ﻋﲆ ﻣﻌﺮﻓﺔ ﻣﺎ
+ﻳﺤﺘﺎج إﱃ ﺗﺤﺴﻴﻨﻪ.
+Title: "Instant feedback"
+Original Body: "Notes that help the
+student know what they need to
+improve."
+ﺗﻐﺬﻳﺔ راﺟﻌﺔ ﻓﻮرﻳﺔ
+ﻣﻼﺣﻈﺎت ذﻛﻴﺔ ﻟﺘﺤﺴﻴﻦ اﻷداء.
+Title: ﻓﻮرﻳﺔ  راﺟﻌﺔ  ﺗﻐﺬﻳﺔ
+(Unchanged)
+Updated Body: "Smart
+feedback/notes to improve
+performance."
+(6) Card 3: Top-Left
+Card
+Purple Speaking Head
+Icon
+✎  Body
+Updated
+ﻣﻤﺎرﺳﺔ اﻟﺘﺤﺪث
+ﻓﺮص ﻣﺘﻜﺮرة ﻟﻠﺘﺤﺪث ﺑﺪل اﻧﺘﻈﺎر اﻟﺪور
+داﺧﻞ اﻟﻔﺼﻞ.
+Title: "Speaking practice"
+Original Body: "Repeated
+opportunities to speak instead of
+waiting for a turn inside the
+classroom."
+ﻣﻤﺎرﺳﺔ اﻟﺘﺤﺪث
+ﺗﻄﻮر ﻣﻬﺎرات اﻟﻨﻄﻖ واﻟﺘﺤﺪث.
+Title: اﻟﺘﺤﺪث  ﻣﻤﺎرﺳﺔ (Unchanged)
+Updated Body: "Develops
+pronunciation and speaking skills."
+(7) Card 4: Bottom-
+Right Card
+Headphones Icon
+✎  Title &
+Body
+Updated
+ اﻟﻨﻄﻖدﻋﻢ
+ﻣﻤﺎرﺳﺔ ﻣﺴﺘﻤﺮة ﻟﺘﺤﺴﻴﻦ وﺿﻮح اﻷداء
+اﻟﺸﻔﻬﻲ.
+Original Title: "Pronunciation
+support"
+Original Body: "Continuous practice
+to improve clarity of oral
+performance."
+ﺗﺤﺴﻴﻦ اﻟﻨﻄﻖ
+ﺗﺪرﻳﺒﺎت ﻟﺘﻄﻮﻳﺮ اﻟﻨﻄﻖ واﻟﻄﻼﻗﺔ.
+Updated Title: "Pronunciation
+improvement"
+Updated Body: "Exercises to
+develop pronunciation and fluency."
+(8) Card 5: Bottom-
+Center Card
+Blue Repeat Arrows
+Icon
+✎  Title &
+Body
+Updated
+إﻋﺎدة اﻟﻤﺤﺎوﻟﺔ
+ﻳﺘﺪرب اﻟﻄﺎﻟﺐ ﻣﺮة ﺑﻌﺪ ﻣﺮة ﺣﺘﻰ ﻳﺘﺤﺴﻦ.
+Original Title: "Retry / Try again"
+Original Body: "The student
+practices time after time until they
+improve."
+ﺗﻜﺮار دون ﺣﺪود
+ﻣﺤﺎوﻻت ﻣﺘﻜﺮرة ﺣﺘﻰ اﻹﺗﻘﺎن.
+Updated Title: "Repetition without
+limits"
+Updated Body: "Repeated
+attempts until mastery."
+(9) Card 6: Bottom-
+Left Card
+Green Sprout Icon
+✎  Title &
+Body
+Updated
+ﻟﻠﺘﺤﺪث آﻣﻨﺔ ﻣﺴﺎﺣﺔ
+ﻣﻬﻤﺔ ﺧﺼﻮﺻًﺎ ﻟﻠﻄﺎﻟﺐ اﻟﻤﺘﺮدد أو اﻷﻗﻞ 
+ﻣﺸﺎرﻛﺔ.
+Original Title: "Safe space for
+speaking"
+Original Body: "Especially
+important for the hesitant or less-
+participating student."
+ﺑﻴﺌﺔ آﻣﻨﺔ ﻟﻠﺘﻌﻠﻢ
+ﻣﻤﺎرﺳﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ ﺑﺜﻘﺔ دون ﺧﻮف
+ﻣﻦ اﻟﺨﻄﺄ.
+Updated Title: "Safe environment
+for learning"
+Updated Body: "Practicing English
+with confidence without fear of
+making mistakes."
+(10) NEW Card 7
+(From PPTX Slide 2)
+Added box on left of
+Section 7
+★ New
+Feature
+(PPTX Slide
+2)
+User PPTX Text Box:
+CEFR for students
+(No Arabic copy written on slide —
+proposed Arabic copy provided on
+right for colleague confirmation).
+ اﻟﻌﺎﻟﻤﻲCEFR ﺗﻘﻴﻴﻢ وﻓﻖ ﻣﻌﻴﺎر
+ﻗﻴﺎس دﻗﻴﻖ ﻟﻤﺴﺘﻮى اﻟﻄﺎﻟﺐ وﻓﻖ
+اﻹﻃﺎر اﻷوروﺑﻲ اﻟﻤﺸﺘﺮك ﻟﻠﻐﺎت
+.( A 1 –C 2)
+Proposed Title: "CEFR Standard
+Assessment"
+Proposed Body: "Accurate
+
+PAGE 14
+Page 14 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+measurement of student level
+aligned with the Common European
+Framework of Reference for
+Languages (A1–C2)."
+(11) NEW Card 8
+(From PPTX Slide 2)
+Added box on left of
+Section 7
+★ New
+Feature
+(PPTX Slide
+2)
+User PPTX Text Box:
+3D Avatar Modes
+(No Arabic copy written on slide —
+proposed Arabic copy provided on
+right).
+ﺷﺨﺼﻴﺎت ﺗﻔﺎﻋﻠﻴﺔ ﺛﻼﺛﻴﺔ اﻷﺑﻌﺎد
+(3 D  Avatar)
+ﻣﺤﺎدﺛﺔ ﺣﻴﺔ وﺗﻔﺎﻋﻠﻴﺔ ﻣﻊ ﺷﺨﺼﻴﺔ
+زﻳﺪ اﻟﺬﻛﻴﺔ ﻓﻲ أوﺿﺎع ﺗﻌﻠﻢ ﻣﺘﻨﻮﻋﺔ.
+Proposed Title: "Interactive 3D
+Avatar Modes"
+Proposed Body: "Live interactive
+conversation with Zayd's 3D
+character across diverse learning
+modes."
+(12) NEW Card 9
+(From PPTX Slide 2)
+Added box on left of
+Section 7
+★ New
+Feature
+(PPTX Slide
+2)
+User PPTX Text Box:
+Certificates and badges
+(No Arabic copy written on slide —
+proposed Arabic copy provided on
+right).
+ﺷﻬﺎدات وﺷﺎرات إﻧﺠﺎز
+ﺷﻬﺎدات إﺗﻤﺎم وﺷﺎرات ﺗﺤﻔﻴﺰﻳﺔ
+ﺗﻮﺛّﻖ ﺗﻘﺪم اﻟﻄﺎﻟﺐ وإﻧﺠﺎزاﺗﻪ ﻓﻲ ﻛﻞ
+ﻣﺮﺣﻠﺔ.
+Proposed Title: "Certificates and
+Achievement Badges"
+Proposed Body: "Completion
+certificates and motivational
+badges documenting student
+progress at every stage."
+(13) NEW Card 10
+(From PPTX Slide 2)
+Added box on left of
+Section 7
+★ New
+Feature
+(PPTX Slide
+2)
+User PPTX Text Box:
+Points & Rewards
+(No Arabic copy written on slide —
+proposed Arabic copy provided on
+right).
+ﻧﻘﺎط وﻣﻜﺎﻓﺂت ﺗﺤﻔﻴﺰﻳﺔ
+ﻧﻈﺎم ﻧﻘﺎط ﺗﻨﺎﻓﺴﻲ وﻟﻮﺣﺎت ﺷﺮف
+ﺗﻜﺎﻓﺊ اﻟﻄﺎﻟﺐ ﻋﲆ اﻻﺳﺘﻤﺮارﻳﺔ
+واﻟﺘﻔﻮق.
+Proposed Title: "Points &
+Motivational Rewards"
+Proposed Body: "Competitive
+points system and leaderboards
+rewarding consistency and
+excellence."
+Section 8: Beyond the Textbook (Real-Life Scenarios) — 1 UI Note & 4 Copy
+Updates
+Layout & Developer Context: Positioned below the six personalized learning cards as a two-column split: the
+right column explains how Zayd Life and Zayd Plus cover 40+ daily-life scenarios, while the left column
+displays a 3×2 grid of six illustrated scenario photo cards with blue pill labels. Your colleague framed the
+section in yellow to request stronger visual distinction, updated the right-hand body paragraph and bottom
+quote, and refined the labels on the last two photo cards.
+
+PAGE 15
+Page 15 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(1) Colleague UI /
+Design Note
+Yellow highlighter
+border + note at top
+⚙  UI /
+Design
+Request
+ﻫﻞ ﻣﻤﻜﻦ أن ﻳﺘﻤﻴﺰ ﺑﺼﺮﻳﺎً ؟؟
+Handwritten Note: "Can this
+section be visually distinguished??"
+UI/UX Implementation Spec:
+• Wrap Section 8 in a distinct soft
+teal/sky gradient container
+(linear-gradient(135deg,
+#F0FDFA 0%, #E0F2FE 100%),
+border-radius: 28px, padding:
+56px 40px, border: 1px solid
+#BAE6FD).
+• Add subtle hover-lift cards on the
+6 scenario photos with an audio-
+preview icon so visitors can hear a
+sample real-life dialogue (Airport,
+Restaurant, Market, Travel, Social
+Situations).
+(2) Top Badge &
+Headline
+Right Column — Pill
+badge & 2-line title
+✓
+Unchanged
+ﻣﻦ اﻟﻤﻨﻬﺞ إﱃ اﻟﺤﻴﺎة
+اﻹﻧﺠﻠﻴﺰﻳﺔ ﻻ ﺗﻨﺘﻬﻲ ﻋﻨﺪ ﺣﺪود اﻟﻜﺘﺎب
+"From curriculum to life"
+Headline: "English doesn't end at
+the borders of the book"
+ﻣﻦ اﻟﻤﻨﻬﺞ إﱃ اﻟﺤﻴﺎة
+اﻹﻧﺠﻠﻴﺰﻳﺔ ﻻ ﺗﻨﺘﻬﻲ ﻋﻨﺪ ﺣﺪود
+اﻟﻜﺘﺎب
+Keep badge and headline
+unchanged.
+(3) Right Body
+Paragraph
+Right Column — Main
+description
+✎  Text
+Updated
+ﻳﺴﺘﻄﻴﻊ، Zayd  Plus  وZayd  Life ﻓﻲ
+40  أﻛﺜﺮ ﻣﻦاﻟﻄﺎﻟﺐ اﻟﺘﺪرﻳﺐ ﻋﲆ
+ﻣﻮﺿﻮﻋًﺎ وﻣﻮﻗﻔًﺎ ﻣﻦ اﻟﺤﻴﺎة اﻟﻴﻮﻣﻴﺔ،
+ﻟﻴﺴﺘﺨﺪم اﻟﻠﻐﺔ ﻋﻨﺪﻣﺎ ﻳﺤﺘﺎج إﻟﻴﻬﺎ ﻓﻌﻼً. 
+Original: "In Zayd Life and Zayd
+Plus, the student can train on more
+than 40 topics and situations from
+daily life, to use the language when
+they actually need it."
+، ﺗﻤﺘﺪZayd  Plus  وZayd  Life ﻓﻲ
+40 ﻣﻤﺎرﺳﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ إﱃ أﻛﺜﺮ ﻣﻦ
+ﻣﻮﺿﻮﻋًﺎ وﻣﻮﻗﻔًﺎ ﻣﻦ اﻟﺤﻴﺎة اﻟﻴﻮﻣﻴﺔ،
+ﻟﺘﻨﻤﻴﺔ اﻟﻘﺪرة ﻋﲆ اﻟﺘﻮاﺻﻞ ﺑﺜﻘﺔ
+ﻓﻲ ﻣﻮاﻗﻒ ﺣﻘﻴﻘﻴﺔ.
+Updated Meaning: "In Zayd Life
+and Zayd Plus, English practice
+extends to more than 40 topics
+and situations from daily life, to
+develop the ability to communicate
+confidently in real situations."
+(4) Bottom
+Highlighted Callout
+Right Column — 2-line
+blue bold quote
+✎  Text
+Updated
+ اﻹﻧﺠﻠﻴﺰﻳﺔﻳﻌﺮفﻷن اﻟﻬﺪف ﻟﻴﺲ ﻓﻘﻂ أن 
+أن ﻳﺴﺘﺨﺪﻣﻬﺎ.ﺑﻞ 
+Original: "Because the goal is not
+only to know English, / but to use
+it."
+ﻷن اﻟﻬﺪف ﻟﻴﺲ ﻓﻘﻂ أن ﻳﺘﻌﻠﻢ
+اﻹﻧﺠﻠﻴﺰﻳﺔ،
+ﺑﻞ اﻟﻘﺪرة ﻋﲆ اﺳﺘﺨﺪاﻣﻬﺎ ﻓﻲ
+اﻟﺤﻴﺎة.
+Updated Meaning: "Because the
+goal is not just to learn English, /
+but the ability to use it in real life."
+Figure 8: Beyond the Textbook — Callout (1) asks to visually distinguish this section; Callouts (3), (4), (6), and (7) show
+updated copy and scenario labels.
+
+PAGE 16
+Page 16 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(5) First 4 Scenario
+Photo Cards
+Left Grid: Row 1 (3
+cards) + Row 2 Right
+card
+✓
+Unchanged
+(At  the  airport)  ﻓﻲ اﻟﻤﻄﺎر
+(At  the  restaurant)  ﻓﻲ اﻟﻤﻄﻌﻢ
+(At  the  market)  ﻓﻲ اﻟﺴﻮق
+(During  travel)  أﺛﻨﺎء اﻟﺴﻔﺮ
+Top-Right, Top-Center, Top-Left,
+and Bottom-Right photo cards.
+ ﻓﻲ  |    ﻓﻲ اﻟﻤﻄﻌﻢ  |   ﻓﻲ اﻟﻤﻄﺎر
+ أﺛﻨﺎء اﻟﺴﻔﺮ  |   اﻟﺴﻮق
+Keep these 4 photo cards and their
+blue pill labels unchanged.
+(6) Scenario Card 5
+(Bottom-Center)
+Chat Bubbles Photo
+Card
+✎  Label
+Updated
+ﻣﻮاﻗﻒ اﺟﺘﻤﺎﻋﻴﺔ
+Original: "Social situations"
+ﻓﻲ اﻟﻤﻮاﻗﻒ اﻻﺟﺘﻤﺎﻋﻴﺔ
+Updated Meaning: "In social
+situations" (adds preposition ﻓﻲ for
+parallel structure with the other
+cards).
+(7) Scenario Card 6
+(Bottom-Left)
+Book + Plus Sign Photo
+Card
+✎  Label
+Updated
+...واﻟﻤﺰﻳﺪ
+Original: "And more..."
+وﻣﻮاﻗﻒ أﺧﺮى ﻛﺜﻴﺮة
+Updated Meaning: "And many
+other situations"
+Section 9: A Skill for the Future — 3 Text Updates
+Layout & Developer Context: Positioned below the real-life scenarios section as a full-width rounded banner
+with a teal-to-blue gradient fill. The right column holds the white pill badge, headline, and main paragraph,
+while the left column displays five white pill tags across two rows. Your colleague rewrote the main
+paragraph for stronger impact and updated the two bottom white pills to Professional Development and
+International Communication.
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(1) Top White Pill &
+Headline
+Right Column inside
+gradient banner
+✓
+Unchanged
+ﻣﻬﺎرة ﻟﻠﻤﺴﺘﻘﺒﻞ
+اﻹﻧﺠﻠﻴﺰﻳﺔ ﻟﻴﺴﺖ ﻣﺎدة دراﺳﻴﺔ ﻓﻘﻂ
+"A skill for the future"
+Headline: "English is not just a
+school subject"
+ﻣﻬﺎرة ﻟﻠﻤﺴﺘﻘﺒﻞ
+اﻹﻧﺠﻠﻴﺰﻳﺔ ﻟﻴﺴﺖ ﻣﺎدة دراﺳﻴﺔ ﻓﻘﻂ
+Keep badge and headline
+unchanged.
+(2) Banner Body
+Paragraph
+Right Column below
+headline
+✎  Text
+Updated
+ﻣﺎ ﻳﺘﻌﻠﻤﻪ اﻟﻄﺎﻟﺐ اﻟﻴﻮم ﻳﻤﻜﻦ أن ﻳﻔﺘﺢ
+أﻣﺎﻣﻪ ﻓﺮﺻًﺎ أﻛﺒﺮ ﻏﺪًا ﻓﻲ اﻟﺪراﺳﺔ اﻟﺠﺎﻣﻌﻴﺔ 
+واﻟﻮﺻﻮل إﱃ اﻟﻤﻌﺮﻓﺔ واﻻﺳﺘﻌﺪاد ﻟﺴﻮق
+اﻟﻌﻤﻞ.
+إﺗﻘﺎن اﻹﻧﺠﻠﻴﺰﻳﺔ ﻳﻔﺘﺢ آﻓﺎﻗًﺎ أوﺳﻊ
+ﻟﻠﺘﻌﻠﻴﻢ اﻟﺠﺎﻣﻌﻲ واﻟﻤﻌﺮﻓﺔ
+واﻻﺳﺘﻌﺪاد ﻟﺴﻮق اﻟﻌﻤﻞ.
+Figure 9: A Skill for the Future — Callout (2) rewrites the main paragraph; Callouts (4) and (5) update the two bottom
+white pills.
+
+PAGE 17
+Page 17 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+Original: "What the student learns
+today can open greater
+opportunities for them tomorrow in
+university study, accessing
+knowledge, and preparing for the
+job market."
+Updated Meaning: "Mastering
+English opens wider horizons for
+university education, knowledge,
+and readiness for the job market."
+(3) Top Row of 3
+White Pills
+Left Column — Row 1
+(Right to Left)
+✓
+Unchanged
+|   اﻟﻤﻌﺮﻓﺔ اﻟﻌﺎﻟﻤﻴﺔ |  اﻟﺪراﺳﺔ اﻟﺠﺎﻣﻌﻴﺔ
+ﺳﻮق اﻟﻌﻤﻞ
+University Study | Global
+Knowledge | Job Market
+ اﻟﻤﻌﺮﻓﺔ  |   اﻟﺪراﺳﺔ اﻟﺠﺎﻣﻌﻴﺔ
+ ﺳﻮق اﻟﻌﻤﻞ  |   اﻟﻌﺎﻟﻤﻴﺔ
+Keep top 3 white pills unchanged.
+(4) Bottom-Right
+White Pill
+Left Column — Row 2
+Right Pill
+✎  Pill
+Updated
+اﻟﺘﺪرﻳﺐ واﻟﺘﻄﻮﻳﺮ
+Original: "Training and
+Development"
+اﻟﺘﻄﻮﻳﺮ اﻟﻤﻬﻨﻲ
+Updated Meaning: "Professional
+Development"
+(5) Bottom-Left
+White Pill
+Left Column — Row 2
+Left Pill
+✎  Pill
+Updated
+اﻟﻤﻬﻨﻲاﻟﺘﻮاﺻﻞ 
+Original: "Professional
+Communication"
+اﻟﺘﻮاﺻﻞ اﻟﺪوﻟﻲ
+Updated Meaning: "International
+Communication"
+Section 10: 1 Year = 10 Years Speaking Impact — 3 Text Updates & 1 Data
+Verification Note
+Layout & Developer Context: Positioned below the future-skills banner inside a light-blue rounded container,
+featuring the 3D character pointing at 1 vs. x10 calendar blocks on the right and impact copy plus three
+white metric boxes on the left. Your colleague fixed the verb gender agreement in the headline (→ ﺗﺴﺎوي
+ﻳﻌﺎدل,) condensed the main paragraph and disclaimer line, and highlighted the three bottom metric counters
+in yellow for data verification.
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(1) Top Pill Badge
+Left Column — Top
+gradient pill
+✓
+Unchanged
+ﻧﺘﻴﺠﺔ ﻓﺎرﻗﺔ
+"A Defining / Breakthrough Result"
+ﻧﺘﻴﺠﺔ ﻓﺎرﻗﺔ
+Keep top pill badge unchanged.
+(2) Section Headline
+Left Column — 2-line
+bold title
+✎  Grammar
+Updated
+ ﻧﺤﻮﺗﺴﺎويﻋﺎم واﺣﺪ ﻣﻊ زﻳﺪ 
+ ﺳﻨﻮات ﻣﻦ ﻣﻤﺎرﺳﺔ اﻟﺘﺤﺪث10
+ﻋﺎم واﺣﺪ ﻣﻊ زﻳﺪ ﻳﻌﺎدل ﻧﺤﻮ
+ ﺳﻨﻮات ﻣﻦ ﻣﻤﺎرﺳﺔ اﻟﺘﺤﺪث10
+Figure 10: 1 Year = 10 Years Impact — Callout (2) fixes verb gender agreement; Callouts (3) & (4) condense the copy;
+Callout (5) flags the 3 stat counters for review.
+
+PAGE 18
+Page 18 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+Original had feminine verb ﺗﺴﺎوي
+with masculine noun ﻋﺎم.
+Updated Meaning: "One year with
+Zayd equals around 10 years of
+speaking practice" (replaces ﺗﺴﺎوي
+with ﻳﻌﺎدل.)
+(3) Main Body
+Paragraph
+Left Column — Below
+headline (written in red
+circle at bottom)
+✎  Text
+Rewritten
+أﻇﻬﺮت ﺗﺠﺎرب ﻃﻼﺑﻨﺎ أن اﻻﺳﺘﺨﺪام
+ ﻳﻤﻜﻦ أن ﻳﻤﻨﺢ اﻟﻄﺎﻟﺐZayd اﻟﻤﻨﺘﻈﻢ ﻟـ
+ﺣﺠﻤًﺎ ﻣﻦ ﻣﻤﺎرﺳﺔ اﻟﺘﺤﺪث واﻟﻤﺤﺎدﺛﺔ 
+ﺑﺎﻟﻠﻐﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ ﻳﻌﺎدل ﺗﻘﺮﻳﺒًﺎ ﻣﺎ ﻗﺪ
+ ﺳﻨﻮات ﻓﻲ اﻟﻔﺼﻞ10 ﻳﺤﺼﻞ ﻋﻠﻴﻪ ﺧﻼل
+اﻟﺘﻘﻠﻴﺪي.
+Original: "Our students'
+experiences showed that regular
+use of Zayd can give the student a
+volume of English speaking and
+conversation practice roughly
+equivalent to what they might get
+over 10 years in a traditional
+classroom."
+ﻳﺘﻴﺢ زﻳﺪ ﻓﺮﺻًﺎ ﻣﻜﺜﻔﺔ ﻟﻠﺘﺤﺪث 
+ﺑﺎﻹﻧﺠﻠﻴﺰﻳﺔ، ﺗﻌﺎدل ﺗﻘﺮﻳﺒًﺎ ﻣﺎ ﻗﺪ
+ ﺳﻨﻮات ﻓﻲ10 ﻳﺤﺼﻞ ﻋﻠﻴﻪ ﺧﻼل
+اﻟﻔﺼﻞ اﻟﺘﻘﻠﻴﺪي.
+Updated Meaning: "Zayd provides
+intensive opportunities to speak in
+English, roughly equivalent to what
+one might get over 10 years in a
+traditional classroom."
+(4) Small Disclaimer
+Line
+Left Column — Above
+the 3 stat boxes
+✎  Text
+Condensed
+ﺑﺤﺠﻢ ﻓﺮص ﻣﻤﺎرﺳﺔاﻟﻤﻘﺎرﻧﺔ ﺗﺘﻌﻠﻖ 
+اﻟﺘﺤﺪث واﻟﻤﺤﺎدﺛﺔ اﻟﻔﺮدﻳﺔ، وﻟﻴﺲ ﺑﻌﺪد
+ﺳﻨﻮات اﻟﺪراﺳﺔ اﻷﻛﺎدﻳﻤﻴﺔ.
+Original: "The comparison relates
+to the volume of individual
+speaking and conversation practice
+opportunities, not the number of
+academic study years."
+اﻟﻤﻘﺎرﻧﺔ ﺗﺘﻌﻠﻖ ﺑﻔﺮص ﻣﻤﺎرﺳﺔ
+اﻹﻧﺠﻠﻴﺰﻳﺔ، وﻟﻴﺲ ﺑﺴﻨﻮات
+اﻟﺪراﺳﺔ.
+Updated Meaning: "The
+comparison relates to English
+practice opportunities, not years of
+study." (Colleague wrote: ﻓﺮص  ﻓﻲ
+ﺳﻨﻮات  ﻓﻲ  وﻟﻴﺲ  اﻹﻧﺠﻠﻴﺰﻳﺔ،  ﻣﻤﺎرﺳﺔ
+اﻟﺪراﺳﺔ.)
+(5) 3 Bottom Metric
+Boxes
+Yellow highlighted
+boxes + blue margin
+note
+⚙  Data
+Verification
+Note
+Registered)   ﻃﺎﻟﺐ ﻣﺴﺠﻞ1,000+
+(students
+Practice)   ﺳﺎﻋﺔ ﻣﻤﺎرﺳﺔ2,200+
+(hours
+Completed)   درس ﻣﻨﺠﺰ8,600+
+(lessons
+Blue Note on ﻣﺮاﺟﻌﺔ  ﺗﺤﺘﺎج  اﻷرﻗﺎم
+"(The numbers need review").
+2,200+    |    ﻃﺎﻟﺐ ﻣﺴﺠﻞ1,000+
+ درس8,600+    |   ﺳﺎﻋﺔ ﻣﻤﺎرﺳﺔ
+ﻣﻨﺠﺰ
+Action for Product Team: Labels
+are unchanged, but verify the exact
+live numbers (+1,000 / +2,200 /
++8,600) with management before
+publishing.
+(6) Right 3D Graphic
+Labels
+Floating badges above
+"1" and "10" calendars
+✓
+Unchanged
+ ﺳﻨﻮات ﻣﻦZayd    |   10 ﻋﺎم واﺣﺪ ﻣﻊ
+اﻟﻔﺼﻞ اﻟﺘﻘﻠﻴﺪي
+"1 Year with Zayd" | "10 Years of
+Traditional Classroom"
+ ﺳﻨﻮاتZayd    |   10 ﻋﺎم واﺣﺪ ﻣﻊ
+ﻣﻦ اﻟﻔﺼﻞ اﻟﺘﻘﻠﻴﺪي
+Keep 3D illustration and calendar
+badges unchanged.
+Section 11: Pricing & Packages (3 Tiers) — Prices, Discounts & Target Copy
+Updated
+Layout & Developer Context: Positioned below the 10x impact section, featuring a centered header and
+three vertical subscription cards read from Right to اﻟﻤﻨﻬﺞ  ﺑﺎﻗﺔ (Curriculum Package) on the right, Zayd Plus
+
+PAGE 19
+Page 19 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+(Best Value) in the center, and Zayd Life on the left. Your colleague updated the target-audience
+descriptions on the outer cards, increased the base and active prices across all three tiers (199 SAR / 299
+SAR / 199 SAR per year), and adjusted the outer card discount badges from 50% to 33%.
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(1) Section Header &
+Subtitle
+Centered badge, title &
+discount note
+✎  Subtitle
+Updated
+ﻋﺮض ﻟﻔﺘﺮة ﻣﺤﺪودة
+اﺧﺘﺮ اﻟﺘﺠﺮﺑﺔ اﻟﻤﻨﺎﺳﺒﺔ
+ ﺣﺎﻟﻴًﺎ ﻋﲆ اﻟﺒﺎﻗﺎت اﻟﺜﻼث%50 ﺧﺼﻢ
+ﻟﻸﻓﺮاد.
+"Limited time offer / Choose the
+right experience / Currently 50%
+discount on the 3 packages for
+individuals."
+ﻋﺮض ﻟﻔﺘﺮة ﻣﺤﺪودة
+اﺧﺘﺮ اﻟﺘﺠﺮﺑﺔ اﻟﻤﻨﺎﺳﺒﺔ
+ ﺣﺎﻟﻴًﺎ ﻋﲆ% 50 ﺧﺼﻢ ﻳﺼﻞ إﱃ
+اﻟﺒﺎﻗﺎت اﻟﺜﻼث ﻟﻸﻓﺮاد.
+Updated Meaning: "Limited time
+offer / Choose the right experience
+/ Up to 50% discount currently on
+the three packages for individuals."
+(Updated to align with 33% off on
+outer tiers and 50% off on Zayd
+Plus).
+(2) Right Card: ﺑﺎﻗﺔ
+اﻟﻤﻨﻬﺞ
+Curriculum Package —
+Title & Description
+✎
+Description
+Updated
+ﺑﺎﻗﺔ اﻟﻤﻨﻬﺞ
+ﻃﻼب اﻟﻤﺘﻮﺳﻄﺔ واﻟﺜﺎﻧﻮﻳﺔ اﻟﺬﻳﻦ ﻳﺮﻳﺪون
+اﻟﺘﺮﻛﻴﺰ ﻋﲆ ﻣﻤﺎرﺳﺔ ﻣﺤﺘﻮى اﻟﻤﻨﻬﺞ
+Title: "Curriculum Package"
+Original Desc: "Middle and high
+school students who want to focus
+on practicing curriculum content"
+ﺑﺎﻗﺔ اﻟﻤﻨﻬﺞ
+إذا ﻛﺎن ﻫﺪﻓﻚ ﺗﺤﺴﻴﻦ أداﺋﻚ ﻓﻲ
+ﻣﻨﺎﻫﺞ اﻟﻤﺪرﺳﺔ
+Title: اﻟﻤﻨﻬﺞ  ﺑﺎﻗﺔ (Unchanged)
+Updated Desc: "If your goal is to
+improve your performance in
+school curricula"
+(3) Right Card: Price,
+Discount & Features
+Curriculum Package —
+Pricing & 4 bullets
+$ Price &
+Discount
+Updated
+ ﷼199
+ ﺳﻨﺔ/  ﷼ 99.5
+%50 ﺧﺼﻢ
+4 Bullets & CTA button (ﺑﺎﻗﺔ  اﺑﺪأ
+اﻟﻤﻨﻬﺞ) unchanged.
+ ﷼299
+ ﺳﻨﺔ/  ﷼ 199
+%33  ﺧﺼﻢGreen
+4 Bullets (Unchanged):
+• اﻟﻤﻨﻬﺞ  ﻣﻊ  ﻣﺘﻮاﻓﻖ  ﻣﺤﺘﻮى
+(Curriculum-aligned content)
+• واﻟﻘﺮاءة  واﻻﺳﺘﻤﺎع  اﻟﺘﺤﺪث  ﻣﻤﺎرﺳﺔ
+واﻟﻜﺘﺎﺑﺔ (4-skill practice)
+• ﻣﺨﺼﺺ  ﺗﻌﻠﻢ (Personalized
+learning)
+• اﻻﺻﻄﻨﺎﻋﻲ  ﺑﺎﻟﺬﻛﺎء  راﺟﻌﺔ  ﺗﻐﺬﻳﺔ (AI
+feedback)
+Button: اﻟﻤﻨﻬﺞ  ﺑﺎﻗﺔ  اﺑﺪأ (Start
+Curriculum Package)
+Figure 11: Pricing & Packages — Callouts (2)–(6) show updated target-audience descriptions, new prices (199 / 299 / 199
+SAR), and updated discount badges (33% / 50% / 33%).
+
+PAGE 20
+Page 20 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(4) Center Card:
+Zayd Plus
+Best Value Package —
+Price Updated (50%
+Kept)
+$ Price
+Updated
+(Best  Value)  اﻷﻓﻀﻞ ﻗﻴﻤﺔ
+Zayd  Plus
+اﻟﺘﺠﺮﺑﺔ اﻟﻜﺎﻣﻠﺔ: اﻟﻤﻨﻬﺞ
+اﻟﻤﻮاﺿﻴﻊ واﻟﻤﻮاﻗﻒ اﻟﺤﻴﺎﺗﻴﺔ.+ اﻟﺪراﺳﻲ
+ ﺳﻨﺔ/  ﷼ 199.5 |   ﷼399
+(✓  Checked)  %50 ﺧﺼﻢ
+Description, 50% badge, 4 bullets &
+CTA unchanged.
+ ﷼599
+ ﺳﻨﺔ/  ﷼ 299
+%50  ﺧﺼﻢGreen
+4 Bullets (Unchanged):
+• اﻟﻤﻨﻬﺞ  ﺑﺎﻗﺔ  ﻣﺰاﻳﺎ  ﺟﻤﻴﻊ (All
+Curriculum Package benefits)
+• ﻣﺰاﻳﺎ  ﺟﻤﻴﻊ Zayd Life (All Zayd
+Life benefits)
+• ﺣﻴﺎﺗﻴًﺎ  ﻣﻮﻗﻔًﺎ  40 ﻣﻦ  أﻛﺜﺮ (40+
+real-life situations)
+• ﻓﻲ  اﻟﺜﻘﺔ  ﻟﺒﻨﺎء  أﺷﻤﻞ  ﺗﺠﺮﺑﺔ
+اﻟﻠﻐﺔ  اﺳﺘﺨﺪام (Comprehensive
+confidence-building experience)
+Button: اﺧﺘﺮ Zayd Plus (Choose
+Zayd Plus)
+(5) Left Card: Zayd
+Life
+Daily Life Package —
+Title & Description
+✎
+Description
+Updated
+Zayd  Life
+ﻟﻤﻦ ﻳﺮﻳﺪ ﻣﻤﺎرﺳﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ ﻓﻲ ﻣﻮاﻗﻒ
+اﻟﺤﻴﺎة اﻟﻴﻮﻣﻴﺔ ﺑﻌﻴﺪًا ﻋﻦ ﻣﺤﺘﻮى اﻟﻤﻨﻬﺞ.
+Title: "Zayd Life"
+Original Desc: "For those who want
+to practice English in daily life
+situations away from curriculum
+content."
+Zayd  Life
+إذا ﻛﺎن ﻫﺪﻓﻚ اﺳﺘﺨﺪام اﻹﻧﺠﻠﻴﺰﻳﺔ
+ﻓﻲ اﻟﺤﻴﺎة اﻟﻴﻮﻣﻴﺔ
+Title: Zayd Life (Unchanged)
+Updated Desc: "If your goal is to
+use English in daily life"
+(6) Left Card: Price,
+Discount & Features
+Daily Life Package —
+Pricing & 4 bullets
+$ Price &
+Discount
+Updated
+ ﷼199
+ ﺳﻨﺔ/  ﷼ 99.5
+%50 ﺧﺼﻢ
+4 Bullets & CTA button (اﺑﺪأ Zayd
+Life) unchanged. Note: Original
+bullet 1 had a missing letter أ (ﻛﺜﺮ
+instead of أﻛﺜﺮ) — colleague added
+the أ in red!
+ ﷼299
+ ﺳﻨﺔ/  ﷼ 199
+%33  ﺧﺼﻢGreen
+4 Bullets (Fix typo in Bullet 1 to
+ﻛﺜﺮأ:)
+• ﺣﻴﺎﺗﻴًﺎ  ﻣﻮﺿﻮﻋًﺎ  40 ﻣﻦ  أﻛﺜﺮ (More
+than 40 real-life topics)
+• واﻟﺴﻮق  اﻟﻤﻄﻌﻢ  ﻓﻲ  ﻣﺤﺎدﺛﺎت
+وﻏﻴﺮﻫﺎ  واﻟﻤﻄﺎر (Conversations in
+restaurant, market, airport & more)
+• اﻟﻴﻮﻣﻴﺔ  واﻟﻤﻮاﻗﻒ  اﻟﺘﺤﺪث  ﻣﻤﺎرﺳﺔ
+(Speaking & daily situations)
+• اﻟﻤﺤﺎوﻟﺔ  وﺗﻜﺮار  راﺟﻌﺔ  ﺗﻐﺬﻳﺔ
+(Feedback & retrying)
+Button: اﺑﺪأ Zayd Life (Start Zayd
+Life)
+Section 12: Zayd for Schools & Groups — 5 Copy Updates & 1 New Callout
+Banner
+Layout & Developer Context: Positioned below the individual pricing tiers inside a light-blue B2B container:
+the left side shows the character, a teacher dashboard tablet mockup, and a free-teacher-account caption,
+while the right side presents the school headline, description, three white feature pills, and a blue CTA
+
+PAGE 21
+Page 21 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+button. Your colleague updated the headline, body copy, two feature pills, and CTA button, and drew a new
+full-width callout banner immediately below the card.
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(1) Left Column:
+Teacher Dashboard &
+Caption
+Character + Tablet UI +
+Bottom note
+✓
+Unchanged
+ﺣﺴﺎب ﺧﺎص ﻟﻠﻤﻌﻠﻢ ﻣﺠﺎﻧﺎً
+ﻷن اﻟﻤﻌﻠﻢ ﺟﺰء أﺳﺎﺳﻲ ﻣﻦ ﺗﺠﺮﺑﺔ زﻳﺪ
+ﻳﺤﺼﻞ ﻣﻌﻠﻤﻮ اﻟﻤﺪارس اﻟﻤﺸﺎرﻛﺔ ﻋﲆ
+ﺣﺴﺎب ﺧﺎص دون ﺗﻜﻠﻔﺔ إﺿﺎﻓﻴﺔ.
+زﻳﺪ ﻻ ﻳﺴﺘﺒﺪل اﻟﻤﻌﻠﻢ... ﺑﻞ ﻳﻮﺳّﻊ أﺛﺮه. 
+"Free private account for the
+teacher / Because the teacher is an
+essential part of the Zayd
+experience, teachers at
+participating schools get a private
+account at no extra cost. Zayd
+doesn't replace the teacher... it
+expands their impact."
+ﺣﺴﺎب ﺧﺎص ﻟﻠﻤﻌﻠﻢ ﻣﺠﺎﻧﺎً
+ﻷن اﻟﻤﻌﻠﻢ ﺟﺰء أﺳﺎﺳﻲ ﻣﻦ ﺗﺠﺮﺑﺔ
+زﻳﺪ ﻳﺤﺼﻞ ﻣﻌﻠﻤﻮ اﻟﻤﺪارس
+اﻟﻤﺸﺎرﻛﺔ ﻋﲆ ﺣﺴﺎب ﺧﺎص دون
+ﺗﻜﻠﻔﺔ إﺿﺎﻓﻴﺔ.
+زﻳﺪ ﻻ ﻳﺴﺘﺒﺪل اﻟﻤﻌﻠﻢ... ﺑﻞ ﻳﻮﺳّﻊ 
+أﺛﺮه.
+Keep left dashboard graphic and
+teacher caption unchanged.
+(2) Right Column:
+Badge & Headline
+Top pill badge + 2-line
+section title
+✎  Line 2
+Updated
+زﻳﺪ ﻟﻠﻤﺪارس واﻟﻤﺠﻤﻮﻋﺎت
+ﻣﺪرﺳﺘﻚ ﺗﺪرّس اﻹﻧﺠﻠﻴﺰﻳﺔ
+ﻳﻤﺎرﺳﻬﺎ. ﻛﻞ ﻃﺎﻟﺐ ﻳﺠﻌﻞزﻳﺪ 
+Original Headline: "Your school
+teaches English / Zayd makes
+every student practice it."
+زﻳﺪ ﻟﻠﻤﺪارس واﻟﻤﺠﻤﻮﻋﺎت
+ﻣﺪرﺳﺘﻚ ﺗﺪرّس اﻹﻧﺠﻠﻴﺰﻳﺔ
+وزﻳﺪ ﻳﻤﻨﺢ ﻛﻞ ﻃﺎﻟﺐ ﻓﺮﺻﺔ
+ﻟﻤﻤﺎرﺳﺘﻬﺎ.
+Updated Headline Meaning: "Your
+school teaches English / And Zayd
+gives every student an opportunity
+to practice it."
+(3) Right Column:
+Body Paragraph
+Below headline
+✎  Text
+Rewritten
+ﻻ ﺗﺤﺘﺎج اﻟﻤﺪرﺳﺔ إﱃ ﺗﻐﻴﻴﺮ ﻣﻨﻬﺠﻬﺎ أو
+اﺳﺘﺒﺪال ﻣﻌﻠﻤﻴﻬﺎ. زﻳﺪ ﻳﻀﻴﻒ ﻃﺒﻘﺔ ﻣﻦ
+اﻟﻤﻤﺎرﺳﺔ اﻟﻔﺮدﻳﺔ واﻟﺘﻐﺬﻳﺔ اﻟﺮاﺟﻌﺔ ﺣﻮل
+ﻣﺎ ﺗﻘﻮم ﺑﻪ اﻟﻤﺪرﺳﺔ ﺑﺎﻟﻔﻌﻞ.
+Original: "The school does not
+need to change its curriculum or
+replace its teachers. Zayd adds a
+layer of individual practice and
+feedback around what the school
+already does."
+ﻳﻌﺰز زﻳﺪ دور اﻟﻤﻌﻠﻢ، وﻳﻤﻨﺢ اﻟﻄﻼب
+ﻓﺮﺻًﺎ إﺿﺎﻓﻴﺔ ﻟﻤﻤﺎرﺳﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ، 
+ﻣﻊ ﺗﻐﺬﻳﺔ راﺟﻌﺔ ﺗﺪﻋﻢ ﺗﻘﺪﻣﻬﻢ.
+Updated Meaning: "Zayd
+reinforces the teacher's role, and
+gives students additional
+opportunities to practice English,
+with feedback that supports their
+progress."
+(4) White Pill 1 (Right
+Pill)
+First feature tag on
+right
+✎  Pill
+Updated
+ﺣﺴﺐ اﻟﻌﺪدأﺳﻌﺎر ﺧﺎﺻﺔ 
+Original: "Special prices by
+headcount"
+أﺳﻌﺎر ﺧﺎﺻﺔ ﻟﻠﻤﺪارس
+Updated Meaning: "Special prices
+for schools"
+Figure 12: Zayd for Schools & Groups — Callouts (2)–(7) update the school pitch copy, pills, and CTA; Callout (8) adds a
+new full-width banner below the card.
+
+PAGE 22
+Page 22 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(5) White Pill 2
+(Center Pill)
+Middle feature tag
+✎  Pill
+Updated
+ﻣﺠﻤﻮﻋﺎت ﻃﻼﺑﻴﺔ
+Original: "Student groups"
+اﺷﺘﺮاﻛﺎت ﻟﻠﻤﺠﻤﻮﻋﺎت اﻟﻄﻼﺑﻴﺔ
+Updated Meaning: "Subscriptions
+for student groups" (or اﺷﺘﺮاﻛﺎت
+ﻃﻼﺑﻴﺔ  ﻣﺠﻤﻮﻋﺎت.)
+(6) White Pill 3 (Left
+Pill)
+Left feature tag
+✓
+Unchanged
+دﻋﻢ ﻟﻠﺘﻄﺒﻴﻖ داﺧﻞ اﻟﻤﺪرﺳﺔ
+"Support for implementation inside
+the school"
+دﻋﻢ ﻟﻠﺘﻄﺒﻴﻖ داﺧﻞ اﻟﻤﺪرﺳﺔ
+Keep left white pill unchanged.
+(7) School CTA
+Button
+Bottom-right blue
+button with left arrow
+✎  Button
+Updated
+ﻋﺮض اﻟﻤﺪارساﻃﻠﺐ 
+Original: "Request Schools Offer"
+اﻃﻠﺐ ﻋﺮﺿًﺎ ﻟﻤﺪرﺳﺘﻚ 
+Updated Meaning: "Request an
+offer for your school"
+(8) NEW Full-Width
+Callout Banner
+Large red handwritten
+box below Section 12
+(Uncropped in PPTX
+Slide 4)
+★ New
+Section /
+Banner
+Added across the full width
+between Section 12 and Section 13.
+In PPTX Slide 4 (uncropped), the
+final word on the far left clearly
+reads اﺳﺘﺨﺪاﻣﻬﺎ "(using it").
+اﻟﻄﺎﻟﺐ ﻻ ﻳﺤﺘﺎج إﱃ ﻣﺰﻳﺪ ﻣﻦ ﺷﺮح
+اﻹﻧﺠﻠﻴﺰﻳﺔ ﺑﻘﺪر ﻣﺎ ﻳﺤﺘﺎج إﱃ اﻟﻤﺰﻳﺪ
+ﻣﻦ اﺳﺘﺨﺪاﻣﻬﺎ.
+New Banner Meaning: "The
+student does not need more
+explanation of English as much as
+they need more use of it (or
+practice with it: ﻣﻤﺎرﺳﺘﻬﺎ".)
+Section 12B: New 3-Card "Smart Dashboards & Gamification" Section (From PPTX Slide 4 Speaker
+Notes)
+Slide 4 Speaker Note Addition: In Slide 4 of your PowerPoint, you provided the complete Arabic and English
+copy for a new three-card section highlighting Zayd's dashboards and gamification for School
+Administration, Teachers, and Students. Below is the visual overview of Slides 1–4 from your PowerPoint
+followed by the complete copy-paste specification table for this new section.
+UI Element / Card Status Final Arabic Copy (Copy-Paste
+Ready)
+English Translation &
+Implementation Notes
+New Section
+Headline
+Centered title above
+the 3 cards
+★ New
+Headline
+(PPTX
+Slide 4)
+ﻟﻮﺣﺎت ﺗﺤﻜﻢ ذﻛﻴﺔ.. ﻗﻴﺎس دﻗﻴﻖ،
+ﺗﺪﺧﻞ أﺳﺮع، وﺗﺤﻔﻴﺰ ﻣﺴﺘﻤﺮ
+English Meaning: "Smart
+dashboards.. accurate
+measurement, faster intervention,
+and continuous motivation."
+Figure 12B: Overview of PowerPoint Slides 1–4 containing your speaker-note additions, 4 new feature boxes, updated
+impact counters, and the new 3-card Smart Dashboards section.
+
+PAGE 23
+Page 23 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+UI Element / Card Status Final Arabic Copy (Copy-Paste
+Ready)
+English Translation &
+Implementation Notes
+Card 1 (Right
+Card): School
+Admin Dashboard
+For School
+Administration
+★ New
+Card 1
+(PPTX
+Slide 4)
+ﻟﻺدارة اﻟﻤﺪرﺳﻴﺔ: رؤﻳﺔ ﺷﺎﻣﻠﺔ
+ ﻟﻮﺣﺔ ﺗﺤﻜﻢ إدارﻳﺔ: ﺗﺘﻴﺢ ﻟﻚ ﻣﺘﺎﺑﻌﺔ أداء• 
+ﺟﻤﻴﻊ اﻟﻔﺼﻮل واﻟﻤﻌﻠﻤﻴﻦ ﻓﻲ ﻣﻜﺎن واﺣﺪ.
+ ﺗﻘﺎرﻳﺮ ﻓﻮرﻳﺔ: ﻗﻴﺎس دﻗﻴﻖ ﻟﻤﺴﺘﻮى ﺗﻄﻮر• 
+اﻟﻄﻼب وﻣﺪى ﺗﻔﺎﻋﻞ اﻟﻤﻌﻠﻤﻴﻦ ﻣﻊ اﻟﻨﻈﺎم.
+ ﻗﺮارات ﻣﺒﻨﻴﺔ ﻋﲆ اﻟﺒﻴﺎﻧﺎت: اﻛﺘﺸﻒ ﻧﻘﺎط• 
+اﻟﻀﻌﻒ ﻓﻲ اﻟﻤﻨﻬﺞ وﻋﺎﻟﺠﻬﺎ ﻗﺒﻞ اﻻﺧﺘﺒﺎرات.
+Title: For School Admin:
+Comprehensive Vision
+• Admin dashboard: Track
+performance of all classes and
+teachers in one place.
+• Instant reports: Accurate
+measurement of student progress
+and teacher engagement.
+• Data-driven decisions: Spot
+curriculum weaknesses and fix them
+before exams.
+Card 2 (Center
+Card): Teacher
+Dashboard
+For the Teacher
+★ New
+Card 2
+(PPTX
+Slide 4)
+ﻟﻠﻤﻌﻠﻢ: ﻣﺘﺎﺑﻌﺔ أﺳﻬﻞ ﺑﺠﻬﺪ أﻗﻞ
+ ﻣﺆﺷﺮات اﻷﻟﻮان: ﺗﺼﻨﻴﻒ ذﻛﻲ ﻟﻠﻄﻼب• 
+ ﻟﻤﻌﺮﻓﺔ ﻣﻦ ﻳﺤﺘﺎج( أﺧﻀﺮ، أﺻﻔﺮ، أﺣﻤﺮ) 
+ﻟﻠﻤﺴﺎﻋﺪة ﻓﻮراً.
+ ﺗﻨﺒﻴﻬﺎت ﺳﺮﻳﻌﺔ: إرﺳﺎل ﺗﻮﺟﻴﻬﺎت• 
+ ﻟﻠﻄﻼب اﻟﻤﺘﻌﺜﺮﻳﻦ ﺑﻀﻐﻄﺔ زر.( Nudges)
+ اﻟﺬﻛﺎء اﻻﺻﻄﻨﺎﻋﻲ ﻛﻤﺴﺎﻋﺪ: زﻳﺪ ﻳﺘﻮﱃ• 
+اﻟﺘﺼﺤﻴﺢ واﻟﺘﻘﻴﻴﻢ، ﻟﺘﺘﻔﺮغ أﻧﺖ ﻟﻠﺘﻮﺟﻴﻪ
+واﻟﺪﻋﻢ.
+Title: For the Teacher: Easier Follow-
+Up with Less Effort
+• Color indicators: Smart
+classification of students (Green,
+Yellow, Red) to know who needs
+help immediately.
+• Quick alerts: Send nudges to
+struggling students with one click.
+• AI as an assistant: Zayd handles
+grading and assessment so you can
+focus on guiding and supporting.
+Card 3 (Left Card):
+Gamification &
+Rewards
+For Students
+★ New
+Card 3
+(PPTX
+Slide 4)
+ﻟﻠﻄﻼب: ﻣﺘﻌﺔ اﻟﻤﻤﺎرﺳﺔ واﻟﺘﺤﺪي
+ ﻧﻈﺎم ﻧﻘﺎط ﺗﻨﺎﻓﺴﻲ: ﺗﺤﻮﻳﻞ اﻟﻤﻤﺎرﺳﺔ• 
+اﻟﻴﻮﻣﻴﺔ إﱃ ﺗﺤﺪٍ ﻣﻤﺘﻊ ﻳﻜﺎﻓﺊ اﻟﻄﺎﻟﺐ ﻋﲆ
+اﺳﺘﻤﺮارﻳﺘﻪ.
+20  ﻟﻮﺣﺎت ﺷﺮف أﺳﺒﻮﻋﻴﺔ: إﺑﺮاز أﻓﻀﻞ• 
+ﻃﺎﻟﺒﺎً ﻟﺘﺤﻔﻴﺰ اﻟﺘﻨﺎﻓﺲ اﻹﻳﺠﺎﺑﻲ.
+ ﻣﻜﺎﻓﺂت ﻗﺎﺑﻠﺔ ﻟﻼﺳﺘﺒﺪال: ﻳﻤﻜﻦ ﻟﻠﻄﻼب• 
+اﺳﺘﺒﺪال ﻧﻘﺎﻃﻬﻢ ﺑﻤﻜﺎﻓﺂت أو اﻣﺘﻴﺎزات داﺧﻞ
+اﻟﻔﺼﻞ، ﻣﻤﺎ ﻳﺤﻔﺰ اﻟﻤﻌﻠﻤﻴﻦ واﻟﻄﻼب ﻣﻌﺎً.
+Title: For Students: The Joy of
+Practice and Challenge
+• Competitive points system:
+Turning daily practice into a fun
+challenge rewarding consistency.
+• Weekly leaderboards: Highlighting
+the top 20 students to motivate
+positive competition.
+• Redeemable rewards: Students
+can redeem points for classroom
+rewards or privileges, motivating
+both teachers and students.
+Section 13: Frequently Asked Questions (FAQ) — All 9 Questions & Complete
+Answers (Including 2 New FAQs)
+Layout & Developer Context: Positioned below the schools section as a centered single-column accordion
+list of nine expandable FAQ cards (seven existing questions plus two new questions added by your colleague
+in red). To make implementation turnkey for your engineering team, the table below provides both the exact
+Arabic questions and complete, copy-paste-ready Arabic and English answer paragraphs for all nine FAQ
+items.
+
+PAGE 24
+Page 24 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+# & FAQ Position Status Arabic Question & Answer (Copy-
+Paste Ready)
+English Translation & Developer
+Notes
+(1) Section Badge
+& Headline
+Centered top pill &
+2-line title
+✓
+Unchange
+d
+اﻷﺳﺌﻠﺔ اﻟﺸﺎﺋﻌﺔ
+ﻛﻞ ﻣﺎ ﺗﺤﺘﺎج ﻣﻌﺮﻓﺘﻪ ﻗﺒﻞ اﻟﺒﺪء
+Badge: "Frequently Asked Questions"
+Headline: "Everything you need to
+know before starting"
+(2) FAQ #1 (Top of
+List)
+Circled in red
+above "؟  زﻳﺪ  ﻫﻮ  ﻣﺎ"
+★ New
+FAQ +
+Answer
+Added
+ ؟" Zayd زﻳﺪ" س: ﻟﻤﺎذا اﺧﺘﺮﻧﺎ اﺳﻢ 
+ ﻓﻲ اﻟﻠﻐﺔ اﻟﻌﺮﺑﻴﺔ ﺑﻤﻌﻨﻰ" زﻳﺪ" ج: ﻳﺮﺗﺒﻂ اﺳﻢ 
+اﻟﺰﻳﺎدة واﻟﻨﻤﺎء واﻟﺘﻘﺪّم اﻟﻤﺴﺘﻤﺮ؛ وﻫﻮ ﻣﺎ
+ﻳﻤﺜّﻠﻪ زﻳﺪ ﺗﻤﺎﻣًﺎ، إذ ﻳﺰﻳﺪ ﻣﻦ ﻓﺮص اﻟﻄﺎﻟﺐ 
+ﻓﻲ ﻣﻤﺎرﺳﺔ اﻟﻠﻐﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ، وﻳﻨﻤّﻲ ﻣﻬﺎراﺗﻪ
+ﻓﻲ اﻟﺘﺤﺪث واﻟﻘﺮاءة واﻻﺳﺘﻤﺎع واﻟﻜﺘﺎﺑﺔ،
+وﻳﺰﻳﺪ ﻣﻦ ﺛﻘﺘﻪ ﻓﻲ اﺳﺘﺨﺪام اﻟﻠﻐﺔ ﻓﻲ
+اﻟﻤﺪرﺳﺔ واﻟﺤﻴﺎة اﻟﻴﻮﻣﻴﺔ.
+Q: Why did we choose the name
+"Zayd"?
+A: In Arabic, the name "Zayd" signifies
+growth, increase, and continuous
+progress—which reflects what Zayd
+does: it increases each student's
+opportunities to practice English,
+grows their speaking, reading,
+listening, and writing skills, and builds
+their confidence in using the language
+at school and in daily life.
+(3) FAQ #2
+(Expanded Card)
+What is Zayd?
+✎  Answer
+Aligned
+with Hero
+س: ﻣﺎ ﻫﻮ زﻳﺪ ؟
+ج: زﻳﺪ ﻣﻌﻠّﻢ ذﻛﻲ ﻟﻤﻤﺎرﺳﺔ اﻟﻠﻐﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ
+ﻳﻤﻨﺢ ﻛﻞ ﻃﺎﻟﺐ ﺗﺠﺮﺑﺔ ﻣﺨﺼﺼﺔ ﻟﻠﺘﺤﺪث
+واﻟﻘﺮاءة واﻻﺳﺘﻤﺎع واﻟﻜﺘﺎﺑﺔ، ﻣﻊ ﺗﻐﺬﻳﺔ راﺟﻌﺔ
+ﻓﻮرﻳﺔ وﻣﺤﺘﻮى ﻣﺘﻨﺎﻏﻢ ﻣﻊ ﻣﺎ ﻳﺘﻌﻠﻤﻪ ﻃﻼب
+اﻟﻤﺮﺣﻠﺘﻴﻦ اﻟﻤﺘﻮﺳﻄﺔ واﻟﺜﺎﻧﻮﻳﺔ ﻓﻲ اﻟﻤﺪرﺳﺔ.
+Q: What is Zayd?
+A: Zayd is a smart tutor for practicing
+the English language that gives every
+student a customized experience for
+speaking, reading, listening, and
+writing, with instant feedback and
+content harmonized with what middle
+and high school students learn at
+school.
+(4a) FAQ #3
+Teacher
+replacement
+question
+✓
+Question
+Unchange
+d +
+Answer
+Supplied
+س: ﻫﻞ زﻳﺪ ﺑﺪﻳﻞ ﻋﻦ ﻣﻌﻠﻢ اﻟﻠﻐﺔ
+اﻹﻧﺠﻠﻴﺰﻳﺔ ؟
+ج: ﻻ، زﻳﺪ ﻻ ﻳﺴﺘﺒﺪل اﻟﻤﻌﻠﻢ ﺑﻞ ﻳﻌﺰز دوره
+وﻳﻮﺳّﻊ أﺛﺮه؛ ﻓﻬﻮ ﻳﻤﻨﺢ ﻛﻞ ﻃﺎﻟﺐ ﻓﺮﺻًﺎ 
+إﺿﺎﻓﻴﺔ ﻟﻤﻤﺎرﺳﺔ اﻟﻠﻐﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ ﺑﺸﻜﻞ
+ﻓﺮدي ووﻓﻖ ﻣﺴﺘﻮاه وﺳﺮﻋﺘﻪ ﺣﻮل ﻣﺎ ﻳﺘﻌﻠﻤﻪ
+ﺑﺎﻟﻔﻌﻞ ﻓﻲ اﻟﻤﺪرﺳﺔ، ﻣﻊ ﺗﻐﺬﻳﺔ راﺟﻌﺔ ﻓﻮرﻳﺔ
+ﺗﺪﻋﻢ ﺗﻘﺪﻣﻪ.
+Q: Is Zayd a replacement for the
+English teacher?
+A: No, Zayd does not replace the
+teacher; rather, it reinforces their role
+and expands their impact. It gives
+every student additional opportunities
+to practice English individually at their
+own level and pace around what they
+already learn at school, with instant
+feedback supporting their progress.
+(4b) FAQ #4
+Supported school
+grades
+✓
+Question
+Unchange
+d +
+Answer
+Supplied
+س: ﻣﺎ اﻟﺼﻔﻮف اﻟﺘﻲ ﻳﺨﺪﻣﻬﺎ زﻳﺪ
+ﺣﺎﻟﻴًﺎ ؟
+ج: ﻳﺨﺪم زﻳﺪ ﺣﺎﻟﻴًﺎ ﻃﻼب اﻟﻤﺮﺣﻠﺘﻴﻦ
+ﻣﻦ اﻟﺼﻒ اﻷول) اﻟﻤﺘﻮﺳﻄﺔ واﻟﺜﺎﻧﻮﻳﺔ 
+،( اﻟﻤﺘﻮﺳﻂ إﱃ اﻟﺼﻒ اﻟﺜﺎﻟﺚ اﻟﺜﺎﻧﻮي
+Q: What grades does Zayd currently
+serve?
+A: Zayd currently serves middle and
+high school students (from 1st
+Intermediate / Grade 7 to 3rd
+Secondary / Grade 12), with content
+harmonized with the approved school
+Figure 13: FAQ Section — Callout (2) adds a new first question about the name "Zayd"; Callout (6) inserts a new AI
+assessment question after FAQ #4. All 9 questions and answers are provided below.
+
+PAGE 25
+Page 25 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+# & FAQ Position Status Arabic Question & Answer (Copy-
+Paste Ready)
+English Translation & Developer
+Notes
+ﺑﻤﺤﺘﻮى ﻣﺘﻨﺎﻏﻢ ﻣﻊ ﻣﻨﻬﺞ اﻟﻠﻐﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ
+اﻟﻤﻌﺘﻤﺪ ﻓﻲ اﻟﻤﺪرﺳﺔ، ﺑﺎﻹﺿﺎﻓﺔ إﱃ ﻣﻮاﺿﻴﻊ
+وﻣﻮاﻗﻒ اﻟﺤﻴﺎة اﻟﻴﻮﻣﻴﺔ.
+English curriculum, plus daily-life
+topics and situations.
+(5) FAQ #5
+Recommended
+weekly usage
+✓
+Question
+Unchange
+d +
+Answer
+Supplied
+س: ﻛﻢ ﻳﺤﺘﺎج اﻟﻄﺎﻟﺐ إﱃ اﺳﺘﺨﺪام
+زﻳﺪ ؟
+ج: ﻳﺤﺘﺎج اﻟﻄﺎﻟﺐ إﱃ ﻧﺤﻮ ﺳﺎﻋﺔ واﺣﺪة
+أﺳﺒﻮﻋﻴًﺎ ﻣﻦ اﻟﻤﻤﺎرﺳﺔ اﻟﻤﻨﺘﻈﻤﺔ ﻣﻊ زﻳﺪ؛
+وﻣﻊ اﻻﺳﺘﻤﺮار ﺧﻼل ﻋﺎم دراﺳﻲ واﺣﺪ،
+ﻳﺤﺼﻞ اﻟﻄﺎﻟﺐ ﻋﲆ ﻓﺮص ﻣﻜﺜﻔﺔ ﻟﻤﻤﺎرﺳﺔ
+اﻟﺘﺤﺪث ﺑﺎﻹﻧﺠﻠﻴﺰﻳﺔ ﺗﻌﺎدل ﺗﻘﺮﻳﺒًﺎ ﻣﺎ ﻗﺪ
+ ﺳﻨﻮات ﻓﻲ اﻟﻔﺼﻞ10 ﻳﺤﺼﻞ ﻋﻠﻴﻪ ﺧﻼل
+اﻟﺘﻘﻠﻴﺪي.
+Q: How much does a student need to
+use Zayd?
+A: A student needs around 1 hour per
+week of regular practice with Zayd.
+With consistent use over one academic
+year, the student receives intensive
+English speaking opportunities roughly
+equivalent to 10 years in a traditional
+classroom.
+(6) FAQ #6
+(Inserted via
+Arrow)
+Written at bottom
+with red arrow
+pointing after FAQ
+#5
+★ New
+FAQ +
+Answer
+Added
+س: ﻛﻴﻒ ﻳﺴﺘﺨﺪم اﻟﺬﻛﺎء اﻻﺻﻄﻨﺎﻋﻲ
+ﻓﻲ ﺗﻘﻴﻴﻢ اﻟﻄﺎﻟﺐ ؟
+ج: ﻳﺴﺘﺨﺪم زﻳﺪ اﻟﺬﻛﺎء اﻻﺻﻄﻨﺎﻋﻲ ﻟﻠﺘﻔﺎﻋﻞ
+ﻣﻊ اﻟﻄﺎﻟﺐ ﻓﻲ ﻣﻬﺎرات اﻟﺘﺤﺪث واﻟﻘﺮاءة
+واﻻﺳﺘﻤﺎع واﻟﻜﺘﺎﺑﺔ، وﺗﻘﺪﻳﻢ ﻣﻼﺣﻈﺎت ذﻛﻴﺔ
+وﺗﻐﺬﻳﺔ راﺟﻌﺔ ﻓﻮرﻳﺔ ﻟﺘﺤﺴﻴﻦ اﻟﻨﻄﻖ واﻟﻄﻼﻗﺔ
+واﻷداء، ﻣﻊ ﺗﻜﻴﻴﻒ اﻟﺘﻤﺎرﻳﻦ ﺗﻠﻘﺎﺋﻴًﺎ وﻓﻖ
+ﻣﺴﺘﻮى اﻟﻄﺎﻟﺐ واﺣﺘﻴﺎﺟﻪ وﻣﻨﺤﻪ ﻣﺤﺎوﻻت
+ﻣﺘﻜﺮرة ﺣﺘﻰ اﻹﺗﻘﺎن.
+Q: How is Artificial Intelligence used
+in evaluating the student?
+A: Zayd uses AI to interact with the
+student across speaking, reading,
+listening, and writing skills—providing
+smart notes and instant feedback to
+improve pronunciation, fluency, and
+performance, while automatically
+adapting exercises to the student's
+level and allowing unlimited retries until
+mastery.
+(7a) FAQ #7
+Comparison of the
+3 packages
+✓
+Question
+Unchange
+d +
+Answer
+Supplied
+س: ﻣﺎ اﻟﻔﺮق ﺑﻴﻦ اﻟﺒﺎﻗﺎت اﻟﺜﻼث ؟
+: إذا ﻛﺎن( ﺳﻨﺔ/  ﷼199)   ﺑﺎﻗﺔ اﻟﻤﻨﻬﺞ• ج: 
+ﻫﺪﻓﻚ ﺗﺤﺴﻴﻦ أداﺋﻚ ﻓﻲ ﻣﻨﺎﻫﺞ اﻟﻤﺪرﺳﺔ
+وﻣﻤﺎرﺳﺔ ﻣﻬﺎرات اﻟﻠﻐﺔ اﻷرﺑﻊ.
+: إذا ﻛﺎن( ﺳﻨﺔ/  ﷼199)  Zayd  Life  ﺑﺎﻗﺔ• 
+ﻫﺪﻓﻚ اﺳﺘﺨﺪام اﻹﻧﺠﻠﻴﺰﻳﺔ ﻓﻲ اﻟﺤﻴﺎة اﻟﻴﻮﻣﻴﺔ
+ ﻣﻮﺿﻮﻋًﺎ وﻣﻮﻗﻔًﺎ ﺣﻴﺎﺗﻴًﺎ.40 ﻋﺒﺮ أﻛﺜﺮ ﻣﻦ
+ﺳﻨﺔ - اﻷﻓﻀﻞ/  ﷼299)  Zayd  Plus  ﺑﺎﻗﺔ• 
+: اﻟﺘﺠﺮﺑﺔ اﻟﻜﺎﻣﻠﺔ اﻟﺘﻲ ﺗﺠﻤﻊ ﻣﺰاﻳﺎ ﺑﺎﻗﺔ( ﻗﻴﻤﺔ
+.Zayd  Life اﻟﻤﻨﻬﺞ وﺟﻤﻴﻊ ﻣﺰاﻳﺎ
+Q: What is the difference between the
+three packages?
+A: • Curriculum Package (199
+SAR/yr): If your goal is improving
+performance in school curricula across
+all 4 skills.
+• Zayd Life (199 SAR/yr): If your goal
+is using English in daily life across 40+
+real-life scenarios.
+• Zayd Plus (299 SAR/yr — Best
+Value): The complete experience
+combining both the Curriculum
+Package and Zayd Life.
+(7b) FAQ #8
+School & group
+pricing
+✓
+Question
+Unchange
+d +
+Answer
+Supplied
+س: ﻫﻞ ﺗﻮﺟﺪ أﺳﻌﺎر ﺧﺎﺻﺔ ﻟﻠﻤﺪارس
+واﻟﻤﺠﻤﻮﻋﺎت ؟
+ج: ﻧﻌﻢ، ﻳﻮﻓّﺮ زﻳﺪ أﺳﻌﺎرًا ﺧﺎﺻﺔ ﻟﻠﻤﺪارس
+واﺷﺘﺮاﻛﺎت ﻟﻠﻤﺠﻤﻮﻋﺎت اﻟﻄﻼﺑﻴﺔ، ﻣﻊ دﻋﻢ
+ﻣﺘﻜﺎﻣﻞ ﻟﻠﺘﻄﺒﻴﻖ داﺧﻞ اﻟﻤﺪرﺳﺔ. ﻳﻤﻜﻨﻚ
+اﻃﻠﺐ ﻋﺮﺿًﺎ "ﻃﻠﺐ ﻋﺮض ﺧﺎص ﻋﺒﺮ زر  
+." ﻟﻤﺪرﺳﺘﻚ
+Q: Are there special prices for
+schools and groups?
+A: Yes, Zayd provides special pricing
+for schools and subscriptions for
+student groups, complete with in-
+school implementation support.
+Request a quote via the "Request an
+offer for your school" button.
+
+PAGE 26
+Page 26 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+# & FAQ Position Status Arabic Question & Answer (Copy-
+Paste Ready)
+English Translation & Developer
+Notes
+(7c) FAQ #9
+Teacher account
+cost
+✓
+Question
+Unchange
+d +
+Answer
+Supplied
+س: ﻫﻞ ﻳﺪﻓﻊ اﻟﻤﻌﻠﻢ ﻣﻘﺎﺑﻞ ﺣﺴﺎﺑﻪ ؟
+ج: ﻻ، ﻷن اﻟﻤﻌﻠﻢ ﺟﺰء أﺳﺎﺳﻲ ﻣﻦ ﺗﺠﺮﺑﺔ زﻳﺪ،
+ﻳﺤﺼﻞ ﻣﻌﻠﻤﻮ اﻟﻤﺪارس اﻟﻤﺸﺎرﻛﺔ ﻋﲆ
+ﺣﺴﺎب ﺧﺎص ﻣﺠﺎﻧًﺎ دون أي ﺗﻜﻠﻔﺔ إﺿﺎﻓﻴﺔ
+ﻟﻤﺘﺎﺑﻌﺔ ﺗﻘﺪم ﻃﻼﺑﻬﻢ وﺗﻘﺎرﻳﺮ أداﺋﻬﻢ.
+Q: Does the teacher pay for their
+account?
+A: No. Because the teacher is an
+essential part of the Zayd experience,
+teachers at participating schools
+receive a private account for free at no
+extra cost to track student progress
+and performance reports.
+Section 14: Final Call-to-Action Banner & Website Footer — No Changes
+Requested
+Layout & Developer Context: Positioned at the very bottom of the landing page, consisting of a teal-to-blue
+rounded conversion card (with two CTA buttons) followed by the full-width dark-blue website footer
+containing the character illustration on the left, contact details, quick navigation links, and brand tagline on
+the right. No text or layout changes were requested in this final section.
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(1) Final CTA Banner
+Copy
+Teal-to-blue rounded
+card above footer
+✓
+Unchanged
+ﺟﺎﻫﺰ ﻟﺘﺠﺮﺑﺔ زﻳﺪ ؟
+اﻟﻤﻨﻬﺞ ﻧﻔﺴﻪ. اﻟﻤﻌﻠﻢ ﻧﻔﺴﻪ. ﻟﻜﻦ ﻫﺬه
+اﻟﻤﺮة ﻛﻞ ﻃﺎﻟﺐ ﻳﺘﺤﺪث
+اﻣﻨﺢ اﻟﻄﺎﻟﺐ ﻓﺮﺻﺔ أﻛﺒﺮ ﻟﻠﺘﺤﺪث
+واﻟﻤﻤﺎرﺳﺔ واﻟﺘﻔﺎﻋﻞ ﻣﻊ اﻹﻧﺠﻠﻴﺰﻳﺔ اﻟﺘﻲ
+ﻳﺘﻌﻠﻤﻬﺎ اﻟﻴﻮم وﻳﺤﺘﺎج إﻟﻴﻬﺎ ﻏﺪًا ﻓﻲ
+اﻟﺠﺎﻣﻌﺔ وﺳﻮق اﻟﻌﻤﻞ واﻟﺤﻴﺎة.
+"Ready to try Zayd?" | Headline:
+"Same curriculum. Same teacher.
+But this time every student speaks"
+| Body: "Give the student a greater
+opportunity to speak, practice, and
+interact with the English they learn
+today and will need tomorrow in
+university, the job market, and life."
+ﺟﺎﻫﺰ ﻟﺘﺠﺮﺑﺔ زﻳﺪ ؟
+اﻟﻤﻨﻬﺞ ﻧﻔﺴﻪ. اﻟﻤﻌﻠﻢ ﻧﻔﺴﻪ. ﻟﻜﻦ
+ﻫﺬه اﻟﻤﺮة ﻛﻞ ﻃﺎﻟﺐ ﻳﺘﺤﺪث
+اﻣﻨﺢ اﻟﻄﺎﻟﺐ ﻓﺮﺻﺔ أﻛﺒﺮ ﻟﻠﺘﺤﺪث
+واﻟﻤﻤﺎرﺳﺔ واﻟﺘﻔﺎﻋﻞ ﻣﻊ اﻹﻧﺠﻠﻴﺰﻳﺔ
+اﻟﺘﻲ ﻳﺘﻌﻠﻤﻬﺎ اﻟﻴﻮم وﻳﺤﺘﺎج إﻟﻴﻬﺎ ﻏﺪًا
+ﻓﻲ اﻟﺠﺎﻣﻌﺔ وﺳﻮق اﻟﻌﻤﻞ واﻟﺤﻴﺎة.
+Keep CTA banner copy unchanged.
+(2) & (3) Final CTA
+Buttons
+Right white button +
+Left blue button
+✓
+Unchanged
+ﺟﺮّب زﻳﺪ اﻵن
+اﻃﻠﺐ ﺗﺠﺮﺑﺔ ﻟﻤﺪرﺳﺘﻚ
+"Try Zayd Now" | "Request a Trial
+for Your School"
+ اﻃﻠﺐ ﺗﺠﺮﺑﺔ  |   ﺟﺮّب زﻳﺪ اﻵن
+ﻟﻤﺪرﺳﺘﻚ
+Keep both buttons unchanged.
+Figure 14: Final CTA Banner & Footer — No text or layout changes requested by colleague.
+
+PAGE 27
+Page 27 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+# & UI Element
+Location
+Status Original Arabic & English
+Meaning
+Final Arabic Copy (Copy-Paste)
+& Dev Notes
+(4) Footer Brand &
+Tagline
+Dark blue footer —
+Right column
+✓
+Unchanged
+ زﻳﺪ/  ZAYD
+.ﻣﻌﻠّﻢ ذﻛﻲ ﻟﻤﻤﺎرﺳﺔ اﻟﻠﻐﺔ اﻹﻧﺠﻠﻴﺰﻳﺔ
+ﺗﻌﻠّﻢ. ﻣﺎرس. أﺗﻘﻦ.
+"ZAYD / Smart tutor for practicing
+the English language. / Learn.
+Practice. Master."
+ﻣﻌﻠّﻢ ذﻛﻲ ﻟﻤﻤﺎرﺳﺔ اﻟﻠﻐﺔ
+اﻹﻧﺠﻠﻴﺰﻳﺔ.
+ﺗﻌﻠّﻢ. ﻣﺎرس. أﺗﻘﻦ.
+Keep brand column unchanged.
+(5) Footer Quick
+Links
+Dark blue footer —
+Middle-right column
+✓
+Unchanged
+رواﺑﻂ ﺳﺮﻳﻌﺔ
+•  |   اﻷﺳﻌﺎر•  |   اﻟﻤﻨﻬﺞ•  |   ﻟﻤﺎذا زﻳﺪ ؟• 
+ﻟﻠﻤﺪارس
+Header: "Quick Links" — Why
+Zayd? | Curriculum | Pricing | For
+Schools
+ اﻟﻤﻨﻬﺞ |  رواﺑﻂ ﺳﺮﻳﻌﺔ: ﻟﻤﺎذا زﻳﺪ ؟
+ ﻟﻠﻤﺪارس |   اﻷﺳﻌﺎر |
+Keep quick links unchanged.
+(6) Footer Contact &
+Copyright
+Dark blue footer —
+Middle-left & bottom
+bar
+✓
+Unchanged
+(Contact  Us)  ﺗﻮاﺻﻞ ﻣﻌﻨﺎ
+info@youruniversity . com  |  + 9665
+000 00000
+. ﺟﻤﻴﻊ اﻟﺤﻘﻮقZayd  AI 2026 ©
+.ﻣﺤﻔﻮﻇﺔ
+"© 2026 Zayd AI. All rights
+reserved."
+:ﺗﻮاﺻﻞ ﻣﻌﻨﺎ
+info@youruniversity . com  |
++ 9665 000 00000
+. ﺟﻤﻴﻊ اﻟﺤﻘﻮقZayd  AI 2026 ©
+.ﻣﺤﻔﻮﻇﺔ
+Keep footer contact info (until
+updated with live company
+email/phone) and copyright line
+unchanged.
+Section 15: Actionable Checklist of Missing & Unclear Items (To Send to Your
+Colleague)
+Purpose of This Section: Below is the complete, itemized list of questions, missing texts, and unconfirmed
+decisions across the landing page and PowerPoint. Each item includes both an English explanation for
+you/your dev team and a ready-to-send Arabic question for your colleague so they can fill in the exact
+answers right away.
+Item
+#
+Section & Element What Is Missing or Needs
+Confirmation (English)
+Question to Send to Your Colleague
+(Arabic)
+#1 Sections 3, 8 & 11
+Real-Life Topics Count
+(+40 vs. +250)
+Slide 1 speaker notes state "More than
+250+ topics", while Section 3, Section
+8, and the Section 11 pricing bullets
+still say 40+ topics/situations.
+Confirm whether all mentions of 40
+should become 250.
+ ﻣﻮﺿﻮﻋًﺎ وﻣﻮﻗﻔًﺎ250+"  ﻫﻞ ﻧﻌﺘﻤﺪ رﻗﻢ
+ ﻓﻲ ﺟﻤﻴﻊ" 40+"   ﺑﺪﻻً ﻣﻦ "ﻣﻦ اﻟﺤﻴﺎة 
+ﺷﺮﻳﻂ اﻹﺣﺼﺎﺋﻴﺎت، ﻗﺴﻢ) اﻷﻗﺴﺎم 
+Zayd اﻟﺤﻴﺎة اﻟﻴﻮﻣﻴﺔ، وﻣﻤﻴﺰات ﺑﺎﻗﺘﻲ
+؟( Zayd  Plus  وLife
+#2 Section 5 & Section 8
+Visual Distinction
+Notes
+Your colleague asked on Section 5
+("Can we add a visual shape or
+colors?") and Section 8 ("Can this be
+visually distinguished?"). Confirm if
+they have a specific layout/color style
+ﺑﺨﺼﻮص ﻣﻼﺣﻈﺔ ﺗﻤﻴﻴﺰ ﻗﺴﻢ اﻟﻤﻘﺎرﻧﺔ
+ﻣﻦ)  وﻗﺴﻢ ( ﻣﻊ زﻳﺪ /داﺧﻞ اﻟﻔﺼﻞ  )
+ ﺑﺼﺮﻳًﺎ: ﻫﻞ ﻟﺪﻳﻜﻢ( اﻟﻤﻨﻬﺞ إﱃ اﻟﺤﻴﺎة
+ﺗﺼﻮر ﻣﻌﻴﻦ ﻟﻸﻟﻮان أو اﻟﺘﺼﻤﻴﻢ أم
+
+PAGE 28
+Page 28 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+Item
+#
+Section & Element What Is Missing or Needs
+Confirmation (English)
+Question to Send to Your Colleague
+(Arabic)
+in mind or approve our soft container
+design.
+ﻧﻌﺘﻤﺪ ﺧﻠﻔﻴﺔ ﻣﻤﻴﺰة وإﻃﺎرًا واﺿﺤًﺎ ﻟﻜﻞ
+ﻗﺴﻢ؟
+#3 Section 6
+Mapping the 8 App
+Screenshots to the 8
+Skill Pills
+Slides 5–12 provide 8 English-UI app
+screenshots (2 Reading, 2 Grammar, 1
+Listening, 1 Roleplay, 1 Writing, 1
+Debate). Confirm which screenshot
+maps to واﻟﻤﻨﺎﻗﺸﺔ  اﻻﺳﺘﻤﺎع vs. اﻟﺘﺤﺪث
+اﻟﺬات  ﻋﻦ, and whether English UI
+inside the screenshots is approved.
+ ﺷﺎﺷﺎت ﻣﻦ داﺧﻞ اﻟﻤﻨﺼﺔ؛8 ﺗﻢ إرﻓﺎق
+ﻫﻞ ﻧﺮﺑﻂ ﻛﻞ ﻣﻬﺎرة ﻣﻦ اﻟﻤﻬﺎرات
+اﻟﺜﻤﺎﻧﻲ ﻓﻲ ﻗﺴﻢ اﻟﻤﻨﻬﺞ ﺑﺸﺎﺷﺘﻬﺎ
+اﻟﻤﻘﺎﺑﻠﺔ ﻋﻨﺪ اﻟﻀﻐﻂ ﻋﻠﻴﻬﺎ؟ وأي ﺷﺎﺷﺔ
+؟" اﻟﺘﺤﺪث ﻋﻦ اﻟﺬات" ﻧﺨﺼﺼﻬﺎ ﻟﻤﻬﺎرة 
+#4 Section 7
+Live Reading +
+Speaking Interactive
+Demo
+Your colleague wrote ﺗﺠﺮﺑﺔ  إﺿﺎﻓﺔ
+اﻟﺘﺤﺪث +  ﻟﻠﻘﺮاءة  زﻳﺪ  ﻣﻊ  ﺣﻘﻴﻘﻴﺔ and
+Slide 2 notes state "Bottom arrow
+section will have live interactions and
+animations". We need the exact 1–2
+sample English sentences/prompts to
+pre-load in this widget.
+إﺿﺎﻓﺔ ﺗﺠﺮﺑﺔ ﺣﻘﻴﻘﻴﺔ ﻣﻊ زﻳﺪ" ﺑﺨﺼﻮص 
+ ﻓﻲ اﻟﺼﻔﺤﺔ"  اﻟﺘﺤﺪث+ ﻟﻠﻘﺮاءة 
+اﻟﺮﺋﻴﺴﻴﺔ: ﻣﺎ ﻫﻲ اﻟﺠﻤﻠﺔ أو اﻟﻔﻘﺮة
+اﻟﺘﺠﺮﻳﺒﻴﺔ اﻟﺘﻲ ﺗﺮﻏﺒﻮن ﻓﻲ وﺿﻌﻬﺎ
+ﻟﻴﺠﺮﺑﻬﺎ اﻟﺰاﺋﺮ ﻣﺒﺎﺷﺮة ﺑﺎﻟﺼﻮت؟
+#5 Section 7 (Slide 2)
+4 New Feature Boxes
+(CEFR, 3D Avatar,
+Certificates, Points)
+Slide 2 adds 4 English boxes (CEFR
+for students, 3D Avatar Modes,
+Certificates and badges, Points
+& Rewards) without Arabic titles or
+descriptions. Confirm our proposed
+Arabic copy and whether they expand
+the 6 cards to 10 cards.
+ﻣﺎ ﻫﻲ اﻟﺼﻴﺎﻏﺔ اﻟﻌﺮﺑﻴﺔ اﻟﻤﻌﺘﻤﺪة
+ﻟﻠﻌﻨﺎوﻳﻦ واﻟﻮﺻﻒ اﻟﻤﺨﺘﺼﺮ ﻟﻠﺒﻄﺎﻗﺎت
+،CEFR ﻣﻌﻴﺎر) اﻷرﺑﻊ اﻹﺿﺎﻓﻴﺔ 
+،3 D  Avatar اﻟﺸﺨﺼﻴﺎت ﺛﻼﺛﻴﺔ اﻷﺑﻌﺎد
+اﻟﺸﻬﺎدات واﻟﺸﺎرات، اﻟﻨﻘﺎط
+؟ وﻫﻞ ﺗﻀﺎف ﻣﻊ اﻟﺒﻄﺎﻗﺎت( واﻟﻤﻜﺎﻓﺂت
+اﻟﺴﺖ اﻟﺤﺎﻟﻴﺔ؟
+#6 Section 10 (Slide 3)
+3 Bottom Impact
+Counters
+Slide 3 updates students to +2,500
+and practice time to +5,000 hours (or
++300,000 minutes), but does NOT
+give an updated number for the 3rd
+box (+8,600 ﻣﻨﺠﺰ  درس Completed
+lessons). Confirm the lessons count
+and Hours vs. Minutes.
+ ﻃﺎﻟﺐ2,500+)  ﺑﻌﺪ ﺗﺤﺪﻳﺚ اﻷرﻗﺎم إﱃ
+ ﺳﺎﻋﺔ ﻣﻤﺎرﺳﺔ أو5,000+)  و( ﻣﺴﺠﻞ
+: ﻫﻞ(  دﻗﻴﻘﺔ ﻣﻤﺎرﺳﺔ300,000+
+ﺗﻔﻀﻠﻮن ﻋﺮض اﻟﺴﺎﻋﺎت أم اﻟﺪﻗﺎﺋﻖ؟
+"درس ﻣﻨﺠﺰ "وﻛﻢ ﻫﻮ اﻟﺮﻗﻢ اﻟﻤﺤﺪّث ﻟـ  
+؟( 8,600+  ﻛﺎن) 
+#7 Section 11
+Pricing Subtitle (50%
+vs. 33% Off)
+The outer two packages are now 33%
+off (199 SAR) and only the center
+package is 50% off (299 SAR). Confirm
+updating the top subtitle from ﺧﺼﻢ
+50% to 50 إﻟﻰ  ﻳﺼﻞ  ﺧﺼﻢ% "(Up to 50%
+off").
+ ﻋﲆ ﺑﺎﻗﺘﻲ% 33 ﺑﻤﺎ أن اﻟﺨﺼﻢ أﺻﺒﺢ
+ ﻋﲆ ﺑﺎﻗﺔ% 50 وZayd  Life اﻟﻤﻨﻬﺞ و
+، ﻫﻞ ﻧﻌﺪل اﻟﻌﻨﻮان اﻟﻔﺮﻋﻲZayd  Plus
+ﺧﺼﻢ ﻳﺼﻞ إﱃ" ﻓﻮق اﻟﺒﺎﻗﺎت ﻟﻴﺼﺒﺢ: 
+ ﺣﺎﻟﻴًﺎ ﻋﲆ اﻟﺒﺎﻗﺎت اﻟﺜﻼث% 50
+؟" ﻟﻸﻓﺮاد
+#8 Section 12B (Slide 4)
+New 3-Card Smart
+Dashboards &
+Gamification Section
+Slide 4 speaker notes add a 3-card
+section (,ﻟﻠﻤﻌﻠﻢ ,اﻟﻤﺪرﺳﻴﺔ  ﻟﻺدارة
+ﻟﻠﻄﻼب.) Confirm exact placement
+(inside Section 12 vs. standalone
+section below it) and whether
+dashboard/leaderboard screenshots
+should accompany the 3 cards.
+ﺑﺨﺼﻮص ﻗﺴﻢ اﻟﺒﻄﺎﻗﺎت اﻟﺜﻼث
+/ ﻟﻠﻤﻌﻠﻢ  /ﻟﻺدارة اﻟﻤﺪرﺳﻴﺔ  )اﻟﺠﺪﻳﺪ  
+: ﻫﻞ ﻳﻮﺿﻊ ﻣﺒﺎﺷﺮة داﺧﻞ أو( ﻟﻠﻄﻼب
+زﻳﺪ ﻟﻠﻤﺪارس" أﺳﻔﻞ ﻗﺴﻢ 
+؟ وﻫﻞ ﺗﻮﺟﺪ ﺻﻮر" واﻟﻤﺠﻤﻮﻋﺎت
+
+PAGE 29
+Page 29 of 29Zayd (زﻳﺪ) Landing Page — Complete UI & Copy Specification (Arabic → English)
+Item
+#
+Section & Element What Is Missing or Needs
+Confirmation (English)
+Question to Send to Your Colleague
+(Arabic)
+ﻟﺸﺎﺷﺎت ﻟﻮﺣﺔ اﻹدارة وﻟﻮﺣﺔ اﻟﺸﺮف
+ﻹﺿﺎﻓﺘﻬﺎ ﻣﻌﻪ؟
+#9 Section 12 Banner &
+Section 13 FAQs
+Banner Last Word & 9
+FAQ Answers
+1) Confirm if the red banner ends with
+اﺳﺘﺨﺪاﻣﻬﺎ (as in PPTX Slide 4) or
+ﻣﻤﺎرﺳﺘﻬﺎ.
+2) Review and approve the Arabic
+answer paragraphs we drafted for all 9
+FAQ questions (including the 2 new
+FAQs).
+ ﻓﻲ اﻟﻌﺒﺎرة اﻟﻤﻀﺎﻓﺔ أﺳﻔﻞ ﻗﺴﻢ( 1
+اﻟﻤﺪارس، ﻫﻞ ﻧﻌﺘﻤﺪ ﻛﻠﻤﺔ
+ ﻓﻲ ﻧﻬﺎﻳﺔ" ﻣﻤﺎرﺳﺘﻬﺎ"  أم "اﺳﺘﺨﺪاﻣﻬﺎ "
+اﻟﺠﻤﻠﺔ؟
+ ﻳﺮﺟﻰ ﻣﺮاﺟﻌﺔ واﻋﺘﻤﺎد إﺟﺎﺑﺎت( 2
+ﺑﻤﺎ ﻓﻴﻬﺎ) اﻷﺳﺌﻠﺔ اﻟﺸﺎﺋﻌﺔ اﻟﺘﺴﻌﺔ 
+اﻟﺴﺆاﻻن اﻟﺠﺪﻳﺪان ﻋﻦ ﺳﺒﺐ ﺗﺴﻤﻴﺔ
+.( زﻳﺪ وﺗﻘﻴﻴﻢ اﻟﺬﻛﺎء اﻻﺻﻄﻨﺎﻋﻲ
+#10 Section 14 (Footer)
+Official Contact Email,
+Phone & Socials
+The footer currently shows
+placeholder contact details
+(info@youruniversity.com and
++9665 000 00000). Provide the
+official email, phone/WhatsApp
+number, and social links.
+ﻣﺎ ﻫﻮ اﻟﺒﺮﻳﺪ اﻹﻟﻜﺘﺮوﻧﻲ اﻟﺮﺳﻤﻲ ورﻗﻢ
+ اﻟﻤﻌﺘﻤﺪ(  اﻟﻮاﺗﺴﺎب/ اﻟﻬﺎﺗﻒ )اﻟﺘﻮاﺻﻞ  
+ ﺑﺪﻻً (Footer)  ﻟﻮﺿﻌﻬﻤﺎ ﻓﻲ اﻟﺘﺬﻳﻴﻞ
+ﻣﻦ اﻟﺒﻴﺎﻧﺎت اﻟﻤﺆﻗﺘﺔ اﻟﺤﺎﻟﻴﺔ؟

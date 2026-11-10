@@ -1,0 +1,807 @@
+{
+  "verifiedAtUtc": "2026-11-07T13:15:22.982Z",
+  "topicCountUnderTest": "40",
+  "results": [
+    {
+      "width": 320,
+      "checks": {
+        "frameSpecified": true,
+        "lifePreserved": true,
+        "lifeBodyExactAtCurrentCount": true,
+        "calloutExactTwoSpans": true,
+        "scenariosExact": true,
+        "englishBrandsIsolated": true,
+        "noNewAudioOrInteraction": true,
+        "futurePreserved": true,
+        "futureBodyExact": true,
+        "futureTagsExact": true,
+        "bottomPillsRtl": true,
+        "impactPreserved": true,
+        "impactHeadlineExact": true,
+        "impactBodyExact": true,
+        "disclaimerExactAdjacentReadable": true,
+        "existingCountersPreservedNotNewlyVerified": true,
+        "noOverflow": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "frame": {
+          "background": "linear-gradient(135deg, rgb(240, 253, 250) 0%, rgb(224, 242, 254) 100%)",
+          "border": "rgb(186, 230, 253)",
+          "borderWidth": "1px",
+          "radius": "28px",
+          "padding": [
+            "28px",
+            "18px"
+          ]
+        },
+        "lifeBadge": "من المنهج إلى الحياة",
+        "lifeHeading": "الإنجليزية لا تنتهي عند حدود الكتاب",
+        "lifeBody": "في Zayd Life و Zayd Plus، تمتد ممارسة الإنجليزية إلى أكثر من 40 موضوعًا وموقفًا من الحياة اليومية، لتنمية القدرة على التواصل بثقة في مواقف حقيقية.",
+        "lifeCallout": [
+          "لأن الهدف ليس فقط أن يتعلم الإنجليزية،",
+          "بل القدرة على استخدامها في الحياة."
+        ],
+        "brands": [
+          {
+            "text": "Zayd Life",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Plus",
+            "direction": "ltr"
+          }
+        ],
+        "scenarios": [
+          {
+            "label": "في المطار",
+            "position": "100% 0%",
+            "x": 167,
+            "y": -677.0625
+          },
+          {
+            "label": "في المطعم",
+            "position": "50% 0%",
+            "x": 37,
+            "y": -677.0625
+          },
+          {
+            "label": "في السوق",
+            "position": "0% 0%",
+            "x": 167,
+            "y": -537.40625
+          },
+          {
+            "label": "أثناء السفر",
+            "position": "100% 100%",
+            "x": 37,
+            "y": -537.40625
+          },
+          {
+            "label": "في المواقف الاجتماعية",
+            "position": "50% 100%",
+            "x": 167,
+            "y": -397.75
+          },
+          {
+            "label": "ومواقف أخرى كثيرة",
+            "position": "0% 100%",
+            "x": 37,
+            "y": -397.75
+          }
+        ],
+        "spriteLoaded": true,
+        "lifeControls": 0,
+        "futureBadge": "مهارة للمستقبل",
+        "futureHeading": "الإنجليزية ليست مادة دراسيــة فقــط",
+        "futureBody": "إتقان الإنجليزية يفتح آفاقًا أوسع للتعليم الجامعي والمعرفة والاستعداد لسوق العمل.",
+        "futureGradient": "linear-gradient(90deg, rgb(91, 212, 199) 0%, rgb(52, 129, 223) 100%)",
+        "futureTags": [
+          {
+            "text": "الدراسة الجامعية",
+            "color": "rgb(255, 255, 255)",
+            "x": 205.34375,
+            "y": 48.4375
+          },
+          {
+            "text": "المعرفة العالمية",
+            "color": "rgb(255, 255, 255)",
+            "x": 122.671875,
+            "y": 48.4375
+          },
+          {
+            "text": "سوق العمل",
+            "color": "rgb(255, 255, 255)",
+            "x": 40.015625,
+            "y": 48.4375
+          },
+          {
+            "text": "التطوير المهني",
+            "color": "rgb(255, 255, 255)",
+            "x": 205.34375,
+            "y": 107.21875
+          },
+          {
+            "text": "التواصل الدولي",
+            "color": "rgb(255, 255, 255)",
+            "x": 40.015625,
+            "y": 107.21875
+          }
+        ],
+        "impactBadge": "نتيجــة فارقــة",
+        "impactHeading": [
+          "عام واحد مع زيد يعادل نحو",
+          "10 سنوات من ممارسة التحدث"
+        ],
+        "impactBody": "يتيح زيد فرصًا مكثفة للتحدث بالإنجليزية، تعادل تقريبًا ما قد يحصل عليه خلال 10 سنوات في الفصل التقليدي.",
+        "disclaimer": "المقارنة تتعلق بفرص ممارسة الإنجليزية، وليس بسنوات الدراسة.",
+        "disclaimerSize": 12,
+        "disclaimerAfterClaim": true,
+        "impactAsset": "/src/assets/landing-page/section7.png",
+        "metrics": [
+          {
+            "value": "+1,000",
+            "label": "طالب مسجل",
+            "icon": "/src/assets/landing-page/metric-students.svg"
+          },
+          {
+            "value": "+2,200",
+            "label": "ساعة ممارسة",
+            "icon": "/src/assets/landing-page/metric-clock.svg"
+          },
+          {
+            "value": "+8,600",
+            "label": "درس منجز",
+            "icon": "/src/assets/landing-page/metric-books.svg"
+          }
+        ],
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "errors": []
+    },
+    {
+      "width": 390,
+      "checks": {
+        "frameSpecified": true,
+        "lifePreserved": true,
+        "lifeBodyExactAtCurrentCount": true,
+        "calloutExactTwoSpans": true,
+        "scenariosExact": true,
+        "englishBrandsIsolated": true,
+        "noNewAudioOrInteraction": true,
+        "futurePreserved": true,
+        "futureBodyExact": true,
+        "futureTagsExact": true,
+        "bottomPillsRtl": true,
+        "impactPreserved": true,
+        "impactHeadlineExact": true,
+        "impactBodyExact": true,
+        "disclaimerExactAdjacentReadable": true,
+        "existingCountersPreservedNotNewlyVerified": true,
+        "noOverflow": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "frame": {
+          "background": "linear-gradient(135deg, rgb(240, 253, 250) 0%, rgb(224, 242, 254) 100%)",
+          "border": "rgb(186, 230, 253)",
+          "borderWidth": "1px",
+          "radius": "28px",
+          "padding": [
+            "28px",
+            "18px"
+          ]
+        },
+        "lifeBadge": "من المنهج إلى الحياة",
+        "lifeHeading": "الإنجليزية لا تنتهي عند حدود الكتاب",
+        "lifeBody": "في Zayd Life و Zayd Plus، تمتد ممارسة الإنجليزية إلى أكثر من 40 موضوعًا وموقفًا من الحياة اليومية، لتنمية القدرة على التواصل بثقة في مواقف حقيقية.",
+        "lifeCallout": [
+          "لأن الهدف ليس فقط أن يتعلم الإنجليزية،",
+          "بل القدرة على استخدامها في الحياة."
+        ],
+        "brands": [
+          {
+            "text": "Zayd Life",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Plus",
+            "direction": "ltr"
+          }
+        ],
+        "scenarios": [
+          {
+            "label": "في المطار",
+            "position": "100% 0%",
+            "x": 202,
+            "y": -605.25
+          },
+          {
+            "label": "في المطعم",
+            "position": "50% 0%",
+            "x": 37,
+            "y": -605.25
+          },
+          {
+            "label": "في السوق",
+            "position": "0% 0%",
+            "x": 202,
+            "y": -436.421875
+          },
+          {
+            "label": "أثناء السفر",
+            "position": "100% 100%",
+            "x": 37,
+            "y": -436.421875
+          },
+          {
+            "label": "في المواقف الاجتماعية",
+            "position": "50% 100%",
+            "x": 202,
+            "y": -267.59375
+          },
+          {
+            "label": "ومواقف أخرى كثيرة",
+            "position": "0% 100%",
+            "x": 37,
+            "y": -267.59375
+          }
+        ],
+        "spriteLoaded": true,
+        "lifeControls": 0,
+        "futureBadge": "مهارة للمستقبل",
+        "futureHeading": "الإنجليزية ليست مادة دراسيــة فقــط",
+        "futureBody": "إتقان الإنجليزية يفتح آفاقًا أوسع للتعليم الجامعي والمعرفة والاستعداد لسوق العمل.",
+        "futureGradient": "linear-gradient(90deg, rgb(91, 212, 199) 0%, rgb(52, 129, 223) 100%)",
+        "futureTags": [
+          {
+            "text": "الدراسة الجامعية",
+            "color": "rgb(255, 255, 255)",
+            "x": 252,
+            "y": 194.640625
+          },
+          {
+            "text": "المعرفة العالمية",
+            "color": "rgb(255, 255, 255)",
+            "x": 146,
+            "y": 194.640625
+          },
+          {
+            "text": "سوق العمل",
+            "color": "rgb(255, 255, 255)",
+            "x": 40,
+            "y": 194.640625
+          },
+          {
+            "text": "التطوير المهني",
+            "color": "rgb(255, 255, 255)",
+            "x": 252,
+            "y": 244.640625
+          },
+          {
+            "text": "التواصل الدولي",
+            "color": "rgb(255, 255, 255)",
+            "x": 40,
+            "y": 244.640625
+          }
+        ],
+        "impactBadge": "نتيجــة فارقــة",
+        "impactHeading": [
+          "عام واحد مع زيد يعادل نحو",
+          "10 سنوات من ممارسة التحدث"
+        ],
+        "impactBody": "يتيح زيد فرصًا مكثفة للتحدث بالإنجليزية، تعادل تقريبًا ما قد يحصل عليه خلال 10 سنوات في الفصل التقليدي.",
+        "disclaimer": "المقارنة تتعلق بفرص ممارسة الإنجليزية، وليس بسنوات الدراسة.",
+        "disclaimerSize": 12,
+        "disclaimerAfterClaim": true,
+        "impactAsset": "/src/assets/landing-page/section7.png",
+        "metrics": [
+          {
+            "value": "+1,000",
+            "label": "طالب مسجل",
+            "icon": "/src/assets/landing-page/metric-students.svg"
+          },
+          {
+            "value": "+2,200",
+            "label": "ساعة ممارسة",
+            "icon": "/src/assets/landing-page/metric-clock.svg"
+          },
+          {
+            "value": "+8,600",
+            "label": "درس منجز",
+            "icon": "/src/assets/landing-page/metric-books.svg"
+          }
+        ],
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "errors": []
+    },
+    {
+      "width": 768,
+      "checks": {
+        "frameSpecified": true,
+        "lifePreserved": true,
+        "lifeBodyExactAtCurrentCount": true,
+        "calloutExactTwoSpans": true,
+        "scenariosExact": true,
+        "englishBrandsIsolated": true,
+        "noNewAudioOrInteraction": true,
+        "futurePreserved": true,
+        "futureBodyExact": true,
+        "futureTagsExact": true,
+        "bottomPillsRtl": true,
+        "impactPreserved": true,
+        "impactHeadlineExact": true,
+        "impactBodyExact": true,
+        "disclaimerExactAdjacentReadable": true,
+        "existingCountersPreservedNotNewlyVerified": true,
+        "noOverflow": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "frame": {
+          "background": "linear-gradient(135deg, rgb(240, 253, 250) 0%, rgb(224, 242, 254) 100%)",
+          "border": "rgb(186, 230, 253)",
+          "borderWidth": "1px",
+          "radius": "28px",
+          "padding": [
+            "36px",
+            "28px"
+          ]
+        },
+        "lifeBadge": "من المنهج إلى الحياة",
+        "lifeHeading": "الإنجليزية لا تنتهي عند حدود الكتاب",
+        "lifeBody": "في Zayd Life و Zayd Plus، تمتد ممارسة الإنجليزية إلى أكثر من 40 موضوعًا وموقفًا من الحياة اليومية، لتنمية القدرة على التواصل بثقة في مواقف حقيقية.",
+        "lifeCallout": [
+          "لأن الهدف ليس فقط أن يتعلم الإنجليزية،",
+          "بل القدرة على استخدامها في الحياة."
+        ],
+        "brands": [
+          {
+            "text": "Zayd Life",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Plus",
+            "direction": "ltr"
+          }
+        ],
+        "scenarios": [
+          {
+            "label": "في المطار",
+            "position": "100% 0%",
+            "x": 495,
+            "y": -601.046875
+          },
+          {
+            "label": "في المطعم",
+            "position": "50% 0%",
+            "x": 289,
+            "y": -601.046875
+          },
+          {
+            "label": "في السوق",
+            "position": "0% 0%",
+            "x": 83,
+            "y": -601.046875
+          },
+          {
+            "label": "أثناء السفر",
+            "position": "100% 100%",
+            "x": 495,
+            "y": -395.921875
+          },
+          {
+            "label": "في المواقف الاجتماعية",
+            "position": "50% 100%",
+            "x": 289,
+            "y": -395.921875
+          },
+          {
+            "label": "ومواقف أخرى كثيرة",
+            "position": "0% 100%",
+            "x": 83,
+            "y": -395.921875
+          }
+        ],
+        "spriteLoaded": true,
+        "lifeControls": 0,
+        "futureBadge": "مهارة للمستقبل",
+        "futureHeading": "الإنجليزية ليست مادة دراسيــة فقــط",
+        "futureBody": "إتقان الإنجليزية يفتح آفاقًا أوسع للتعليم الجامعي والمعرفة والاستعداد لسوق العمل.",
+        "futureGradient": "linear-gradient(90deg, rgb(91, 212, 199) 0%, rgb(52, 129, 223) 100%)",
+        "futureTags": [
+          {
+            "text": "الدراسة الجامعية",
+            "color": "rgb(255, 255, 255)",
+            "x": 270.265625,
+            "y": -14.262496948242188
+          },
+          {
+            "text": "المعرفة العالمية",
+            "color": "rgb(255, 255, 255)",
+            "x": 161.53125,
+            "y": -14.262496948242188
+          },
+          {
+            "text": "سوق العمل",
+            "color": "rgb(255, 255, 255)",
+            "x": 52.796875,
+            "y": -14.262496948242188
+          },
+          {
+            "text": "التطوير المهني",
+            "color": "rgb(255, 255, 255)",
+            "x": 270.265625,
+            "y": 23.893753051757812
+          },
+          {
+            "text": "التواصل الدولي",
+            "color": "rgb(255, 255, 255)",
+            "x": 52.796875,
+            "y": 23.893753051757812
+          }
+        ],
+        "impactBadge": "نتيجــة فارقــة",
+        "impactHeading": [
+          "عام واحد مع زيد يعادل نحو",
+          "10 سنوات من ممارسة التحدث"
+        ],
+        "impactBody": "يتيح زيد فرصًا مكثفة للتحدث بالإنجليزية، تعادل تقريبًا ما قد يحصل عليه خلال 10 سنوات في الفصل التقليدي.",
+        "disclaimer": "المقارنة تتعلق بفرص ممارسة الإنجليزية، وليس بسنوات الدراسة.",
+        "disclaimerSize": 12,
+        "disclaimerAfterClaim": true,
+        "impactAsset": "/src/assets/landing-page/section7.png",
+        "metrics": [
+          {
+            "value": "+1,000",
+            "label": "طالب مسجل",
+            "icon": "/src/assets/landing-page/metric-students.svg"
+          },
+          {
+            "value": "+2,200",
+            "label": "ساعة ممارسة",
+            "icon": "/src/assets/landing-page/metric-clock.svg"
+          },
+          {
+            "value": "+8,600",
+            "label": "درس منجز",
+            "icon": "/src/assets/landing-page/metric-books.svg"
+          }
+        ],
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "errors": []
+    },
+    {
+      "width": 1024,
+      "checks": {
+        "frameSpecified": true,
+        "lifePreserved": true,
+        "lifeBodyExactAtCurrentCount": true,
+        "calloutExactTwoSpans": true,
+        "scenariosExact": true,
+        "englishBrandsIsolated": true,
+        "noNewAudioOrInteraction": true,
+        "futurePreserved": true,
+        "futureBodyExact": true,
+        "futureTagsExact": true,
+        "bottomPillsRtl": true,
+        "impactPreserved": true,
+        "impactHeadlineExact": true,
+        "impactBodyExact": true,
+        "disclaimerExactAdjacentReadable": true,
+        "existingCountersPreservedNotNewlyVerified": true,
+        "noOverflow": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "frame": {
+          "background": "linear-gradient(135deg, rgb(240, 253, 250) 0%, rgb(224, 242, 254) 100%)",
+          "border": "rgb(186, 230, 253)",
+          "borderWidth": "1px",
+          "radius": "28px",
+          "padding": [
+            "56px",
+            "40px"
+          ]
+        },
+        "lifeBadge": "من المنهج إلى الحياة",
+        "lifeHeading": "الإنجليزية لا تنتهي عند حدود الكتاب",
+        "lifeBody": "في Zayd Life و Zayd Plus، تمتد ممارسة الإنجليزية إلى أكثر من 40 موضوعًا وموقفًا من الحياة اليومية، لتنمية القدرة على التواصل بثقة في مواقف حقيقية.",
+        "lifeCallout": [
+          "لأن الهدف ليس فقط أن يتعلم الإنجليزية،",
+          "بل القدرة على استخدامها في الحياة."
+        ],
+        "brands": [
+          {
+            "text": "Zayd Life",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Plus",
+            "direction": "ltr"
+          }
+        ],
+        "scenarios": [
+          {
+            "label": "في المطار",
+            "position": "100% 0%",
+            "x": 415.3125,
+            "y": -165.734375
+          },
+          {
+            "label": "في المطعم",
+            "position": "50% 0%",
+            "x": 242.15625,
+            "y": -165.734375
+          },
+          {
+            "label": "في السوق",
+            "position": "0% 0%",
+            "x": 69,
+            "y": -165.734375
+          },
+          {
+            "label": "أثناء السفر",
+            "position": "100% 100%",
+            "x": 415.3125,
+            "y": 12.21875
+          },
+          {
+            "label": "في المواقف الاجتماعية",
+            "position": "50% 100%",
+            "x": 242.15625,
+            "y": 12.21875
+          },
+          {
+            "label": "ومواقف أخرى كثيرة",
+            "position": "0% 100%",
+            "x": 69,
+            "y": 12.21875
+          }
+        ],
+        "spriteLoaded": true,
+        "lifeControls": 0,
+        "futureBadge": "مهارة للمستقبل",
+        "futureHeading": "الإنجليزية ليست مادة دراسيــة فقــط",
+        "futureBody": "إتقان الإنجليزية يفتح آفاقًا أوسع للتعليم الجامعي والمعرفة والاستعداد لسوق العمل.",
+        "futureGradient": "linear-gradient(90deg, rgb(91, 212, 199) 0%, rgb(52, 129, 223) 100%)",
+        "futureTags": [
+          {
+            "text": "الدراسة الجامعية",
+            "color": "rgb(255, 255, 255)",
+            "x": 371.28125,
+            "y": 407.06671142578125
+          },
+          {
+            "text": "المعرفة العالمية",
+            "color": "rgb(255, 255, 255)",
+            "x": 236.734375,
+            "y": 407.06671142578125
+          },
+          {
+            "text": "سوق العمل",
+            "color": "rgb(255, 255, 255)",
+            "x": 102.171875,
+            "y": 407.06671142578125
+          },
+          {
+            "text": "التطوير المهني",
+            "color": "rgb(255, 255, 255)",
+            "x": 371.28125,
+            "y": 454.26983642578125
+          },
+          {
+            "text": "التواصل الدولي",
+            "color": "rgb(255, 255, 255)",
+            "x": 102.171875,
+            "y": 454.26983642578125
+          }
+        ],
+        "impactBadge": "نتيجــة فارقــة",
+        "impactHeading": [
+          "عام واحد مع زيد يعادل نحو",
+          "10 سنوات من ممارسة التحدث"
+        ],
+        "impactBody": "يتيح زيد فرصًا مكثفة للتحدث بالإنجليزية، تعادل تقريبًا ما قد يحصل عليه خلال 10 سنوات في الفصل التقليدي.",
+        "disclaimer": "المقارنة تتعلق بفرص ممارسة الإنجليزية، وليس بسنوات الدراسة.",
+        "disclaimerSize": 12,
+        "disclaimerAfterClaim": true,
+        "impactAsset": "/src/assets/landing-page/section7.png",
+        "metrics": [
+          {
+            "value": "+1,000",
+            "label": "طالب مسجل",
+            "icon": "/src/assets/landing-page/metric-students.svg"
+          },
+          {
+            "value": "+2,200",
+            "label": "ساعة ممارسة",
+            "icon": "/src/assets/landing-page/metric-clock.svg"
+          },
+          {
+            "value": "+8,600",
+            "label": "درس منجز",
+            "icon": "/src/assets/landing-page/metric-books.svg"
+          }
+        ],
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "checks": {
+        "frameSpecified": true,
+        "lifePreserved": true,
+        "lifeBodyExactAtCurrentCount": true,
+        "calloutExactTwoSpans": true,
+        "scenariosExact": true,
+        "englishBrandsIsolated": true,
+        "noNewAudioOrInteraction": true,
+        "futurePreserved": true,
+        "futureBodyExact": true,
+        "futureTagsExact": true,
+        "bottomPillsRtl": true,
+        "impactPreserved": true,
+        "impactHeadlineExact": true,
+        "impactBodyExact": true,
+        "disclaimerExactAdjacentReadable": true,
+        "existingCountersPreservedNotNewlyVerified": true,
+        "noOverflow": true,
+        "noPageErrors": true
+      },
+      "data": {
+        "frame": {
+          "background": "linear-gradient(135deg, rgb(240, 253, 250) 0%, rgb(224, 242, 254) 100%)",
+          "border": "rgb(186, 230, 253)",
+          "borderWidth": "1px",
+          "radius": "28px",
+          "padding": [
+            "56px",
+            "40px"
+          ]
+        },
+        "lifeBadge": "من المنهج إلى الحياة",
+        "lifeHeading": "الإنجليزية لا تنتهي عند حدود الكتاب",
+        "lifeBody": "في Zayd Life و Zayd Plus، تمتد ممارسة الإنجليزية إلى أكثر من 40 موضوعًا وموقفًا من الحياة اليومية، لتنمية القدرة على التواصل بثقة في مواقف حقيقية.",
+        "lifeCallout": [
+          "لأن الهدف ليس فقط أن يتعلم الإنجليزية،",
+          "بل القدرة على استخدامها في الحياة."
+        ],
+        "brands": [
+          {
+            "text": "Zayd Life",
+            "direction": "ltr"
+          },
+          {
+            "text": "Zayd Plus",
+            "direction": "ltr"
+          }
+        ],
+        "scenarios": [
+          {
+            "label": "في المطار",
+            "position": "100% 0%",
+            "x": 580.28125,
+            "y": -507.578125
+          },
+          {
+            "label": "في المطعم",
+            "position": "50% 0%",
+            "x": 350.640625,
+            "y": -507.578125
+          },
+          {
+            "label": "في السوق",
+            "position": "0% 0%",
+            "x": 121,
+            "y": -507.578125
+          },
+          {
+            "label": "أثناء السفر",
+            "position": "100% 100%",
+            "x": 580.28125,
+            "y": -278.890625
+          },
+          {
+            "label": "في المواقف الاجتماعية",
+            "position": "50% 100%",
+            "x": 350.640625,
+            "y": -278.890625
+          },
+          {
+            "label": "ومواقف أخرى كثيرة",
+            "position": "0% 100%",
+            "x": 121,
+            "y": -278.890625
+          }
+        ],
+        "spriteLoaded": true,
+        "lifeControls": 0,
+        "futureBadge": "مهارة للمستقبل",
+        "futureHeading": "الإنجليزية ليست مادة دراسيــة فقــط",
+        "futureBody": "إتقان الإنجليزية يفتح آفاقًا أوسع للتعليم الجامعي والمعرفة والاستعداد لسوق العمل.",
+        "futureGradient": "linear-gradient(90deg, rgb(91, 212, 199) 0%, rgb(52, 129, 223) 100%)",
+        "futureTags": [
+          {
+            "text": "الدراسة الجامعية",
+            "color": "rgb(255, 255, 255)",
+            "x": 522.109375,
+            "y": 208.6828155517578
+          },
+          {
+            "text": "المعرفة العالمية",
+            "color": "rgb(255, 255, 255)",
+            "x": 332.90625,
+            "y": 208.6828155517578
+          },
+          {
+            "text": "سوق العمل",
+            "color": "rgb(255, 255, 255)",
+            "x": 143.703125,
+            "y": 208.6828155517578
+          },
+          {
+            "text": "التطوير المهني",
+            "color": "rgb(255, 255, 255)",
+            "x": 522.109375,
+            "y": 275.05780029296875
+          },
+          {
+            "text": "التواصل الدولي",
+            "color": "rgb(255, 255, 255)",
+            "x": 143.703125,
+            "y": 275.05780029296875
+          }
+        ],
+        "impactBadge": "نتيجــة فارقــة",
+        "impactHeading": [
+          "عام واحد مع زيد يعادل نحو",
+          "10 سنوات من ممارسة التحدث"
+        ],
+        "impactBody": "يتيح زيد فرصًا مكثفة للتحدث بالإنجليزية، تعادل تقريبًا ما قد يحصل عليه خلال 10 سنوات في الفصل التقليدي.",
+        "disclaimer": "المقارنة تتعلق بفرص ممارسة الإنجليزية، وليس بسنوات الدراسة.",
+        "disclaimerSize": 14.0315,
+        "disclaimerAfterClaim": true,
+        "impactAsset": "/src/assets/landing-page/section7.png",
+        "metrics": [
+          {
+            "value": "+1,000",
+            "label": "طالب مسجل",
+            "icon": "/src/assets/landing-page/metric-students.svg"
+          },
+          {
+            "value": "+2,200",
+            "label": "ساعة ممارسة",
+            "icon": "/src/assets/landing-page/metric-clock.svg"
+          },
+          {
+            "value": "+8,600",
+            "label": "درس منجز",
+            "icon": "/src/assets/landing-page/metric-books.svg"
+          }
+        ],
+        "overflow": [],
+        "pageOverflow": false
+      },
+      "errors": []
+    }
+  ],
+  "changedExistingSourceFiles": [
+    "src/pages/public/future-skills-section.css",
+    "src/pages/public/future-skills-section.tsx",
+    "src/pages/public/impact-stats-section.css",
+    "src/pages/public/impact-stats-section.tsx",
+    "src/pages/public/zayd-life-section.css",
+    "src/pages/public/zayd-life-section.tsx"
+  ],
+  "sourceScope": true,
+  "passed": true,
+  "metricStatus": "Preservation check only; D06 unverified business data is not approved by browser tests."
+}

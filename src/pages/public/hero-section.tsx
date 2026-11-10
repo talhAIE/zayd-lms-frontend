@@ -5,13 +5,10 @@ import classroom from "@/assets/landing-page/hero-classroom-premium.png";
 import statChart from "@/assets/landing-page/stat-chart.png";
 import statDocument from "@/assets/landing-page/stat-document.png";
 import statClock from "@/assets/landing-page/stat-clock.png";
+import { landingHeroContent, landingHeroMetrics } from "./landing-content";
 import "./hero-section.css";
 
-const stats = [
-  { value: "ساعة", description: "ممارسة منتظمة أسبوعيًا", image: statClock, direction: "rtl" },
-  { value: "+40", description: "موضوعًا وموقفًا حياتيًا", image: statDocument, direction: "ltr" },
-  { value: "×10", description: "ممارسة أكثر للتحدث", image: statChart, direction: "ltr" },
-];
+const metricImages = { clock: statClock, topics: statDocument, multiplier: statChart };
 
 function scrollToSection(event: React.MouseEvent<HTMLAnchorElement>, id: string) {
   // Preserve normal anchor behavior for modified clicks and new tabs.
@@ -44,19 +41,19 @@ export default function HeroSection() {
               <span className="landing-hero__heading-accent">استخدامها بثقة</span>
             </h1>
             <p className="landing-hero__description">
-              <strong>زيد</strong> معلّم ذكي لممارسة اللغة الإنجليزية، يمنح كل طالب تجربة شخصية للتحدث والتفاعل والتغذية الراجعة، مع توافق كامل{" "}
-              <span className="landing-hero__curriculum">مع المنهج السعودي.</span>
+              <strong>{landingHeroContent.brand}</strong>{" "}{landingHeroContent.description}
             </p>
             <div className="landing-hero__actions">
               <Link to="/login" className="landing-hero__button landing-hero__button--primary">
-                <span>ابدأ مع زيد الآن</span>
+                <span>{landingHeroContent.primaryCta.beforeBrand}{" "}<bdi dir="ltr" lang="en">{landingHeroContent.primaryCta.brand}</bdi>{" "}{landingHeroContent.primaryCta.afterBrand}</span>
                 <ArrowLeft aria-hidden="true" />
               </Link>
-              <a href="#schools" onClick={(event) => scrollToSection(event, "schools")} className="landing-hero__button landing-hero__button--secondary">زيد للمدارس</a>
+              <a href="#schools" onClick={(event) => scrollToSection(event, "schools")} className="landing-hero__button landing-hero__button--secondary"><span>{landingHeroContent.secondaryCta.beforeBrand}{" "}<bdi dir="ltr" lang="en">{landingHeroContent.secondaryCta.brand}</bdi>{" "}{landingHeroContent.secondaryCta.afterBrand}</span></a>
             </div>
           </div>
 
           <div className="landing-hero__visual" dir="ltr">
+            <span className="landing-hero__character-tag" dir="rtl" lang="ar">{landingHeroContent.characterTag}</span>
             <div className="landing-hero__scene">
               <img src={classroom} alt="مساحة تعلم حديثة مع كتب وحاسوب لممارسة الإنجليزية" width={1672} height={941} {...{ fetchpriority: "high" }} className="landing-hero__classroom" />
             </div>
@@ -68,9 +65,9 @@ export default function HeroSection() {
         </div>
 
         <ul aria-label="مزايا ممارسة الإنجليزية مع زيد" className="landing-hero__stats">
-          {stats.map((stat) => (
-            <li key={stat.value} className="landing-hero__stat">
-              <img src={stat.image} alt="" width={84} height={84} />
+          {landingHeroMetrics.map((stat) => (
+            <li key={stat.id} className="landing-hero__stat">
+              <img src={metricImages[stat.id]} alt="" width={84} height={84} />
               <div>
                 <p dir={stat.direction} className="landing-hero__stat-value">{stat.value}</p>
                 <p className="landing-hero__stat-description">{stat.description}</p>

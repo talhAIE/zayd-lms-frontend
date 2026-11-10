@@ -1,0 +1,29 @@
+{
+  "D01": {
+    "status": "broader_catalog_count_unresolved",
+    "implementation": "Preserve 40 in Plus/Life benefits; retain previously approved hero +250.",
+    "requirementsPartial": ["S11-PLUS-KEEP", "S11-LIFE-KEEP"],
+    "newApprovalInP7": false
+  },
+  "D07": {
+    "status": "specified_subtitle_implemented_for_review_release_confirmation_open",
+    "evidence": "Updated PDF p19 supplies exact up-to-50% subtitle; p28 retains review request.",
+    "implemented": true,
+    "releaseApproved": false
+  },
+  "E03": {
+    "status": "deferred_by_user",
+    "question": "Replace the missing /auth/register route with existing /login for the three pricing buttons?",
+    "response": "Keep the destination decision unresolved",
+    "implementation": "Preserve existing /auth/register hrefs; no valid replacement chosen.",
+    "knownLimitation": "The route is absent and falls back to Home; this remains an unfinished requirement.",
+    "requirementBlocked": "S11-ROUTING"
+  },
+  "faqIntegration": {
+    "status": "shared_price_model_ready_p9_consumer_unimplemented",
+    "currentFaq": "Existing package answer contains no amounts; supplied nine-question FAQ is not yet implemented.",
+    "nextAction": "Use landingPricingPlans active amounts when implementing P9 FAQ #7.",
+    "requirementPartial": "S11-MODEL"
+  },
+  "p0SnapshotPreserved": true
+}

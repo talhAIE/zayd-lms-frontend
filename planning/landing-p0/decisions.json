@@ -1,0 +1,177 @@
+{
+  "recordedAt": "2026-11-07T10:03:23.903Z",
+  "sourcePdfSha256": "cde12eb809ca248cfab3bd5f3d908498085f0b0ca58ce11020a2e12d4cdf8aa5",
+  "decisions": [
+    {
+      "id": "D01",
+      "title": "Topic count, p27",
+      "specificationContext": "The S3 final row says 250+; S8, S11 and the new package FAQ still say 40+. Proposed direction: use one approved count globally. Product must confirm whether 250 counts the same entitled daily-life topics/situations or a broader content catalog. This affects S3, S8, both relevant pricing bullets, FAQ #7, demo descriptions and any graphics containing the old count. Do not blindly replace every occurrence of the digits 40, since CSS values and unrelated content exist. **P0 user response: “Keep this decision unresolved for now.” Status: deferred by user; preserve current topic value in any partial P1 implementation until resolved.**",
+      "status": "deferred_by_user",
+      "owner": "User — product decision-maker; no other human assignee supplied",
+      "evidence": "User reply in this chat: Keep this decision unresolved for now",
+      "nextAction": "Do not change the topic value in P1. Continue independent P1 work; keep S3-TOPICS open.",
+      "blocks": [
+        "P1:S3-TOPICS completion",
+        "P6:S8-BODY final count",
+        "P7:topic benefits",
+        "P9:FAQ7 topic count"
+      ]
+    },
+    {
+      "id": "D02",
+      "title": "Visual treatment, pp27-28",
+      "specificationContext": "Concrete styles are already supplied on pp7 and 15; use them for the first implementation. A bespoke alternative is optional design feedback, not a reason to stop deterministic copy changes. Proposed baseline: soft slate comparison section and teal/sky life container as specified.",
+      "status": "specified_default_no_alternative_approved",
+      "owner": "Frontend implementer — follow explicit PDF styles; user owns any alternative",
+      "evidence": "PDF pp7,15 supply concrete container/card styles. No bespoke alternative supplied.",
+      "nextAction": "Implement supplied styles when P2/P6 is authorized. Do not require optional aesthetic approval before coding.",
+      "blocks": []
+    },
+    {
+      "id": "D03",
+      "title": "Screenshot mapping and language, p28",
+      "specificationContext": "The PDF names eight screenshots but maps both discussion and self-expression to the debate screenshot and supplies two reading screenshots. Confirm the eighth-tab mapping and approval of English product UI inside the Arabic marketing page. Implementation can support multiple images per tab; it should not pretend all eight mappings are uniquely established.",
+      "status": "awaiting_product_decision",
+      "owner": "User — product decision-maker; no other human assignee supplied",
+      "evidence": "PDF pp10-11 maps two reading screenshots and shares debate for discussion/self-expression; p28 asks for mapping/language confirmation.",
+      "nextAction": "Confirm self-expression mapping and English UI acceptability. Proposed Reading primary=slide9, secondary=slide5; Discussion=slide12; Self-expression reuse remains unapproved.",
+      "blocks": [
+        "P3 final screenshot mapping"
+      ]
+    },
+    {
+      "id": "D04",
+      "title": "Demo prompts, p28",
+      "specificationContext": "Exact one-to-two English sample sentences/prompts are not supplied. Choose grade-appropriate review drafts or reuse suitable existing demo content; product must settle the final wording. A functioning guest assessment response is also needed for the live result state.",
+      "status": "missing_approved_prompts",
+      "owner": "User — product decision-maker; no other human assignee supplied",
+      "evidence": "PDF p28 item4 asks for exact one-to-two English samples; none supplied in repository landing content.",
+      "nextAction": "Provide/review one Reading sentence and one Speaking prompt. Existing cafe scenario is a candidate, not approved prompt copy.",
+      "blocks": [
+        "P5 final content"
+      ]
+    },
+    {
+      "id": "D05",
+      "title": "Four new feature boxes, p28",
+      "specificationContext": "Arabic titles/bodies are supplied as proposals on pp13-14. Confirm them and decide ten integrated cards versus six core cards plus a separate four-card row. Recommended structure: preserve the six core benefits and add a clearly grouped four-card row within S7 so all ten remain readable next to the character/demo.",
+      "status": "proposed_copy_and_layout_unapproved",
+      "owner": "User — product decision-maker; no other human assignee supplied",
+      "evidence": "PDF pp13-14 explicitly labels four Arabic feature texts proposed; p28 asks about ten cards.",
+      "nextAction": "Review supplied Arabic proposals and confirm integrated ten cards or six-plus-four grouping. Six-plus-four is an implementation recommendation only.",
+      "blocks": [
+        "P4 four additions final content/layout"
+      ]
+    },
+    {
+      "id": "D06",
+      "title": "Impact totals, p28",
+      "specificationContext": "New proposed totals: 2,500+ registered students, 5,000+ hours OR 300,000+ minutes. These time values are equivalent: 5,000 × 60 = 300,000. Confirm display unit, reporting scope/date and replacement lessons total; do not relabel 5,000 as minutes or imply both time figures are separate achievements. The old 8,600+ lessons is not a newly verified value.",
+      "status": "unverified_metrics_and_missing_lessons_total",
+      "owner": "User — product decision-maker; no other human assignee supplied",
+      "evidence": "PDF p28 gives 2500+ students and 5000+ hours or 300000+ minutes, while p18 repeats stale totals.",
+      "nextAction": "Confirm reporting date/scope, hours vs minutes and updated completed-lessons value. No live backend/data access was used.",
+      "blocks": [
+        "P6 final impact totals"
+      ]
+    },
+    {
+      "id": "D07",
+      "title": "Pricing subtitle, p28",
+      "specificationContext": "The detailed final row on p19 already provides “خصم يصل إلى 50% حاليًا على الباقات الثلاث للأفراد.” Use that as the proposed implementation, then record confirmation. Outer discounts remain 33%; Plus remains 50%.",
+      "status": "specified_copy_with_review_request_open",
+      "owner": "User — product decision-maker; no other human assignee supplied",
+      "evidence": "PDF p19 final row supplies up-to-50% wording; p28 still requests confirmation.",
+      "nextAction": "Use detailed supplied copy in a P7 review build, record content confirmation before publishing. Not a prerequisite for P1.",
+      "blocks": [
+        "P7 release copy signoff"
+      ]
+    },
+    {
+      "id": "D08",
+      "title": "S12B placement/graphics, pp28-29",
+      "specificationContext": "Confirm whether the new three-card section is inside Schools or standalone below it, and whether to include admin/teacher/leaderboard screenshots. Recommended order: Schools card → S12B dashboard cards → full-width practice/use banner → FAQ. This keeps the banner as the transition immediately before FAQ. Placement is a recommendation, not an explicit PDF decision.",
+      "status": "placement_and_optional_graphics_unapproved",
+      "owner": "User — product decision-maker; no other human assignee supplied",
+      "evidence": "PDF p23 supplies all three cards; pp28-29 asks inside vs below Schools and whether screenshots accompany them.",
+      "nextAction": "Proposed order Schools → Smart Dashboards → banner → FAQ. Confirm placement and optional graphics; do not build live admin/redeem/nudge functionality.",
+      "blocks": [
+        "P8 final composition"
+      ]
+    },
+    {
+      "id": "D09",
+      "title": "Banner wording and FAQ approval, p29",
+      "specificationContext": "The detailed banner row uses “استخدامها”; the earlier PDF used “ممارستها.” Use the new detailed wording for review, while retaining the final-checklist question as open. All nine FAQ answers are supplied, but the PDF calls them drafted and requests their approval. This is a content-review dependency, not missing answer copy.",
+      "status": "supplied_drafts_pending_review",
+      "owner": "User — product decision-maker; no other human assignee supplied",
+      "evidence": "PDF p22 final banner ends استخدامها; p29 asks final word and approval of all nine supplied answers.",
+      "nextAction": "Use updated detailed banner/FAQ drafts for review. Do not label supplied drafts business-approved.",
+      "blocks": [
+        "P8 banner final copy",
+        "P9 FAQ release copy"
+      ]
+    },
+    {
+      "id": "D10",
+      "title": "Official contacts, p29",
+      "specificationContext": "Need the approved email, phone/WhatsApp number and social URLs. Preserve footer layout, brand, quick links and copyright. Do not invent official addresses or accounts. Add only supplied social links, with meaningful accessible labels.",
+      "status": "missing_official_contacts",
+      "owner": "User — product decision-maker; no other human assignee supplied",
+      "evidence": "PDF p29 asks for official email, phone/WhatsApp and socials. Current footer uses placeholders.",
+      "nextAction": "Supply official details. Keep current footer layout; no invented official email/number/social accounts.",
+      "blocks": [
+        "P9 official footer data"
+      ]
+    },
+    {
+      "id": "E01",
+      "title": "Scenario audio",
+      "specificationContext": "The PDF requests preview controls on all six cards but names only five scenario categories. Need approved audio files or a documented public-preview endpoint, plus text transcripts. Confirm the sixth “other situations” preview; do not ship a dead audio button or silently omit it.",
+      "status": "missing_audio_and_transcripts",
+      "owner": "User — product decision-maker; no other human assignee supplied",
+      "nextAction": "Supply six approved preview clips and transcripts, including “other situations”, or a documented public preview endpoint.",
+      "evidence": "No dialogue audio in src/public. Only media file is public/avatar/placeholder.mp4.",
+      "blocks": [
+        "P6 scenario audio completion"
+      ]
+    },
+    {
+      "id": "E02",
+      "title": "Live vs. sample demo feedback",
+      "specificationContext": "The widget is described as a real trial but also as an instant sample-feedback card with “e.g. 92%.” Use actual returned assessment for visitor recordings. If a static illustration is used before recording or offline, label it as a sample. Never present a fixed 92% as the visitor's measured score.",
+      "status": "integration_unverified",
+      "owner": "Frontend implementer — verify adapter when P5 authorized; user owns sample-vs-live product choice",
+      "nextAction": "Reuse guest transport where possible; validate actual score/word data in P5. Label any sample as sample; never hardcode visitor score 92.",
+      "evidence": "Guest reading/roleplay transport exists, but no live endpoint or microphone was invoked in P0.",
+      "blocks": [
+        "P5 measured feedback completion"
+      ]
+    },
+    {
+      "id": "E03",
+      "title": "Conversion destinations",
+      "specificationContext": "Agree where the pricing/final “try” buttons go while `/auth/register` is absent. Recommended immediate destination is the established `/login` flow or an expressly selected demo entry. Preserve labels/design; do not implement registration/payment backend scope by assumption.",
+      "status": "destination_proposed_not_approved",
+      "owner": "User — product decision-maker; no other human assignee supplied",
+      "nextAction": "Choose valid onboarding/demo route for pricing/final CTA. /login is the existing hero route and recommended interim candidate, not an approved change.",
+      "evidence": "Pricing/final links point at absent /auth/register route. Browser observation records Home fallback.",
+      "blocks": [
+        "P7 conversion routing",
+        "P9 final CTA routing"
+      ]
+    },
+    {
+      "id": "E04",
+      "title": "Screenshot quality/provenance",
+      "specificationContext": "No standalone PowerPoint file was supplied in this request. The PDF embeds four paired screenshot images on pp10-11, each 1834×522 pixels including framing. Individual crops are usable for review but may be too small for a large crisp device frame. Prefer original approved exports for production; use the exact embedded references rather than unrelated existing guide images. Sanitize student identity and other private data before using real captures.",
+      "status": "paired_reference_available_originals_missing",
+      "owner": "User — product decision-maker; no other human assignee supplied",
+      "nextAction": "Review embedded paired references, obtain original exports if needed, confirm mapping and privacy before production assets are chosen.",
+      "evidence": "PDF pp10-11 supplies four 1834×522 paired PNGs; originals/PowerPoint not supplied.",
+      "blocks": [
+        "P3 final screenshot quality"
+      ]
+    }
+  ]
+}

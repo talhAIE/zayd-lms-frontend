@@ -52,7 +52,7 @@
 .future-skills__description {
   margin: .8cqw 0 0;
   color: #fff;
-  font-size: 1.5cqw;
+  font-size: clamp(14px, 1.5cqw, 19px);
   font-weight: 400;
   line-height: 1.75;
 }
@@ -77,7 +77,7 @@
   border-radius: 999px;
   background: #fff;
   color: #4ac7bf;
-  font-size: 1.5cqw;
+  font-size: clamp(12px, 1.5cqw, 19px);
   font-weight: 700;
   line-height: 1.4;
   text-align: center;
