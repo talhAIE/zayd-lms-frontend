@@ -103,7 +103,7 @@
   background: #0b3d79;
   box-shadow: 0 0 0 2px #f0faff, 0 0 0 4px #238aab;
 }
-.curriculum-overview__panel :is(button, a):focus-visible {
+.curriculum-overview__panel button:focus-visible {
   outline: 3px solid #1768d9;
   outline-offset: 4px;
 }
@@ -160,12 +160,42 @@
   font-size: 14px;
   font-weight: 600;
 }
-.curriculum-overview__preview-actions a {
+.curriculum-overview__full-size {
   margin-inline-start: auto;
   padding-block: 6px;
   color: #0b56ad;
   text-decoration: underline;
   text-underline-offset: 3px;
+  cursor: pointer;
+}
+.curriculum-overview__image-dialog {
+  width: fit-content;
+  max-width: calc(100% - 32px);
+  max-height: calc(100dvh - 32px);
+  justify-items: center;
+  gap: 12px;
+  padding: 16px;
+  overflow: auto;
+  border-radius: 16px;
+}
+.curriculum-overview__image-dialog > h2 {
+  padding-inline: 36px;
+  line-height: 1.5;
+  text-align: center;
+}
+.curriculum-overview__image-dialog > img {
+  min-width: 0;
+  max-width: 100%;
+  max-height: calc(100dvh - 112px);
+  object-fit: contain;
+}
+.curriculum-overview__image-dialog > button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  top: 12px;
+  right: 12px;
 }
 .curriculum-overview__reading-views {
   display: flex;
@@ -222,6 +252,6 @@
   .curriculum-overview__panel, .curriculum-overview__skill { border: 1px solid CanvasText; }
   .curriculum-overview__skill[aria-selected="true"],
   .curriculum-overview__reading-views button[aria-pressed="true"] { border: 2px solid Highlight; }
-  .curriculum-overview__panel :is(button, a):focus-visible { outline-color: Highlight; }
+  .curriculum-overview__panel button:focus-visible { outline-color: Highlight; }
   .curriculum-overview__tagline::before { background: CanvasText; }
 }
