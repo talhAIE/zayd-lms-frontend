@@ -1,3 +1,4 @@
+import OnboardingPage from "@/pages/public/OnboardingPage";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAppSelector } from "@/redux/hooks";
 
@@ -83,6 +84,7 @@ const AppRoutes = () => {
       <Route path="/" element={<Main />} />
       <Route path="/home" element={<HomeRedirect />} />
       <Route path="/chinese" element={<MainChinese />} />
+      <Route path="/onboarding" element={<OnboardingPage />} />
       <Route path="/contact-us" element={<ContactUs />} />
       <Route path="/chinese/contact-us" element={<ChineseContactUs />} />
       <Route

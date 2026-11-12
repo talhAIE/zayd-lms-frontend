@@ -20,17 +20,33 @@
 .classroom-comparison__intro { margin: 12px 0 0; color: #555; font-size: 14px; line-height: 1.9; }
 .classroom-comparison__cards { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; gap: 32px; margin-top: 40px; }
 
-.comparison-card { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; padding: 28px 32px; border: 1px solid #f0eeee; border-radius: 24px; background: #faf8f8; box-shadow: 0 2px 2px rgb(0 0 0 / 16%); }
-.comparison-card--zayd { background: #eaf3fd; }
-.comparison-card__badge { display: inline-block; padding: 3px 16px; border-radius: 999px; background: #ffe0e5; color: #b81435; box-shadow: 0 2px 3px rgb(0 0 0 / 12%); font-size: 11px; font-weight: 700; line-height: 1.7; }
-.comparison-card--zayd .comparison-card__badge { background: #fff; color: #1768d9; }
-.comparison-card__heading { margin: 12px 0 0; font-size: clamp(20px, 1.9vw, 26px); font-weight: 700; line-height: 1.6; }
-.comparison-card__description { margin: 8px 0 0; color: #555; font-size: 14px; line-height: 1.9; }
-.comparison-card__points { display: grid; gap: 8px; width: 100%; margin: 0; padding: 14px 0 0; list-style: none; }
-.comparison-card__points li { display: flex; align-items: flex-start; gap: 8px; color: #555; font-size: 14px; font-weight: 500; line-height: 1.85; }
-.comparison-card__points svg { flex: 0 0 16px; width: 16px; height: 16px; margin-top: 5px; color: #b8586b; }
-.comparison-card--zayd .comparison-card__points svg { color: #079c79; fill: #f5fffb; }
-.classroom-comparison__versus { display: none; }
+/* Reference treatment: tinted cards, colored edge, soft waves and status icons. */
+.comparison-card { --card-accent: #fa6377; --card-border: #ecc3ca; --card-wave: rgb(244 117 140 / 7%); position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; align-items: flex-start; min-width: 0; padding: 22px 32px 60px; border: 1px solid var(--card-border); border-radius: 26px; background: linear-gradient(135deg, #fffdfd, #fdf4f6); box-shadow: 0 14px 24px rgb(155 71 87 / 12%); }
+.comparison-card__waves { position: absolute; z-index: -1; pointer-events: none; inset: auto 0 0; width: 100%; height: 88px; color: var(--card-accent); }
+.comparison-card::after { content: ""; position: absolute; pointer-events: none; inset: auto 0 4px; height: 26px; border-bottom: 2px solid rgb(255 255 255 / 85%); border-radius: 0 0 26px 26px; }
+.comparison-card--zayd { --card-accent: #02bdb6; --card-border: #9cdce5; --card-wave: rgb(39 198 213 / 8%); background: linear-gradient(135deg, #fcfefe, #f0fafa); box-shadow: 0 14px 24px rgb(20 153 167 / 13%); }
+.comparison-card__badge { display: inline-block; padding: 3px 26px 5px; border-radius: 999px; background: linear-gradient(#ffe7eb, #ffbdc9); color: #9c182c; font-size: 20px; font-weight: 700; line-height: 1.6; }
+.comparison-card--zayd .comparison-card__badge { background: linear-gradient(#36d3c6, #00aeb3); color: #fff; text-shadow: 0 1px 2px rgb(0 84 88 / 25%); }
+.comparison-card__heading { position: relative; margin: 16px 0 0; padding-bottom: 13px; font-size: clamp(21px, 2vw, 28px); font-weight: 700; line-height: 1.6; color: #101010; }
+.comparison-card__heading::after { content: ""; position: absolute; bottom: 3px; right: 0; width: 62px; height: 5px; border-radius: 99px; background: var(--card-accent); }
+.comparison-card__description { margin: 9px 0 0; color: #454545; font-size: 16px; font-weight: 500; line-height: 1.8; }
+.comparison-card__points { display: grid; gap: 9px; width: 100%; margin: auto 0 0; padding: 26px 0 0 54px; list-style: none; }
+.comparison-card__points li { display: flex; min-height: 48px; align-items: center; gap: 15px; color: #292929; font-size: 18px; font-weight: 500; line-height: 1.8; }
+.comparison-card__points svg { flex: 0 0 23px; width: 23px; height: 23px; margin-top: 0; color: #fa6377; fill: #fff; stroke-width: 2; }
+.comparison-card--zayd .comparison-card__points svg { color: #fff; fill: #00bd92; stroke-width: 2.5; }
+.comparison-card__points li > span:first-of-type { flex: 1; }
+.comparison-card__illustration { display: flex; align-items: center; justify-content: center; flex: 0 0 56px; align-self: center; height: 46px; border: 1px solid #fcdde4; border-radius: 12px; background: linear-gradient(145deg, #fff, #ffdde5); box-shadow: inset 0 1px 0 #fff, 0 4px 9px rgb(224 91 119 / 14%); }
+.comparison-card__points .comparison-card__illustration svg { width: 32px; height: 32px; flex-basis: 32px; margin: 0; color: #ec526e; fill: none; stroke-width: 2; }
+.comparison-card--zayd .comparison-card__illustration { border-color: #bfeeed; background: linear-gradient(145deg, #fff, #d5f8f4); box-shadow: inset 0 1px 0 #fff, 0 4px 9px rgb(0 176 163 / 15%); }
+.comparison-card--zayd .comparison-card__illustration svg { color: #00b4aa; fill: none; stroke-width: 2; }
+.classroom-comparison__cards { gap: 64px; }
+.classroom-comparison__versus { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; color: #259da5; }
+.classroom-comparison__versus svg { width: 32px; height: 32px; stroke-width: 2.5; }
+
+@media (min-width: 768px) and (max-width: 1100px) {
+  .comparison-card__points { padding-left: 0; }
+  .comparison-card__points li { font-size: 16px; gap: 10px; }
+}
 
 @media (max-width: 767px) {
   .classroom-comparison { padding-block: 48px; }
@@ -43,13 +59,18 @@
   .classroom-comparison__eyebrow { font-size: 26px; }
   .classroom-comparison__heading { font-size: 24px; }
   .classroom-comparison__intro, .comparison-card__description { font-size: 14px; }
-  .comparison-card { padding: 24px 18px; border-radius: 20px; }
+  .comparison-card { padding: 24px 18px 34px; border-radius: 20px; }
   .comparison-card__heading { font-size: 21px; }
+  .comparison-card__points { padding-left: 0; padding-top: 20px; }
   .comparison-card__points li { font-size: 14px; gap: 10px; }
+  .comparison-card__illustration { flex-basis: 36px; height: 36px; border-radius: 10px; }
+  .comparison-card__points .comparison-card__illustration svg { width: 24px; height: 24px; flex-basis: 24px; }
 }
 
 @media (forced-colors: active) {
   .classroom-comparison__container, .comparison-card, .comparison-card__badge, .classroom-comparison__versus { border: 1px solid CanvasText; }
   .comparison-card--zayd { border-width: 2px; box-shadow: none; }
   .classroom-comparison__heading { background: none; -webkit-text-fill-color: CanvasText; }
+  .comparison-card::before, .comparison-card::after { display: none; }
+  .comparison-card__points svg { color: CanvasText; fill: Canvas; }
 }

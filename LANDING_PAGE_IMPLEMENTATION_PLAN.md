@@ -93,7 +93,7 @@ P0 closure evidence and P1 handover: [P0 report](planning/landing-p0/README.md).
 
 **D09 — Banner wording and FAQ approval, p29.** The detailed banner row uses “استخدامها”; the earlier PDF used “ممارستها.” Use the new detailed wording for review, while retaining the final-checklist question as open. All nine FAQ answers are supplied, but the PDF calls them drafted and requests their approval. This is a content-review dependency, not missing answer copy.
 
-**D10 — Official contacts, p29.** Need the approved email, phone/WhatsApp number and social URLs. Preserve footer layout, brand, quick links and copyright. Do not invent official addresses or accounts. Add only supplied social links, with meaningful accessible labels.
+**D10 — Official contacts, p29.** Email/phone resolved by the user's 2026-11-12 instruction: `contact@waaha.ai` and `+966 58 278 8984`. Implemented as `mailto:contact@waaha.ai` and `tel:+966582788984`; six-width browser verification confirms exact values and LTR display. WhatsApp/social URLs remain unspecified; no account is inferred. Preserve footer layout, brand, quick links and copyright. Evidence: `planning/landing-polish/verification.json`.
 
 ### Additional engineering dependencies discovered in this repository
 
@@ -343,7 +343,7 @@ Files: `faq-section.tsx/.css`, `footer.tsx/.css`, `final-cta-section.tsx`; share
 - [x] **S13-ACCORDION** — Exactly nine items, stable IDs, keyboard activation, aria-expanded/controls and readable long answers. The updated table calls FAQ #2 “Expanded Card”; proposed default is What is Zayd (#2), preserving the original expanded topic rather than opening #1 merely because its index is zero. Record the chosen behavior. Source: pp24-26. Implementation: `openId` default `what-is-zayd`, stable button/panel IDs and existing native button behavior. All nine Enter-open/Space-close/Tab-order/focus checks passed at all five widths (45 cases). Full answers remain visible without overflow; existing visual/chevron behavior retained.
 - [ ] **S14-CTA-PRESERVE** — Preserve final banner copy, gradient layout, both labels and school-trial action. Correct the existing invalid primary destination according to E03 without rewriting its visual/copy treatment. Source: p26, callouts 1-3.
 - [x] **S14-FOOTER-PRESERVE** — Preserve brand, “معلّم ذكي لممارسة اللغة الإنجليزية. تعلّم. مارس. أتقن.”, mascot, quick links/order and ©2026 line. Source: p27, callouts 4-6. Implementation: footer TSX/CSS/assets left byte-for-byte unchanged; source hashes, rendered content/links and desktop/mobile screenshots verify preservation of existing spelling/design/copyright.
-- [ ] **S14-CONTACTS** — Replace placeholder email/phone only with official D10 values; add supplied WhatsApp/social links if required. Verify mailto/tel/HTTPS destinations and bidi display. This is a data substitution requested by S15, not a footer redesign. Source: p27 callout 6; p29 item 10.
+- [x] **S14-CONTACTS** — Replace placeholder email/phone only with official D10 values; add supplied WhatsApp/social links if required. Verify mailto/tel/HTTPS destinations and bidi display. This is a data substitution requested by S15, not a footer redesign. Source: p27 callout 6; p29 item 10. Follow-up 2026-11-12: supplied email/phone implemented in `footer.tsx`; exact text, mailto/tel targets and LTR display verified at six widths in `planning/landing-polish/verification.json`. No WhatsApp/social URLs supplied.
 
 P9 completion gate: nine correct question/answer pairs in the stated order, appropriate default expansion, agreed drafts incorporated, package/count/usage statements consistent, and no invented official contact details. Pending business review is explicitly recorded rather than called complete.
 
@@ -355,6 +355,8 @@ P9 evidence: [P9 report](planning/landing-p9/README.md), `planning/landing-p9/ve
 - S14-CONTACTS: blocked/deferred by user. Current placeholder mailto/tel remain unchanged; no official email, number, social URL or WhatsApp account was invented. D10 needs approved values before substitution.
 - TypeScript, targeted ESLint, final production build and five-width browser checks passed. Only FAQ TSX/CSS changed in existing application source; no earlier phase, pricing model, banner/card styling, final CTA, footer, dependency or asset changed. FAQ answer contrast improved and semantic package-list spacing added for readable long answers.
 - Full P9 remains incomplete pending D01/D09/D10/E03. P10's independent audit may begin when requested, but full integrated closure requires resolving or explicitly accepting the remaining dependencies/deferred scope. P10 has not started. No commit, push or deployment performed.
+
+**2026-11-12 contact follow-up:** The P9 summary above records its original execution state. The user subsequently supplied the official email/phone; S14-CONTACTS is now complete with six-width verification in `planning/landing-polish/verification.json`. P9 now has 12 complete implementation requirements and 2 partial requirements; D01/D09/E03 remain unresolved. D10 email/phone is resolved; no WhatsApp/social account was supplied.
 
 ## P10 — Integrated verification and requirement closure
 

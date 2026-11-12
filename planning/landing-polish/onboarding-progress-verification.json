@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "width": 320,
+      "checks": {
+        "round": true,
+        "brandBlue": true,
+        "paleTrack": true,
+        "progressUpdates": true,
+        "semantics": true,
+        "fits": true
+      }
+    },
+    {
+      "width": 390,
+      "checks": {
+        "round": true,
+        "brandBlue": true,
+        "paleTrack": true,
+        "progressUpdates": true,
+        "semantics": true,
+        "fits": true
+      }
+    },
+    {
+      "width": 1440,
+      "checks": {
+        "round": true,
+        "brandBlue": true,
+        "paleTrack": true,
+        "progressUpdates": true,
+        "semantics": true,
+        "fits": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+.landing-nav { animation: landing-nav-enter 550ms ease-out; }
+.landing-nav .landing-nav__link { position: relative; color: #364152; font-size: 16px; font-weight: 600; line-height: 1.65; transition: color 240ms ease, translate 240ms ease; }
+.landing-nav__link::after { position: absolute; inset-inline: 8%; bottom: 1px; height: 2px; border-radius: 99px; background: linear-gradient(90deg, #27b9b0, #2376d0); scale: 0 1; transition: scale 240ms ease; content: ""; }
+.landing-nav .landing-nav__link[aria-current="location"] { color: #2376cb; font-weight: 700; }
+.landing-nav__link[aria-current="location"]::after, .landing-nav__link:focus-visible::after { scale: 1; }
+.landing-nav .landing-nav__actions { gap: 8px; }
+.landing-nav .landing-nav__action { height: 38px; padding-inline: 18px; font-size: 14px; font-weight: 700; white-space: nowrap; transition: translate 240ms ease, box-shadow 240ms ease, background-color 240ms ease; }
+.landing-nav .landing-nav__action { background: #147f7e; }
+.landing-nav .landing-nav__action[href="/login"] { background: #2376cb; }
+.landing-nav__action:focus-visible { translate: 0 -2px; box-shadow: 0 5px 12px rgb(35 118 203 / 18%); }
+.landing-nav__action:active { scale: .98; }
+.landing-nav__toggle { transition: background-color 240ms ease, rotate 240ms ease; }
+.landing-nav__toggle[aria-expanded="true"] { rotate: 90deg; }
+.landing-nav__mobile { animation: landing-nav-enter 260ms ease-out; }
+.landing-nav .landing-nav__mobile a { font-size: 16px; line-height: 1.7; }
+@keyframes landing-nav-enter { from { opacity: 0; translate: 0 -8px; } to { opacity: 1; translate: 0 0; } }
+@media (hover: hover) and (pointer: fine) {
+  .landing-nav__link:hover { color: #2376cb; translate: 0 -2px; }
+  .landing-nav__link:hover::after { scale: 1; }
+  .landing-nav__action:hover { translate: 0 -2px; box-shadow: 0 5px 12px rgb(35 118 203 / 18%); }
+  .landing-nav .landing-nav__action:hover { background: #0c6d6c; }
+  .landing-nav .landing-nav__action[href="/login"]:hover { background: #1c63b0; }
+}
+@media (max-width: 559px) {
+  .landing-nav .landing-nav__action { height: 36px; padding-inline: 12px; font-size: 13px; }
+  .landing-nav .landing-nav__actions { gap: 5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-nav, .landing-nav__mobile { animation: none; }
+  .landing-nav :is(.landing-nav__link, .landing-nav__action, .landing-nav__toggle), .landing-nav__link::after { transition: none; translate: none; rotate: none; }
+  .landing-nav__action:active { scale: none; }
+}

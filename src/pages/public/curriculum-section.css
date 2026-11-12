@@ -160,43 +160,6 @@
   font-size: 14px;
   font-weight: 600;
 }
-.curriculum-overview__full-size {
-  margin-inline-start: auto;
-  padding-block: 6px;
-  color: #0b56ad;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  cursor: pointer;
-}
-.curriculum-overview__image-dialog[role="dialog"] {
-  width: min(90rem, calc(100% - 24px));
-  max-width: none;
-  max-height: calc(100dvh - 24px);
-  justify-items: center;
-  gap: 12px;
-  padding: 16px;
-  overflow: auto;
-  border-radius: 16px;
-}
-.curriculum-overview__image-dialog > h2 {
-  padding-inline: 36px;
-  line-height: 1.5;
-  text-align: center;
-}
-.curriculum-overview__image-dialog > img {
-  min-width: 0;
-  width: 100%;
-  max-height: calc(100dvh - 112px);
-  object-fit: contain;
-}
-.curriculum-overview__image-dialog > button {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  top: 12px;
-  right: 12px;
-}
 .curriculum-overview__reading-views {
   display: flex;
   flex-wrap: wrap;
@@ -254,4 +217,22 @@
   .curriculum-overview__reading-views button[aria-pressed="true"] { border: 2px solid Highlight; }
   .curriculum-overview__panel button:focus-visible { outline-color: Highlight; }
   .curriculum-overview__tagline::before { background: CanvasText; }
+}
+
+/* Keep the preview collapsed until a skill is deliberately selected. */
+.curriculum-overview__panel { border: 1px solid #d7eaf7; box-shadow: 0 12px 32px rgb(22 91 142 / 6%); }
+.curriculum-overview__panel[data-preview-open="false"] .curriculum-overview__skills { margin-bottom: 0; }
+.curriculum-overview__preview-reveal { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 650ms cubic-bezier(.22, 1, .36, 1), opacity 450ms ease; }
+.curriculum-overview__preview-reveal[data-open="true"] { grid-template-rows: 1fr; opacity: 1; }
+.curriculum-overview__preview-inner { min-height: 0; overflow: hidden; }
+.curriculum-overview__preview-inner > [role="tabpanel"] { padding: 4px 0 12px; }
+.curriculum-overview__device { animation: curriculum-device-enter 650ms cubic-bezier(.22, 1, .36, 1) both; }
+/* This laptop screenshot stays still on hover; other landing images retain their motion. */
+.curriculum-overview__screen img:hover { scale: 1; translate: none; }
+.curriculum-overview__screen--self-expression { aspect-ratio: auto; overflow: hidden; border-radius: 12px; }
+.curriculum-overview__screen--self-expression img { height: auto; border-radius: 0; }
+@keyframes curriculum-device-enter { from { opacity: 0; transform: translateY(16px); filter: blur(4px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .curriculum-overview__preview-reveal { transition: none; }
+  .curriculum-overview__device { animation: none; }
 }
