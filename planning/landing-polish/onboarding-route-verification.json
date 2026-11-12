@@ -1,0 +1,65 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "width": 320,
+      "reduced": false,
+      "checks": {
+        "heroDestination": true,
+        "directRoute": true,
+        "englishDirection": true,
+        "roundedFocus": true,
+        "smoothButtons": true,
+        "successMessage": true,
+        "motionPreference": true,
+        "mockOnly": true,
+        "returnsHome": true
+      }
+    },
+    {
+      "width": 390,
+      "reduced": false,
+      "checks": {
+        "heroDestination": true,
+        "directRoute": true,
+        "englishDirection": true,
+        "roundedFocus": true,
+        "smoothButtons": true,
+        "successMessage": true,
+        "motionPreference": true,
+        "mockOnly": true,
+        "returnsHome": true
+      }
+    },
+    {
+      "width": 1440,
+      "reduced": false,
+      "checks": {
+        "heroDestination": true,
+        "directRoute": true,
+        "englishDirection": true,
+        "roundedFocus": true,
+        "smoothButtons": true,
+        "successMessage": true,
+        "motionPreference": true,
+        "mockOnly": true,
+        "returnsHome": true
+      }
+    },
+    {
+      "width": 390,
+      "reduced": true,
+      "checks": {
+        "heroDestination": true,
+        "directRoute": true,
+        "englishDirection": true,
+        "roundedFocus": true,
+        "smoothButtons": true,
+        "successMessage": true,
+        "motionPreference": true,
+        "mockOnly": true,
+        "returnsHome": true
+      }
+    }
+  ]
+}

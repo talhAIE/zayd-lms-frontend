@@ -1,0 +1,77 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "width": 320,
+      "height": 740,
+      "reduced": false,
+      "checks": {
+        "sampleLabel": true,
+        "finalPoints": true,
+        "correctOrder": true,
+        "scoresUnchanged": true,
+        "progressFull": true,
+        "decorationsHidden": true,
+        "motionPreference": true,
+        "noOverflow": true,
+        "dialogFits": true,
+        "noPageErrors": true,
+        "closes": true
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "reduced": false,
+      "checks": {
+        "sampleLabel": true,
+        "finalPoints": true,
+        "correctOrder": true,
+        "scoresUnchanged": true,
+        "progressFull": true,
+        "decorationsHidden": true,
+        "motionPreference": true,
+        "noOverflow": true,
+        "dialogFits": true,
+        "noPageErrors": true,
+        "closes": true
+      }
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "reduced": false,
+      "checks": {
+        "sampleLabel": true,
+        "finalPoints": true,
+        "correctOrder": true,
+        "scoresUnchanged": true,
+        "progressFull": true,
+        "decorationsHidden": true,
+        "motionPreference": true,
+        "noOverflow": true,
+        "dialogFits": true,
+        "noPageErrors": true,
+        "closes": true
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "reduced": true,
+      "checks": {
+        "sampleLabel": true,
+        "finalPoints": true,
+        "correctOrder": true,
+        "scoresUnchanged": true,
+        "progressFull": true,
+        "decorationsHidden": true,
+        "motionPreference": true,
+        "noOverflow": true,
+        "dialogFits": true,
+        "noPageErrors": true,
+        "closes": true
+      }
+    }
+  ]
+}

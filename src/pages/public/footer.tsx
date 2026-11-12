@@ -25,11 +25,11 @@ export default function Footer() {
           </nav>
           <div className="site-footer__contact">
             <h2>تواصل معنا</h2>
-            <a href="mailto:info@youruniversity.com">
-              <Mail aria-hidden="true" /><span dir="ltr">info@youruniversity.com</span>
+            <a href="mailto:contact@waaha.ai">
+              <Mail aria-hidden="true" /><span dir="ltr">contact@waaha.ai</span>
             </a>
-            <a href="tel:+966500000000">
-              <Phone aria-hidden="true" /><span dir="ltr">+9665 000 00000</span>
+            <a href="tel:+966582788984">
+              <Phone aria-hidden="true" /><span dir="ltr">+966 58 278 8984</span>
             </a>
           </div>
           <div className="site-footer__character" aria-hidden="true">

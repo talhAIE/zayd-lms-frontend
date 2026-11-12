@@ -1,0 +1,59 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "width": 390,
+      "checks": {
+        "repeatedTogglesStable": true,
+        "boundaryStable": true,
+        "replayAfterFullExit": true,
+        "reducedMotion": true
+      },
+      "cycles": [
+        {
+          "noReplayLoop": true,
+          "stable": true,
+          "counts": []
+        },
+        {
+          "noReplayLoop": true,
+          "stable": true,
+          "counts": []
+        },
+        {
+          "noReplayLoop": true,
+          "stable": true,
+          "counts": []
+        }
+      ],
+      "boundaryCount": 0
+    },
+    {
+      "width": 1440,
+      "checks": {
+        "repeatedTogglesStable": true,
+        "boundaryStable": true,
+        "replayAfterFullExit": true,
+        "reducedMotion": true
+      },
+      "cycles": [
+        {
+          "noReplayLoop": true,
+          "stable": true,
+          "counts": []
+        },
+        {
+          "noReplayLoop": true,
+          "stable": true,
+          "counts": []
+        },
+        {
+          "noReplayLoop": true,
+          "stable": true,
+          "counts": []
+        }
+      ],
+      "boundaryCount": 1
+    }
+  ]
+}

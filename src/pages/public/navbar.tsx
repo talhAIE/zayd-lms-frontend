@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import navLogoPng from "@/assets/landing-page/logo.png";
+import "./navbar.css";
 
 const navItems = [
   { name: "الرئيسية", href: "#home" },
@@ -43,8 +44,8 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#EFF5FF] font-ibm-plex" dir="rtl">
-      <div className="mx-auto flex h-[86px] w-full max-w-[1180px] items-center justify-between gap-5 px-6 max-[360px]:gap-2 max-[360px]:px-3 sm:px-[60px] lg:px-6">
+    <header className="landing-nav sticky top-0 z-50 w-full bg-[#EFF5FF] font-ibm-plex" dir="rtl">
+      <div className="landing-nav__shell mx-auto flex h-[86px] w-full max-w-[1180px] items-center justify-between gap-5 px-6 max-[360px]:gap-2 max-[360px]:px-3 sm:px-[60px] lg:px-6">
         <a
           href="#home"
           onClick={(event) => {
@@ -66,7 +67,7 @@ export default function Navbar() {
                 event.preventDefault();
                 handleScroll(item.href, item.name);
               }}
-              className={`whitespace-nowrap rounded-sm py-2 text-[13px] leading-5 transition-colors ${focusStyle} ${
+              className={`landing-nav__link whitespace-nowrap rounded-sm py-2 text-[13px] leading-5 transition-colors ${focusStyle} ${
                 activeItem === item.name
                   ? "font-bold text-[#5999ED]"
                   : "font-medium text-[#414141] hover:text-[#5999ED]"
@@ -77,20 +78,20 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-1">
+        <div className="landing-nav__actions flex items-center gap-1">
           <a
             href="#pricing"
             onClick={(event) => {
               event.preventDefault();
               handleScroll("#pricing", "الأسعار");
             }}
-            className={`inline-flex h-[30px] min-w-[68px] items-center justify-center rounded-full bg-[#50CFC4] px-4 text-[12px] font-medium text-white transition-colors hover:bg-[#38BEB3] ${focusStyle}`}
+            className={`landing-nav__action inline-flex h-[30px] min-w-[68px] items-center justify-center rounded-full bg-[#50CFC4] px-4 text-[12px] font-medium text-white transition-colors hover:bg-[#38BEB3] ${focusStyle}`}
           >
             الأسعار
           </a>
           <Link
             to="/login"
-            className={`inline-flex h-[30px] min-w-[96px] items-center justify-center rounded-full bg-[#5999ED] px-5 text-[12px] font-bold text-white transition-colors hover:bg-[#4085DD] ${focusStyle}`}
+            className={`landing-nav__action inline-flex h-[30px] min-w-[96px] items-center justify-center rounded-full bg-[#5999ED] px-5 text-[12px] font-bold text-white transition-colors hover:bg-[#4085DD] ${focusStyle}`}
           >
             جرب زيـــد
           </Link>
@@ -100,7 +101,7 @@ export default function Navbar() {
             aria-label={mobileMenuOpen ? "إغلاق القائمة" : "فتح القائمة"}
             aria-expanded={mobileMenuOpen}
             aria-controls="landing-mobile-navigation"
-            className={`mr-2 flex h-9 w-9 items-center justify-center rounded-full text-[#414141] hover:bg-[#DFEAFC] min-[820px]:hidden ${focusStyle}`}
+            className={`landing-nav__toggle mr-2 flex h-9 w-9 items-center justify-center rounded-full text-[#414141] hover:bg-[#DFEAFC] min-[820px]:hidden ${focusStyle}`}
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -111,7 +112,7 @@ export default function Navbar() {
         <nav
           id="landing-mobile-navigation"
           aria-label="التنقل على الهاتف"
-          className="absolute inset-x-0 top-full flex flex-col gap-1 border-t border-[#DFEAFC] bg-[#EFF5FF] px-6 py-4 shadow-sm min-[820px]:hidden"
+          className="landing-nav__mobile absolute inset-x-0 top-full flex flex-col gap-1 border-t border-[#DFEAFC] bg-[#EFF5FF] px-6 py-4 shadow-sm min-[820px]:hidden"
         >
           {navItems.map((item) => (
             <a

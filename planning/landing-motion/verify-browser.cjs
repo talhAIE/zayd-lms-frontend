@@ -88,7 +88,7 @@ const output = __dirname;
         realCountUpFrames: sample.some(x => numeric(x) === 0) && sample.some(x => numeric(x) > 0 && numeric(x) < 250) && sample.includes('+250'),
         impactFinalValues: JSON.stringify(impact) === JSON.stringify(['+1,000', '+2,200', '+8,600']),
         allRequestedRevealsReplay: replay.every(x => x.firstEntry && x.replay),
-        quickBlur: blur.length > 0 && blur.every(x => x.duration === 500 && x.frames[0].filter === 'blur(5px)'),
+        slowerComparisonBlur: blur.length > 0 && blur.every(x => x.duration === 700 && x.frames[0].filter === 'blur(5px)'),
         staggeredCards: new Set(stagger.map(x => x.delay)).size >= 2 && stagger.every(x => x.duration === 650),
         tabPreviewMovement: tabAnimation.name === 'landing-preview-enter' && tabAnimation.duration === '0.4s' && keyboardTab === 'true',
         smoothAccordionBothDirections: opening > 0 && opening < opened && closing > 0 && closing < opened && closed === 0,
