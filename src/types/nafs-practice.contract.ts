@@ -1,4 +1,4 @@
-/** NAFS Practice v1 learner contract. Phase 1: types only, no registered runtime.
+/** NAFS Practice v1 learner contract. Frozen in Phase 1; backend runtime added in Phase 3.
  * Keep byte-identical backend and frontend copies. Private taxonomy, provenance,
  * keys and immutable authoring snapshots belong exclusively on the backend.
  */
