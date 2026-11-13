@@ -7,43 +7,56 @@ import { useNafsOwner } from './useNafsSession';
 
 interface Props {
   onCoursesChange?: (courses: NafsCourseView[]) => void;
+  onStatusChange?: (status: 'loading' | 'hidden' | 'available' | 'error') => void;
 }
-export function NafsCourseCards({ onCoursesChange }: Props) {
+export function NafsCourseCards({ onCoursesChange, onStatusChange }: Props) {
   const owner = useNafsOwner();
+  useEffect(() => {
+    if (!owner) onStatusChange?.('hidden');
+  }, [owner, onStatusChange]);
   return owner ? (
     <Cards
       key={`${owner.id}:${owner.username}`}
       owner={owner}
       onCoursesChange={onCoursesChange}
+      onStatusChange={onStatusChange}
     />
   ) : null;
 }
-function Cards({ owner, onCoursesChange }: Props & { owner: NafsOwner }) {
+function Cards({ owner, onCoursesChange, onStatusChange }: Props & { owner: NafsOwner }) {
   const [courses, setCourses] = useState<NafsCourseView[]>([]);
   const [failed, setFailed] = useState(false);
   const [retry, setRetry] = useState(0);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const controller = new AbortController();
     setFailed(false);
+    setLoading(true);
+    onStatusChange?.('loading');
     void nafsService
       .courses(owner, controller.signal)
       .then((data) => {
         if (!controller.signal.aborted) {
           setCourses(data.courses);
+          setLoading(false);
           onCoursesChange?.(data.courses);
+          onStatusChange?.(data.courses.length ? 'available' : 'hidden');
         }
       })
       .catch(() => {
         if (!controller.signal.aborted) {
           setFailed(true);
+          setLoading(false);
           onCoursesChange?.([]);
+          onStatusChange?.('error');
         }
       });
     return () => {
       controller.abort();
       onCoursesChange?.([]);
     };
-  }, [owner, retry, onCoursesChange]);
+  }, [owner, retry, onCoursesChange, onStatusChange]);
+  if (loading) return <p role="status" className="text-sm text-slate-600">Loading NAFS courses…</p>;
   if (failed)
     return (
       <div role="status" className="text-sm text-slate-600">
@@ -78,24 +91,20 @@ function Cards({ owner, onCoursesChange }: Props & { owner: NafsOwner }) {
                 {course.courseTitle}
               </h3>
               <p className="text-sm text-[#64748B]">
-                {course.assessmentTitle} · {course.questionCount} questions
+                Quiz Mode · {course.assessmentTitle} · {course.questionCount} questions
               </p>
               <p className="text-sm text-slate-600 mt-auto">
                 {course.state === 'submitted'
-                  ? 'Completed'
+                  ? 'Quiz completed'
                   : course.state === 'in_progress'
-                    ? 'In progress · Continue your saved quiz'
+                    ? 'Quiz in progress · Continue your saved quiz'
                     : 'One attempt · Marks after finishing'}
               </p>
               <Link
                 className="w-full min-h-[46px] px-3 py-3 bg-[#232E43] hover:bg-[#1a2333] text-white rounded-lg font-semibold text-sm text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
-                to={`/student/nafs/assessments/${course.assessmentId}`}
+                to={`/student/nafs/courses/${course.id}`}
               >
-                {course.state === 'submitted'
-                  ? 'View marks'
-                  : course.state === 'in_progress'
-                    ? 'Resume quiz'
-                    : 'Start quiz'}
+                Open course
               </Link>
             </div>
           </article>
