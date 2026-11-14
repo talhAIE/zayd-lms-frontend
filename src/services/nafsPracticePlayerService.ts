@@ -7,6 +7,9 @@ import type {
   PracticeEnvelope,
   PracticeCheckRequest,
   PracticeCheckedAnswer,
+  PracticeSavedSelection,
+  PracticeMutationRequest,
+  PracticeCompletedSession,
 } from "@/types/nafs-practice.contract";
 
 type OwnedConfig = AxiosRequestConfig & { scienceSession: () => boolean };
@@ -29,6 +32,79 @@ async function request<T>(
 }
 const id = encodeURIComponent;
 export const nafsPracticePlayerService = {
+  async start(
+    owner: PracticeOwner,
+    signal: AbortSignal,
+    collectionId: string,
+    data: { requestId: string },
+  ) {
+    return (
+      await request<PracticeEnvelope<{ session: PracticeSessionView }>>(
+        owner,
+        signal,
+        {
+          url: `/nafs/practice/collections/${id(collectionId)}/sessions`,
+          method: "POST",
+          data,
+        },
+      )
+    ).data;
+  },
+  async save(
+    owner: PracticeOwner,
+    signal: AbortSignal,
+    sessionId: string,
+    questionId: string,
+    data: PracticeCheckRequest,
+  ) {
+    return (
+      await request<PracticeEnvelope<{ saved: PracticeSavedSelection }>>(
+        owner,
+        signal,
+        {
+          url: `/nafs/practice/sessions/${id(sessionId)}/selections/${id(questionId)}`,
+          method: "PUT",
+          data,
+        },
+      )
+    ).data;
+  },
+  async complete(
+    owner: PracticeOwner,
+    signal: AbortSignal,
+    sessionId: string,
+    data: PracticeMutationRequest,
+  ) {
+    return (
+      await request<PracticeEnvelope<{ session: PracticeCompletedSession }>>(
+        owner,
+        signal,
+        {
+          url: `/nafs/practice/sessions/${id(sessionId)}/complete`,
+          method: "POST",
+          data,
+        },
+      )
+    ).data;
+  },
+  async repeat(
+    owner: PracticeOwner,
+    signal: AbortSignal,
+    sessionId: string,
+    data: PracticeMutationRequest,
+  ) {
+    return (
+      await request<PracticeEnvelope<{ session: PracticeSessionView }>>(
+        owner,
+        signal,
+        {
+          url: `/nafs/practice/sessions/${id(sessionId)}/repeat`,
+          method: "POST",
+          data,
+        },
+      )
+    ).data;
+  },
   async session(owner: PracticeOwner, signal: AbortSignal, sessionId: string) {
     return (
       await request<PracticeEnvelope<{ session: PracticeSessionView }>>(

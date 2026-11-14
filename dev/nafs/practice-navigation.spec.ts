@@ -204,7 +204,7 @@ for (const width of [1440, 390]) {
     ).toBeVisible();
     await expect(
       page.getByRole("button", { name: "Start practice" }),
-    ).toBeDisabled();
+    ).toBeEnabled();
     await expect(page.getByText(/Domain|Strand|Indicator|Outcome/)).toHaveCount(
       0,
     );
@@ -343,7 +343,7 @@ for (const [progress, label] of [
     const state = await fixture(page);
     state.progress = progress;
     await page.goto(overviewPath);
-    await expect(page.getByRole("button", { name: label })).toBeDisabled();
+    await expect(page.getByRole("button", { name: label })).toBeEnabled();
     await page.goto("/student/courses");
     await expect(page.getByText(/1 course in progress/)).toBeVisible();
     await expect(

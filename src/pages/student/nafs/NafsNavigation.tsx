@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import { openPracticeRun } from "@/components/nafs-practice/practiceRecovery";
+import { nafsPracticePlayerService } from "@/services/nafsPracticePlayerService";
 import { ArrowLeft, BookOpen, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAppSelector } from "@/redux/hooks";
@@ -340,6 +342,11 @@ function Overview({
   owner: PracticeOwner;
   collectionId: string;
 }) {
+  const navigate = useNavigate();
+  const [opening, setOpening] = useState(false);
+  const [openError, setOpenError] = useState("");
+  const sending = useRef(false);
+  const lifetime = useRef<AbortController>();
   const [collection, setCollection] =
     useState<Awaited<ReturnType<typeof discovery.overview>>["collection"]>();
   const [courseTitle, setCourseTitle] = useState("NAFS");
@@ -347,6 +354,7 @@ function Overview({
   const [retry, setRetry] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
+    lifetime.current = controller;
     setCollection(undefined);
     setCourseTitle("NAFS");
     setError("");
@@ -369,6 +377,45 @@ function Overview({
       });
     return () => controller.abort();
   }, [owner, collectionId, retry]);
+  async function open() {
+    const controller = lifetime.current;
+    if (!collection || !controller || sending.current) return;
+    const existing =
+      collection.activeSessionId || collection.latestCompletedSessionId;
+    if (existing) {
+      navigate(`/student/nafs/practice/sessions/${existing}`);
+      return;
+    }
+    sending.current = true;
+    setOpening(true);
+    setOpenError("");
+    try {
+      const result = await openPracticeRun(
+        owner,
+        "start",
+        collectionId,
+        undefined,
+        () => discovery.overview(owner, controller.signal, collectionId),
+        (request) =>
+          nafsPracticePlayerService.start(
+            owner,
+            controller.signal,
+            collectionId,
+            request,
+          ),
+      );
+      if (!controller.signal.aborted)
+        navigate(`/student/nafs/practice/sessions/${result.session.id}`);
+    } catch {
+      if (!controller.signal.aborted)
+        setOpenError(
+          "Could not confirm practice. Retry opening practice to reconcile the same request. Browser storage must be available.",
+        );
+    } finally {
+      sending.current = false;
+      if (!controller.signal.aborted) setOpening(false);
+    }
+  }
   return (
     <section className={panel}>
       <Back
@@ -427,15 +474,25 @@ function Overview({
               Earlier runs remain saved.
             </li>
           </ul>
-          <p role="status" className="mt-6 text-sm text-slate-500">
-            Practice sessions will be available soon.
-          </p>
-          <Button disabled className="mt-3 min-h-11">
-            {collection.state === "completed"
-              ? "View practice result"
-              : collection.state === "in_progress"
-                ? "Resume practice"
-                : "Start practice"}
+          {openError && (
+            <p role="alert" className="mt-6">
+              {openError}
+            </p>
+          )}
+          <Button
+            disabled={opening}
+            className="mt-6 min-h-11"
+            onClick={() => void open()}
+          >
+            {opening
+              ? "Opening practice…"
+              : openError
+                ? "Retry opening practice"
+                : collection.state === "completed"
+                  ? "View practice result"
+                  : collection.state === "in_progress"
+                    ? "Resume practice"
+                    : "Start practice"}
           </Button>
         </>
       )}

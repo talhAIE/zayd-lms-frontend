@@ -1,257 +1,6 @@
-import { test, expect, type Page } from "@playwright/test";
-import type {
-  PracticeInProgressSession,
-  PracticeCheckedAnswer,
-} from "../../src/types/nafs-practice.contract";
+import { test, expect } from "@playwright/test";
 import { installFixture, source } from "./browser-fixture";
-import { deflateSync } from "node:zlib";
-
-// A coded 400x180 half-shaded diagram, matching the synthetic asset dimensions.
-function diagramPng() {
-  const width = 400,
-    height = 180,
-    rows = Buffer.alloc((width * 4 + 1) * height);
-  for (let y = 0; y < height; y++)
-    for (let x = 0; x < width; x++) {
-      const border =
-        x >= 20 &&
-        x <= 380 &&
-        y >= 30 &&
-        y <= 150 &&
-        (x <= 22 || x >= 378 || y <= 32 || y >= 148 || (x >= 199 && x <= 201));
-      const shaded = x > 22 && x < 200 && y > 32 && y < 148;
-      const color = border
-        ? [35, 46, 67, 255]
-        : shaded
-          ? [79, 141, 251, 255]
-          : [248, 250, 252, 255];
-      color.forEach(
-        (value, i) => (rows[y * (width * 4 + 1) + 1 + x * 4 + i] = value),
-      );
-    }
-  function chunk(type: string, data: Buffer) {
-    const name = Buffer.from(type),
-      length = Buffer.alloc(4),
-      checksum = Buffer.alloc(4);
-    length.writeUInt32BE(data.length);
-    let crc = 0xffffffff;
-    for (const value of Buffer.concat([name, data])) {
-      crc ^= value;
-      for (let i = 0; i < 8; i++)
-        crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0);
-    }
-    checksum.writeUInt32BE((crc ^ 0xffffffff) >>> 0);
-    return Buffer.concat([length, name, data, checksum]);
-  }
-  const header = Buffer.alloc(13);
-  header.writeUInt32BE(width);
-  header.writeUInt32BE(height, 4);
-  header[8] = 8;
-  header[9] = 6;
-  return Buffer.concat([
-    Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
-    chunk("IHDR", header),
-    chunk("IDAT", deflateSync(rows)),
-    chunk("IEND", Buffer.alloc(0)),
-  ]);
-}
-const syntheticDiagram = diagramPng();
-
-const sid = "33333333-3333-4333-8333-333333333333";
-const q1 = "44444444-4444-4444-8444-444444444444";
-const q2 = "55555555-5555-4555-8555-555555555555";
-const assetId = "66666666-6666-4666-8666-666666666666";
-const routePath = `/student/nafs/practice/sessions/${sid}`;
-const now = "2026-11-13T10:00:00.000Z";
-async function fixture(page: Page, count = 2) {
-  await page.addInitScript(() => {
-    localStorage.setItem(
-      "AiTutorUser",
-      JSON.stringify({
-        id: "pm5.synthetic",
-        username: "pm5.synthetic",
-        role: "student",
-        region: "ROW",
-      }),
-    );
-    localStorage.setItem("accessToken", "pm5.synthetic.token");
-    localStorage.setItem("refreshToken", "pm5.synthetic.refresh");
-  });
-  const figure = {
-    id: assetId,
-    url: "https://untrusted.invalid/never-fetch.png?credential=never",
-    alt: "Synthetic fraction diagram",
-    width: 400,
-    height: 180,
-  };
-  const session: PracticeInProgressSession = {
-    id: sid,
-    courseId: "11111111-1111-4111-8111-111111111111",
-    collectionId: "22222222-2222-4222-8222-222222222222",
-    contentVersion: 1,
-    runNumber: 1,
-    state: "in_progress",
-    revision: 0,
-    startedAt: now,
-    lastSavedAt: null,
-    questionCount: count,
-    questions: Array.from({ length: count }, (_, i) => ({
-      id: i === 0 ? q1 : i === 1 ? q2 : `q-${i}`,
-      displayOrder: i + 1,
-      stem:
-        i === 0
-          ? "Choose the fraction 1/2 of the whole."
-          : `Synthetic question ${i + 1}: Compare 3/4 and 1/2.`,
-      emphasisTerms: i === 0 ? ["fraction"] : ["3/4"],
-      accessibleVisualText:
-        i === 0 ? "A whole divided into equal parts." : null,
-      figure: i === 0 ? figure : null,
-      passageId: i === 0 ? "p1" : "p2",
-      options: ["A", "B", "C", "D"].map((label, n) => ({
-        id: `${i}-${label}`,
-        label,
-        text: [
-          "One quarter 1/4",
-          "One half 1/2",
-          "Three quarters 3/4",
-          "One whole",
-        ][n],
-        image:
-          i === 0 && n === 1
-            ? { ...figure, alt: "Synthetic half diagram" }
-            : null,
-        emphasisTerms: n === 1 ? ["half"] : [],
-      })) as PracticeInProgressSession["questions"][number]["options"],
-    })),
-    passages: [
-      {
-        id: "p1",
-        paragraphs: [
-          "First full passage: a fraction describes part of a whole.",
-          "Final paragraph of the first passage.",
-        ],
-        emphasisTerms: ["fraction"],
-        figure: { ...figure, alt: "Synthetic passage figure" },
-      },
-      {
-        id: "p2",
-        paragraphs: [
-          "A different full passage for the second question.",
-          "Final paragraph of the second passage.",
-        ],
-        emphasisTerms: [],
-        figure: null,
-      },
-    ],
-    selections: [],
-    latestChecks: [],
-    checkedCount: 0,
-    policy: {
-      checkAction: "explicit",
-      retries: "unlimited",
-      progression: "manual",
-      completion: "all_current_selections_checked",
-      repeat: "explicit_new_run_after_completion",
-      scoring: "latest_checked_answer_one_mark",
-      feedback: "checked_option_correctness_only",
-      timerSeconds: null,
-    },
-  };
-  const state = {
-    session,
-    checks: [] as {
-      questionId: string;
-      body: Record<string, string | number>;
-    }[],
-    receipts: new Map<string, PracticeCheckedAnswer>(),
-    duplicate: false,
-    fail: false,
-    conflict: false,
-    delay: 0,
-    deny: false,
-    failMedia: false,
-    media: [] as { url: string; auth?: string }[],
-  };
-  await page.route("**/*", async (route) => {
-    const request = route.request(),
-      url = new URL(request.url());
-    if (url.hostname !== "127.0.0.1") return route.abort();
-    if (!url.pathname.startsWith("/api/v1/")) return route.continue();
-    const p = url.pathname.slice("/api/v1".length);
-    const json = (data: unknown) =>
-      route.fulfill({
-        json: { status: true, data },
-        headers: { "Cache-Control": "private, no-store" },
-      });
-    const error = (code: string, status = 404) =>
-      route.fulfill({
-        status,
-        json: { code, statusCode: status, message: "Synthetic denial" },
-      });
-    if (!p.startsWith("/nafs/practice/")) return json({});
-    expect(request.headers().authorization).toBe("Bearer pm5.synthetic.token");
-    if (state.deny) return error("NAFS_PRACTICE_NOT_FOUND");
-    if (p.includes("/assets/")) {
-      state.media.push({
-        url: request.url(),
-        auth: request.headers().authorization,
-      });
-      if (state.failMedia) return error("NAFS_PRACTICE_UNAVAILABLE", 503);
-      return route.fulfill({
-        contentType: "image/png",
-        body: syntheticDiagram,
-      });
-    }
-    if (request.method() === "GET")
-      return json({ session: structuredClone(session) });
-    const body = request.postDataJSON();
-    const questionId = p.split("/")[6];
-    state.checks.push({ questionId, body });
-    if (state.delay)
-      await new Promise((resolve) => setTimeout(resolve, state.delay));
-    if (state.conflict) return error("NAFS_PRACTICE_REVISION_CONFLICT", 409);
-    let accepted = state.receipts.get(body.requestId);
-    if (state.duplicate) accepted = [...state.receipts.values()].at(-1);
-    if (!accepted) {
-      expect(body.expectedRevision).toBe(session.revision);
-      const previous = session.latestChecks.find(
-        (c) => c.questionId === questionId,
-      );
-      const check = {
-        questionId,
-        optionId: body.optionId,
-        responseId: `synthetic-event-${session.revision + 1}`,
-        sequence: (previous?.sequence || 0) + 1,
-        isCorrect: body.optionId.endsWith("-B"),
-        checkedAt: now,
-      };
-      session.revision++;
-      session.latestChecks = [
-        ...session.latestChecks.filter((c) => c.questionId !== questionId),
-        check,
-      ];
-      session.selections = [
-        ...session.selections.filter((s) => s.questionId !== questionId),
-        { questionId, optionId: body.optionId },
-      ];
-      session.checkedCount = session.latestChecks.length;
-      accepted = {
-        sessionId: sid,
-        revision: session.revision,
-        selection: { questionId, optionId: body.optionId },
-        check,
-        checkedCount: session.checkedCount,
-      };
-      state.receipts.set(body.requestId, structuredClone(accepted));
-    }
-    if (state.fail) {
-      state.fail = false;
-      return route.abort();
-    }
-    return json({ checked: accepted });
-  });
-  return state;
-}
+import { fixture, sid, routePath } from "./practice-player.fixture";
 const feedback = (page: Page) =>
   page.getByRole("status", { name: "Answer feedback" });
 const check = (page: Page) =>
@@ -358,9 +107,9 @@ test("lost response freezes choices; exact retry restores feedback without anima
   await page.goto(routePath);
   await page.getByRole("radio", { name: /^B\./ }).check();
   await check(page).click();
-  await expect(page.getByRole("alert")).toContainText("could not be confirmed");
+  await expect(page.getByRole('status', { name: 'Practice saving status' })).toContainText('could not be confirmed');
   await expect(page.getByRole("radio").first()).toBeDisabled();
-  await page.getByRole("button", { name: "Retry same check" }).click();
+  await page.getByRole('button', { name: 'Reconcile saved practice' }).click();
   await expect(feedback(page)).toHaveText("Correct!");
   await expect(
     page.locator(".answer-feedback-pop, .answer-confetti"),
@@ -377,9 +126,8 @@ test("pending check locks choices; conflict offers explicit reload without guess
   state.conflict = true;
   await page.goto(routePath);
   await page.getByRole("radio", { name: /^A\./ }).check();
-  await check(page).click();
   await expect(page.getByRole("radio").first()).toBeDisabled();
-  await expect(page.getByRole("alert")).toContainText("session changed");
+  await expect(page.getByRole('status', { name: 'Practice saving status' })).toContainText('Saved practice changed');
   await expect(page.locator("[data-answer-result]")).toHaveCount(0);
   await expect(
     page.getByRole("button", { name: "Retry same check" }),
@@ -387,7 +135,7 @@ test("pending check locks choices; conflict offers explicit reload without guess
   state.conflict = false;
   await page
     .getByRole("button", {
-      name: "Reload saved practice (discard unchecked choices)",
+      name: 'Use server choices',
     })
     .click();
   await expect(check(page)).toBeDisabled();
