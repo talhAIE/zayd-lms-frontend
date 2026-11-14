@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { GradedAnswerSurface } from "@/components/learning/AnswerFeedback";
 import { NafsText } from "@/components/nafs/NafsText";
 import { PracticeMedia } from "./PracticeMedia";
+import { PracticeNativeText } from "./PracticeNativeText";
 import type {
   PracticeOwner,
   PracticeInProgressSession,
@@ -196,10 +197,14 @@ export function PracticePlayer({
                 : "text-lg font-semibold whitespace-pre-wrap break-words leading-8 mb-4"
             }
           >
-            <PracticeText
-              text={question.stem}
-              emphasisTerms={question.emphasisTerms}
-            />
+            {question.stemLayout ? (
+              <PracticeNativeText layout={question.stemLayout} />
+            ) : (
+              <PracticeText
+                text={question.stem}
+                emphasisTerms={question.emphasisTerms}
+              />
+            )}
           </h2>
           {question.accessibleVisualText && (
             <p className="text-sm text-slate-600 whitespace-pre-wrap mb-3">
@@ -324,10 +329,14 @@ export function PracticePlayer({
                         <span className="font-semibold mr-2" aria-hidden="true">
                           {option.label}.
                         </span>
-                        <PracticeText
-                          text={option.text}
-                          emphasisTerms={option.emphasisTerms}
-                        />
+                        {option.textLayout ? (
+                          <PracticeNativeText layout={option.textLayout} />
+                        ) : (
+                          <PracticeText
+                            text={option.text}
+                            emphasisTerms={option.emphasisTerms}
+                          />
+                        )}
                       </span>
                     </label>
                     {option.image && (

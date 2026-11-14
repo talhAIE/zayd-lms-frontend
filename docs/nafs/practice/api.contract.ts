@@ -102,6 +102,18 @@ export interface PracticeOptionView {
   text: string;
   image: PracticeAssetView | null;
   emphasisTerms: string[];
+  /** Selectable native typesetting for source equations; never an image. */
+  textLayout?: PracticeTextLayout;
+}
+export interface PracticeTextLayout {
+  /** All coordinates are in em units, independent of viewport/pixel density. */
+  width: number;
+  height: number;
+  glyphs: Array<{
+    text: string; x: number; y: number; width: number; size: number;
+    serif: boolean; italic: boolean; bold: boolean;
+  }>;
+  rules: Array<{ x: number; y: number; length: number; angle: number }>;
 }
 export type PracticeResponseKind = 'single_choice' | 'multi_choice' | 'written';
 export interface PracticeQuestionView {
@@ -112,6 +124,7 @@ export interface PracticeQuestionView {
   id: string;
   displayOrder: number;
   stem: string;
+  stemLayout?: PracticeTextLayout;
   emphasisTerms: string[];
   accessibleVisualText: string | null;
   figure: PracticeAssetView | null;
