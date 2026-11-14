@@ -1,3 +1,9 @@
+import {
+  selectedPracticeOptions,
+  writtenPracticeText,
+  practiceMultiToken,
+  hasPracticeResponse,
+} from "./practiceAnswers";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -205,49 +211,134 @@ export function PracticePlayer({
           )}
           <fieldset disabled={locked} className="space-y-3 mt-5">
             <legend className="sr-only">
-              Choose one answer for question {index + 1}
+              {question.responseKind === "written"
+                ? "Write your answer"
+                : question.responseKind === "multi_choice"
+                  ? "Select all correct answers"
+                  : "Choose one answer"}{" "}
+              for question {index + 1}
             </legend>
-            {question.options.map((option) => {
-              const selected = selections[question.id] === option.id;
-              return (
-                <GradedAnswerSurface
-                  key={option.id}
-                  result={selected ? checked?.isCorrect : null}
-                  feedbackKey={selected && checked ? feedbackEvent : null}
-                  className={`rounded-xl border min-w-0 ${selected ? "border-blue-600 bg-blue-50" : "border-slate-200"}`}
+            {question.responseKind === "written" && (
+              <GradedAnswerSurface
+                result={checked?.isCorrect ?? null}
+                feedbackKey={checked ? feedbackEvent : null}
+                className="rounded-xl border p-3"
+              >
+                <label
+                  htmlFor="practice-written"
+                  className="block font-semibold mb-2"
                 >
-                  <label className="flex items-start gap-3 p-4 min-h-12 cursor-pointer">
-                    <input
-                      type="radio"
-                      name={`practice-${question.id}`}
-                      value={option.id}
-                      checked={selected}
-                      aria-label={`${option.label}. ${option.text || option.image?.alt || "Image option"}`}
-                      onChange={() => onSelect(question.id, option.id)}
-                      className="mt-1 h-5 w-5 shrink-0 accent-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600"
-                    />
-                    <span className="min-w-0 whitespace-pre-wrap break-words leading-7">
-                      <span className="font-semibold mr-2" aria-hidden="true">
-                        {option.label}.
+                  Your answer
+                </label>
+                <textarea
+                  id="practice-written"
+                  className="w-full min-h-40 border rounded-lg p-3"
+                  maxLength={4000}
+                  value={writtenPracticeText(selections[question.id])}
+                  onChange={(e) =>
+                    onSelect(
+                      question.id,
+                      JSON.stringify({ text: e.target.value }),
+                    )
+                  }
+                />
+                <p className="text-sm text-slate-500">
+                  {writtenPracticeText(selections[question.id]).length} / 4000
+                </p>
+              </GradedAnswerSurface>
+            )}
+            {question.responseKind === "multi_choice" && (
+              <p className="text-sm">Select all correct answers.</p>
+            )}
+            <GradedAnswerSurface
+              result={
+                question.responseKind === "multi_choice"
+                  ? checked?.isCorrect
+                  : null
+              }
+              feedbackKey={
+                question.responseKind === "multi_choice" && checked
+                  ? feedbackEvent
+                  : null
+              }
+              className="space-y-3"
+            >
+              {question.options.map((option) => {
+                const selected = selectedPracticeOptions(
+                  selections[question.id],
+                ).includes(option.id);
+                return (
+                  <GradedAnswerSurface
+                    key={option.id}
+                    result={
+                      selected && question.responseKind !== "multi_choice"
+                        ? checked?.isCorrect
+                        : null
+                    }
+                    feedbackKey={
+                      selected &&
+                      checked &&
+                      question.responseKind !== "multi_choice"
+                        ? feedbackEvent
+                        : null
+                    }
+                    className={`rounded-xl border min-w-0 ${selected ? "border-blue-600 bg-blue-50" : "border-slate-200"}`}
+                  >
+                    <label className="flex items-start gap-3 p-4 min-h-12 cursor-pointer">
+                      <input
+                        type={
+                          question.responseKind === "multi_choice"
+                            ? "checkbox"
+                            : "radio"
+                        }
+                        name={`practice-${question.id}`}
+                        value={option.id}
+                        checked={selected}
+                        aria-label={`${option.label}. ${option.text || option.image?.alt || "Image option"}`}
+                        onChange={() =>
+                          onSelect(
+                            question.id,
+                            question.responseKind === "multi_choice"
+                              ? practiceMultiToken(
+                                  selected
+                                    ? selectedPracticeOptions(
+                                        selections[question.id],
+                                      ).filter((id) => id !== option.id)
+                                    : [
+                                        ...selectedPracticeOptions(
+                                          selections[question.id],
+                                        ),
+                                        option.id,
+                                      ],
+                                )
+                              : option.id,
+                          )
+                        }
+                        className="mt-1 h-5 w-5 shrink-0 accent-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600"
+                      />
+                      <span className="min-w-0 whitespace-pre-wrap break-words leading-7">
+                        <span className="font-semibold mr-2" aria-hidden="true">
+                          {option.label}.
+                        </span>
+                        <PracticeText
+                          text={option.text}
+                          emphasisTerms={option.emphasisTerms}
+                        />
                       </span>
-                      <PracticeText
-                        text={option.text}
-                        emphasisTerms={option.emphasisTerms}
-                      />
-                    </span>
-                  </label>
-                  {option.image && (
-                    <div className="px-4 pb-4">
-                      <PracticeMedia
-                        owner={owner}
-                        sessionId={session.id}
-                        asset={option.image}
-                      />
-                    </div>
-                  )}
-                </GradedAnswerSurface>
-              );
-            })}
+                    </label>
+                    {option.image && (
+                      <div className="px-4 pb-4">
+                        <PracticeMedia
+                          owner={owner}
+                          sessionId={session.id}
+                          asset={option.image}
+                        />
+                      </div>
+                    )}
+                  </GradedAnswerSurface>
+                );
+              })}
+            </GradedAnswerSurface>
           </fieldset>
           <p
             role="status"
@@ -260,11 +351,15 @@ export function PracticePlayer({
                 : "Incorrect. You can try again."
               : selections[question.id]
                 ? "Check this answer to see your feedback."
-                : "Choose an answer, then check it."}
+                : question.responseKind === "written"
+                  ? "Write an answer, then check it."
+                  : "Choose an answer, then check it."}
           </p>
           <Button
             className={primary}
-            disabled={locked || !selections[question.id]}
+            disabled={
+              locked || !hasPracticeResponse(question, selections[question.id])
+            }
             onClick={() => onCheck(question.id)}
           >
             Check Answer

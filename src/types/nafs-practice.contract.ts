@@ -1,11 +1,12 @@
-/** NAFS Practice v1 learner contract. Frozen in Phase 1; backend runtime added in Phase 3.
+/** NAFS Practice v1 learner contract, extended compatibly in Phase 7.
  * Keep byte-identical backend and frontend copies. Private taxonomy, provenance,
  * keys and immutable authoring snapshots belong exclusively on the backend.
  */
 export const NAFS_PRACTICE_LIMITS = {
   maxQuestions: 500,
   optionsPerQuestion: 4,
-  maxMutationBytes: 8192,
+  maxWrittenAnswerLength: 4000,
+  maxMutationBytes: 64 * 1024,
   maxLearnerSnapshotBytes: 8 * 1024 * 1024,
   maxPrivateSnapshotBytes: 16 * 1024 * 1024,
   maxImageBytes: 20 * 1024 * 1024,
@@ -102,7 +103,10 @@ export interface PracticeOptionView {
   image: PracticeAssetView | null;
   emphasisTerms: string[];
 }
+export type PracticeResponseKind = 'single_choice' | 'multi_choice' | 'written';
 export interface PracticeQuestionView {
+  /** Missing on historical v1 content means single_choice. */
+  responseKind?: PracticeResponseKind;
   id: string;
   displayOrder: number;
   stem: string;
@@ -110,7 +114,7 @@ export interface PracticeQuestionView {
   accessibleVisualText: string | null;
   figure: PracticeAssetView | null;
   passageId: string | null;
-  options: [PracticeOptionView, PracticeOptionView, PracticeOptionView, PracticeOptionView];
+  options: PracticeOptionView[];
 }
 export interface PracticePassageView {
   id: string;
@@ -118,6 +122,8 @@ export interface PracticePassageView {
   emphasisTerms: string[];
   figure: PracticeAssetView | null;
 }
+/** optionId retains its v1 name: an option id, canonical JSON array of selected ids,
+ * or canonical JSON {text:string} for written responses. Never a grading key. */
 export interface PracticeSelection { questionId: string; optionId: string }
 export interface PracticeCheckView extends PracticeSelection {
   /** Stable accepted event identity; fresh responses animate, restores do not. */

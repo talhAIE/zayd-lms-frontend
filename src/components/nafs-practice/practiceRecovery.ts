@@ -20,7 +20,7 @@ export function practiceBackups(key: string): PracticeBackup[] {
       const candidate = localStorage.key(i);
       if (!candidate?.startsWith(`${key}:backup:`)) continue;
       const raw = localStorage.getItem(candidate);
-      if (!raw || raw.length >= 256 * 1024) continue;
+      if (!raw || raw.length >= 12 * 1024 * 1024) continue;
       let parsed: unknown;
       try {
         parsed = JSON.parse(raw);
@@ -87,7 +87,7 @@ export const practiceDraftKey = (
 export function readPracticeRecovery(key: string): unknown {
   try {
     const raw = sessionStorage.getItem(key);
-    if (raw && raw.length < 256 * 1024) return JSON.parse(raw);
+    if (raw && raw.length < 12 * 1024 * 1024) return JSON.parse(raw);
   } catch {
     /* Persistent entry receipts can still be recovered in a reopened tab. */
   }

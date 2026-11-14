@@ -156,7 +156,7 @@ test("practice writes use isolated routes, shared bearer auth, stable payloads a
     );
     for (const c of calls) {
       assert.equal(c.headers.Authorization, "Bearer old-access");
-      assert.equal(c.timeout, 30000);
+      assert.equal(c.timeout, c.url.endsWith("/check") ? 75000 : 30000);
       assert.equal(c.signal, env.signal);
       assert(
         !/score|earnedMarks|isCorrect|answers|username|region/.test(c.data),

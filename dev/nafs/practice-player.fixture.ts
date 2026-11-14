@@ -395,7 +395,15 @@ export async function fixture(page: Page, count = 2) {
             ...selection,
             responseId: `${run.id}-event-${run.revision}`,
             sequence: (previous?.sequence || 0) + 1,
-            isCorrect: body.optionId.endsWith("-B"),
+            isCorrect:
+              run.questions.find((q) => q.id === questionId)?.responseKind ===
+              "multi_choice"
+                ? body.optionId === '["0-A","0-C"]'
+                : run.questions.find((q) => q.id === questionId)
+                      ?.responseKind === "written"
+                  ? body.optionId ===
+                    JSON.stringify({ text: "Equivalent written answer" })
+                  : body.optionId.endsWith("-B"),
             checkedAt: now,
           };
           run.latestChecks = [

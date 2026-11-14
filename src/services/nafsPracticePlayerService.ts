@@ -23,7 +23,7 @@ async function request<T>(
   const response = await apiClient.request<T>({
     ...config,
     signal,
-    timeout: 30000,
+    timeout: config.timeout ?? 30000,
     scienceSession: () => samePracticeOwner(owner, signal),
   } as OwnedConfig);
   if (!samePracticeOwner(owner, signal))
@@ -129,6 +129,7 @@ export const nafsPracticePlayerService = {
         signal,
         {
           url: `/nafs/practice/sessions/${id(sessionId)}/questions/${id(questionId)}/check`,
+          timeout: 75000,
           method: "POST",
           data,
         },

@@ -1,3 +1,4 @@
+import { validPracticeResponse, hasPracticeResponse } from "./practiceAnswers";
 import type {
   PracticeSessionView,
   PracticeInProgressSession,
@@ -58,7 +59,7 @@ const code = (e: unknown) =>
 const choices = (s: PracticeInProgressSession) =>
   Object.fromEntries(s.selections.map((v) => [v.questionId, v.optionId]));
 const validChoice = (s: PracticeInProgressSession, q: string, o: string) =>
-  s.questions.some((v) => v.id === q && v.options.some((x) => x.id === o));
+  s.questions.some((v) => v.id === q && validPracticeResponse(v, o));
 const record = (v: unknown): v is Record<string, unknown> =>
   Boolean(v && typeof v === "object" && !Array.isArray(v));
 export function parsePracticeDraft(
@@ -418,7 +419,14 @@ export class PracticeSession {
     } else this.failure(e);
   }
   async check(q: string) {
-    if (!this.editable() || !this.state.selections[q]) return;
+    if (
+      !this.editable() ||
+      this.state.session.state !== "in_progress" ||
+      !this.state.session.questions.some(
+        (v) => v.id === q && hasPracticeResponse(v, this.state.selections[q]),
+      )
+    )
+      return;
     this.action = true;
     this.state.feedbackEvent = null;
     this.emit("checking");
