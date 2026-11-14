@@ -100,3 +100,29 @@ for (const width of [390, 1440]) {
     ).toHaveText("Correct!");
   });
 }
+
+test("source notation and image-only choices use authenticated media without a duplicated visible stem", async ({
+  page,
+}) => {
+  const state = await fixture(page);
+  state.session.questions[0].stemIsFigure = true;
+  state.session.questions[0].options[1].text = "";
+  await page.goto(routePath);
+  await expect(page.locator("#practice-question")).toHaveClass(/sr-only/);
+  await expect(
+    page.getByRole("img", { name: "Synthetic fraction diagram" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("img", { name: "Synthetic half diagram" }),
+  ).toBeVisible();
+  await page
+    .getByRole("radio", { name: "B. Synthetic half diagram", exact: true })
+    .check();
+  await page.getByRole("button", { name: "Check Answer", exact: true }).click();
+  await expect(
+    page.getByRole("status", { name: "Answer feedback" }),
+  ).toHaveText("Correct!");
+  expect(
+    state.media.every((m) => m.url.includes("/nafs/practice/sessions/")),
+  ).toBe(true);
+});

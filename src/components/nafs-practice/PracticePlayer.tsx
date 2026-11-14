@@ -190,7 +190,11 @@ export function PracticePlayer({
         <div className="min-w-0">
           <h2
             id="practice-question"
-            className="text-lg font-semibold whitespace-pre-wrap break-words leading-8 mb-4"
+            className={
+              question.stemIsFigure
+                ? "sr-only"
+                : "text-lg font-semibold whitespace-pre-wrap break-words leading-8 mb-4"
+            }
           >
             <PracticeText
               text={question.stem}

@@ -107,6 +107,8 @@ export type PracticeResponseKind = 'single_choice' | 'multi_choice' | 'written';
 export interface PracticeQuestionView {
   /** Missing on historical v1 content means single_choice. */
   responseKind?: PracticeResponseKind;
+  /** Essential source notation replaces the visible stem; text remains accessible. */
+  stemIsFigure?: boolean;
   id: string;
   displayOrder: number;
   stem: string;
