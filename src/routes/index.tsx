@@ -17,6 +17,8 @@ import StudentCourses from "@/pages/student/courses";
 import { PrimaryPage } from '@/pages/student/primary';
 import { NafsStudentSession } from "@/components/nafs/NafsSession";
 import { NafsAttemptPage, NafsOverviewPage } from "@/pages/student/nafs/NafsStudent";
+import { NafsCoursePage, NafsPracticeCollectionsPage, NafsPracticeOverviewPage } from '@/pages/student/nafs/NafsNavigation';
+import { NafsPracticeSessionPage } from '@/pages/student/nafs/NafsPracticeSession';
 import { StepSession } from '@/components/step/StepSession';
 import { StepAttemptPage, StepCoursePage, StepSectionPage, StepTopicPage } from '@/pages/student/step/StepStudent';
 import { ScienceSession } from "@/components/science/ScienceSession";
@@ -138,6 +140,10 @@ const AppRoutes = () => {
         <Route path="*" element={<Navigate to="/student/courses" replace />} />
       </Route>
       <Route path="/student/nafs" element={<StudentLayout><NafsStudentSession /></StudentLayout>}>
+        <Route path="courses/:courseId" element={<NafsCoursePage />} />
+        <Route path="courses/:courseId/practice" element={<NafsPracticeCollectionsPage />} />
+        <Route path="practice/collections/:collectionId" element={<NafsPracticeOverviewPage />} />
+        <Route path="practice/sessions/:sessionId" element={<NafsPracticeSessionPage />} />
         <Route path="assessments/:assessmentId" element={<NafsOverviewPage />} />
         <Route path="attempts/:attemptId" element={<NafsAttemptPage />} />
         <Route path="*" element={<Navigate to="/student/courses" replace />} />

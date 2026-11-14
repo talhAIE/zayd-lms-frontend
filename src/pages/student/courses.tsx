@@ -22,6 +22,7 @@ export default function StudentCourses() {
   const [primaryAvailable, setPrimaryAvailable] = useState(false);
   const [avatarAvailable, setAvatarAvailable] = useState(false);
   const [nafsCourses, setNafsCourses] = useState<NafsCourseView[]>([]);
+  const [nafsStatus, setNafsStatus] = useState<'loading' | 'hidden' | 'available' | 'error'>('loading');
   const [stepStatus, setStepStatus] = useState<StepDiscoveryState>('loading');
   const studentName = [user?.firstName, user?.lastName]
     .filter((name): name is string => typeof name === 'string' && name.trim().length > 0)
@@ -61,11 +62,11 @@ export default function StudentCourses() {
           <AvatarCourseCard onAvailabilityChange={setAvatarAvailable} />
           <PrimaryCourseCard onAvailabilityChange={setPrimaryAvailable} />
           <SparkScienceCourseCard onCourseChange={setSparkCourse} />
-          <NafsCourseCards onCoursesChange={setNafsCourses} />
+          <NafsCourseCards onCoursesChange={setNafsCourses} onStatusChange={setNafsStatus} />
           <StepCourseCard onStatusChange={setStepStatus} />
           {loading && <p className="text-gray-500">Loading courses...</p>}
           {error && <p className="text-red-500">{error}</p>}
-          {!loading && !error && courses.length === 0 && !sparkCourse && !avatarAvailable && !primaryAvailable && nafsCourses.length === 0 && stepStatus === 'hidden' && (
+          {!loading && !error && courses.length === 0 && !sparkCourse && !avatarAvailable && !primaryAvailable && nafsCourses.length === 0 && nafsStatus === 'hidden' && stepStatus === 'hidden' && (
             <p className="text-gray-500">No curriculum courses available.</p>
           )}
           {!loading && courses.map((course) => (
