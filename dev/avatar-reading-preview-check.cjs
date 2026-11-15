@@ -1,5 +1,5 @@
 // Local media/API fixture. Supply AVATAR_QA_VIDEO if the offline MP4 isn't present.
-const { chromium } = require('playwright');
+const { chromium } = require('@playwright/test');
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
@@ -24,7 +24,17 @@ for (let i = 0; i < 8000 * 12; i++) wav.writeInt16LE(Math.round(Math.sin(i * Mat
         localStorage.setItem('accessToken', 'fixture-only');
         window.mediaPlays = [];
         const play = HTMLMediaElement.prototype.play;
-        HTMLMediaElement.prototype.play = function () { window.mediaPlays.push(this.tagName); return play.call(this); };
+        HTMLMediaElement.prototype.play = function () {
+          window.mediaPlays.push(this.tagName);
+          if (this.tagName === 'VIDEO' && window.simulateBufferedAvatar) {
+            if (!window.bufferTimer) window.bufferTimer = setTimeout(() => {
+              window.simulateBufferedAvatar = false;
+              this.dispatchEvent(new Event('canplay'));
+            }, 100);
+            return Promise.reject(new DOMException('Buffering interrupted playback', 'AbortError'));
+          }
+          return play.call(this);
+        };
       });
       await page.route('**/fixture-reader.mp4', route => {
         if (holdVideo) { pendingVideo = route; return; }
@@ -72,8 +82,17 @@ for (let i = 0; i < 8000 * 12; i++) wav.writeInt16LE(Math.round(Math.sin(i * Mat
       assert(await page.locator('video').evaluate(v => v.paused));
       await page.getByRole('button', { name: 'Play passage', exact: true }).click();
       await page.getByRole('button', { name: 'Pause passage', exact: true }).waitFor();
+      // A full document reload exercises the same cold initialization as pull-to-refresh.
+      await page.reload({ waitUntil: 'domcontentloaded' });
+      await page.waitForFunction(() => document.querySelector('video')?.readyState >= 2 && !document.body.textContent.includes('Loading avatar…'));
+      assert.deepEqual(await page.evaluate(() => window.mediaPlays), []);
+      await page.evaluate(() => { window.simulateBufferedAvatar = true; });
+      await page.getByRole('button', { name: 'Play passage', exact: true }).click();
+      await page.waitForFunction(() => { const v = document.querySelector('video'); return !window.simulateBufferedAvatar && v && !v.paused; });
+      await page.getByRole('button', { name: 'Pause passage', exact: true }).waitFor();
+      assert.equal(await page.getByText('Unable to play the passage and avatar. Tap Listen to try again.', { exact: true }).count(), 0);
       assert.deepEqual(errors, []);
-      console.log(`PASS ${width}px: loading, decoded idle avatar before interaction, no autoplay/progress credit, play/pause/restart, video error and retry`);
+      console.log(`PASS ${width}px: decoded idle preview, no autoplay/progress credit, play/pause/restart, error/retry, full reload and interrupted first-play recovery with one tap`);
       await page.close();
     }
   } finally { await browser.close(); }
