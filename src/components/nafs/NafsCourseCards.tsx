@@ -56,7 +56,8 @@ function Cards({ owner, onCoursesChange, onStatusChange }: Props & { owner: Nafs
       onCoursesChange?.([]);
     };
   }, [owner, retry, onCoursesChange, onStatusChange]);
-  if (loading) return <p role="status" className="text-sm text-slate-600">Loading NAFS courses…</p>;
+  // The courses page owns the shared discovery loading message.
+  if (loading) return null;
   if (failed)
     return (
       <div role="status" className="text-sm text-slate-600">
