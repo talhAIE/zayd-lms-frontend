@@ -24,6 +24,7 @@ export default function StudentCourses() {
   const [nafsCourses, setNafsCourses] = useState<NafsCourseView[]>([]);
   const [nafsStatus, setNafsStatus] = useState<'loading' | 'hidden' | 'available' | 'error'>('loading');
   const [stepStatus, setStepStatus] = useState<StepDiscoveryState>('loading');
+  const coursesLoading = loading || nafsStatus === 'loading' || stepStatus === 'loading';
   const studentName = [user?.firstName, user?.lastName]
     .filter((name): name is string => typeof name === 'string' && name.trim().length > 0)
     .join(' ')
@@ -64,7 +65,7 @@ export default function StudentCourses() {
           <SparkScienceCourseCard onCourseChange={setSparkCourse} />
           <NafsCourseCards onCoursesChange={setNafsCourses} onStatusChange={setNafsStatus} />
           <StepCourseCard onStatusChange={setStepStatus} />
-          {loading && <p className="text-gray-500">Loading courses...</p>}
+          {coursesLoading && <p role="status" className="col-span-full text-gray-500">Loading courses...</p>}
           {error && <p className="text-red-500">{error}</p>}
           {!loading && !error && courses.length === 0 && !sparkCourse && !avatarAvailable && !primaryAvailable && nafsCourses.length === 0 && nafsStatus === 'hidden' && stepStatus === 'hidden' && (
             <p className="text-gray-500">No curriculum courses available.</p>
