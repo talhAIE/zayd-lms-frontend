@@ -73,8 +73,8 @@ export function practiceDiscoveryMessage(error: unknown) {
     ? error.response?.data?.code
     : undefined;
   if (code === "NAFS_PRACTICE_DISABLED")
-    return "Practice Mode is currently unavailable.";
+    return "Quizzes are currently unavailable.";
   if (code === "NAFS_PRACTICE_NOT_FOUND")
     return "This practice content is unavailable or you do not have access.";
-  return "Practice Mode could not load. Check your connection and try again.";
+  return "Quizzes could not load. Check your connection and try again.";
 }

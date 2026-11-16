@@ -193,7 +193,7 @@ function PracticeResult({
   return (
     <section className={`${practicePanel} text-center`}>
       <p className="text-sm text-blue-700 font-semibold">
-        NAFS · Practice Mode · Run {session.runNumber}
+        NAFS · Quizzes · Run {session.runNumber}
       </p>
       <h1 className="text-3xl font-bold my-5">Practice finished</h1>
       <p>Your final marks</p>

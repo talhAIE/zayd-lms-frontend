@@ -119,7 +119,7 @@ export function PracticePlayer({
       <div className="flex flex-wrap gap-3 justify-between items-start my-5">
         <div>
           <p className="text-sm font-semibold text-blue-700">
-            NAFS · Practice Mode · Run {session.runNumber}
+            NAFS · Quizzes · Run {session.runNumber}
           </p>
           <h1
             className="text-xl md:text-2xl font-bold mt-2"
