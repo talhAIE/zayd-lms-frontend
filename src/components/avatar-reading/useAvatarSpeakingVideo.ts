@@ -1,5 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { watchAvatarPreview, type AvatarVideoState } from './avatarPreview';
 
 /** Reusable muted gestures for dynamic Roleplay speech, not generated lip sync. */
 export function useAvatarSpeakingVideo(
@@ -13,6 +14,8 @@ export function useAvatarSpeakingVideo(
   const generation = useRef(0);
   const active = useRef(speaking);
   active.current = speaking;
+  const preview = useRef<ReturnType<typeof watchAvatarPreview> | null>(null);
+  const [videoState, setVideoState] = useState<AvatarVideoState>('loading');
   useEffect(() => {
     const video = videoRef.current;
     if (!videoUrl || !video) return;
@@ -20,7 +23,8 @@ export function useAvatarSpeakingVideo(
     video.muted = true;
     video.loop = true;
     video.playbackRate = 1;
-    if (speaking && !document.hidden) {
+    const play = () => {
+      if (!active.current || document.hidden || request !== generation.current) return;
       void video
         .play()
         .then(() => {
@@ -33,10 +37,14 @@ export function useAvatarSpeakingVideo(
           video.pause();
           toast.error("The avatar video could not play. Please try again.");
         });
-    } else video.pause();
+    };
+    if (speaking && !document.hidden) play();
+    else video.pause();
+    video.addEventListener('canplay', play);
     return () => {
       generation.current++;
       video.pause();
+      video.removeEventListener('canplay', play);
     };
   }, [videoUrl, speaking]);
   useEffect(() => {
@@ -56,15 +64,27 @@ export function useAvatarSpeakingVideo(
       stopRef.current();
       toast.error("The avatar video could not be loaded.");
     };
+    const watcher = watchAvatarPreview(video, {
+      active: () => active.current,
+      state: setVideoState,
+      failed: error,
+    });
+    preview.current = watcher;
     document.addEventListener("visibilitychange", hide);
-    video.addEventListener("error", error);
     return () => {
+      watcher.dispose(); preview.current = null;
       generation.current++;
       video.pause();
       stopRef.current();
       document.removeEventListener("visibilitychange", hide);
-      video.removeEventListener("error", error);
     };
   }, [videoUrl]);
-  return videoRef;
+  const retryVideo = useCallback(() => {
+    active.current = false;
+    generation.current++;
+    videoRef.current?.pause();
+    stopRef.current();
+    preview.current?.retry();
+  }, []);
+  return { videoRef, videoState, retryVideo };
 }

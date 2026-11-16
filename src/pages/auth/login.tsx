@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { login, addPhoneNumber, clearError } from "@/redux/slices/authSlice";
 import { useEffect, useState } from "react";
+import { isDirectoryAdmin } from "@/utils/adminRoles";
 import charactersImg from "@/assets/images/characters.png";
 import zaydLogo from "@/assets/zayd-logo.png";
 // import { ArrowLeft } from 'lucide-react';
@@ -68,6 +69,7 @@ export default function LoginPage() {
   useEffect(() => {
     console.log("Auth status:", isAuthenticated, user);
     if (isAuthenticated && user) {
+      if (isDirectoryAdmin(user.role)) { navigate("/admin/dashboard"); return; }
       // Check if user has phone number
       if (user.phoneNumber) {
         navigateUser(user);
@@ -81,7 +83,9 @@ export default function LoginPage() {
   }, [isAuthenticated, user, phoneForm]);
 
   const navigateUser = (user: any) => {
-    if (!user.role || user.role === "student") {
+    if (isDirectoryAdmin(user.role)) {
+      navigate("/admin/dashboard");
+    } else if (!user.role || user.role === "student") {
       navigate("/student/courses");
     } else if (user.role === "teacher") {
       navigate("/teacher/dashboard");

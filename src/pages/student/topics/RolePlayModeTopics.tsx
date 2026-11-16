@@ -106,7 +106,7 @@ export default function RolePlayModeTopics({avatar, demo}:{
   const avatarSpeaking=Boolean(avatar&&!isRecording&&!isAccountBlocked&&!showCompletionModal&&(
     fallbackSpeechMessageId || (isCurrentlyPlaying && (playingAudioId==='roleplay-scenario'||chatHistory.some(m=>m.id===playingAudioId&&m.role==='assistant')))
   ));
-  const avatarVideoRef=useAvatarSpeakingVideo(avatar?contentPayload?.narrationVideoUrl:undefined,avatarSpeaking,stopRoleplayMedia);
+  const avatarVideo=useAvatarSpeakingVideo(avatar?contentPayload?.narrationVideoUrl:undefined,avatarSpeaking,stopRoleplayMedia);
   const activeAvatarMessage = avatarSpeaking ? fallbackSpeechMessageId || playingAudioId : null;
   useEffect(() => {
     const panel = chatContainerRef.current;
@@ -489,8 +489,12 @@ export default function RolePlayModeTopics({avatar, demo}:{
         }
         {avatar&&<aside className="avatar-workspace-avatar flex w-full min-w-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]" aria-label="3D Roleplay avatar">
           <div className="avatar-workspace-stage relative overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#F0F7FF]">
-            <video ref={avatarVideoRef} src={contentPayload?.narrationVideoUrl} muted loop playsInline preload="auto"
+            <video ref={avatarVideo.videoRef} src={contentPayload?.narrationVideoUrl} muted loop playsInline preload="auto"
               className="absolute left-1/2 top-0 aspect-video h-[145%] w-auto max-w-none -translate-x-1/2" aria-label={`${avatar.title} avatar animation`} />
+            {avatarVideo.videoState !== 'ready' && <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white/90 p-4 text-center text-sm" role="status">
+              {avatarVideo.videoState === 'error' ? 'The avatar could not be loaded.' : 'Loading avatar…'}
+              {avatarVideo.videoState === 'error' && <button type="button" onClick={avatarVideo.retryVideo} className="rounded-lg bg-[#4F8CFF] px-4 py-2 text-white">Retry avatar</button>}
+            </div>}
           </div>
         </aside>}
         {/* Workspace Main */}
@@ -722,7 +726,7 @@ export default function RolePlayModeTopics({avatar, demo}:{
                   </button>
                 ) : (
                   <button 
-                    onClick={() => {if(avatar || demo){stopRoleplayMedia();avatarVideoRef.current?.pause();}startRecording();}}
+                    onClick={() => {if(avatar || demo){stopRoleplayMedia();avatarVideo.videoRef.current?.pause();}startRecording();}}
                     aria-label={demo ? 'Record roleplay response' : undefined}
                     disabled={cooldown || isTyping || isAccountBlocked || demoRecordingBusy}
                     className="flex shrink-0 justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"

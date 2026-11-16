@@ -65,12 +65,8 @@ function Card({
       onStatusChange?.("hidden");
     };
   }, [owner, retry, onStatusChange]);
-  if (state === "loading")
-    return (
-      <span role="status" className="sr-only">
-        Loading additional courses…
-      </span>
-    );
+  // The courses page owns the shared discovery loading message.
+  if (state === "loading") return null;
   if (state === "error")
     return (
       <div

@@ -1,3 +1,4 @@
+import OnboardingPage from "@/pages/public/OnboardingPage";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAppSelector } from "@/redux/hooks";
 
@@ -16,6 +17,8 @@ import StudentCourses from "@/pages/student/courses";
 import { PrimaryPage } from '@/pages/student/primary';
 import { NafsStudentSession } from "@/components/nafs/NafsSession";
 import { NafsAttemptPage, NafsOverviewPage } from "@/pages/student/nafs/NafsStudent";
+import { NafsCoursePage, NafsSimulatorTestsPage, NafsPracticeCollectionsPage, NafsPracticeOverviewPage } from '@/pages/student/nafs/NafsNavigation';
+import { NafsPracticeSessionPage } from '@/pages/student/nafs/NafsPracticeSession';
 import { StepSession } from '@/components/step/StepSession';
 import { StepAttemptPage, StepCoursePage, StepSectionPage, StepTopicPage } from '@/pages/student/step/StepStudent';
 import { ScienceSession } from "@/components/science/ScienceSession";
@@ -37,6 +40,9 @@ import Chat from "@/pages/student/ChatPage";
 
 // Teacher Pages
 import TeacherDashboard from "@/pages/teacher/dashboard";
+import AdminDashboard, { AdminStudentProfile } from "@/pages/admin/AdminDashboard";
+import AdminLogin from "@/pages/admin/AdminLogin";
+import { isDirectoryAdmin } from "@/utils/adminRoles";
 import StudentProfile from "@/pages/teacher/student-profile";
 
 // Auth Pages
@@ -55,13 +61,19 @@ const AppRoutes = () => {
     return (
       <Navigate
         to={
-          String(user?.role).toLowerCase() === "teacher"
+          isDirectoryAdmin(user?.role) ? "/admin/dashboard" : String(user?.role).toLowerCase() === "teacher"
             ? "/teacher/dashboard"
             : "/student/dashboard"
         }
         replace
       />
     );
+  };
+
+  const AdminRoute = ({ children }: { children: JSX.Element }) => {
+    if (!isAuthenticated) return <Navigate to="/admin/login" replace />;
+    if (!isDirectoryAdmin(user?.role)) return <Navigate to="/home" replace />;
+    return <TeacherLayout portal="admin">{children}</TeacherLayout>;
   };
 
   // Protected route component for students
@@ -82,7 +94,11 @@ const AppRoutes = () => {
       {/* Public Routes */}
       <Route path="/" element={<Main />} />
       <Route path="/home" element={<HomeRedirect />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+      <Route path="/admin/students/:studentId" element={<AdminRoute><AdminStudentProfile /></AdminRoute>} />
       <Route path="/chinese" element={<MainChinese />} />
+      <Route path="/onboarding" element={<OnboardingPage />} />
       <Route path="/contact-us" element={<ContactUs />} />
       <Route path="/chinese/contact-us" element={<ChineseContactUs />} />
       <Route
@@ -136,6 +152,11 @@ const AppRoutes = () => {
         <Route path="*" element={<Navigate to="/student/courses" replace />} />
       </Route>
       <Route path="/student/nafs" element={<StudentLayout><NafsStudentSession /></StudentLayout>}>
+        <Route path="courses/:courseId" element={<NafsCoursePage />} />
+        <Route path="courses/:courseId/simulator" element={<NafsSimulatorTestsPage />} />
+        <Route path="courses/:courseId/practice" element={<NafsPracticeCollectionsPage />} />
+        <Route path="practice/collections/:collectionId" element={<NafsPracticeOverviewPage />} />
+        <Route path="practice/sessions/:sessionId" element={<NafsPracticeSessionPage />} />
         <Route path="assessments/:assessmentId" element={<NafsOverviewPage />} />
         <Route path="attempts/:attemptId" element={<NafsAttemptPage />} />
         <Route path="*" element={<Navigate to="/student/courses" replace />} />
@@ -143,7 +164,9 @@ const AppRoutes = () => {
       </Route>
       <Route path="/student/science" element={<ScienceSession />}>
         <Route path="spark-science" element={<SparkScienceCoursePage />} />
-        <Route path="spark-science/unit-1" element={<SparkScienceUnitPage />} />
+        <Route path="spark-science/:unitSlug" element={<SparkScienceUnitPage />} />
+        <Route path="spark-science/:unitSlug/activities/:activityKey" element={<SparkScienceActivityPage />} />
+        <Route path="spark-science/unit-1" element={<Navigate to="/student/science/spark-science/unit-2" replace />} />
         <Route path="spark-science/unit-1/activities/:activityKey" element={<SparkScienceActivityPage />} />
         <Route path="courses/:courseKey" element={<ScienceCoursePage />} />
         <Route path="units/:unitKey" element={<ScienceUnitPage />} />

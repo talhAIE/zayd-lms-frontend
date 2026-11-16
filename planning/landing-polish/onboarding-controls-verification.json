@@ -1,0 +1,49 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "width": 320,
+      "reduced": false,
+      "checks": {
+        "roundedFocus": true,
+        "smoothButtons": true,
+        "successMessage": true,
+        "motionPreference": true,
+        "mockOnly": true
+      }
+    },
+    {
+      "width": 390,
+      "reduced": false,
+      "checks": {
+        "roundedFocus": true,
+        "smoothButtons": true,
+        "successMessage": true,
+        "motionPreference": true,
+        "mockOnly": true
+      }
+    },
+    {
+      "width": 1440,
+      "reduced": false,
+      "checks": {
+        "roundedFocus": true,
+        "smoothButtons": true,
+        "successMessage": true,
+        "motionPreference": true,
+        "mockOnly": true
+      }
+    },
+    {
+      "width": 390,
+      "reduced": true,
+      "checks": {
+        "roundedFocus": true,
+        "smoothButtons": true,
+        "successMessage": true,
+        "motionPreference": true,
+        "mockOnly": true
+      }
+    }
+  ]
+}

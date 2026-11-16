@@ -7,7 +7,7 @@ import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import readingIcon from '@/assets/svgs/reading-mode.png';
 import listeningIcon from '@/assets/svgs/listening-mode.png';
 import roleplayIcon from '@/assets/svgs/roleplay-mode.png';
-import { Award, BookOpenCheck, BotMessageSquare, CircleCheck, Gauge, Languages, PenLine, Play, Trophy } from 'lucide-react';
+import { Award, BookOpenCheck, BotMessageSquare, CircleCheck, Gauge, Languages, PenLine, Play, Sparkles, Trophy } from 'lucide-react';
 import './reading-demo.css';
 import LandingDemoViewport from './LandingDemoViewport';
 
@@ -33,6 +33,7 @@ function CertificateReveal() {
   return (
     <figure className="personalized-learning__certificate" data-ready={artworkReady}>
       <img src={certificatePreview} alt="تصميم شهادة تقدير من زيد" width={1280} height={906} onLoad={() => setArtworkReady(true)} />
+      <p className="personalized-learning__certificate-name" lang="en" dir="ltr">ZAYD</p>
       <p className="personalized-learning__certificate-copy" lang="en" dir="ltr">For completing a Zayd reading activity</p>
       <span className="personalized-learning__certificate-stamp" role="img" aria-label="شارة نجم القراءة">
         <Award aria-hidden="true" />
@@ -79,17 +80,19 @@ function RewardsPreview() {
     : [...sampleLeaders, sampleNeighbor, learner];
 
   return (
-    <div className="personalized-learning__rewards-preview">
+    <div className="personalized-learning__rewards-preview" data-celebrating={advanced}>
       <div className="personalized-learning__rewards-summary">
         <p><CircleCheck size={19} aria-hidden="true" /> اكتمل نشاط القراءة</p>
-        <span className="personalized-learning__points-earned"><bdi dir="ltr">+{earnedPoints}</bdi> نقطة</span>
+        <span className="personalized-learning__points-earned"><Sparkles size={16} aria-hidden="true" /><bdi dir="ltr">+{earnedPoints}</bdi> نقطة</span>
         <p>رصيد نورة <strong className="personalized-learning__points-total"><bdi dir="ltr">{points}</bdi></strong> نقطة</p>
+        <div className="personalized-learning__reward-progress" aria-hidden="true"><span style={{ width: `${points / finalPoints * 100}%` }} /></div>
+        <div className="personalized-learning__reward-confetti" aria-hidden="true">{Array.from({ length: 8 }, (_, index) => <i key={index} style={{ '--piece': index } as React.CSSProperties} />)}</div>
       </div>
-      <h3 id="personalized-sample-leaderboard">لوحة الشرف</h3>
+      <h3 id="personalized-sample-leaderboard"><Trophy size={20} aria-hidden="true" />لوحة الشرف</h3>
       <ol className="personalized-learning__sample-leaderboard" aria-labelledby="personalized-sample-leaderboard" data-advanced={advanced}>
         {leaderboard.map((entry, index) => (
           <li key={entry.id} data-learner={entry.id}>
-            <bdi dir="ltr" className="personalized-learning__sample-rank">{index + 1}</bdi>
+            <span className="personalized-learning__sample-rank"><bdi dir="ltr">{index + 1}</bdi>{index < 3 && <Award size={15} aria-hidden="true" />}</span>
             <span>{entry.name}</span>
             <span><bdi dir="ltr">{entry.points}</bdi> نقطة</span>
           </li>

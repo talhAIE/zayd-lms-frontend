@@ -1,6 +1,6 @@
 // Local preview + fixture APIs. Supply AVATAR_QA_VIDEO with a local MP4 when
 // the existing offline avatar fixture is unavailable. No production calls.
-const { chromium } = require('playwright');
+const { chromium } = require('@playwright/test');
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');

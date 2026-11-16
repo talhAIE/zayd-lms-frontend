@@ -11,9 +11,11 @@ export function useLandingMotion(root: RefObject<HTMLDivElement>) {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     const animations = new Set<Animation>();
     let observer: IntersectionObserver | undefined;
+    let exitObserver: IntersectionObserver | undefined;
 
     function reset() {
       observer?.disconnect();
+      exitObserver?.disconnect();
       animations.forEach(animation => animation.cancel());
       animations.clear();
     }
@@ -24,7 +26,7 @@ export function useLandingMotion(root: RefObject<HTMLDivElement>) {
       const entries = new Map<Element, { kind: string; delay: number }>();
       const groups = [
         { selector: ".landing-hero__visual, .impact-comparison__illustration", kind: "image", stagger: 0 },
-        { selector: ".comparison-card", kind: "blur", stagger: 60 },
+        { selector: ".comparison-card", kind: "comparison", stagger: 70 },
         { selector: ".curriculum-overview__panel", kind: "blur", stagger: 0 },
         { selector: ".personalized-learning__demo-list > li, .personalized-learning__features > li", kind: "rise", stagger: 90 },
         { selector: ".zayd-life__scenario", kind: "rise", stagger: 90 },
@@ -40,21 +42,30 @@ export function useLandingMotion(root: RefObject<HTMLDivElement>) {
       });
       const visible = new Set<Element>();
       const active = new Map<Element, Animation>();
+      // Rearm only after a full exit with a buffer. Animated translate and
+      // collapsing previews can cross the entrance boundary repeatedly.
+      exitObserver = new IntersectionObserver(changes => {
+        changes.forEach(change => {
+          if (!change.isIntersecting) visible.delete(change.target);
+        });
+      }, { rootMargin: "96px", threshold: 0 });
       observer = new IntersectionObserver(changes => {
         changes.forEach(change => {
-          if (!change.isIntersecting) { visible.delete(change.target); active.get(change.target)?.cancel(); active.delete(change.target); return; }
-          if (visible.has(change.target)) return;
+          if (!change.isIntersecting) return;
+          if (visible.has(change.target) || active.has(change.target)) return;
           visible.add(change.target);
           const config = entries.get(change.target)!;
-          const frames = config.kind === "blur"
+          const frames = config.kind === "comparison"
+            ? [{ opacity: 0.2, filter: "blur(5px)", translate: "0 18px" }, { opacity: 0.75, filter: "blur(2px)", translate: "0 7px", offset: 0.5 }, { opacity: 1, filter: "blur(0px)", translate: "0 0" }]
+            : config.kind === "blur"
             ? [{ opacity: 0.35, filter: "blur(5px)", translate: "0 8px" }, { opacity: 1, filter: "blur(0px)", translate: "0 0" }]
             : config.kind === "image"
               ? [{ opacity: 0, translate: "0 14px" }, { opacity: 1, translate: "0 -3px", offset: 0.75 }, { opacity: 1, translate: "0 0" }]
               : [{ opacity: 0, translate: "0 16px" }, { opacity: 1, translate: "0 0" }];
           // Individual translate preserves existing component transforms/layout.
           const animation = change.target.animate(frames, {
-            duration: config.kind === "blur" ? 500 : config.kind === "image" ? 900 : 650,
-            delay: config.delay, easing: "cubic-bezier(.2,.7,.2,1)", fill: "backwards",
+            duration: config.kind === "comparison" ? 700 : config.kind === "blur" ? 500 : config.kind === "image" ? 900 : 650,
+            delay: config.delay, easing: config.kind === "comparison" ? "cubic-bezier(.22,.61,.36,1)" : "cubic-bezier(.2,.7,.2,1)", fill: "backwards",
           });
           animations.add(animation);
           active.set(change.target, animation);
@@ -63,7 +74,7 @@ export function useLandingMotion(root: RefObject<HTMLDivElement>) {
           animation.oncancel = release;
         });
       }, { rootMargin: "0px 0px -4% 0px", threshold: 0 });
-      entries.forEach((_, element) => observer!.observe(element));
+      entries.forEach((_, element) => { exitObserver!.observe(element); observer!.observe(element); });
     }
 
     configure();

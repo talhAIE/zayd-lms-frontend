@@ -1,12 +1,12 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict'),ts=require('typescript');
 const source=name=>ts.transpileModule(fs.readFileSync(path.join(__dirname,'../src',name),'utf8'),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS}}).outputText;
 const flush=async()=>{for(let i=0;i<10;i++)await Promise.resolve();};
-class Video extends EventTarget{constructor(){super();this.paused=true;this.currentTime=0;}async play(){this.paused=false;}pause(){this.paused=true;}}
+class Video extends EventTarget{constructor(){super();this.paused=true;this.currentTime=0;this.duration=20;this.readyState=2;}async play(){this.paused=false;}pause(){this.paused=true;}}
 async function animation(){
   const refs=[],effects=[],video=new Video(),document=new EventTarget();document.hidden=false;let cursor=0,effectIndex=0,stops=0,errors=0;
-  const react={useRef:value=>{const i=cursor++;return refs[i]??(refs[i]={current:i===0?video:value});},useEffect:(fn,deps)=>{const i=effectIndex++,old=effects[i];if(!old||deps.some((v,j)=>v!==old.deps[j]))effects[i]={fn,deps,cleanup:old?.cleanup,changed:true};}};
+  const react={useState:value=>[value,()=>{}],useCallback:fn=>fn,useRef:value=>{const i=cursor++;return refs[i]??(refs[i]={current:i===0?video:value});},useEffect:(fn,deps)=>{const i=effectIndex++,old=effects[i];if(!old||deps.some((v,j)=>v!==old.deps[j]))effects[i]={fn,deps,cleanup:old?.cleanup,changed:true};}};
   const module={exports:{}};
-  vm.runInNewContext(source('components/avatar-reading/useAvatarSpeakingVideo.ts'),{exports:module.exports,module,document,require:name=>name==='react'?react:{toast:{error:()=>errors++}}});
+  vm.runInNewContext(source('components/avatar-reading/useAvatarSpeakingVideo.ts'),{exports:module.exports,module,document,require:name=>name==='react'?react:name==='./avatarPreview'?require('./avatar-preview-fixture.cjs')():{toast:{error:()=>errors++}}});
   const render=(speaking,url='video')=>{cursor=0;effectIndex=0;module.exports.useAvatarSpeakingVideo(url,speaking,()=>stops++);for(const e of effects)if(e.changed){e.cleanup?.();e.cleanup=e.fn();e.changed=false;}};
   render(false);assert.equal(video.paused,true);
   render(true);await flush();assert.equal(video.paused,false);assert.equal(video.muted,true);assert.equal(video.loop,true);assert.equal(video.playbackRate,1);

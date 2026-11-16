@@ -45,7 +45,7 @@ export default function HeroSection() {
               <strong>{landingHeroContent.brand}</strong>{" "}{landingHeroContent.description}
             </p>
             <div className="landing-hero__actions">
-              <Link to="/login" className="landing-hero__button landing-hero__button--primary">
+              <Link to="/onboarding" className="landing-hero__button landing-hero__button--primary">
                 <span>{landingHeroContent.primaryCta.beforeBrand}{" "}<bdi dir="ltr" lang="en">{landingHeroContent.primaryCta.brand}</bdi>{" "}{landingHeroContent.primaryCta.afterBrand}</span>
                 <ArrowLeft aria-hidden="true" />
               </Link>

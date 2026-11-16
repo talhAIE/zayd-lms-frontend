@@ -22,7 +22,7 @@ const assertRequestOwner = (config: any) => {
 const sessionIdentity = () => {
   try {
     const user = JSON.parse(localStorage.getItem('AiTutorUser') || 'null');
-    return JSON.stringify([user?.id, user?.username]);
+    return JSON.stringify([user?.id, user?.username, user?.role?.toLowerCase(), user?.region]);
   } catch { return ''; }
 };
 

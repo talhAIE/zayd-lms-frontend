@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
+import { watchAvatarPreview } from './avatarPreview';
 
 type Track = 'topic' | 'narrator';
 
@@ -20,6 +21,7 @@ export function useAvatarListeningPlayback(topicUrl: string | undefined, narrato
   const [duration, setDuration] = useState(0);
   const [videoState, setVideoState] = useState<'loading' | 'ready' | 'error'>('loading');
   const videoUnavailable = useRef(false);
+  const preview = useRef<ReturnType<typeof watchAvatarPreview> | null>(null);
 
   const showIdleFrame = useCallback(() => {
     const video = videoRef.current;
@@ -94,25 +96,33 @@ export function useAvatarListeningPlayback(topicUrl: string | undefined, narrato
     const videoReady = () => {
       if (video && video.readyState >= 2) { videoUnavailable.current = false; setVideoState('ready'); }
       const audio = active.current ? tracks.current[active.current] : undefined;
+      const request = generation.current;
       if (requested.current && audio?.paused && !audio.ended) void audio.play().catch(reason => {
-        if (requested.current && reason?.name !== 'AbortError') error();
+        if (request === generation.current && requested.current && reason?.name !== 'AbortError') error();
       });
+      else if (requested.current && audio && !audio.paused && video?.paused) {
+        void video.play().then(() => {
+          if (request === generation.current && requested.current) { setPlaying(true); setLoading(false); }
+        }).catch(reason => { if (request === generation.current && reason?.name !== 'AbortError') error(); });
+      }
     };
-    const metadataReady = () => { if (!requested.current) showIdleFrame(); };
-    const videoFailed = () => { videoUnavailable.current = true; setVideoState('error'); error(); };
+    const videoFailed = () => { videoUnavailable.current = true; error(); };
     video?.addEventListener('waiting',videoWaiting);
     video?.addEventListener('canplay',videoReady);
     video?.addEventListener('loadeddata',videoReady);
-    video?.addEventListener('loadedmetadata',metadataReady);
-    video?.addEventListener('error',videoFailed);
     active.current = null; setTrack(null); setPosition(0); setDuration(0);
-    videoUnavailable.current = Boolean(video?.error);
-    setVideoState(video?.error ? 'error' : video && video.readyState >= 2 ? 'ready' : 'loading');
-    showIdleFrame();
+    videoUnavailable.current = false;
+    const watcher = video ? watchAvatarPreview(video, {
+      active: () => requested.current,
+      state: state => { setVideoState(state); if (state === 'ready') videoUnavailable.current = false; },
+      failed: videoFailed,
+    }) : null;
+    preview.current = watcher;
     return () => {
+      watcher?.dispose(); preview.current = null;
       pause(); cleanup.forEach(fn=>fn()); tracks.current = {}; active.current = null;
       video?.removeEventListener('waiting',videoWaiting); video?.removeEventListener('canplay',videoReady);
-      video?.removeEventListener('loadeddata',videoReady); video?.removeEventListener('loadedmetadata',metadataReady); video?.removeEventListener('error',videoFailed);
+      video?.removeEventListener('loadeddata',videoReady);
     };
   }, [topicUrl,narratorUrl,videoUrl,stage,pause,synchronize,showIdleFrame]);
 
@@ -151,7 +161,7 @@ export function useAvatarListeningPlayback(topicUrl: string | undefined, narrato
   },[pause,showIdleFrame]);
   const retryVideo = useCallback(() => {
     restart(); videoUnavailable.current = false; setVideoState('loading');
-    videoRef.current?.load();
+    preview.current?.retry();
   },[restart]);
   useEffect(() => {
     if (!videoUrl) return;
