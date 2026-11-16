@@ -8,7 +8,7 @@ test('NAFS-only students see their courses without an empty-curriculum message a
   state.noNormalCourses = true;
   await page.goto('/student/courses');
   await expect(
-    page.getByRole('link', { name: 'Start quiz', exact: true }),
+    page.getByRole('link', { name: 'Open course', exact: true }),
   ).toHaveCount(8);
   await expect(page.getByText('No curriculum courses available.')).toHaveCount(
     0,
@@ -20,7 +20,7 @@ test('NAFS-only students see their courses without an empty-curriculum message a
     .getByRole('link', { name: 'Back to courses', exact: true })
     .click();
   await expect(
-    page.getByRole('link', { name: 'Resume quiz', exact: true }),
+    page.getByText('Quiz in progress · Continue your saved quiz', { exact: true }),
   ).toHaveCount(1);
   await expect(page.getByText(/1 course in progress/)).toBeVisible();
   await expect(page.getByText('No curriculum courses available.')).toHaveCount(
@@ -43,7 +43,7 @@ test('NAFS discovery failure preserves ordinary cards and can reload NAFS indepe
   state.failDiscovery = false;
   await page.getByRole('button', { name: 'Retry loading NAFS' }).click();
   await expect(
-    page.getByRole('link', { name: 'Start quiz', exact: true }),
+    page.getByRole('link', { name: 'Open course', exact: true }),
   ).toHaveCount(8);
   await expect(
     page.getByRole('heading', { name: 'Existing English course' }),

@@ -12,7 +12,7 @@ async function playback(){
   const react={useRef:value=>{const ref={current:refs.length===0?video:value};refs.push(ref);return ref;},useState:value=>{const i=values.length;values.push(value);return[value,next=>values[i]=next];},useCallback:fn=>fn,useEffect:fn=>effects.push(fn)};
   class Audio extends Media {constructor(url){super(url);media.push(this);}}
   const module={exports:{}};
-  vm.runInNewContext(source('components/avatar-reading/useAvatarListeningPlayback.ts'),{module,exports:module.exports,Audio,document,require:name=>name==='react'?react:{toast:{error:value=>errors.push(value)}}});
+  vm.runInNewContext(source('components/avatar-reading/useAvatarListeningPlayback.ts'),{module,exports:module.exports,Audio,document,require:name=>name==='react'?react:name==='./avatarPreview'?require('./avatar-preview-fixture.cjs')():{toast:{error:value=>errors.push(value)}}});
   let listened=0;
   const hook=module.exports.useAvatarListeningPlayback('topic','narrator','video','initial',()=>listened++);
   const cleanup=effects.map(fn=>fn());const [topic,narrator]=media;

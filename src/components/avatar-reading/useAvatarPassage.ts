@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
+import { watchAvatarPreview } from './avatarPreview';
 
 /** One video owner: authored passage timing, or muted gestures during practice speech. */
 export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string | undefined, onEnded: () => void,
@@ -11,6 +12,7 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
   const practiceRef = useRef(practice);
   practiceRef.current = practice;
   const wasPracticing = useRef(false);
+  const preview = useRef<ReturnType<typeof watchAvatarPreview> | null>(null);
   const callback = useRef(onEnded);
   callback.current = onEnded;
   const [playing, setPlaying] = useState(false);
@@ -48,20 +50,31 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
     const update = () => synchronize();
     const ended = () => { pause(); synchronize(); showIdleFrame(); callback.current(); };
     const error = () => { pause(); toast.error('Passage media could not be loaded. Please try again.'); };
-    const waiting = () => { videoRef.current?.pause(); setLoading(true); };
+    const waiting = () => { if (requested.current) { videoRef.current?.pause(); setLoading(true); } };
+    const playbackError = (reason: { name?: string }, request: number) => {
+      // Buffering pauses reject pending play promises. Keep intent until canplay.
+      if (request !== generation.current || reason?.name === 'AbortError') return;
+      error();
+    };
     const resumed = () => {
       if (!requested.current) return;
+      const request = generation.current;
       synchronize();
-      void videoRef.current?.play().then(() => { if (requested.current) { setLoading(false); setPlaying(true); } }).catch(error);
+      void videoRef.current?.play().then(() => { if (request === generation.current && requested.current) { setLoading(false); setPlaying(true); } }).catch(reason => playbackError(reason, request));
     };
     const video = videoRef.current;
     const videoWaiting = () => { if (requested.current) { a.pause(); setLoading(true); } };
-    const videoReady = () => { if (requested.current && a.paused && !a.ended) void a.play().catch(error); };
+    const videoReady = () => {
+      const request = generation.current;
+      if (requested.current && a.paused && !a.ended) void a.play().catch(reason => playbackError(reason, request));
+      else if (requested.current && !a.paused && videoRef.current?.paused) resumed();
+    };
     a.addEventListener('timeupdate', update); a.addEventListener('loadedmetadata', update);
     a.addEventListener('seeked', update);
     a.addEventListener('ended', ended); a.addEventListener('error', error); a.addEventListener('waiting', waiting);
     a.addEventListener('playing', resumed);
     video?.addEventListener('waiting', videoWaiting); video?.addEventListener('canplay', videoReady);
+    video?.addEventListener('loadeddata', videoReady);
     setPosition(0); setDuration(0);
     return () => {
       pause();
@@ -70,6 +83,7 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
       a.removeEventListener('seeked', update);
       a.removeEventListener('ended', ended); a.removeEventListener('error', error); a.removeEventListener('waiting', waiting);
       a.removeEventListener('playing', resumed); video?.removeEventListener('waiting', videoWaiting); video?.removeEventListener('canplay', videoReady);
+      video?.removeEventListener('loadeddata', videoReady);
       a.removeAttribute('src'); a.load(); audio.current = null;
     };
   }, [audioUrl, videoUrl, pause, synchronize, showIdleFrame]);
@@ -79,30 +93,25 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
   useEffect(() => {
     const video = videoRef.current;
     if (!videoUrl || !video) return;
-    const metadataReady = () => { if (!audio.current?.currentTime) showIdleFrame(); };
-    const ready = () => { if (video.readyState >= 2) setVideoState('ready'); };
     const failed = () => {
-      setVideoState('error'); pause(); practiceRef.current?.stop();
+      pause(); practiceRef.current?.stop();
       toast.error('The avatar video could not be loaded.');
     };
-    setVideoState(video.error ? 'error' : video.readyState >= 2 ? 'ready' : 'loading');
-    metadataReady();
-    video.addEventListener('loadedmetadata', metadataReady);
-    video.addEventListener('loadeddata', ready);
-    video.addEventListener('canplay', ready);
-    video.addEventListener('error', failed);
+    const watcher = watchAvatarPreview(video, {
+      active: () => requested.current || Boolean(practiceRef.current?.id),
+      state: setVideoState, failed,
+    });
+    preview.current = watcher;
     return () => {
-      video.removeEventListener('loadedmetadata', metadataReady);
-      video.removeEventListener('loadeddata', ready);
-      video.removeEventListener('canplay', ready);
-      video.removeEventListener('error', failed);
+      watcher.dispose();
+      preview.current = null;
     };
   }, [videoUrl, pause, showIdleFrame]);
 
   const toggle = useCallback(async () => {
     const a = audio.current, v = videoRef.current;
     if (!a || !v) { toast.error('The topic media is still loading.'); return; }
-    if (!a.paused || loading) { pause(); return; }
+    if (requested.current) { pause(); return; }
     const request = ++generation.current;
     requested.current = true;
     v.loop = false;
@@ -111,13 +120,14 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
     try {
       // Both play calls stay in the user gesture. There is only one audible source.
       await Promise.all([a.play(), v.play()]);
-      if (request !== generation.current) { a.pause(); v.pause(); return; }
+      if (request !== generation.current) { if (!requested.current && !practiceRef.current?.id) { a.pause(); v.pause(); } return; }
       synchronize(); setPlaying(true); setLoading(false);
-    } catch {
+    } catch (reason) {
       if (request !== generation.current) return;
+      if ((reason as { name?: string })?.name === 'AbortError') return;
       pause(); toast.error('Unable to play the passage and avatar. Tap Listen to try again.');
     }
-  }, [loading, pause, synchronize]);
+  }, [pause, synchronize]);
   const restart = useCallback(() => {
     pause(); if (audio.current) audio.current.currentTime = 0;
     showIdleFrame();
@@ -125,7 +135,7 @@ export function useAvatarPassage(audioUrl: string | undefined, videoUrl: string 
   }, [pause, showIdleFrame]);
   const retryVideo = useCallback(() => {
     pause(); practiceRef.current?.stop(); setVideoState('loading');
-    videoRef.current?.load();
+    preview.current?.retry();
   }, [pause]);
   useEffect(() => {
     if (!audioUrl || !videoUrl) return;

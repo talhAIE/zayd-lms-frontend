@@ -6,7 +6,7 @@ const source = name => ts.transpileModule(fs.readFileSync(path.join(__dirname, '
 }).outputText;
 const flush = async () => { for (let i = 0; i < 8; i++) await Promise.resolve(); };
 class Media extends EventTarget {
-  constructor(url) { super(); this.src = url; this.currentTime = 0; this.duration = 10; this.paused = true; this.ended = false; this.playbackRate = 1; }
+  constructor(url) { super(); this.src = url; this.currentTime = 0; this.duration = 10; this.paused = true; this.ended = false; this.playbackRate = 1; this.readyState = 2; }
   async play() { this.paused = false; this.dispatchEvent(new Event('playing')); }
   pause() { this.paused = true; }
   removeAttribute() {} load() { this.loads = (this.loads || 0) + 1; }
@@ -22,7 +22,7 @@ async function playback() {
   };
   const module = { exports: {} };
   vm.runInNewContext(source('components/avatar-reading/useAvatarPassage.ts'), {
-    exports: module.exports, module, require: name => name === 'react' ? react : { toast: { error: value => errors.push(value) } }, Audio: Media, document,
+    exports: module.exports, module, require: name => name === 'react' ? react : name === './avatarPreview' ? require('./avatar-preview-fixture.cjs')() : { toast: { error: value => errors.push(value) } }, Audio: Media, document,
   });
   let ended = 0;
   const hook = module.exports.useAvatarPassage('audio', 'video', () => ended++);

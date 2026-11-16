@@ -18,7 +18,7 @@ for (const [name, width, height] of [
         page.getByRole('heading', { name: 'Existing English course' }),
       ).toBeVisible();
       await expect(
-        page.getByRole('link', { name: 'Start quiz', exact: true }),
+        page.getByRole('link', { name: 'Open course', exact: true }),
       ).toHaveCount(8);
       await page.goto(`/student/nafs/assessments/${a.id}`);
       await expect(
@@ -179,7 +179,7 @@ for (const [name, width, height] of [
       ).toHaveLength(1);
       await page.goto('/student/courses');
       await expect(
-        page.getByRole('link', { name: 'View marks', exact: true }),
+        page.getByText('Quiz completed', { exact: true }),
       ).toHaveCount(1);
       await page
         .getByRole('button', { name: 'Start Course', exact: true })
@@ -270,7 +270,7 @@ for (const mode of ['disabled', 'no-grant'] as const) {
       page.getByRole('heading', { name: normalName() }),
     ).toBeVisible();
     await expect(
-      page.getByRole('link', { name: 'Start quiz', exact: true }),
+      page.getByRole('link', { name: 'Open course', exact: true }),
     ).toHaveCount(0);
     await page.goto(`/student/nafs/assessments/${source.assessments[0].id}`);
     await expect(page.getByRole('alert')).toBeVisible();
