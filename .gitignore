@@ -41,3 +41,7 @@ dist-ssr
 /dev/.step-qa/
 /dev/step/test-results/
 /dev/step/dev/
+
+# Local landing-page implementation plan.
+/LANDING_PAGE_IMPLEMENTATION_PLAN.md
+/LANDING_PAGE_IMPLEMENTATION_PAN.md

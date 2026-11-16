@@ -1,0 +1,225 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "width": 320,
+      "checks": {
+        "pricesPreserved": true,
+        "allFeatures": true,
+        "linksPreserved": true,
+        "highlightHierarchy": true,
+        "sameFormat": true,
+        "compactDiscount": true,
+        "oldPriceReadable": true,
+        "cleanGradient": true,
+        "discountAbovePrice": true,
+        "noOverflow": true
+      },
+      "data": {
+        "names": [
+          "باقة المنهج",
+          "Zayd Plus",
+          "Zayd Life"
+        ],
+        "prices": [
+          "199",
+          "299",
+          "199"
+        ],
+        "features": [
+          4,
+          4,
+          4
+        ],
+        "links": [
+          "/auth/register",
+          "/auth/register",
+          "/auth/register"
+        ],
+        "highlightHierarchy": true,
+        "sameFormat": true,
+        "oldPriceReadable": true,
+        "cleanGradient": true,
+        "compact": true,
+        "discountAbovePrice": true,
+        "noOverflow": true
+      }
+    },
+    {
+      "width": 390,
+      "checks": {
+        "pricesPreserved": true,
+        "allFeatures": true,
+        "linksPreserved": true,
+        "highlightHierarchy": true,
+        "sameFormat": true,
+        "compactDiscount": true,
+        "oldPriceReadable": true,
+        "cleanGradient": true,
+        "discountAbovePrice": true,
+        "noOverflow": true
+      },
+      "data": {
+        "names": [
+          "باقة المنهج",
+          "Zayd Plus",
+          "Zayd Life"
+        ],
+        "prices": [
+          "199",
+          "299",
+          "199"
+        ],
+        "features": [
+          4,
+          4,
+          4
+        ],
+        "links": [
+          "/auth/register",
+          "/auth/register",
+          "/auth/register"
+        ],
+        "highlightHierarchy": true,
+        "sameFormat": true,
+        "oldPriceReadable": true,
+        "cleanGradient": true,
+        "compact": true,
+        "discountAbovePrice": true,
+        "noOverflow": true
+      }
+    },
+    {
+      "width": 768,
+      "checks": {
+        "pricesPreserved": true,
+        "allFeatures": true,
+        "linksPreserved": true,
+        "highlightHierarchy": true,
+        "sameFormat": true,
+        "compactDiscount": true,
+        "oldPriceReadable": true,
+        "cleanGradient": true,
+        "discountAbovePrice": true,
+        "noOverflow": true
+      },
+      "data": {
+        "names": [
+          "باقة المنهج",
+          "Zayd Plus",
+          "Zayd Life"
+        ],
+        "prices": [
+          "199",
+          "299",
+          "199"
+        ],
+        "features": [
+          4,
+          4,
+          4
+        ],
+        "links": [
+          "/auth/register",
+          "/auth/register",
+          "/auth/register"
+        ],
+        "highlightHierarchy": true,
+        "sameFormat": true,
+        "oldPriceReadable": true,
+        "cleanGradient": true,
+        "compact": true,
+        "discountAbovePrice": true,
+        "noOverflow": true
+      }
+    },
+    {
+      "width": 1024,
+      "checks": {
+        "pricesPreserved": true,
+        "allFeatures": true,
+        "linksPreserved": true,
+        "highlightHierarchy": true,
+        "sameFormat": true,
+        "compactDiscount": true,
+        "oldPriceReadable": true,
+        "cleanGradient": true,
+        "discountAbovePrice": true,
+        "noOverflow": true
+      },
+      "data": {
+        "names": [
+          "باقة المنهج",
+          "Zayd Plus",
+          "Zayd Life"
+        ],
+        "prices": [
+          "199",
+          "299",
+          "199"
+        ],
+        "features": [
+          4,
+          4,
+          4
+        ],
+        "links": [
+          "/auth/register",
+          "/auth/register",
+          "/auth/register"
+        ],
+        "highlightHierarchy": true,
+        "sameFormat": true,
+        "oldPriceReadable": true,
+        "cleanGradient": true,
+        "compact": true,
+        "discountAbovePrice": true,
+        "noOverflow": true
+      }
+    },
+    {
+      "width": 1440,
+      "checks": {
+        "pricesPreserved": true,
+        "allFeatures": true,
+        "linksPreserved": true,
+        "highlightHierarchy": true,
+        "sameFormat": true,
+        "compactDiscount": true,
+        "oldPriceReadable": true,
+        "cleanGradient": true,
+        "discountAbovePrice": true,
+        "noOverflow": true
+      },
+      "data": {
+        "names": [
+          "باقة المنهج",
+          "Zayd Plus",
+          "Zayd Life"
+        ],
+        "prices": [
+          "199",
+          "299",
+          "199"
+        ],
+        "features": [
+          4,
+          4,
+          4
+        ],
+        "links": [
+          "/auth/register",
+          "/auth/register",
+          "/auth/register"
+        ],
+        "highlightHierarchy": true,
+        "sameFormat": true,
+        "oldPriceReadable": true,
+        "cleanGradient": true,
+        "compact": true,
+        "discountAbovePrice": true,
+        "noOverflow": true
+      }
+    }
+  ]
+}

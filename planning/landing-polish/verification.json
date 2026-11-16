@@ -1,0 +1,738 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "width": 320,
+      "checks": {
+        "largerReadableNav": true,
+        "navFits": true,
+        "mobileMenuWorks": true,
+        "exactHeroCopyBold": true,
+        "comparisonInfographicsDiffer": true,
+        "comparisonCopyPreserved": true,
+        "comparisonFits": true,
+        "certificateNameCorrect": true,
+        "suppliedContactsExact": true,
+        "noPageErrors": true
+      },
+      "navData": {
+        "actions": [
+          {
+            "label": "الأسعار",
+            "font": 13,
+            "height": 36
+          },
+          {
+            "label": "جرب زيـــد",
+            "font": 13,
+            "height": 36
+          }
+        ],
+        "links": [
+          {
+            "font": 16,
+            "rect": {
+              "x": 0,
+              "width": 0
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 0,
+              "width": 0
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 0,
+              "width": 0
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 0,
+              "width": 0
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 0,
+              "width": 0
+            }
+          }
+        ],
+        "bounds": []
+      },
+      "hero": {
+        "text": "زيد معلّم ذكي لممارسة اللغة الإنجليزية، يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه في المدرسة.",
+        "weight": "700",
+        "brandWeight": "800"
+      },
+      "comparisonData": {
+        "headings": [
+          "معلم واحد ... وعشرات الطلاب",
+          "لكل طالب مساحة لممارسة الإنجليزية"
+        ],
+        "diagrams": 6,
+        "connections": [
+          "lucide lucide-timer",
+          "lucide lucide-users-round",
+          "lucide lucide-chart-no-axes-column-increasing",
+          "lucide lucide-message-square-more",
+          "lucide lucide-goal",
+          "lucide lucide-trending-up"
+        ],
+        "body": [
+          "مهما بلغت كفاءة المعلم، يظل وقت الحصة محدودًا، مما يقلل فرص ممارسة الإنجليزية بصورة فردية منتظمة لكل طالب.",
+          "زيد يعزز دور المعلم، ويمنح لكل طالب فرصًا لممارسة الإنجليزية وفق مستواه وسرعته."
+        ],
+        "overflow": []
+      },
+      "certificate": {
+        "name": "ZAYD",
+        "visible": true,
+        "x": 83.95625305175781,
+        "y": 540.506103515625,
+        "bottom": 559.0673828125,
+        "font": "16px",
+        "image": {
+          "x": 33.27553939819336,
+          "y": 448.4404296875,
+          "width": 253.44891357421875,
+          "height": 179.38525390625
+        },
+        "inside": true,
+        "aboveNameLine": true
+      },
+      "contacts": [
+        {
+          "text": "contact@waaha.ai",
+          "href": "mailto:contact@waaha.ai",
+          "dir": "ltr"
+        },
+        {
+          "text": "+966 58 278 8984",
+          "href": "tel:+966582788984",
+          "dir": "ltr"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 390,
+      "checks": {
+        "largerReadableNav": true,
+        "navFits": true,
+        "mobileMenuWorks": true,
+        "exactHeroCopyBold": true,
+        "comparisonInfographicsDiffer": true,
+        "comparisonCopyPreserved": true,
+        "comparisonFits": true,
+        "certificateNameCorrect": true,
+        "suppliedContactsExact": true,
+        "noPageErrors": true
+      },
+      "navData": {
+        "actions": [
+          {
+            "label": "الأسعار",
+            "font": 13,
+            "height": 36
+          },
+          {
+            "label": "جرب زيـــد",
+            "font": 13,
+            "height": 36
+          }
+        ],
+        "links": [
+          {
+            "font": 16,
+            "rect": {
+              "x": 0,
+              "width": 0
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 0,
+              "width": 0
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 0,
+              "width": 0
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 0,
+              "width": 0
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 0,
+              "width": 0
+            }
+          }
+        ],
+        "bounds": []
+      },
+      "hero": {
+        "text": "زيد معلّم ذكي لممارسة اللغة الإنجليزية، يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه في المدرسة.",
+        "weight": "700",
+        "brandWeight": "800"
+      },
+      "comparisonData": {
+        "headings": [
+          "معلم واحد ... وعشرات الطلاب",
+          "لكل طالب مساحة لممارسة الإنجليزية"
+        ],
+        "diagrams": 6,
+        "connections": [
+          "lucide lucide-timer",
+          "lucide lucide-users-round",
+          "lucide lucide-chart-no-axes-column-increasing",
+          "lucide lucide-message-square-more",
+          "lucide lucide-goal",
+          "lucide lucide-trending-up"
+        ],
+        "body": [
+          "مهما بلغت كفاءة المعلم، يظل وقت الحصة محدودًا، مما يقلل فرص ممارسة الإنجليزية بصورة فردية منتظمة لكل طالب.",
+          "زيد يعزز دور المعلم، ويمنح لكل طالب فرصًا لممارسة الإنجليزية وفق مستواه وسرعته."
+        ],
+        "overflow": []
+      },
+      "certificate": {
+        "name": "ZAYD",
+        "visible": true,
+        "x": 100.37109375,
+        "y": 545.5789794921875,
+        "bottom": 564.4899291992188,
+        "font": "16.6px",
+        "image": {
+          "x": 37.30000305175781,
+          "y": 428.9071044921875,
+          "width": 315.4000244140625,
+          "height": 223.23516845703125
+        },
+        "inside": true,
+        "aboveNameLine": true
+      },
+      "contacts": [
+        {
+          "text": "contact@waaha.ai",
+          "href": "mailto:contact@waaha.ai",
+          "dir": "ltr"
+        },
+        {
+          "text": "+966 58 278 8984",
+          "href": "tel:+966582788984",
+          "dir": "ltr"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 768,
+      "checks": {
+        "largerReadableNav": true,
+        "navFits": true,
+        "mobileMenuWorks": true,
+        "exactHeroCopyBold": true,
+        "comparisonInfographicsDiffer": true,
+        "comparisonCopyPreserved": true,
+        "comparisonFits": true,
+        "certificateNameCorrect": true,
+        "suppliedContactsExact": true,
+        "noPageErrors": true
+      },
+      "navData": {
+        "actions": [
+          {
+            "label": "الأسعار",
+            "font": 14,
+            "height": 38
+          },
+          {
+            "label": "جرب زيـــد",
+            "font": 14,
+            "height": 38
+          }
+        ],
+        "links": [
+          {
+            "font": 16,
+            "rect": {
+              "x": 0,
+              "width": 0
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 0,
+              "width": 0
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 0,
+              "width": 0
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 0,
+              "width": 0
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 0,
+              "width": 0
+            }
+          }
+        ],
+        "bounds": []
+      },
+      "hero": {
+        "text": "زيد معلّم ذكي لممارسة اللغة الإنجليزية، يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه في المدرسة.",
+        "weight": "700",
+        "brandWeight": "800"
+      },
+      "comparisonData": {
+        "headings": [
+          "معلم واحد ... وعشرات الطلاب",
+          "لكل طالب مساحة لممارسة الإنجليزية"
+        ],
+        "diagrams": 6,
+        "connections": [
+          "lucide lucide-timer",
+          "lucide lucide-users-round",
+          "lucide lucide-chart-no-axes-column-increasing",
+          "lucide lucide-message-square-more",
+          "lucide lucide-goal",
+          "lucide lucide-trending-up"
+        ],
+        "body": [
+          "مهما بلغت كفاءة المعلم، يظل وقت الحصة محدودًا، مما يقلل فرص ممارسة الإنجليزية بصورة فردية منتظمة لكل طالب.",
+          "زيد يعزز دور المعلم، ويمنح لكل طالب فرصًا لممارسة الإنجليزية وفق مستواه وسرعته."
+        ],
+        "overflow": []
+      },
+      "certificate": {
+        "name": "ZAYD",
+        "visible": true,
+        "x": 191.91758728027344,
+        "y": 554.4550170898438,
+        "bottom": 592.8595581054688,
+        "font": "33.5px",
+        "image": {
+          "x": 63.86265182495117,
+          "y": 317.60711669921875,
+          "width": 640.274658203125,
+          "height": 453.1944580078125
+        },
+        "inside": true,
+        "aboveNameLine": true
+      },
+      "contacts": [
+        {
+          "text": "contact@waaha.ai",
+          "href": "mailto:contact@waaha.ai",
+          "dir": "ltr"
+        },
+        {
+          "text": "+966 58 278 8984",
+          "href": "tel:+966582788984",
+          "dir": "ltr"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 820,
+      "checks": {
+        "largerReadableNav": true,
+        "navFits": true,
+        "mobileMenuWorks": true,
+        "exactHeroCopyBold": true,
+        "comparisonInfographicsDiffer": true,
+        "comparisonCopyPreserved": true,
+        "comparisonFits": true,
+        "certificateNameCorrect": true,
+        "suppliedContactsExact": true,
+        "noPageErrors": true
+      },
+      "navData": {
+        "actions": [
+          {
+            "label": "الأسعار",
+            "font": 14,
+            "height": 38
+          },
+          {
+            "label": "جرب زيـــد",
+            "font": 14,
+            "height": 38
+          }
+        ],
+        "links": [
+          {
+            "font": 16,
+            "rect": {
+              "x": 634.296875,
+              "width": 51.234375
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 569.0625,
+              "width": 41.234375
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 462.5625,
+              "width": 82.5
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 383.484375,
+              "width": 55.078125
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 266.046875,
+              "width": 93.4375
+            }
+          }
+        ],
+        "bounds": []
+      },
+      "hero": {
+        "text": "زيد معلّم ذكي لممارسة اللغة الإنجليزية، يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه في المدرسة.",
+        "weight": "700",
+        "brandWeight": "800"
+      },
+      "comparisonData": {
+        "headings": [
+          "معلم واحد ... وعشرات الطلاب",
+          "لكل طالب مساحة لممارسة الإنجليزية"
+        ],
+        "diagrams": 6,
+        "connections": [
+          "lucide lucide-timer",
+          "lucide lucide-users-round",
+          "lucide lucide-chart-no-axes-column-increasing",
+          "lucide lucide-message-square-more",
+          "lucide lucide-goal",
+          "lucide lucide-trending-up"
+        ],
+        "body": [
+          "مهما بلغت كفاءة المعلم، يظل وقت الحصة محدودًا، مما يقلل فرص ممارسة الإنجليزية بصورة فردية منتظمة لكل طالب.",
+          "زيد يعزز دور المعلم، ويمنح لكل طالب فرصًا لممارسة الإنجليزية وفق مستواه وسرعته."
+        ],
+        "overflow": []
+      },
+      "certificate": {
+        "name": "ZAYD",
+        "visible": true,
+        "x": 217.9119873046875,
+        "y": 554.4498291015625,
+        "bottom": 592.8555297851562,
+        "font": "33.5px",
+        "image": {
+          "x": 89.85330200195312,
+          "y": 317.5950622558594,
+          "width": 640.2933349609375,
+          "height": 453.2076721191406
+        },
+        "inside": true,
+        "aboveNameLine": true
+      },
+      "contacts": [
+        {
+          "text": "contact@waaha.ai",
+          "href": "mailto:contact@waaha.ai",
+          "dir": "ltr"
+        },
+        {
+          "text": "+966 58 278 8984",
+          "href": "tel:+966582788984",
+          "dir": "ltr"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1024,
+      "checks": {
+        "largerReadableNav": true,
+        "navFits": true,
+        "mobileMenuWorks": true,
+        "exactHeroCopyBold": true,
+        "comparisonInfographicsDiffer": true,
+        "comparisonCopyPreserved": true,
+        "comparisonFits": true,
+        "certificateNameCorrect": true,
+        "suppliedContactsExact": true,
+        "noPageErrors": true
+      },
+      "navData": {
+        "actions": [
+          {
+            "label": "الأسعار",
+            "font": 14,
+            "height": 38
+          },
+          {
+            "label": "جرب زيـــد",
+            "font": 14,
+            "height": 38
+          }
+        ],
+        "links": [
+          {
+            "font": 16,
+            "rect": {
+              "x": 736.296875,
+              "width": 51.234375
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 671.0625,
+              "width": 41.234375
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 564.5625,
+              "width": 82.5
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 485.484375,
+              "width": 55.078125
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 368.046875,
+              "width": 93.4375
+            }
+          }
+        ],
+        "bounds": []
+      },
+      "hero": {
+        "text": "زيد معلّم ذكي لممارسة اللغة الإنجليزية، يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه في المدرسة.",
+        "weight": "700",
+        "brandWeight": "800"
+      },
+      "comparisonData": {
+        "headings": [
+          "معلم واحد ... وعشرات الطلاب",
+          "لكل طالب مساحة لممارسة الإنجليزية"
+        ],
+        "diagrams": 6,
+        "connections": [
+          "lucide lucide-timer",
+          "lucide lucide-users-round",
+          "lucide lucide-chart-no-axes-column-increasing",
+          "lucide lucide-message-square-more",
+          "lucide lucide-goal",
+          "lucide lucide-trending-up"
+        ],
+        "body": [
+          "مهما بلغت كفاءة المعلم، يظل وقت الحصة محدودًا، مما يقلل فرص ممارسة الإنجليزية بصورة فردية منتظمة لكل طالب.",
+          "زيد يعزز دور المعلم، ويمنح لكل طالب فرصًا لممارسة الإنجليزية وفق مستواه وسرعته."
+        ],
+        "overflow": []
+      },
+      "certificate": {
+        "name": "ZAYD",
+        "visible": true,
+        "x": 319.9116516113281,
+        "y": 554.4495239257812,
+        "bottom": 592.855224609375,
+        "font": "33.5px",
+        "image": {
+          "x": 191.85275268554688,
+          "y": 317.5943298339844,
+          "width": 640.2945556640625,
+          "height": 453.2084655761719
+        },
+        "inside": true,
+        "aboveNameLine": true
+      },
+      "contacts": [
+        {
+          "text": "contact@waaha.ai",
+          "href": "mailto:contact@waaha.ai",
+          "dir": "ltr"
+        },
+        {
+          "text": "+966 58 278 8984",
+          "href": "tel:+966582788984",
+          "dir": "ltr"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "checks": {
+        "largerReadableNav": true,
+        "navFits": true,
+        "mobileMenuWorks": true,
+        "exactHeroCopyBold": true,
+        "comparisonInfographicsDiffer": true,
+        "comparisonCopyPreserved": true,
+        "comparisonFits": true,
+        "certificateNameCorrect": true,
+        "suppliedContactsExact": true,
+        "noPageErrors": true
+      },
+      "navData": {
+        "actions": [
+          {
+            "label": "الأسعار",
+            "font": 14,
+            "height": 38
+          },
+          {
+            "label": "جرب زيـــد",
+            "font": 14,
+            "height": 38
+          }
+        ],
+        "links": [
+          {
+            "font": 16,
+            "rect": {
+              "x": 944.296875,
+              "width": 51.234375
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 879.0625,
+              "width": 41.234375
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 772.5625,
+              "width": 82.5
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 693.484375,
+              "width": 55.078125
+            }
+          },
+          {
+            "font": 16,
+            "rect": {
+              "x": 576.046875,
+              "width": 93.4375
+            }
+          }
+        ],
+        "bounds": []
+      },
+      "hero": {
+        "text": "زيد معلّم ذكي لممارسة اللغة الإنجليزية، يمنح كل طالب تجربة مخصصة للتحدث والقراءة والاستماع والكتابة، مع تغذية راجعة فورية ومحتوى متناغم مع ما يتعلمه في المدرسة.",
+        "weight": "700",
+        "brandWeight": "800"
+      },
+      "comparisonData": {
+        "headings": [
+          "معلم واحد ... وعشرات الطلاب",
+          "لكل طالب مساحة لممارسة الإنجليزية"
+        ],
+        "diagrams": 6,
+        "connections": [
+          "lucide lucide-timer",
+          "lucide lucide-users-round",
+          "lucide lucide-chart-no-axes-column-increasing",
+          "lucide lucide-message-square-more",
+          "lucide lucide-goal",
+          "lucide lucide-trending-up"
+        ],
+        "body": [
+          "مهما بلغت كفاءة المعلم، يظل وقت الحصة محدودًا، مما يقلل فرص ممارسة الإنجليزية بصورة فردية منتظمة لكل طالب.",
+          "زيد يعزز دور المعلم، ويمنح لكل طالب فرصًا لممارسة الإنجليزية وفق مستواه وسرعته."
+        ],
+        "overflow": []
+      },
+      "certificate": {
+        "name": "ZAYD",
+        "visible": true,
+        "x": 527.91748046875,
+        "y": 554.4548950195312,
+        "bottom": 592.8594360351562,
+        "font": "33.5px",
+        "image": {
+          "x": 399.8624572753906,
+          "y": 317.60687255859375,
+          "width": 640.275146484375,
+          "height": 453.1947021484375
+        },
+        "inside": true,
+        "aboveNameLine": true
+      },
+      "contacts": [
+        {
+          "text": "contact@waaha.ai",
+          "href": "mailto:contact@waaha.ai",
+          "dir": "ltr"
+        },
+        {
+          "text": "+966 58 278 8984",
+          "href": "tel:+966582788984",
+          "dir": "ltr"
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "motion": {
+    "navEnter": true,
+    "buttonMotion": true,
+    "slowerComparison": true,
+    "reduced": true
+  },
+  "contactActionsInvoked": false
+}

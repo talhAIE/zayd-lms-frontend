@@ -1,0 +1,90 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "width": 320,
+      "checks": {
+        "initiallyHidden": true,
+        "noZoomLink": true,
+        "validPanels": true,
+        "togglesClosed": true,
+        "selfExpressionCorners": true,
+        "eightUniqueImages": true,
+        "keyboardWorks": true,
+        "noHoverZoom": true,
+        "noOverflow": true,
+        "revealAnimation": true,
+        "reducedMotion": true,
+        "noPageErrors": true
+      }
+    },
+    {
+      "width": 390,
+      "checks": {
+        "initiallyHidden": true,
+        "noZoomLink": true,
+        "validPanels": true,
+        "togglesClosed": true,
+        "selfExpressionCorners": true,
+        "eightUniqueImages": true,
+        "keyboardWorks": true,
+        "noHoverZoom": true,
+        "noOverflow": true,
+        "revealAnimation": true,
+        "reducedMotion": true,
+        "noPageErrors": true
+      }
+    },
+    {
+      "width": 768,
+      "checks": {
+        "initiallyHidden": true,
+        "noZoomLink": true,
+        "validPanels": true,
+        "togglesClosed": true,
+        "selfExpressionCorners": true,
+        "eightUniqueImages": true,
+        "keyboardWorks": true,
+        "noHoverZoom": true,
+        "noOverflow": true,
+        "revealAnimation": true,
+        "reducedMotion": true,
+        "noPageErrors": true
+      }
+    },
+    {
+      "width": 1024,
+      "checks": {
+        "initiallyHidden": true,
+        "noZoomLink": true,
+        "validPanels": true,
+        "togglesClosed": true,
+        "selfExpressionCorners": true,
+        "eightUniqueImages": true,
+        "keyboardWorks": true,
+        "noHoverZoom": true,
+        "noOverflow": true,
+        "revealAnimation": true,
+        "reducedMotion": true,
+        "noPageErrors": true
+      }
+    },
+    {
+      "width": 1440,
+      "checks": {
+        "initiallyHidden": true,
+        "noZoomLink": true,
+        "validPanels": true,
+        "togglesClosed": true,
+        "selfExpressionCorners": true,
+        "eightUniqueImages": true,
+        "keyboardWorks": true,
+        "noHoverZoom": true,
+        "noOverflow": true,
+        "revealAnimation": true,
+        "reducedMotion": true,
+        "noPageErrors": true
+      }
+    }
+  ]
+}

@@ -8,7 +8,6 @@ import readingPassageScreenshot from "@/assets/landing-page/curriculum/reading-p
 import roleplayScreenshot from "@/assets/landing-page/curriculum/roleplay.png";
 import selfIntroductionScreenshot from "@/assets/landing-page/curriculum/self-introduction.png";
 import writingScreenshot from "@/assets/landing-page/curriculum/writing.png";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import "./curriculum-section.css";
 
 const readingAloudPreview = { src: readingAloudScreenshot, alt: "تمرين القراءة بصوت عالٍ مع خيار عرض التقييم" };
@@ -49,7 +48,7 @@ const curriculumSkills = [
 ];
 
 export default function CurriculumSection() {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [showReadAloud, setShowReadAloud] = useState(false);
   const tabs = useRef<Array<HTMLButtonElement | null>>([]);
 
@@ -87,7 +86,7 @@ export default function CurriculumSection() {
           </p>
         </div>
 
-        <div className="curriculum-overview__panel">
+        <div className="curriculum-overview__panel" data-preview-open={activeIndex !== null}>
           <div className="curriculum-overview__skills" role="tablist" aria-label="مهارات المنهج التي يمارسها الطالب مع زيد">
             {curriculumSkills.map((skill, index) => (
               <button
@@ -98,15 +97,17 @@ export default function CurriculumSection() {
                 id={`curriculum-tab-${skill.id}`}
                 aria-controls={`curriculum-preview-${skill.id}`}
                 aria-selected={index === activeIndex}
-                tabIndex={index === activeIndex ? 0 : -1}
+                tabIndex={index === (activeIndex ?? 0) ? 0 : -1}
                 className={`curriculum-overview__skill curriculum-overview__skill--${skill.size}`}
-                onClick={() => setActiveIndex(index)}
+                onClick={() => setActiveIndex((current) => current === index ? null : index)}
                 onKeyDown={(event) => handleTabKey(event, index)}
               >
                 {skill.name}
               </button>
             ))}
           </div>
+          <div className="curriculum-overview__preview-reveal" data-open={activeIndex !== null}>
+            <div className="curriculum-overview__preview-inner">
           {curriculumSkills.map((skill, index) => {
             const isActive = index === activeIndex;
             const isReading = skill.id === "reading";
@@ -123,32 +124,26 @@ export default function CurriculumSection() {
                 {isActive && (
                   <>
                     <div className="curriculum-overview__device">
-                      <div className="curriculum-overview__screen">
+                      <div className={`curriculum-overview__screen${skill.id === "self-expression" ? " curriculum-overview__screen--self-expression" : ""}`}>
                         <img key={preview.src} src={preview.src} alt={preview.alt} loading="lazy" decoding="async" />
                       </div>
                     </div>
-                    <div className="curriculum-overview__preview-actions">
-                      {isReading && (
+                    {isReading && <div className="curriculum-overview__preview-actions">
+                      {(
                         <div className="curriculum-overview__reading-views" role="group" aria-label="صور وضع القراءة">
                           <button type="button" aria-pressed={!showReadAloud} onClick={() => setShowReadAloud(false)}>نص القراءة</button>
                           <button type="button" aria-pressed={showReadAloud} onClick={() => setShowReadAloud(true)}>القراءة بصوت عالٍ</button>
                         </div>
                       )}
-                      <Dialog>
-                        <DialogTrigger type="button" className="curriculum-overview__full-size">
-                          عرض بالحجم الكامل
-                        </DialogTrigger>
-                        <DialogContent className="curriculum-overview__image-dialog" lang="ar" dir="rtl" aria-describedby={undefined}>
-                          <DialogTitle>{skill.name}</DialogTitle>
-                          <img src={preview.src} alt={preview.alt} />
-                        </DialogContent>
-                      </Dialog>
-                    </div>
+
+                    </div>}
                   </>
                 )}
               </div>
             );
           })}
+            </div>
+          </div>
         </div>
       </div>
     </section>

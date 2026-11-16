@@ -161,6 +161,19 @@
   width: 100%;
   height: auto;
 }
+.personalized-learning__certificate-name {
+  position: absolute;
+  inset-inline: 20%;
+  top: 56.5%;
+  transform: translateY(-50%);
+  margin: 0;
+  color: #2366ba;
+  font-size: clamp(16px, 5cqi, 44px);
+  font-weight: 800;
+  letter-spacing: .12em;
+  line-height: 1.2;
+  text-align: center;
+}
 .personalized-learning__certificate-copy {
   position: absolute;
   inset-inline: 14%;
@@ -187,7 +200,7 @@
   box-shadow: 0 2px 6px #70430d44;
 }
 .personalized-learning__certificate-stamp svg { width: 58%; height: 58%; }
-.personalized-learning__certificate[data-ready="false"] :is(.personalized-learning__certificate-copy, .personalized-learning__certificate-stamp) {
+.personalized-learning__certificate[data-ready="false"] :is(.personalized-learning__certificate-name, .personalized-learning__certificate-copy, .personalized-learning__certificate-stamp) {
   visibility: hidden;
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -223,7 +236,7 @@
 .personalized-learning__rewards-summary p { margin: 0; font-size: 14px; font-weight: 600; }
 .personalized-learning__rewards-summary p:first-child { display: flex; align-items: center; gap: 6px; }
 .personalized-learning__rewards-summary p:first-child svg { flex-shrink: 0; color: #097564; }
-.personalized-learning__rewards-summary p:last-child { grid-column: 1 / -1; }
+.personalized-learning__rewards-summary p:nth-of-type(2) { grid-column: 1 / -1; }
 .personalized-learning__points-earned {
   padding: 4px 10px;
   border-radius: 999px;
@@ -414,4 +427,42 @@
   .personalized-learning__sample-leaderboard [data-learner="learner"] { border-color: Highlight; }
   .personalized-learning__cefr-scale li[aria-current="true"] { border-color: Highlight; }
   .personalized-learning__cefr-scale ol::after { background: Highlight; }
+}
+
+/* Rewards sample: gentle celebration, colored ranks and earned progress. */
+.personalized-learning__rewards-dialog[role="dialog"] { background: linear-gradient(145deg, #fff 35%, #f1f8ff); border-color: #d7eafa; box-shadow: 0 24px 80px rgb(11 37 70 / 22%); }
+.personalized-learning__rewards-summary { position: relative; overflow: hidden; padding: 18px; gap: 12px; border-color: #b6e8df; border-radius: 18px; background: radial-gradient(ellipse at 0% 0%, #d7f6ed, transparent 65%), linear-gradient(120deg, #effcf7, #eef8ff); box-shadow: 0 5px 16px rgb(20 131 123 / 7%); }
+.personalized-learning__rewards-summary p:first-child svg { background: #fff; border-radius: 50%; box-shadow: 0 0 0 5px rgb(255 255 255 / 50%); }
+.personalized-learning__points-earned { display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px; color: #fff; background: linear-gradient(120deg, #078b77, #087c9c); box-shadow: 0 3px 8px rgb(0 116 113 / 17%); }
+.personalized-learning__points-total { font-size: 25px; color: #1266c5; }
+.personalized-learning__reward-progress { grid-column: 1 / -1; height: 7px; overflow: hidden; border-radius: 999px; background: #d6e8ec; }
+.personalized-learning__reward-progress > span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #1dbeb1, #2384ed); }
+.personalized-learning__rewards-preview h3 { display: flex; align-items: center; gap: 8px; margin-block: 20px 10px; }
+.personalized-learning__rewards-preview h3 svg { color: #b5790c; }
+.personalized-learning__sample-leaderboard { --sample-row-gap: 9px; }
+.personalized-learning__sample-leaderboard li { min-height: 48px; grid-template-columns: 44px minmax(0, 1fr) auto; padding: 8px 12px; border-radius: 13px; box-shadow: 0 2px 5px rgb(18 67 124 / 3%); }
+.personalized-learning__sample-leaderboard li:nth-child(1) { background: linear-gradient(100deg, #fffdf6, #fff5db); border-color: #f3dfaa; }
+.personalized-learning__sample-leaderboard li:nth-child(2) { background: linear-gradient(100deg, #fff, #eff3fa); border-color: #dbe3ef; }
+.personalized-learning__sample-rank { display: flex; align-items: center; justify-content: center; gap: 2px; min-height: 28px; border-radius: 9px; background: #eff4fa; color: #536781; }
+.personalized-learning__sample-leaderboard li:nth-child(1) .personalized-learning__sample-rank { background: #ffedb3; color: #8a5b00; }
+.personalized-learning__sample-leaderboard li:nth-child(2) .personalized-learning__sample-rank { background: #e2e8f4; color: #52627e; }
+.personalized-learning__sample-leaderboard [data-learner="learner"] { background: linear-gradient(100deg, #e6f9f6, #eaf3ff); border-color: #71bddc; box-shadow: 0 3px 10px rgb(25 126 168 / 10%); }
+.personalized-learning__sample-leaderboard [data-learner="learner"] .personalized-learning__sample-rank { color: #fff; background: linear-gradient(135deg, #1399a4, #3076d8); }
+.personalized-learning__sample-leaderboard li > span:last-child { color: #315b89; font-variant-numeric: tabular-nums; }
+.personalized-learning__reward-confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.personalized-learning__reward-confetti i { position: absolute; opacity: 0; top: 42%; left: calc(10% + var(--piece) * 11%); width: 5px; height: 9px; border-radius: 2px; background: #17bfa6; }
+.personalized-learning__reward-confetti i:nth-child(3n) { background: #efbd4c; }
+.personalized-learning__reward-confetti i:nth-child(3n + 1) { background: #6a97ee; }
+@media (prefers-reduced-motion: no-preference) {
+  .personalized-learning__reward-progress > span { transition: width 120ms linear; }
+  .personalized-learning__rewards-summary { animation: personalized-reward-enter 650ms ease-out both; }
+  .personalized-learning__sample-leaderboard li { transition: box-shadow 250ms, border-color 250ms; }
+  .personalized-learning__rewards-preview[data-celebrating="true"] .personalized-learning__reward-confetti i { animation: personalized-confetti 1100ms ease-out both; animation-delay: calc(var(--piece) * 35ms); }
+}
+@keyframes personalized-reward-enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes personalized-confetti { 0% { opacity: 0; transform: translateY(12px) rotate(0); } 25% { opacity: .8; } 100% { opacity: 0; transform: translateY(-65px) rotate(160deg); } }
+@media (max-width: 380px), (max-height: 580px) {
+  .personalized-learning__rewards-summary { padding: 12px; gap: 8px; }
+  .personalized-learning__sample-leaderboard li { min-height: 40px; padding: 6px 9px; }
+  .personalized-learning__rewards-preview h3 { margin-top: 12px; }
 }

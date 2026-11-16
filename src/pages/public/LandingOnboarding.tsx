@@ -24,12 +24,13 @@ function normalizeWhatsApp(value: string) {
 }
 
 interface LandingOnboardingProps {
-  mode: LandingDemoMode;
+  mode?: LandingDemoMode;
   language: OnboardingLanguage;
   onLanguageChange: (language: OnboardingLanguage) => void;
+  onClose?: () => void;
 }
 
-export default function LandingOnboarding({ mode, language, onLanguageChange }: LandingOnboardingProps) {
+export default function LandingOnboarding({ mode, language, onLanguageChange, onClose }: LandingOnboardingProps) {
   const [answers, setAnswers] = useState(initialAnswers);
   const [step, setStep] = useState<Step>("name");
   const [error, setError] = useState<FormError | null>(null);
@@ -171,7 +172,8 @@ export default function LandingOnboarding({ mode, language, onLanguageChange }: 
         <div className="landing-onboarding__success">
           <CircleCheck size={44} aria-hidden="true" />
           <h2 ref={heading} tabIndex={-1}>{copy.saved[language]}</h2>
-          <DialogClose className="landing-onboarding__primary" type="button">{copy.close[language]}</DialogClose>
+          <p className="landing-onboarding__follow-up" lang="en" dir="ltr">we will contact you soon</p>
+          {onClose ? <button className="landing-onboarding__primary" type="button" onClick={onClose}>{copy.close[language]}</button> : <DialogClose className="landing-onboarding__primary" type="button">{copy.close[language]}</DialogClose>}
         </div>
       ) : (
         <form onSubmit={submit} aria-busy={saving}>

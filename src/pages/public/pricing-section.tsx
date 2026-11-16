@@ -33,7 +33,11 @@ export default function PricingSection() {
                   <span className="pricing-card__period">/ سنة</span>
                 </span>
               </div>
-              <span className="pricing-card__discount">خصم <bdi dir="ltr">{plan.discountPercent}%</bdi></span>
+              <span className="pricing-card__discount">
+                <svg className="pricing-card__discount-rays pricing-card__discount-rays--right" viewBox="0 0 20 40" fill="none" aria-hidden="true"><path d="M3 20h9M6 7l7 6M6 33l7-6" /></svg>
+                خصم <bdi dir="ltr">{plan.discountPercent}%</bdi>
+                <svg className="pricing-card__discount-rays pricing-card__discount-rays--left" viewBox="0 0 20 40" fill="none" aria-hidden="true"><path d="M3 20h9M6 7l7 6M6 33l7-6" /></svg>
+              </span>
               <ul className="pricing-card__features">
                 {plan.features.map((feature) => (
                   <li key={feature}><span className="pricing-card__check"><Check aria-hidden="true" /></span><span>{feature}</span></li>
