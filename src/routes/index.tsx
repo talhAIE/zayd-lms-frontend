@@ -17,7 +17,7 @@ import StudentCourses from "@/pages/student/courses";
 import { PrimaryPage } from '@/pages/student/primary';
 import { NafsStudentSession } from "@/components/nafs/NafsSession";
 import { NafsAttemptPage, NafsOverviewPage } from "@/pages/student/nafs/NafsStudent";
-import { NafsCoursePage, NafsPracticeCollectionsPage, NafsPracticeOverviewPage } from '@/pages/student/nafs/NafsNavigation';
+import { NafsCoursePage, NafsSimulatorTestsPage, NafsPracticeCollectionsPage, NafsPracticeOverviewPage } from '@/pages/student/nafs/NafsNavigation';
 import { NafsPracticeSessionPage } from '@/pages/student/nafs/NafsPracticeSession';
 import { StepSession } from '@/components/step/StepSession';
 import { StepAttemptPage, StepCoursePage, StepSectionPage, StepTopicPage } from '@/pages/student/step/StepStudent';
@@ -141,6 +141,7 @@ const AppRoutes = () => {
       </Route>
       <Route path="/student/nafs" element={<StudentLayout><NafsStudentSession /></StudentLayout>}>
         <Route path="courses/:courseId" element={<NafsCoursePage />} />
+        <Route path="courses/:courseId/simulator" element={<NafsSimulatorTestsPage />} />
         <Route path="courses/:courseId/practice" element={<NafsPracticeCollectionsPage />} />
         <Route path="practice/collections/:collectionId" element={<NafsPracticeOverviewPage />} />
         <Route path="practice/sessions/:sessionId" element={<NafsPracticeSessionPage />} />

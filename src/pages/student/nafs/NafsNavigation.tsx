@@ -132,12 +132,8 @@ function Course({ courseId }: { courseId: string }) {
   }, [owner, courseId, retry]);
   if (oldBackend && legacy)
     return (
-      <Navigate
-        replace
-        to={`/student/nafs/assessments/${legacy.assessmentId}`}
-      />
+      <Navigate replace to={`/student/nafs/courses/${courseId}/simulator`} />
     );
-  const quizId = modes?.quiz.assessmentId || legacy?.assessmentId || courseId;
   return (
     <section className={panel}>
       <Back />
@@ -157,7 +153,7 @@ function Course({ courseId }: { courseId: string }) {
       </header>
       {failed && (
         <Retry
-          message="Mode availability could not load. You can still open Quiz Mode."
+          message="Mode availability could not load. You can still open Simulator Test."
           onRetry={() => setRetry((n) => n + 1)}
         />
       )}
@@ -167,7 +163,7 @@ function Course({ courseId }: { courseId: string }) {
             className="w-9 h-9 text-[#4F8DFB]"
             aria-hidden="true"
           />
-          <h2 className="text-xl font-bold">Quiz Mode</h2>
+          <h2 className="text-xl font-bold">Simulator Test</h2>
           <p className="text-slate-600">
             One attempt. Answer every question and see your final marks after
             finishing. No correct or incorrect feedback while answering.
@@ -176,22 +172,22 @@ function Course({ courseId }: { courseId: string }) {
             <p className="text-sm text-slate-600">
               {legacy.assessmentTitle} · {legacy.questionCount} questions ·{" "}
               {legacy.state === "submitted"
-                ? "Quiz completed"
+                ? "Test completed"
                 : legacy.state === "in_progress"
-                  ? "Quiz in progress"
-                  : "Quiz not started"}
+                  ? "Test in progress"
+                  : "Test not started"}
             </p>
           )}
           <Link
             className={`${action} mt-auto`}
-            to={`/student/nafs/assessments/${quizId}`}
+            to={`/student/nafs/courses/${courseId}/simulator`}
           >
-            Open Quiz Mode
+            Open Simulator Test
           </Link>
         </article>
         <article className={card}>
           <BookOpen className="w-9 h-9 text-[#4F8DFB]" aria-hidden="true" />
-          <h2 className="text-xl font-bold">Practice Mode</h2>
+          <h2 className="text-xl font-bold">Quizzes</h2>
           <p className="text-slate-600">
             Check each answer for correct or incorrect feedback. Retry questions
             and move at your own pace.
@@ -201,24 +197,130 @@ function Course({ courseId }: { courseId: string }) {
               className={`${action} mt-auto`}
               to={`/student/nafs/courses/${courseId}/practice`}
             >
-              Open Practice Mode
+              Open Quizzes
             </Link>
           ) : (
             <>
               <p role="status" className="text-sm text-slate-500">
                 {failed
-                  ? "Practice availability could not be confirmed."
+                  ? "Quiz availability could not be confirmed."
                   : modes
-                    ? "Practice is not available for this course yet."
+                    ? "Quizzes are not available for this course yet."
                     : "Loading mode availability…"}
               </p>
               <Button className="mt-auto min-h-11" disabled>
-                Open Practice Mode
+                Open Quizzes
               </Button>
             </>
           )}
         </article>
       </div>
+    </section>
+  );
+}
+
+export function NafsSimulatorTestsPage() {
+  const { courseId = "" } = useParams();
+  const owner = useNafsSession();
+  return (
+    <SimulatorTests
+      key={`${owner.id}:${owner.username}:${courseId}`}
+      courseId={courseId}
+    />
+  );
+}
+function SimulatorTests({ courseId }: { courseId: string }) {
+  const owner = useNafsSession();
+  const [course, setCourse] = useState<NafsCourseView>();
+  const [failed, setFailed] = useState(false);
+  const [retry, setRetry] = useState(0);
+  useEffect(() => {
+    const controller = new AbortController();
+    setCourse(undefined);
+    setFailed(false);
+    void (async () => {
+      let known: NafsCourseView | undefined;
+      try {
+        const list = await nafsService.courses(owner, controller.signal);
+        known = list.courses.find(
+          (c) => c.id === courseId || c.assessmentId === courseId,
+        );
+      } catch {
+        // The mode endpoint can resolve an authorized grouped course even when
+        // optional course-list metadata is unavailable.
+      }
+      if (!known) {
+        const modes = await discovery.modes(owner, controller.signal, courseId);
+        const { assessment } = await nafsService.assessment(
+          owner,
+          controller.signal,
+          modes.quiz.assessmentId,
+        );
+        known = {
+          id: courseId,
+          assessmentId: assessment.id,
+          courseTitle: modes.courseTitle,
+          assessmentTitle: assessment.title,
+          subject: modes.subject,
+          gradeLabel: modes.gradeLabel,
+          questionCount: assessment.questionCount,
+          totalMarks: assessment.totalMarks,
+          state: assessment.state,
+          attemptId: assessment.attemptId,
+          result: null,
+        };
+      }
+      if (!controller.signal.aborted) setCourse(known);
+    })().catch(() => {
+      if (!controller.signal.aborted) setFailed(true);
+    });
+    return () => controller.abort();
+  }, [owner, courseId, retry]);
+  return (
+    <section className={panel}>
+      <Back to={`/student/nafs/courses/${courseId}`}>Back to modes</Back>
+      {course && (
+        <p className="text-sm font-semibold text-blue-700 mt-5">
+          {course.courseTitle}
+        </p>
+      )}
+      <h1 className="text-2xl md:text-3xl font-bold mt-2">Simulator Test</h1>
+      <p className="mt-3 mb-6 text-slate-600">
+        Choose a diagnostic test. Your test progress is separate from Quizzes.
+      </p>
+      {failed ? (
+        <Retry
+          message="Simulator Test could not load. Please try again."
+          onRetry={() => setRetry((n) => n + 1)}
+        />
+      ) : !course ? (
+        <p role="status">Loading diagnostic test…</p>
+      ) : (
+        <div className="grid md:grid-cols-2 gap-5">
+          <article className={card}>
+            <h2 className="text-xl font-bold">Diagnostic Test</h2>
+            <p className="text-slate-600">
+              {course.questionCount} questions
+              {typeof course.totalMarks === "number"
+                ? ` · ${course.totalMarks} marks`
+                : ""}
+            </p>
+            <p className="text-sm text-slate-600">
+              {course.state === "submitted"
+                ? "Test completed"
+                : course.state === "in_progress"
+                  ? "Test in progress"
+                  : "Not started"}
+            </p>
+            <Link
+              className={`${action} mt-auto`}
+              to={`/student/nafs/assessments/${course.assessmentId}`}
+            >
+              View Diagnostic Test
+            </Link>
+          </article>
+        </div>
+      )}
     </section>
   );
 }
@@ -286,10 +388,9 @@ function Collections({
     <section className={panel}>
       <Back to={`/student/nafs/courses/${courseId}`}>Back to modes</Back>
       <p className="text-sm font-semibold text-blue-700 mt-5">{title}</p>
-      <h1 className="text-2xl md:text-3xl font-bold mt-2">Practice Mode</h1>
+      <h1 className="text-2xl md:text-3xl font-bold mt-2">Quizzes</h1>
       <p className="mt-3 mb-6 text-slate-600">
-        Choose a practice collection. Your practice progress is separate from
-        Quiz Mode.
+        Choose a quiz. Your quiz progress is separate from Simulator Test.
       </p>
       {error ? (
         <Retry message={error} onRetry={() => setRetry((n) => n + 1)} />
@@ -422,7 +523,7 @@ function Overview({
         {...(collection
           ? {
               to: `/student/nafs/courses/${collection.courseId}/practice`,
-              children: "Back to Practice Mode",
+              children: "Back to Quizzes",
             }
           : {})}
       />
@@ -440,7 +541,7 @@ function Overview({
               aria-hidden="true"
             />
             <p className="text-sm font-semibold text-blue-700">
-              {courseTitle} · Practice Mode
+              {courseTitle} · Quizzes
             </p>
             <h1 className="text-2xl md:text-3xl font-bold mt-2">
               {collection.title}

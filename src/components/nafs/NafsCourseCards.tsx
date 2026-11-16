@@ -92,7 +92,7 @@ function Cards({ owner, onCoursesChange, onStatusChange }: Props & { owner: Nafs
                 {course.courseTitle}
               </h3>
               <p className="text-sm text-[#64748B]">
-                Quiz Mode · {course.assessmentTitle} · {course.questionCount} questions
+                Simulator Test · {course.assessmentTitle} · {course.questionCount} questions
               </p>
               <p className="text-sm text-slate-600 mt-auto">
                 {course.state === 'submitted'

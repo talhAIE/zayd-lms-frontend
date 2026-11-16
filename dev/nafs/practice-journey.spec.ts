@@ -32,7 +32,7 @@ for (const width of [1440, 390]) {
     const state = await fixture(page);
     await page.goto("/student/courses");
     await page.getByRole("link", { name: "Open course", exact: true }).click();
-    await page.getByRole("link", { name: "Open Practice Mode" }).click();
+    await page.getByRole("link", { name: "Open Quizzes" }).click();
     await page.getByRole("link", { name: "View Quiz 1" }).click();
     await page
       .getByRole("button", { name: "Start practice", exact: true })
@@ -82,7 +82,7 @@ for (const width of [1440, 390]) {
       .getByRole("button", { name: "Practice again", exact: true })
       .click();
     await expect(page).not.toHaveURL(routePath);
-    await expect(page.getByText("NAFS · Practice Mode · Run 2")).toBeVisible();
+    await expect(page.getByText("NAFS · Quizzes · Run 2")).toBeVisible();
     await expect(page.getByRole("radio", { checked: true })).toHaveCount(0);
     expect(state.runs.get(sid)).toEqual(completed);
     expect(state.runs.size).toBe(2);
@@ -133,7 +133,7 @@ test("lost repeat survives reload and resolves one successor with the same reque
   await page
     .getByRole("button", { name: "Practice again", exact: true })
     .click();
-  await expect(page.getByText("NAFS · Practice Mode · Run 2")).toBeVisible();
+  await expect(page.getByText("NAFS · Quizzes · Run 2")).toBeVisible();
   const sent = state.operations.filter((o) => o.kind === "repeat");
   expect(sent).toHaveLength(2);
   expect(sent[1].body).toEqual(sent[0].body);

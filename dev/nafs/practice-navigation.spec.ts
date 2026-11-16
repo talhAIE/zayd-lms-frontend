@@ -108,6 +108,7 @@ async function fixture(page: Page, region: string | null = "ROW") {
                 gradeLabel: "9",
                 subject: "math",
                 questionCount: 30,
+                totalMarks: 30,
                 state: "in_progress",
                 attemptId: null,
                 result: null,
@@ -191,9 +192,9 @@ for (const width of [1440, 390]) {
       page.getByRole("heading", { name: "NAFS Math Grade 9" }),
     ).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "Open Quiz Mode" }),
-    ).toHaveAttribute("href", `/student/nafs/assessments/${courseId}`);
-    await page.getByRole("link", { name: "Open Practice Mode" }).click();
+      page.getByRole("link", { name: "Open Simulator Test" }),
+    ).toHaveAttribute("href", `${coursePath}/simulator`);
+    await page.getByRole("link", { name: "Open Quizzes" }).click();
     await expect(page.getByText("250 questions · 250 marks")).toBeVisible();
     await page.getByRole("link", { name: "View Quiz 1" }).click();
     await expect(
@@ -217,9 +218,18 @@ for (const width of [1440, 390]) {
       path: testInfo.outputPath(`practice-overview-${width}.png`),
       fullPage: true,
     });
-    await page.getByRole("link", { name: "Back to Practice Mode" }).click();
+    await page.getByRole("link", { name: "Back to Quizzes" }).click();
     await page.getByRole("link", { name: "Back to modes" }).click();
-    await page.getByRole("link", { name: "Open Quiz Mode" }).click();
+    await page.getByRole("link", { name: "Open Simulator Test" }).click();
+    await expect(
+      page.getByRole("heading", { name: "Diagnostic Test", exact: true }),
+    ).toBeVisible();
+    await expect(page.getByText(/30 questions.*30 marks/)).toBeVisible();
+    await page.screenshot({
+      path: testInfo.outputPath(`simulator-tests-${width}.png`),
+      fullPage: true,
+    });
+    await page.getByRole("link", { name: "View Diagnostic Test" }).click();
     await expect(
       page.getByRole("button", { name: "Start quiz", exact: true }),
     ).toBeVisible();
@@ -242,9 +252,14 @@ test("practice unavailable disables only practice; legacy Quiz bookmark works", 
   state.available = false;
   await page.goto(coursePath);
   await expect(
-    page.getByRole("button", { name: "Open Practice Mode" }),
+    page.getByRole("button", { name: "Open Quizzes" }),
   ).toBeDisabled();
-  await page.getByRole("link", { name: "Open Quiz Mode" }).click();
+  await page.getByRole("link", { name: "Open Simulator Test" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Diagnostic Test", exact: true }),
+  ).toBeVisible();
+  await expect(page.getByText(/30 questions.*30 marks/)).toBeVisible();
+  await page.getByRole("link", { name: "View Diagnostic Test" }).click();
   await expect(
     page.getByRole("button", { name: "Start quiz", exact: true }),
   ).toBeVisible();
@@ -255,7 +270,8 @@ test("old backend 404 falls back to the known legacy assessment", async ({
   const state = await fixture(page);
   state.modes = 404;
   await page.goto(coursePath);
-  await expect(page).toHaveURL(`/student/nafs/assessments/${courseId}`);
+  await expect(page).toHaveURL(`${coursePath}/simulator`);
+  await page.getByRole("link", { name: "View Diagnostic Test" }).click();
   await expect(
     page.getByRole("button", { name: "Start quiz", exact: true }),
   ).toBeVisible();
@@ -270,16 +286,14 @@ test("503 offers retry and Quiz link without pretending practice is available", 
     "Mode availability could not load",
   );
   await expect(
-    page.getByRole("link", { name: "Open Quiz Mode" }),
+    page.getByRole("link", { name: "Open Simulator Test" }),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "Open Practice Mode" }),
+    page.getByRole("button", { name: "Open Quizzes" }),
   ).toBeDisabled();
   state.modes = 200;
   await page.getByRole("button", { name: "Try loading again" }).click();
-  await expect(
-    page.getByRole("link", { name: "Open Practice Mode" }),
-  ).toBeVisible();
+  await expect(page.getByRole("link", { name: "Open Quizzes" })).toBeVisible();
 });
 test("slow modes never delays the Quiz link; optional metadata failure does not block practice", async ({
   page,
@@ -289,12 +303,10 @@ test("slow modes never delays the Quiz link; optional metadata failure does not 
   state.metadataError = true;
   await page.goto(coursePath);
   await expect(
-    page.getByRole("link", { name: "Open Quiz Mode" }),
+    page.getByRole("link", { name: "Open Simulator Test" }),
   ).toBeVisible();
   await expect(page.getByText("Loading mode availability…")).toBeVisible();
-  await expect(
-    page.getByRole("link", { name: "Open Practice Mode" }),
-  ).toBeVisible();
+  await expect(page.getByRole("link", { name: "Open Quizzes" })).toBeVisible();
 });
 test("empty and failed collection states recover independently of modes", async ({
   page,
@@ -302,9 +314,7 @@ test("empty and failed collection states recover independently of modes", async 
   const state = await fixture(page);
   state.collectionError = 503;
   await page.goto(`${coursePath}/practice`);
-  await expect(page.getByRole("alert")).toContainText(
-    "Practice Mode could not load",
-  );
+  await expect(page.getByRole("alert")).toContainText("Quizzes could not load");
   state.collectionError = 0;
   state.empty = true;
   await page.getByRole("button", { name: "Try loading again" }).click();
@@ -315,7 +325,7 @@ test("empty and failed collection states recover independently of modes", async 
   ).toBeVisible();
   await page.getByRole("link", { name: "Back to modes" }).click();
   await expect(
-    page.getByRole("link", { name: "Open Quiz Mode" }),
+    page.getByRole("link", { name: "Open Simulator Test" }),
   ).toBeVisible();
 });
 test("direct overview denial reveals no collection, retries and does not start practice", async ({
@@ -347,7 +357,7 @@ for (const [progress, label] of [
     await page.goto("/student/courses");
     await expect(page.getByText(/1 course in progress/)).toBeVisible();
     await expect(
-      page.getByText("Quiz Mode · Form A · 30 questions"),
+      page.getByText("Simulator Test · Form A · 30 questions"),
     ).toBeVisible();
     expect(
       state.requests.filter((r) => r.path.startsWith("/nafs/practice/")),
@@ -365,7 +375,7 @@ test("missing region fails closed for practice while existing Quiz navigation wo
   ).toHaveLength(0);
   await page.goto(coursePath);
   await expect(
-    page.getByRole("link", { name: "Open Quiz Mode" }),
+    page.getByRole("link", { name: "Open Simulator Test" }),
   ).toBeVisible();
 });
 test("hidden NAFS discovery leaves ordinary courses available", async ({
@@ -405,7 +415,9 @@ test("slow NAFS discovery does not show a premature empty curriculum", async ({
   state.ordinary = false;
   state.delayCourses = 1200;
   await page.goto("/student/courses");
-  await expect(page.getByRole("status").filter({ hasText: "Loading courses..." })).toBeVisible();
+  await expect(
+    page.getByRole("status").filter({ hasText: "Loading courses..." }),
+  ).toBeVisible();
   await expect(page.getByText("No curriculum courses available.")).toHaveCount(
     0,
   );
@@ -431,4 +443,40 @@ test("failed NAFS discovery shows retry rather than an empty curriculum", async 
   await expect(
     page.getByRole("link", { name: "Open course", exact: true }),
   ).toBeVisible();
+});
+
+test("simulator card retries metadata failure without starting an attempt", async ({
+  page,
+}) => {
+  const state = await fixture(page);
+  state.metadataError = true;
+  state.modes = 503;
+  await page.goto(`${coursePath}/simulator`);
+  await expect(page.getByRole("alert")).toContainText(
+    "Simulator Test could not load",
+  );
+  state.metadataError = false;
+  await page.getByRole("button", { name: "Try loading again" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Diagnostic Test", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("Test in progress", { exact: true }),
+  ).toBeVisible();
+  expect(state.requests.every((r) => r.method === "GET")).toBe(true);
+});
+
+test("simulator card resolves assessment when optional course metadata is unavailable", async ({
+  page,
+}) => {
+  const state = await fixture(page);
+  state.metadataError = true;
+  await page.goto(`${coursePath}/simulator`);
+  await expect(
+    page.getByRole("heading", { name: "Diagnostic Test", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "View Diagnostic Test" }),
+  ).toHaveAttribute("href", `/student/nafs/assessments/${courseId}`);
+  expect(state.requests.every((r) => r.method === "GET")).toBe(true);
 });
