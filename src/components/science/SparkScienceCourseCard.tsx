@@ -8,33 +8,48 @@ import {
 import type { ScienceOwner } from "@/services/scienceSparkService";
 
 import { SPARK_COURSE_PATH } from "@/utils/sparkScienceNavigation";
-export { SPARK_COURSE_PATH, SPARK_UNIT_PATH } from "@/utils/sparkScienceNavigation";
+export {
+  SPARK_COURSE_PATH,
+  SPARK_UNIT_PATH,
+} from "@/utils/sparkScienceNavigation";
 export const SPARK_COURSE_IMAGE =
   "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80";
 
 export function SparkScienceCourseCard({
   onCourseChange,
+  onStatusChange,
 }: {
   onCourseChange?: (course: SparkCourse | null) => void;
+  onStatusChange?: (
+    status: "loading" | "hidden" | "available" | "error",
+  ) => void;
 }) {
   const owner = useScienceOwner();
   useEffect(() => {
-    if (!owner) onCourseChange?.(null);
-  }, [owner, onCourseChange]);
+    if (!owner) {
+      onCourseChange?.(null);
+      onStatusChange?.("hidden");
+    }
+  }, [owner, onCourseChange, onStatusChange]);
   return owner ? (
     <Card
       key={owner.sessionKey}
       owner={owner}
       onCourseChange={onCourseChange}
+      onStatusChange={onStatusChange}
     />
   ) : null;
 }
 function Card({
   owner,
   onCourseChange,
+  onStatusChange,
 }: {
   owner: ScienceOwner;
   onCourseChange?: (course: SparkCourse | null) => void;
+  onStatusChange?: (
+    status: "loading" | "hidden" | "available" | "error",
+  ) => void;
 }) {
   const [course, setCourse] = useState<SparkCourse | null>(null),
     [failed, setFailed] = useState(false),
@@ -43,6 +58,7 @@ function Card({
     const controller = new AbortController();
     setFailed(false);
     setCourse(null);
+    onStatusChange?.("loading");
     onCourseChange?.(null);
     void sparkScienceService
       .course(owner, controller.signal)
@@ -50,13 +66,17 @@ function Card({
         if (!controller.signal.aborted) {
           setCourse(result.course);
           onCourseChange?.(result.course);
+          onStatusChange?.(result.course ? "available" : "hidden");
         }
       })
       .catch(() => {
-        if (!controller.signal.aborted) setFailed(true);
+        if (!controller.signal.aborted) {
+          setFailed(true);
+          onStatusChange?.("error");
+        }
       });
     return () => controller.abort();
-  }, [owner, retry, onCourseChange]);
+  }, [owner, retry, onCourseChange, onStatusChange]);
   if (failed)
     return (
       <div role="alert" className="text-sm text-slate-600">

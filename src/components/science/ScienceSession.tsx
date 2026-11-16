@@ -8,13 +8,14 @@ export function useScienceOwner(): ScienceOwner | null {
   const { user, isAuthenticated, refreshToken } = useAppSelector((s) => s.auth);
   const id = user?.id,
     username = user?.username,
-    role = user?.role;
+    role = user?.role,
+    region = (user as typeof user & { region?: string })?.region ?? "ROW";
   return useMemo(
     () =>
       isAuthenticated && role === "student" && id && username
-        ? { id, username, sessionKey: crypto.randomUUID() }
+        ? { id, username, region, sessionKey: crypto.randomUUID() }
         : null,
-    [id, username, role, isAuthenticated, refreshToken],
+    [id, username, role, region, isAuthenticated, refreshToken],
   );
 }
 export function ScienceSession() {
