@@ -78,6 +78,12 @@ for (const width of [1440, 390])
           await inputs.nth(0).fill("2");
           await inputs.nth(1).fill("30");
         }
+        await page
+          .getByRole("button", { name: "Check Answer", exact: true })
+          .click();
+        await expect(
+          page.getByRole("heading", { name: "Correct", exact: true }),
+        ).toBeVisible();
       }
       await expect(
         page.getByRole("button", { name: "Submit quiz", exact: true }),
@@ -88,12 +94,13 @@ for (const width of [1440, 390])
         .click();
       await expect(
         page.getByRole("heading", {
-          name: `Result: ${quiz.totalMarks} / ${quiz.totalMarks}`,
+          name: "Quiz completed",
+          exact: true,
         }),
       ).toBeVisible({ timeout: 20000 });
       await page.reload();
       await expect(
-        page.getByRole("heading", { name: /Result:/ }),
+        page.getByRole("heading", { name: "Quiz completed", exact: true }),
       ).toBeVisible();
     }
     expect([...state.attempts.values()]).toHaveLength(4);
