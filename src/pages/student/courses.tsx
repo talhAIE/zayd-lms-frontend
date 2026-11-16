@@ -5,6 +5,8 @@ import { getCourses } from '@/redux/slices/learningSlice';
 import { AppDispatch, RootState } from '@/redux/store';
 import { Award } from 'lucide-react';
 import { ScienceCourseCard } from '@/components/science/ScienceCourseCard';
+import { SparkScienceCourseCard } from '@/components/science/SparkScienceCourseCard';
+import type { SparkCourse } from '@/services/sparkScienceService';
 import { PrimaryCourseCard } from '@/components/primary/PrimaryCourseCard';
 import { AvatarCourseCard } from '@/components/avatar-reading/AvatarCourseCard';
 import { NafsCourseCards } from '@/components/nafs/NafsCourseCards';
@@ -17,11 +19,13 @@ export default function StudentCourses() {
   const { courses, loading, error } = useSelector((state: RootState) => state.learning);
   const { user } = useSelector((state: RootState) => state.auth);
   const [primaryAvailable, setPrimaryAvailable] = useState(false);
+  const [sparkCourse,setSparkCourse]=useState<SparkCourse|null>(null);
+  const [sparkStatus,setSparkStatus]=useState<'loading'|'hidden'|'available'|'error'>('loading');
   const [avatarAvailable, setAvatarAvailable] = useState(false);
   const [nafsCourses, setNafsCourses] = useState<NafsCourseView[]>([]);
   const [nafsStatus, setNafsStatus] = useState<'loading' | 'hidden' | 'available' | 'error'>('loading');
   const [stepStatus, setStepStatus] = useState<StepDiscoveryState>('loading');
-  const coursesLoading = loading || nafsStatus === 'loading' || stepStatus === 'loading';
+  const coursesLoading = loading || nafsStatus === 'loading' || stepStatus === 'loading' || sparkStatus==='loading';
   const studentName = [user?.firstName, user?.lastName]
     .filter((name): name is string => typeof name === 'string' && name.trim().length > 0)
     .join(' ')
@@ -29,7 +33,7 @@ export default function StudentCourses() {
     || user?.username
     || 'Student';
 
-  const inProgressCount = courses.filter(c => c.progressStatus === 'in_progress').length + nafsCourses.filter(c => c.state === 'in_progress').length;
+  const inProgressCount = courses.filter(c => c.progressStatus === 'in_progress').length + nafsCourses.filter(c => c.state === 'in_progress').length + (sparkCourse?.status==='in_progress'?1:0);
 
   useEffect(() => {
     dispatch(getCourses());
@@ -57,13 +61,14 @@ export default function StudentCourses() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <ScienceCourseCard />
+          <SparkScienceCourseCard onCourseChange={setSparkCourse} onStatusChange={setSparkStatus}/>
           <AvatarCourseCard onAvailabilityChange={setAvatarAvailable} />
           <PrimaryCourseCard onAvailabilityChange={setPrimaryAvailable} />
           <NafsCourseCards onCoursesChange={setNafsCourses} onStatusChange={setNafsStatus} />
           <StepCourseCard onStatusChange={setStepStatus} />
           {coursesLoading && <p role="status" className="col-span-full text-gray-500">Loading courses...</p>}
           {error && <p className="text-red-500">{error}</p>}
-          {!loading && !error && courses.length === 0 && !avatarAvailable && !primaryAvailable && nafsCourses.length === 0 && nafsStatus === 'hidden' && stepStatus === 'hidden' && (
+          {!loading && !error && courses.length === 0 && !avatarAvailable && !primaryAvailable && nafsCourses.length === 0 && nafsStatus === 'hidden' && stepStatus === 'hidden' && sparkStatus==='hidden' && (
             <p className="text-gray-500">No curriculum courses available.</p>
           )}
           {!loading && courses.map((course) => (

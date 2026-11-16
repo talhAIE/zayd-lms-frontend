@@ -13,6 +13,7 @@ export interface ScienceOwner {
   id: string;
   username: string;
   sessionKey: string;
+  region?: string;
 }
 // Dedicated Science endpoints/state, shared authentication transport. Every
 // initial request and queued refresh retry remains bound to its current owner.
