@@ -20,7 +20,6 @@ import { StepSession } from '@/components/step/StepSession';
 import { StepAttemptPage, StepCoursePage, StepSectionPage, StepTopicPage } from '@/pages/student/step/StepStudent';
 import { ScienceSession } from "@/components/science/ScienceSession";
 import { ScienceCoursePage, ScienceUnitPage, ScienceActivityPage } from "@/pages/student/science/ScienceJourney";
-import { SparkScienceCoursePage, SparkScienceUnitPage, SparkScienceActivityPage } from "@/pages/student/science/SparkScienceJourney";
 import CourseUnits from "@/pages/student/course-units";
 import UnitLessons from "@/pages/student/unit-lessons";
 import UnitOverview from "@/pages/student/unit-overview";
@@ -142,9 +141,6 @@ const AppRoutes = () => {
         <Route index element={<Navigate to="/student/courses" replace />} />
       </Route>
       <Route path="/student/science" element={<ScienceSession />}>
-        <Route path="spark-science" element={<SparkScienceCoursePage />} />
-        <Route path="spark-science/unit-1" element={<SparkScienceUnitPage />} />
-        <Route path="spark-science/unit-1/activities/:activityKey" element={<SparkScienceActivityPage />} />
         <Route path="courses/:courseKey" element={<ScienceCoursePage />} />
         <Route path="units/:unitKey" element={<ScienceUnitPage />} />
         <Route path="units/:unitKey/activities/:activityKey" element={<ScienceActivityPage />} />
