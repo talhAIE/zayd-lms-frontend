@@ -10,7 +10,6 @@ import Logo from "@/assets/zayd-logo.png";
 export default function AdminLogin() {
   const [params] = useSearchParams();
   const [username, setUsername] = useState(params.get("username") || "");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const dispatch = useAppDispatch();
@@ -36,19 +35,18 @@ export default function AdminLogin() {
             setBusy(true);
             try {
               const result = await dispatch(
-                login({ username: username.trim(), password }),
+                login({ username: username.trim() }),
               ).unwrap();
               if (!isDirectoryAdmin(result.user.role)) {
                 navigate("/home", { replace: true });
                 return;
               }
-              setPassword("");
               navigate("/admin/dashboard", { replace: true });
             } catch (err) {
               setError(
                 typeof err === "string"
                   ? err
-                  : "Sign in failed. Check your username and password.",
+                  : "Sign in failed. Check your username.",
               );
             } finally {
               setBusy(false);
@@ -69,23 +67,6 @@ export default function AdminLogin() {
               maxLength={200}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="admin-password"
-              className="block text-sm font-medium mb-2"
-            >
-              Password
-            </label>
-            <Input
-              id="admin-password"
-              type="password"
-              autoComplete="current-password"
-              required
-              maxLength={128}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           {error && (

@@ -283,37 +283,31 @@ test("NAFS admin sees NAFS-only metrics and separate simulator/quiz student resu
   await expect(page.getByText("4 / 5", { exact: true })).toHaveCount(2);
   await expect(page.getByText("Recorded course enrollments")).toHaveCount(0);
 });
-test("admin login uses a password and never stores it", async ({ page }) => {
+test("admin login uses only username", async ({ page }) => {
   const f = await fixture(page, "zayd_super_admin", false);
   await page.goto("/admin/login?username=super.admin.zayd");
   await expect(page.getByLabel("Username", { exact: true })).toHaveValue(
     "super.admin.zayd",
   );
-  await page
-    .getByLabel("Password", { exact: true })
-    .fill("Synthetic-test-password-123");
+  await expect(page.getByLabel("Password", { exact: true })).toHaveCount(0);
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Zayd Student Dashboard" }),
   ).toBeVisible();
   expect(f.loginBodies[0]).toEqual({
     username: "super.admin.zayd",
-    password: "Synthetic-test-password-123",
   });
-  expect(
-    await page.evaluate(() => Object.values(localStorage).join(" ")),
-  ).not.toContain("Synthetic-test-password");
 });
-test("normal login sends reserved admin usernames to password sign-in", async ({
+test("normal login signs admins in directly using username", async ({
   page,
 }) => {
   const f = await fixture(page, "zayd_super_admin", false);
   await page.goto("/login");
   await page.getByRole("textbox").fill("super.admin.zayd");
   await page.getByRole("button", { name: "Log In", exact: true }).click();
-  await expect(page).toHaveURL(/\/admin\/login\?username=super.admin.zayd/);
-  await expect(page.getByLabel("Password", { exact: true })).toBeVisible();
-  expect(f.loginBodies).toHaveLength(0);
+  await expect(page).toHaveURL(/\/admin\/dashboard$/);
+  expect(f.loginBodies[0]).toEqual({ username: "super.admin.zayd" });
+  await expect(page.getByLabel("Password", { exact: true })).toHaveCount(0);
 });
 for (const role of ["student", "teacher"])
   test(`${role} cannot enter the admin portal`, async ({ page }) => {

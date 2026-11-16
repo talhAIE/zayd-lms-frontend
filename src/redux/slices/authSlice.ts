@@ -17,7 +17,6 @@ export interface AuthResponse {
 
 export interface LoginCredentials {
   username: string;
-  password?: string;
 }
 
 export interface PhoneNumberCredentials {

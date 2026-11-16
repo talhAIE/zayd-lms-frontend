@@ -101,10 +101,6 @@ export default function LoginPage() {
   };
 
   const onUsernameSubmit = async (data: UsernameFormValues) => {
-    if (/^(?:super\.admin\.|admin\.)/i.test(data.username.trim())) {
-      navigate(`/admin/login?username=${encodeURIComponent(data.username.trim())}`);
-      return;
-    }
     try {
       setCurrentUsername(data.username);
 
