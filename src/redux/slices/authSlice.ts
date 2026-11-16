@@ -3,7 +3,7 @@ import axios from 'axios';
 import { User } from '@/types/auth';
 import { clearAuthData } from '@/utils/tokenUtils';
 
-export type UserRole = 'student' | 'teacher';
+export type UserRole = 'student' | 'teacher' | 'zayd_super_admin' | 'zayd_school_admin' | 'nafs_super_admin' | 'nafs_school_admin';
 
 export interface AuthResponse {
   status: string;
@@ -17,6 +17,7 @@ export interface AuthResponse {
 
 export interface LoginCredentials {
   username: string;
+  password?: string;
 }
 
 export interface PhoneNumberCredentials {
