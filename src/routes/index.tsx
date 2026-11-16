@@ -149,8 +149,8 @@ const AppRoutes = () => {
       </Route>
       <Route path="/student/science" element={<ScienceSession />}>
         <Route path="spark-science" element={<SparkScienceCoursePage />} />
-        <Route path="spark-science/unit-2" element={<SparkScienceUnitPage />} />
-        <Route path="spark-science/unit-2/activities/:activityKey" element={<SparkScienceActivityPage />} />
+        <Route path="spark-science/:unitSlug" element={<SparkScienceUnitPage />} />
+        <Route path="spark-science/:unitSlug/activities/:activityKey" element={<SparkScienceActivityPage />} />
         <Route path="spark-science/unit-1" element={<Navigate to="/student/science/spark-science/unit-2" replace />} />
         <Route path="spark-science/unit-1/activities/:activityKey" element={<SparkScienceActivityPage />} />
         <Route path="courses/:courseKey" element={<ScienceCoursePage />} />

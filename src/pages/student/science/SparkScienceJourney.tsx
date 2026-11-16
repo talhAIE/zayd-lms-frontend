@@ -17,11 +17,22 @@ import {
   type SparkActivity,
 } from "@/services/sparkScienceService";
 import { MotionQuiz } from "@/components/science/MotionQuiz";
-import { SPARK_UNIT_PATH } from "@/components/science/SparkScienceCourseCard";
 
-const activityPath = (key: SparkActivityKey) =>
-  `${SPARK_UNIT_PATH}/activities/${key}`;
-function useCourse(owner: ScienceOwner) {
+const unitPath = (unit: number) =>
+  `/student/science/spark-science/unit-${unit}`;
+const activityPath = (key: SparkActivityKey, unit = 2) =>
+  `${unitPath(unit)}/activities/${key}`;
+function useUnitNumber() {
+  const { unitSlug } = useParams();
+  return unitSlug === undefined
+    ? 2
+    : unitSlug === "unit-2"
+      ? 2
+      : unitSlug === "unit-3"
+        ? 3
+        : 0;
+}
+function useCourse(owner: ScienceOwner, unitNumber?: number) {
   const [course, setCourse] = useState<SparkCourse | null>(),
     [error, setError] = useState(""),
     [attempt, setAttempt] = useState(0);
@@ -29,8 +40,12 @@ function useCourse(owner: ScienceOwner) {
     const controller = new AbortController();
     setCourse(undefined);
     setError("");
+    if (unitNumber !== undefined && unitNumber !== 2 && unitNumber !== 3) {
+      setError("Unknown Science unit");
+      return () => controller.abort();
+    }
     void api
-      .course(owner, controller.signal)
+      .course(owner, controller.signal, unitNumber)
       .then((result) => {
         if (!controller.signal.aborted) setCourse(result.course);
       })
@@ -39,7 +54,7 @@ function useCourse(owner: ScienceOwner) {
           setError("Spark Science could not load. Please retry.");
       });
     return () => controller.abort();
-  }, [owner, attempt]);
+  }, [owner, attempt, unitNumber]);
   return { course, error, retry: () => setAttempt((n) => n + 1) };
 }
 function ErrorBox({ error, retry }: { error: string; retry: () => void }) {
@@ -109,7 +124,8 @@ export function SparkScienceCoursePage() {
           <div>
             <p className="text-sm font-semibold">Course progress</p>
             <p className="text-[13px] text-[#949494]">
-              {course.completedUnits} of 1 available units completed
+              {course.completedUnits} of {course.units?.length ?? 1} available
+              units completed
             </p>
             <p className="text-xs text-[#949494]">
               {course.completedActivities} of {course.totalActivities}{" "}
@@ -123,7 +139,7 @@ export function SparkScienceCoursePage() {
           <div>
             <h2 className="text-[18px] font-bold">Choose a unit</h2>
             <p className="text-[14px] text-[#949494]">
-              Explore the available unit and continue your learning.
+              Explore the available units and continue your learning.
             </p>
           </div>
           <div className="hidden md:flex gap-2">
@@ -143,46 +159,54 @@ export function SparkScienceCoursePage() {
             </button>
           </div>
         </div>
-        <Link
-          to={SPARK_UNIT_PATH}
-          className="mt-6 flex flex-col justify-between w-full max-w-[260px] min-h-[220px] border-2 border-[#4F8DFB] rounded-[16px] p-5 shadow-sm hover:shadow-md"
-        >
-          <div className="flex justify-between">
-            <span className="rounded-full bg-[#EFF6FF] p-3">
-              <BookOpen className="text-[#4F8DFB]" />
-            </span>
-            <span className="rounded-full bg-[#4F8DFB] text-white text-[11px] font-bold px-3 py-1 h-fit">
-              {course.status === "completed"
-                ? "Completed"
-                : course.status === "in_progress"
-                  ? "Resume"
-                  : "Start"}
-            </span>
-          </div>
-          <div className="mt-4">
-            <p className="text-[13px] text-gray-500">Unit 2</p>
-            <h3 className="text-lg font-bold">{course.unitTitle}</h3>
-            <p className="text-[13px] text-[#949494]">
-              {course.totalActivities} activities ·{" "}
-              {course.status.replace(/_/g, " ")}
-            </p>
-          </div>
-          <div className="flex justify-between mt-4">
-            <span className="flex items-center gap-1 bg-gray-100 rounded-full px-3 py-1 text-xs font-bold text-gray-500">
-              <Star size={13} />
-              {course.progressPct}% Completion
-            </span>
-            <ChevronRight size={20} className="text-gray-400" />
-          </div>
-        </Link>
+        <div className="flex flex-wrap gap-5">
+          {(course.units ?? [course]).map((unit) => (
+            <Link
+              key={unit.unitKey}
+              to={unitPath(unit.unitNumber ?? 2)}
+              className="mt-6 flex flex-col justify-between w-full max-w-[260px] min-h-[220px] border-2 border-[#4F8DFB] rounded-[16px] p-5 shadow-sm hover:shadow-md"
+            >
+              <div className="flex justify-between">
+                <span className="rounded-full bg-[#EFF6FF] p-3">
+                  <BookOpen className="text-[#4F8DFB]" />
+                </span>
+                <span className="rounded-full bg-[#4F8DFB] text-white text-[11px] font-bold px-3 py-1 h-fit">
+                  {unit.status === "completed"
+                    ? "Completed"
+                    : unit.status === "in_progress"
+                      ? "Resume"
+                      : "Start"}
+                </span>
+              </div>
+              <div className="mt-4">
+                <p className="text-[13px] text-gray-500">
+                  Unit {unit.unitNumber ?? 2}
+                </p>
+                <h3 className="text-lg font-bold">{unit.unitTitle}</h3>
+                <p className="text-[13px] text-[#949494]">
+                  {unit.totalActivities} activities ·{" "}
+                  {unit.status.replace(/_/g, " ")}
+                </p>
+              </div>
+              <div className="flex justify-between mt-4">
+                <span className="flex items-center gap-1 bg-gray-100 rounded-full px-3 py-1 text-xs font-bold text-gray-500">
+                  <Star size={13} />
+                  {unit.progressPct}% Completion
+                </span>
+                <ChevronRight size={20} className="text-gray-400" />
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
 export function SparkScienceUnitPage() {
+  const unitNumber = useUnitNumber();
   const owner = useOutletContext<ScienceOwner>(),
-    { course, error, retry } = useCourse(owner);
+    { course, error, retry } = useCourse(owner, unitNumber);
   if (error) return <ErrorBox error={error} retry={retry} />;
   if (!course) return <Empty course={course} />;
   return (
@@ -199,7 +223,7 @@ export function SparkScienceUnitPage() {
         {course.activities.map((activity, index) => (
           <Link
             key={activity.key}
-            to={activityPath(activity.key)}
+            to={activityPath(activity.key, unitNumber)}
             className="rounded-[16px] border border-[#4F8DFB] bg-white p-5 min-h-[220px] flex flex-col justify-between hover:shadow-md"
           >
             <div className="flex justify-between">
@@ -235,23 +259,27 @@ export function SparkScienceUnitPage() {
 export function SparkScienceActivityPage() {
   const owner = useOutletContext<ScienceOwner>(),
     { activityKey = "" } = useParams();
+  const unitNumber = useUnitNumber();
   return (
     <Activity
-      key={`${owner.sessionKey}:${activityKey}`}
+      key={`${owner.sessionKey}:${unitNumber}:${activityKey}`}
       owner={owner}
       activityKey={activityKey}
+      unitNumber={Number(unitNumber)}
     />
   );
 }
 function Activity({
   owner,
+  unitNumber,
   activityKey,
 }: {
   owner: ScienceOwner;
   activityKey: string;
+  unitNumber: number;
 }) {
   const navigate = useNavigate(),
-    { course, error, retry } = useCourse(owner);
+    { course, error, retry } = useCourse(owner, unitNumber);
   const activity = course?.activities.find((item) => item.key === activityKey);
   const [searchParams] = useSearchParams();
   const showLesson = searchParams.get("view") === "interactive";
@@ -271,7 +299,7 @@ function Activity({
           {leaf.activities?.map((child) => (
             <Link
               key={child.key}
-              to={activityPath(child.key)}
+              to={activityPath(child.key, unitNumber)}
               className="text-left flex flex-col justify-between border-2 border-[#4F8DFB] rounded-[16px] p-6 w-full max-w-[300px] min-h-[220px] bg-white hover:shadow-md"
             >
               <BookOpen className="text-[#4F8DFB] h-10 w-10" />
@@ -283,7 +311,7 @@ function Activity({
                     : child.kind === "quiz"
                       ? "Answer the lesson questions and receive feedback."
                       : child.kind === "phet"
-                        ? "Explore both supplied simulations."
+                        ? "Explore the supplied simulations."
                         : "Open the lesson Kahoot."}
                 </p>
               </div>
@@ -304,12 +332,15 @@ function Activity({
     a.activities?.some((c) => c.key === leaf.key),
   );
   const back = () =>
-    navigate(parent ? activityPath(parent.key) : SPARK_UNIT_PATH);
+    navigate(
+      parent ? activityPath(parent.key, unitNumber) : unitPath(unitNumber),
+    );
   if (leaf.kind === "quiz")
     return (
       <MotionQuiz
         key={leaf.key}
         owner={owner}
+        unitNumber={unitNumber}
         activityKey={leaf.key}
         onReturn={back}
       />
@@ -319,6 +350,7 @@ function Activity({
       <ExternalActivity
         key={leaf.key}
         owner={owner}
+        unitNumber={unitNumber}
         activity={leaf}
         onReturn={back}
       />
@@ -329,6 +361,7 @@ function Activity({
       activityKey={
         leaf.kind === "lesson" ? leaf.key + "-interactive" : leaf.key
       }
+      unitNumber={unitNumber}
       title={leaf.title}
       onReturn={back}
     />
@@ -337,11 +370,13 @@ function Activity({
 
 function ExternalActivity({
   owner,
+  unitNumber,
   activity,
   onReturn,
 }: {
   owner: ScienceOwner;
   activity: SparkActivity;
+  unitNumber: number;
   onReturn: () => void;
 }) {
   const [ready, setReady] = useState(false),
@@ -355,7 +390,7 @@ function ExternalActivity({
     setReady(false);
     setError("");
     void api
-      .open(owner, c.signal, activity.key)
+      .open(owner, c.signal, activity.key, unitNumber)
       .then(() => {
         if (!c.signal.aborted) setReady(true);
       })
@@ -364,13 +399,13 @@ function ExternalActivity({
           setError("Activity could not open. Retry to continue.");
       });
     return () => c.abort();
-  }, [owner, activity.key, retry]);
+  }, [owner, activity.key, unitNumber, retry]);
   const complete = async () => {
     if (!life.current || saving || !ready) return;
     setSaving(true);
     setError("");
     try {
-      await api.complete(owner, life.current.signal, activity.key);
+      await api.complete(owner, life.current.signal, activity.key, unitNumber);
       onReturn();
     } catch {
       setError("Completion could not save. Please retry.");
@@ -387,9 +422,9 @@ function ExternalActivity({
       <p>Open the activity in a new tab. Return here when you have finished.</p>
       {activity.kind === "phet" && (
         <p>
-          Explore both simulations. These older PhET simulations use a Java
-          compatibility runtime and may take longer to load. If a simulation
-          stays blank, try another desktop browser.
+          Explore each supplied simulation. Some links open a simulation
+          information page where you can choose a language and launch the
+          player.
         </p>
       )}
       <div className="grid gap-4 sm:grid-cols-2">
@@ -430,12 +465,14 @@ function ExternalActivity({
 
 function Viewer({
   owner,
+  unitNumber,
   activityKey,
   title,
   onReturn,
 }: {
   owner: ScienceOwner;
   activityKey: SparkActivityKey;
+  unitNumber: number;
   title: string;
   onReturn: () => void;
 }) {
@@ -458,7 +495,7 @@ function Viewer({
     setLoaded(false);
     setNavigationBlocked(false);
     void api
-      .viewer(owner, controller.signal, activityKey)
+      .viewer(owner, controller.signal, activityKey, unitNumber)
       .then((result) => {
         if (!controller.signal.aborted) {
           if (result.activityKey !== activityKey)
@@ -472,7 +509,7 @@ function Viewer({
           setError("The lesson could not load. Please retry.");
       });
     return () => controller.abort();
-  }, [owner, activityKey, attempt]);
+  }, [owner, activityKey, unitNumber, attempt]);
   useEffect(() => {
     const listener = (event: MessageEvent) => {
       const data = event.data;
@@ -517,7 +554,7 @@ function Viewer({
     setSaveError("");
     const signal = life.current.signal;
     try {
-      const result = await api.complete(owner, signal, activityKey);
+      const result = await api.complete(owner, signal, activityKey, unitNumber);
       if (!signal.aborted) {
         if (
           !result.course?.activities
@@ -534,7 +571,7 @@ function Viewer({
       busy.current = false;
       if (!signal.aborted) setSaving(false);
     }
-  }, [owner, activityKey, loaded, onReturn]);
+  }, [owner, activityKey, unitNumber, loaded, onReturn]);
   return (
     <section className="space-y-2">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
@@ -543,7 +580,7 @@ function Viewer({
       {navigationBlocked && (
         <p role="status" className="text-sm text-gray-600">
           Use the blue Next activity button to finish this activity and return
-          to Unit 2.
+          to Unit {unitNumber}.
         </p>
       )}
       {error ? (

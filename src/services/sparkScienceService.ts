@@ -25,6 +25,8 @@ export interface SparkCourse {
   description: string;
   grade: string;
   unitKey: string;
+  unitNumber?: number;
+  units?: SparkCourse[];
   unitTitle: string;
   progressPct: number;
   completedActivities: number;
@@ -93,9 +95,16 @@ export interface SparkQuestion {
     headers?: string[];
     rows?: string[][];
   }[];
-  fields?: { id: string; label: string; unit?: string }[];
+  fields?: {
+    id: string;
+    label: string;
+    unit?: string;
+    inputType?: string;
+    maxLength?: number;
+  }[];
 }
 export interface SparkQuizAttempt {
+  unitNumber?: number;
   id: string;
   quizKey: string;
   title: string;
@@ -111,19 +120,23 @@ export interface SparkQuizAttempt {
     { score: number; maxScore: number; feedback: string }
   > | null;
 }
+const scope = (unit: number) => {
+  if (unit !== 2 && unit !== 3) throw new Error("Unknown Science unit");
+  return unit === 3 ? "/units/3" : "";
+};
 export const sparkScienceService = {
-  open: (o: ScienceOwner, s: AbortSignal, k: string) =>
+  open: (o: ScienceOwner, s: AbortSignal, k: string, unit = 2) =>
     request<SparkActivity>(
       o,
       s,
-      `/activities/${encodeURIComponent(k)}/open`,
+      `${scope(unit)}/activities/${encodeURIComponent(k)}/open`,
       "POST",
     ),
-  startQuiz: (o: ScienceOwner, s: AbortSignal, k: string) =>
+  startQuiz: (o: ScienceOwner, s: AbortSignal, k: string, unit = 2) =>
     request<SparkQuizAttempt>(
       o,
       s,
-      `/activities/${encodeURIComponent(k)}/quiz`,
+      `${scope(unit)}/activities/${encodeURIComponent(k)}/quiz`,
       "POST",
     ),
   attempt: (o: ScienceOwner, s: AbortSignal, id: string) =>
@@ -184,9 +197,21 @@ export const sparkScienceService = {
   course: async (
     owner: ScienceOwner,
     signal: AbortSignal,
+    unit?: number,
   ): Promise<SparkCourseResult> => {
     try {
-      return await request(owner, signal, "/course");
+      const result = await request<SparkCourseResult>(
+        owner,
+        signal,
+        unit === 3 ? "/units/3/course" : "/course",
+      );
+      if (unit && result.course?.units)
+        return {
+          available: result.available,
+          course:
+            result.course.units.find((u) => u.unitNumber === unit) ?? null,
+        };
+      return result;
     } catch (error) {
       if (!sameOwner(owner, signal)) throw new axios.CanceledError();
       if (axios.isAxiosError(error) && error.response?.status === 404)
@@ -194,18 +219,28 @@ export const sparkScienceService = {
       throw error;
     }
   },
-  viewer: (owner: ScienceOwner, signal: AbortSignal, key: SparkActivityKey) =>
+  viewer: (
+    owner: ScienceOwner,
+    signal: AbortSignal,
+    key: SparkActivityKey,
+    unit = 2,
+  ) =>
     request<SparkViewer>(
       owner,
       signal,
-      `/activities/${encodeURIComponent(key)}/viewer`,
+      `${scope(unit)}/activities/${encodeURIComponent(key)}/viewer`,
       "POST",
     ),
-  complete: (owner: ScienceOwner, signal: AbortSignal, key: SparkActivityKey) =>
+  complete: (
+    owner: ScienceOwner,
+    signal: AbortSignal,
+    key: SparkActivityKey,
+    unit = 2,
+  ) =>
     request<SparkCourseResult>(
       owner,
       signal,
-      `/activities/${encodeURIComponent(key)}/complete`,
+      `${scope(unit)}/activities/${encodeURIComponent(key)}/complete`,
       "POST",
     ),
 };

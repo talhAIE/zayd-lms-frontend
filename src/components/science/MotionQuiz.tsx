@@ -60,10 +60,12 @@ function Figure({
 export function MotionQuiz({
   owner,
   activityKey,
+  unitNumber = 2,
   onReturn,
 }: {
   owner: ScienceOwner;
   activityKey: string;
+  unitNumber?: number;
   onReturn: () => void;
 }) {
   const [attempt, setAttempt] = useState<SparkQuizAttempt>(),
@@ -94,7 +96,7 @@ export function MotionQuiz({
     setAttempt(undefined);
     busy.current = false;
     void api
-      .startQuiz(owner, c.signal, activityKey)
+      .startQuiz(owner, c.signal, activityKey, unitNumber)
       .then((a) => {
         if (c.signal.aborted) return;
         adopt(a);
@@ -357,7 +359,8 @@ export function MotionQuiz({
           : q.fields?.every(
               (f) =>
                 draft[q.id]?.[f.id]?.trim() &&
-                Number.isFinite(Number(draft[q.id][f.id])),
+                (f.inputType === "text" ||
+                  Number.isFinite(Number(draft[q.id][f.id]))),
             ),
     );
   return (
@@ -561,9 +564,11 @@ export function MotionQuiz({
                   {f.label} {f.unit && `(${f.unit})`}
                   <input
                     type="text"
-                    inputMode="decimal"
+                    inputMode={f.inputType === "text" ? "text" : "decimal"}
                     className="ml-3 rounded border p-3"
-                    maxLength={32}
+                    maxLength={
+                      f.inputType === "text" ? (f.maxLength ?? 100) : 32
+                    }
                     value={draft[question.id]?.[f.id] ?? ""}
                     onChange={(e) =>
                       change(question, {
