@@ -68,7 +68,7 @@ export function TeacherLayout({ children, portal = "teacher" }: TeacherLayoutPro
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate(portal === "admin" ? "/admin/login" : "/login");
+      navigate("/login");
     } else if (portal === "admin" ? !isDirectoryAdmin(user?.role) : user?.role !== "teacher") {
       navigate("/");
     }
@@ -81,7 +81,7 @@ export function TeacherLayout({ children, portal = "teacher" }: TeacherLayoutPro
   const handleLogout = async () => {
     await dispatch(logout());
     toast.success("Logged out successfully");
-    navigate(portal === "admin" ? "/admin/login" : "/login");
+    navigate("/login");
   };
 
   const handleViewReport = () => {

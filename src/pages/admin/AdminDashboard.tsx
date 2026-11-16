@@ -78,7 +78,7 @@ function ChangedSession() {
   return (
     <p role="alert" className="p-8">
       Admin session changed.{" "}
-      <Link className="underline" to="/admin/login">
+      <Link className="underline" to="/login">
         Sign in again
       </Link>
       .
