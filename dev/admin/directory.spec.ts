@@ -283,20 +283,11 @@ test("NAFS admin sees NAFS-only metrics and separate simulator/quiz student resu
   await expect(page.getByText("4 / 5", { exact: true })).toHaveCount(2);
   await expect(page.getByText("Recorded course enrollments")).toHaveCount(0);
 });
-test("admin login uses only username", async ({ page }) => {
-  const f = await fixture(page, "zayd_super_admin", false);
-  await page.goto("/admin/login?username=super.admin.zayd");
-  await expect(page.getByLabel("Username", { exact: true })).toHaveValue(
-    "super.admin.zayd",
-  );
-  await expect(page.getByLabel("Password", { exact: true })).toHaveCount(0);
-  await page.getByRole("button", { name: "Sign in", exact: true }).click();
-  await expect(
-    page.getByRole("heading", { name: "Zayd Student Dashboard" }),
-  ).toBeVisible();
-  expect(f.loginBodies[0]).toEqual({
-    username: "super.admin.zayd",
-  });
+test("legacy admin sign-in redirects to the shared login page", async ({ page }) => {
+  await fixture(page, "zayd_super_admin", false);
+  await page.goto("/admin/login");
+  await expect(page).toHaveURL(/\/login$/);
+  await expect(page.getByRole("heading", { name: "Welcome Back!" })).toBeVisible();
 });
 test("normal login signs admins in directly using username", async ({
   page,
