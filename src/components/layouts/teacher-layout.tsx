@@ -12,6 +12,7 @@ import { logout } from "@/redux/slices/authSlice";
 import { toast } from "sonner";
 import StudentReportModal from "../ui/StudentReportModal";
 import { SidebarNavLink, type SidebarLabel } from "./SidebarNavLink";
+import { isDirectoryAdmin } from "@/utils/adminRoles";
 // import {
 //   DropdownMenu,
 //   DropdownMenuContent,
@@ -26,9 +27,10 @@ import { SidebarNavLink, type SidebarLabel } from "./SidebarNavLink";
 
 interface TeacherLayoutProps {
   children: ReactNode;
+  portal?: "teacher" | "admin";
 }
 
-export function TeacherLayout({ children }: TeacherLayoutProps) {
+export function TeacherLayout({ children, portal = "teacher" }: TeacherLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const location = useLocation();
@@ -66,11 +68,11 @@ export function TeacherLayout({ children }: TeacherLayoutProps) {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/login");
-    } else if (user?.role !== "teacher") {
+      navigate(portal === "admin" ? "/admin/login" : "/login");
+    } else if (portal === "admin" ? !isDirectoryAdmin(user?.role) : user?.role !== "teacher") {
       navigate("/");
     }
-  }, [isAuthenticated, user, navigate]);
+  }, [isAuthenticated, user, navigate, portal]);
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -79,7 +81,7 @@ export function TeacherLayout({ children }: TeacherLayoutProps) {
   const handleLogout = async () => {
     await dispatch(logout());
     toast.success("Logged out successfully");
-    navigate("/login");
+    navigate(portal === "admin" ? "/admin/login" : "/login");
   };
 
   const handleViewReport = () => {
@@ -91,7 +93,7 @@ export function TeacherLayout({ children }: TeacherLayoutProps) {
   };
 
   const sidebarItems: { path: string; label: SidebarLabel }[] = [
-    { path: "/teacher/dashboard", label: "Dashboard" },
+    { path: portal === "admin" ? "/admin/dashboard" : "/teacher/dashboard", label: "Dashboard" },
   ];
 
   return (
@@ -111,7 +113,7 @@ export function TeacherLayout({ children }: TeacherLayoutProps) {
         <div className="h-full flex flex-col p-6">
           <div className="flex items-center justify-between mb-8">
             <Link
-              to="/teacher/dashboard"
+              to={portal === "admin" ? "/admin/dashboard" : "/teacher/dashboard"}
               className="flex items-center justify-center flex-1"
             >
               <img
@@ -143,7 +145,7 @@ export function TeacherLayout({ children }: TeacherLayoutProps) {
       <nav className="hidden xl:flex xl:flex-col xl:w-64 xl:fixed xl:inset-y-0 my-6 rounded-3xl mr-2">
         <div className="p-6">
           <Link
-            to="/teacher/dashboard"
+            to={portal === "admin" ? "/admin/dashboard" : "/teacher/dashboard"}
             className="flex items-center justify-center gap-2 text-2xl font-bold text-black"
           >
             <img src={Logo} alt="Logo" className="w-[70px]" />

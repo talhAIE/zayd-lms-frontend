@@ -15,6 +15,7 @@ dist-ssr
 /docs/*
 !/docs/nafs/
 !/docs/step/
+!/docs/admin/
 
 # Editor directories and files
 .vscode/*

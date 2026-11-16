@@ -40,6 +40,9 @@ import Chat from "@/pages/student/ChatPage";
 
 // Teacher Pages
 import TeacherDashboard from "@/pages/teacher/dashboard";
+import AdminDashboard, { AdminStudentProfile } from "@/pages/admin/AdminDashboard";
+import AdminLogin from "@/pages/admin/AdminLogin";
+import { isDirectoryAdmin } from "@/utils/adminRoles";
 import StudentProfile from "@/pages/teacher/student-profile";
 
 // Auth Pages
@@ -58,13 +61,19 @@ const AppRoutes = () => {
     return (
       <Navigate
         to={
-          String(user?.role).toLowerCase() === "teacher"
+          isDirectoryAdmin(user?.role) ? "/admin/dashboard" : String(user?.role).toLowerCase() === "teacher"
             ? "/teacher/dashboard"
             : "/student/dashboard"
         }
         replace
       />
     );
+  };
+
+  const AdminRoute = ({ children }: { children: JSX.Element }) => {
+    if (!isAuthenticated) return <Navigate to="/admin/login" replace />;
+    if (!isDirectoryAdmin(user?.role)) return <Navigate to="/home" replace />;
+    return <TeacherLayout portal="admin">{children}</TeacherLayout>;
   };
 
   // Protected route component for students
@@ -85,6 +94,9 @@ const AppRoutes = () => {
       {/* Public Routes */}
       <Route path="/" element={<Main />} />
       <Route path="/home" element={<HomeRedirect />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+      <Route path="/admin/students/:studentId" element={<AdminRoute><AdminStudentProfile /></AdminRoute>} />
       <Route path="/chinese" element={<MainChinese />} />
       <Route path="/onboarding" element={<OnboardingPage />} />
       <Route path="/contact-us" element={<ContactUs />} />
