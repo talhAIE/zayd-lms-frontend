@@ -73,7 +73,8 @@ async function request<T>(
     url: `/spark-science${path}`,
     method,
     signal,
-    timeout: path.endsWith("/grade") ? 210000 : 30000,
+    timeout:
+      path.endsWith("/grade") || path.endsWith("/check") ? 210000 : 30000,
     ...(method !== "GET" ? { data: body } : {}),
     scienceSession: () => sameOwner(owner, signal),
   } as any);
@@ -115,16 +116,35 @@ export interface SparkQuizAttempt {
   score: number | null;
   maxScore: number;
   gradedItems: number;
-  feedback: Record<
-    string,
-    { score: number; maxScore: number; feedback: string }
-  > | null;
+  feedback: Record<string, SparkQuestionFeedback> | null;
+}
+export interface SparkQuestionFeedback {
+  score: number;
+  maxScore: number;
+  feedback: string;
+  outcome?: "correct" | "incorrect" | "partial";
+  correctAnswer?: string;
+  contentExplanation?: string;
 }
 const scope = (unit: number) => {
   if (unit !== 2 && unit !== 3) throw new Error("Unknown Science unit");
   return unit === 3 ? "/units/3" : "";
 };
 export const sparkScienceService = {
+  checkAnswer: (
+    o: ScienceOwner,
+    s: AbortSignal,
+    id: string,
+    questionId: string,
+    revision: number,
+  ) =>
+    request<SparkQuizAttempt>(
+      o,
+      s,
+      `/attempts/${encodeURIComponent(id)}/questions/${encodeURIComponent(questionId)}/check`,
+      "POST",
+      { revision },
+    ),
   open: (o: ScienceOwner, s: AbortSignal, k: string, unit = 2) =>
     request<SparkActivity>(
       o,

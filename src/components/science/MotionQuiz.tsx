@@ -4,6 +4,9 @@ import {
   type SparkQuizAttempt,
   type SparkQuestion,
 } from "@/services/sparkScienceService";
+import { Check, X } from "lucide-react";
+import { GradedAnswerSurface } from "@/components/learning/AnswerFeedback";
+import { ScienceQuizFeedback } from "./ScienceQuizFeedback";
 import type { ScienceOwner } from "@/services/scienceSparkService";
 
 function Figure({
@@ -74,6 +77,7 @@ export function MotionQuiz({
     [error, setError] = useState(""),
     [saving, setSaving] = useState(false),
     [grading, setGrading] = useState(false),
+    [checking, setChecking] = useState(false),
     [conflict, setConflict] = useState(false),
     [retry, setRetry] = useState(0),
     [uncertain, setUncertain] = useState(false);
@@ -133,7 +137,7 @@ export function MotionQuiz({
           setError("Quiz could not load. Retry to restore your saved attempt.");
       });
     return () => c.abort();
-  }, [owner, activityKey, retry, adopt]);
+  }, [owner, activityKey, unitNumber, retry, adopt]);
   const persist = useCallback(
     async function write(): Promise<boolean> {
       const a = server.current,
@@ -212,6 +216,12 @@ export function MotionQuiz({
     return () => window.removeEventListener("beforeunload", warn);
   }, []);
   const change = (question: SparkQuestion, value: Record<string, string>) => {
+    if (
+      checking ||
+      server.current?.feedback?.[question.id] ||
+      server.current?.state !== "in_progress"
+    )
+      return;
     const answers = { ...desired.current, [question.id]: value };
     desired.current = answers;
     setDraft(answers);
@@ -288,6 +298,7 @@ export function MotionQuiz({
       setUncertain(false);
       await resumeGrading();
     } catch {
+      if (life.current?.signal.aborted) return;
       try {
         const fresh = await api.attempt(
           owner,
@@ -310,6 +321,57 @@ export function MotionQuiz({
       }
     } finally {
       setSaving(false);
+    }
+  };
+  const checkAnswer = async () => {
+    if (checking || !server.current || !life.current) return;
+    const questionId = server.current.questions[index].id;
+    setChecking(true);
+    setError("");
+    try {
+      if (!(await persist())) throw new Error("Save not confirmed");
+      const current = server.current;
+      const result = await api.checkAnswer(
+        owner,
+        life.current.signal,
+        current.id,
+        questionId,
+        current.revision,
+      );
+      adopt(result);
+      desired.current = result.answers;
+      setDraft(result.answers);
+    } catch {
+      if (life.current?.signal.aborted) return;
+      try {
+        const fresh = await api.attempt(
+          owner,
+          life.current.signal,
+          server.current!.id,
+        );
+        adopt(fresh);
+        if (fresh.feedback?.[questionId]) {
+          desired.current = fresh.answers;
+          setDraft(fresh.answers);
+        } else if (
+          JSON.stringify(fresh.answers) !== JSON.stringify(desired.current)
+        ) {
+          blocked.current = true;
+          setConflict(true);
+          setError(
+            "Saved answers changed. Choose which answers to keep before checking.",
+          );
+        } else
+          setError(
+            "Your answer is saved. Checking could not finish yet. Please retry Check Answer.",
+          );
+      } catch {
+        setError(
+          "Checking could not be confirmed. Your saved answer is retained. Retry Check Answer to recover the result.",
+        );
+      }
+    } finally {
+      if (!life.current?.signal.aborted) setChecking(false);
     }
   };
   const resolve = async (keep: boolean) => {
@@ -350,6 +412,7 @@ export function MotionQuiz({
       </div>
     );
   const question = attempt.questions[index],
+    questionFeedback = attempt.feedback?.[question.id],
     dirty = JSON.stringify(draft) !== JSON.stringify(attempt.answers),
     complete = attempt.questions.every((q) =>
       q.componentType === "mcq"
@@ -363,15 +426,35 @@ export function MotionQuiz({
                   Number.isFinite(Number(draft[q.id][f.id]))),
             ),
     );
+  const currentAnswered =
+    question.componentType === "mcq"
+      ? !!draft[question.id]?.optionId
+      : question.componentType === "open_input"
+        ? !!draft[question.id]?.text?.trim()
+        : !!question.fields?.every(
+            (f) =>
+              draft[question.id]?.[f.id]?.trim() &&
+              (f.inputType === "text" ||
+                Number.isFinite(Number(draft[question.id][f.id]))),
+          );
+  const allChecked = attempt.questions.every((q) => !!attempt.feedback?.[q.id]);
+  const responseText = (q: SparkQuestion) => {
+    const a = attempt.answers[q.id] ?? {};
+    return q.componentType === "mcq"
+      ? (q.options.find((o) => o.id === a.optionId)?.text ?? "No answer")
+      : q.componentType === "open_input"
+        ? (a.text ?? "No answer")
+        : (q.fields ?? [])
+            .map((f) => f.label + ": " + (a[f.id] ?? ""))
+            .join("\n");
+  };
   return (
     <section className="mx-auto max-w-4xl space-y-5 rounded-2xl border bg-white p-4 md:p-8">
       <button className="underline" onClick={onReturn}>
         Back to activities
       </button>
       <h1 className="text-2xl font-bold">{attempt.title}</h1>
-      <p>
-        {attempt.questions.length} questions · {attempt.maxScore} marks
-      </p>
+      <p>{attempt.questions.length} questions · Practice with feedback</p>
       {error && (
         <div role="alert" className="rounded-xl bg-red-50 p-3">
           {error}{" "}
@@ -424,18 +507,19 @@ export function MotionQuiz({
       )}
       {attempt.state === "submitted" ? (
         <div role="status" className="space-y-4">
-          <h2 className="text-3xl font-bold">
-            Result: {attempt.score} / {attempt.maxScore}
-          </h2>
-          <p>Quiz completed. Your result is saved.</p>
+          <h2 className="text-3xl font-bold">Quiz completed</h2>
+          <p>
+            Your feedback is saved. Review the answers and explanations below.
+          </p>
           {attempt.questions.map((q) => (
-            <div key={q.id} className="border-t py-3">
-              <strong>
-                Question {q.sourceLabel}: {attempt.feedback?.[q.id]?.score} /{" "}
-                {q.points}
-              </strong>
-              <p>{attempt.feedback?.[q.id]?.feedback}</p>
-            </div>
+            <article key={q.id} className="space-y-3 border-t py-4">
+              <h3 className="font-bold">Question {q.sourceLabel}</h3>
+              <p className="whitespace-pre-wrap">{q.prompt}</p>
+              <ScienceQuizFeedback
+                feedback={attempt.feedback?.[q.id]}
+                yourAnswer={responseText(q)}
+              />
+            </article>
           ))}
           <button
             className="rounded-lg bg-blue-600 px-5 py-3 text-white"
@@ -475,6 +559,7 @@ export function MotionQuiz({
               <button
                 key={q.id}
                 aria-current={i === index ? "step" : undefined}
+                disabled={checking}
                 onClick={() => setIndex(i)}
                 className={`min-w-10 rounded border p-2 ${i === index ? "bg-blue-600 text-white" : draft[q.id] ? "bg-blue-50" : ""}`}
               >
@@ -482,10 +567,12 @@ export function MotionQuiz({
               </button>
             ))}
           </nav>
-          <fieldset disabled={uncertain} className="space-y-4">
+          <fieldset
+            disabled={uncertain || checking || !!questionFeedback}
+            className="space-y-4"
+          >
             <h2 className="text-lg font-semibold">
-              Question {question.sourceLabel} · {question.points} mark
-              {question.points === 1 ? "" : "s"}
+              Question {question.sourceLabel}
             </h2>
             {question.stimuli.map((s, i) =>
               s.type === "image" ? (
@@ -527,22 +614,50 @@ export function MotionQuiz({
             {question.componentType === "mcq" ? (
               <fieldset className="space-y-2">
                 <legend className="sr-only">Choose one answer</legend>
-                {question.options.map((o) => (
-                  <label
-                    key={o.id}
-                    className="flex cursor-pointer items-start gap-3 rounded-lg border p-4"
-                  >
-                    <input
-                      type="radio"
-                      name={question.id}
-                      checked={draft[question.id]?.optionId === o.id}
-                      onChange={() => change(question, { optionId: o.id })}
-                    />
-                    <span>
-                      {o.label}. {o.text}
-                    </span>
-                  </label>
-                ))}
+                {question.options.map((o) => {
+                  const selected = draft[question.id]?.optionId === o.id;
+                  const revealedCorrect =
+                    !!questionFeedback &&
+                    o.text === questionFeedback.correctAnswer;
+                  const optionResult = questionFeedback
+                    ? selected
+                      ? questionFeedback.score === questionFeedback.maxScore
+                      : revealedCorrect
+                        ? true
+                        : null
+                    : null;
+                  return (
+                    <GradedAnswerSurface
+                      key={o.id}
+                      data-science-option
+                      result={optionResult}
+                      feedbackKey={
+                        questionFeedback && selected
+                          ? attempt.id + ":" + question.id
+                          : null
+                      }
+                      className="rounded-lg border"
+                    >
+                      <label className="flex cursor-pointer items-start gap-3 p-4">
+                        <input
+                          type="radio"
+                          name={question.id}
+                          checked={selected}
+                          onChange={() => change(question, { optionId: o.id })}
+                        />
+                        <span className="flex-1">
+                          {o.label}. {o.text}
+                        </span>
+                        {optionResult === true && (
+                          <Check size={20} aria-hidden="true" />
+                        )}
+                        {optionResult === false && (
+                          <X size={20} aria-hidden="true" />
+                        )}
+                      </label>
+                    </GradedAnswerSurface>
+                  );
+                })}
               </fieldset>
             ) : question.componentType === "open_input" ? (
               <label className="block">
@@ -555,7 +670,7 @@ export function MotionQuiz({
                 />
                 <span className="text-sm text-gray-500">
                   Explain your reasoning. Zayd AI will evaluate your response
-                  after submission.
+                  when you check this answer.
                 </span>
               </label>
             ) : (
@@ -586,24 +701,53 @@ export function MotionQuiz({
               ))
             )}
           </fieldset>
+          <ScienceQuizFeedback
+            key={question.id}
+            feedback={questionFeedback}
+            yourAnswer={responseText(question)}
+          />
+          {questionFeedback && (
+            <p className="text-sm text-gray-600">
+              This answer is checked and saved. Continue to the next question.
+            </p>
+          )}
+          {!questionFeedback && (
+            <button
+              className="rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white disabled:opacity-40"
+              disabled={
+                !currentAnswered || checking || saving || uncertain || conflict
+              }
+              onClick={() => void checkAnswer()}
+            >
+              {checking ? "Checking answer…" : "Check Answer"}
+            </button>
+          )}
           <div className="flex flex-wrap justify-between gap-3">
             <button
               className="rounded border px-4 py-2"
-              disabled={!index}
+              disabled={!index || checking}
               onClick={() => setIndex((i) => i - 1)}
             >
               Previous
             </button>
             <button
               className="rounded border px-4 py-2"
-              disabled={index === attempt.questions.length - 1}
+              disabled={index === attempt.questions.length - 1 || checking}
               onClick={() => setIndex((i) => i + 1)}
             >
               Next question
             </button>
             <button
               className="rounded-lg bg-blue-600 px-5 py-3 text-white disabled:opacity-40"
-              disabled={!complete || dirty || saving || !!error || uncertain}
+              disabled={
+                !complete ||
+                !allChecked ||
+                dirty ||
+                saving ||
+                checking ||
+                !!error ||
+                uncertain
+              }
               onClick={() => void submit()}
             >
               Submit quiz

@@ -21,7 +21,9 @@ export async function fixture(page: Page, unitNumber = 2) {
     unitNumber === 3 ? "forces-quizzes-v1" : "motion-quizzes-v1";
   const attempts = new Map<string, any>(),
     complete = new Set<string>();
-  let failSave = false,
+  let incorrectCheck = false,
+    lostCheck = false,
+    failSave = false,
     lostSubmit = false;
   await page.addInitScript(() => {
     if (!localStorage.getItem("AiTutorUser")) {
@@ -164,6 +166,32 @@ export async function fixture(page: Page, unitNumber = 2) {
         });
       if (method === "GET") return ok(a);
       const body = request.postDataJSON();
+      const questionCheck = suffix.match(/^\/questions\/([^/]+)\/check$/);
+      if (questionCheck) {
+        const question = a.questions.find(
+          (q: any) => q.id === questionCheck[1],
+        );
+        const key = read(
+          `${quizPrefix}/private/${a.quizKey}.grading.json`,
+        ).grading.find((k: any) => k.questionId === question.id);
+        a.feedback ??= {};
+        a.feedback[question.id] ??= {
+          score: incorrectCheck ? 0 : question.points,
+          maxScore: question.points,
+          feedback: "Synthetic feedback.",
+          outcome: incorrectCheck ? "incorrect" : "correct",
+          correctAnswer: key.sourceReference,
+          contentExplanation: key.sourceExplanation,
+        };
+        incorrectCheck = false;
+        a.revision++;
+        a.gradedItems = Object.keys(a.feedback).length;
+        if (lostCheck) {
+          lostCheck = false;
+          return route.abort();
+        }
+        return ok(a);
+      }
       if (suffix === "/answers") {
         if (failSave) {
           failSave = false;
@@ -187,7 +215,7 @@ export async function fixture(page: Page, unitNumber = 2) {
         a.state = "submitted";
         a.score = a.maxScore;
         a.gradedItems = a.questions.length;
-        a.feedback = Object.fromEntries(
+        a.feedback ??= Object.fromEntries(
           a.questions.map((q: any) => [
             q.id,
             {
@@ -207,6 +235,12 @@ export async function fixture(page: Page, unitNumber = 2) {
     return ok({ available: false, courses: [], modes: [] });
   });
   return {
+    loseNextCheck: () => {
+      lostCheck = true;
+    },
+    incorrectNextCheck: () => {
+      incorrectCheck = true;
+    },
     attempts,
     complete,
     failNextSave: () => {
