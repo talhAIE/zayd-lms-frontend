@@ -405,7 +405,7 @@ test("slow NAFS discovery does not show a premature empty curriculum", async ({
   state.ordinary = false;
   state.delayCourses = 1200;
   await page.goto("/student/courses");
-  await expect(page.getByText("Loading NAFS courses…")).toBeVisible();
+  await expect(page.getByRole("status").filter({ hasText: "Loading courses..." })).toBeVisible();
   await expect(page.getByText("No curriculum courses available.")).toHaveCount(
     0,
   );
