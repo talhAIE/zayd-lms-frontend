@@ -142,7 +142,10 @@ test("audio retry, expiry and release on leaving routed attempt", async ({
   await expect(page.locator("audio")).toHaveJSProperty("readyState", 4);
   await page.locator("audio").evaluate((a) => ((window as any).savedAudio = a));
   await page
-    .getByRole("link", { name: "Back to activity", exact: true })
+    .getByRole("link", {
+      name: "Back to Synthetic listening activity",
+      exact: true,
+    })
     .click();
   expect(
     await page.evaluate(

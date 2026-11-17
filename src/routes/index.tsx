@@ -20,7 +20,8 @@ import { NafsAttemptPage, NafsOverviewPage } from "@/pages/student/nafs/NafsStud
 import { NafsCoursePage, NafsSimulatorTestsPage, NafsPracticeCollectionsPage, NafsPracticeOverviewPage } from '@/pages/student/nafs/NafsNavigation';
 import { NafsPracticeSessionPage } from '@/pages/student/nafs/NafsPracticeSession';
 import { StepSession } from '@/components/step/StepSession';
-import { StepAttemptPage, StepCoursePage, StepSectionPage, StepTopicPage } from '@/pages/student/step/StepStudent';
+import { StepCoursePage, StepSectionPage } from '@/pages/student/step/StepStudent';
+import { StepPracticeTopicPage as StepTopicPage, StepPracticeAttemptPage as StepAttemptPage } from '@/components/step/StepPractice';
 import { ScienceSession } from "@/components/science/ScienceSession";
 import { ScienceCoursePage, ScienceUnitPage, ScienceActivityPage } from "@/pages/student/science/ScienceJourney";
 import { SparkScienceCoursePage, SparkScienceUnitPage, SparkScienceActivityPage } from "@/pages/student/science/SparkScienceJourney";
