@@ -69,7 +69,7 @@ export default function LoginPage() {
   useEffect(() => {
     console.log("Auth status:", isAuthenticated, user);
     if (isAuthenticated && user) {
-      if (isDirectoryAdmin(user.role)) { navigate("/admin/dashboard"); return; }
+      if (isDirectoryAdmin(user.role)) { navigate("/admin/dashboard", { replace: true }); return; }
       // Check if user has phone number
       if (user.phoneNumber) {
         navigateUser(user);
@@ -84,7 +84,7 @@ export default function LoginPage() {
 
   const navigateUser = (user: any) => {
     if (isDirectoryAdmin(user.role)) {
-      navigate("/admin/dashboard");
+      navigate("/admin/dashboard", { replace: true });
     } else if (!user.role || user.role === "student") {
       navigate("/student/courses");
     } else if (user.role === "teacher") {
@@ -113,7 +113,7 @@ export default function LoginPage() {
       if (login.fulfilled.match(resultAction)) {
         // If user has phone number, will be redirected by useEffect
         // Otherwise, phone input will be shown
-        if (resultAction.payload.user.phoneNumber) {
+        if (isDirectoryAdmin(resultAction.payload.user.role) || resultAction.payload.user.phoneNumber) {
           toast.success("Login successful");
           navigateUser(resultAction.payload.user);
         }

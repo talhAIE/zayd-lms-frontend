@@ -91,7 +91,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/" element={<Main />} />
+      <Route path="/" element={isAuthenticated && isDirectoryAdmin(user?.role) ? <Navigate to="/admin/dashboard" replace /> : <Main />} />
       <Route path="/home" element={<HomeRedirect />} />
       <Route path="/admin/login" element={<Navigate to="/login" replace />} />
       <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />

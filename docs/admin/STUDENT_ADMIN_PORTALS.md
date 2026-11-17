@@ -15,3 +15,8 @@ Production account usernames are in the backend checkout's ignored `tmp/admin-pr
 Local verification: `node node_modules/@playwright/test/cli.js test --config dev/admin/playwright.config.ts`. These fixtures are entirely synthetic and never call production APIs. Desktop/mobile checks cover search, school/grade filtering, locked school scope, separate program results, username-only sign-in and legacy admin-login redirection, role denial, pagination, retries and cross-account response cancellation. TypeScript and the production frontend build pass.
 
 The shared-login correction was not tested, as requested by the owner.
+
+
+The NAFS directory now displays Simulator earned/possible marks and combined percentage per student, plus a subject filter (English, Mathematics, Science). Summary cards cover all matching students across every page: completed tests, students with results, combined marks and the mean of completed test percentages. Students with no completed tests show an explicit empty score. Practice scores are not mixed with Simulator scores. Changing a subject resets pagination and Clear filters restores all subjects.
+
+Admin sign-in navigates directly after a successful username login, including accounts without phone numbers. Authenticated admins visiting the landing page are redirected to their dashboard. Student/teacher layouts send incompatible roles through `/home` for role-based routing. Browser coverage includes these redirects and subject-filtered summary totals across pages.

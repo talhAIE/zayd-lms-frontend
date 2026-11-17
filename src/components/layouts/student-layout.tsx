@@ -119,7 +119,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
     if (!isAuthenticated) {
       navigate("/login");
     } else if (user?.role !== "student") {
-      navigate("/");
+      navigate("/home", { replace: true });
     }
   }, [isAuthenticated, user, navigate]);
 
