@@ -17,6 +17,8 @@ import {
   type SparkActivity,
 } from "@/services/sparkScienceService";
 import { MotionQuiz } from "@/components/science/MotionQuiz";
+import { ScienceEmbedPlayer } from "@/components/science/ScienceEmbedPlayer";
+import { scienceEmbedUrl } from "@/components/science/scienceEmbed";
 
 const unitPath = (unit: number) =>
   `/student/science/spark-science/unit-${unit}`;
@@ -383,6 +385,21 @@ function ExternalActivity({
     [error, setError] = useState(""),
     [saving, setSaving] = useState(false),
     [retry, setRetry] = useState(0);
+  const [selected, setSelected] = useState(0);
+  let players: { key: string; title: string; src: string }[] = [];
+  let playerError = "";
+  try {
+    players = (activity.targets ?? []).map((target) => ({
+      ...target,
+      src: scienceEmbedUrl(activity.kind as "kahoot" | "phet", target.url),
+    }));
+    if (!players.length)
+      playerError = "This activity has no configured player.";
+  } catch {
+    playerError =
+      "This activity's player could not be configured. Please contact your teacher.";
+  }
+  const player = players[selected] ?? players[0];
   const life = useRef<AbortController>();
   useEffect(() => {
     const c = new AbortController();
@@ -414,32 +431,53 @@ function ExternalActivity({
     }
   };
   return (
-    <section className="mx-auto max-w-3xl space-y-5 rounded-2xl border bg-white p-6">
+    <section className="mx-auto max-w-6xl space-y-5 rounded-2xl border bg-white p-4 md:p-6">
       <button className="underline" onClick={onReturn}>
         Back to activities
       </button>
       <h1 className="text-2xl font-bold">{activity.title}</h1>
-      <p>Open the activity in a new tab. Return here when you have finished.</p>
-      {activity.kind === "phet" && (
-        <p>
-          Explore each supplied simulation. Some links open a simulation
-          information page where you can choose a language and launch the
-          player.
+      <p>
+        Use the activity below, then select Complete and return when you have
+        finished.
+      </p>
+      {activity.kind === "kahoot" && (
+        <p className="text-sm text-slate-600">
+          Kahoot preview. If playable practice is unavailable here, your teacher
+          needs to provide an embedded assignment.
         </p>
       )}
-      <div className="grid gap-4 sm:grid-cols-2">
-        {activity.targets?.map((t) => (
-          <a
-            key={t.key}
-            className={`rounded-xl border p-5 font-semibold text-blue-700 ${!ready ? "pointer-events-none opacity-40" : ""}`}
-            href={t.url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Play {t.title} ↗
-          </a>
-        ))}
-      </div>
+      {players.length > 1 && (
+        <div
+          role="group"
+          aria-label="Choose simulation"
+          className="flex flex-wrap gap-3"
+        >
+          {players.map((target, index) => (
+            <button
+              key={target.key}
+              type="button"
+              disabled={!ready}
+              aria-pressed={selected === index}
+              onClick={() => setSelected(index)}
+              className={`rounded-lg border px-4 py-3 text-left font-semibold disabled:opacity-40 ${selected === index ? "border-blue-600 bg-blue-50 text-blue-800" : "text-slate-700"}`}
+            >
+              {target.title}
+            </button>
+          ))}
+        </div>
+      )}
+      {playerError && (
+        <p role="alert" className="text-red-700">
+          {playerError}
+        </p>
+      )}
+      {ready && player && !playerError && (
+        <ScienceEmbedPlayer
+          key={player.key}
+          src={player.src}
+          title={player.title}
+        />
+      )}
       {error && (
         <p role="alert">
           {error}{" "}
@@ -449,12 +487,12 @@ function ExternalActivity({
         </p>
       )}
       <p className="text-sm text-gray-500">
-        Opening or closing a tab does not mark this activity complete. External
+        Playing the activity does not automatically mark it complete. External
         scores are not imported.
       </p>
       <button
         className="rounded-lg bg-blue-600 px-5 py-3 text-white disabled:opacity-40"
-        disabled={!ready || saving}
+        disabled={!ready || saving || !!playerError}
         onClick={() => void complete()}
       >
         {saving ? "Saving…" : "Complete and return"}

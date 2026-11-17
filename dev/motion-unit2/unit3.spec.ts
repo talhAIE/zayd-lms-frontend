@@ -21,12 +21,12 @@ test("Unit 3 lesson cards, exact PhET destinations and lesson navigation", async
     );
   }
   await page.goto(`${unit}/activities/lesson-1-phet`);
-  await expect(page.getByRole("link", { name: /Play / })).toHaveCount(3);
+  await expect(page.getByRole("group", { name: "Choose simulation" }).getByRole("button")).toHaveCount(3);
   await expect(
-    page.getByRole("link", { name: /Play Friction/ }),
+    page.locator("iframe"),
   ).toHaveAttribute(
-    "href",
-    "https://phet.colorado.edu/en/simulations/friction#translations-header",
+    "src",
+    "https://phet.colorado.edu/sims/html/friction/latest/friction_en.html",
   );
   await page
     .getByRole("button", { name: "Complete and return", exact: true })
