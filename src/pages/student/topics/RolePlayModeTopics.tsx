@@ -2,7 +2,7 @@ import { useAvatarWorkspace } from '@/components/avatar-reading/useAvatarWorkspa
 import { AvatarSpeechHighlight } from '@/components/avatar-reading/AvatarSpeechHighlight';
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { BarChart3, ChevronLeft, Mic, Clock, Lightbulb, MessageCircle, Send, Square, Trash2, Pause, Play, LoaderCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { BarChart3, ChevronLeft, Mic, Clock, Lightbulb, MessageCircle, Send, Square, Trash2, RotateCcw, Pause, Play, LoaderCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { useModeSession } from '@/hooks/useModeSession';
 import { useAudioRecorder } from '@/hooks/useAudioRecorder';
 import TopicCompletionModal from '@/components/ui/TopicCompletionModal';
@@ -84,6 +84,11 @@ export default function RolePlayModeTopics({avatar, demo}:{
     contentFilterWarningData,
     sendMessage,
     sendAudio,
+    hasPendingAudio,
+    retryAudio,
+    discardAudio,
+    isSocketConnected,
+    isReconcilingAudio,
     restartSession
   } = useModeSession({ 
     lessonModeId,
@@ -251,7 +256,7 @@ export default function RolePlayModeTopics({avatar, demo}:{
   };
 
   const handleSend = () => {
-    if (!inputValue.trim() || cooldown || isTyping || isAccountBlocked) return;
+    if (!inputValue.trim() || cooldown || isTyping || hasPendingAudio || isAccountBlocked) return;
     if(avatar || demo)stopRoleplayMedia();
     sendMessage(inputValue);
     setInputValue('');
@@ -259,15 +264,14 @@ export default function RolePlayModeTopics({avatar, demo}:{
   };
 
   const handleStopRecording = async () => {
-    if (cooldown || isTyping || isAccountBlocked) return;
+    if (cooldown || isTyping || hasPendingAudio || isAccountBlocked) return;
     const res = await stopRecording();
     if (demo && !demoAliveRef.current) {
       if (res?.audioUrl.startsWith('blob:')) URL.revokeObjectURL(res.audioUrl);
       return;
     }
     if (res) {
-      sendAudio(res.audioBase64, res.format, res.audioUrl);
-      triggerCooldown();
+      if (await sendAudio(res.audioBase64, res.format, res.audioUrl)) triggerCooldown();
     }
   };
 
@@ -572,6 +576,26 @@ export default function RolePlayModeTopics({avatar, demo}:{
                       {msg.content}
                     </ReactMarkdown>
                   </div>
+                  {msg.deliveryStatus === 'sending' && (
+                    <div className="mt-2 text-xs text-[#2563EB]">Sending recording...</div>
+                  )}
+                  {msg.deliveryStatus === 'failed' && (
+                    <div className="mt-2 space-y-1">
+                      <p className="text-xs text-[#475569]">
+                        {isSocketConnected
+                          ? isReconcilingAudio
+                            ? 'Checking whether your recording was received...'
+                            : 'Your recording is saved here and ready to resend.'
+                          : 'Your recording is saved here. Reconnect to send it again.'}
+                      </p>
+                      <button type="button" onClick={retryAudio} disabled={!isSocketConnected || isReconcilingAudio} className="flex items-center gap-1 text-xs font-semibold text-red-600 disabled:cursor-not-allowed disabled:opacity-50">
+                        <RotateCcw className="h-3 w-3" /> Send this recording again
+                      </button>
+                      <button type="button" onClick={() => void discardAudio(msg.id)} disabled={isReconcilingAudio || isTyping} className="flex items-center gap-1 text-xs font-semibold text-[#475569] disabled:cursor-not-allowed disabled:opacity-50">
+                        <Trash2 className="h-3 w-3" /> Discard and record again
+                      </button>
+                    </div>
+                  )}
                   {msg.role === 'user' && msg.audioUrl && (
                     <div className="mt-3 flex items-center justify-end gap-4 border-t border-[#BFDBFE] pt-2.5">
                       <button
@@ -708,7 +732,7 @@ export default function RolePlayModeTopics({avatar, demo}:{
                   type="text" 
                   placeholder={demoRecordingBusy ? 'Preparing microphone…' : cooldown ? "Please wait..." : "Write your message..."}
                   value={inputValue}
-                  disabled={cooldown || isTyping || isAccountBlocked || demoRecordingBusy}
+                  disabled={cooldown || isTyping || hasPendingAudio || isAccountBlocked || demoRecordingBusy}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyDown}
                   onFocus={() => setIsComposerFocused(true)}
@@ -719,7 +743,7 @@ export default function RolePlayModeTopics({avatar, demo}:{
                   <button 
                     onClick={handleSend}
                     aria-label={demo ? 'Send roleplay response' : undefined}
-                    disabled={cooldown || isTyping || isAccountBlocked || demoRecordingBusy}
+                    disabled={cooldown || isTyping || hasPendingAudio || isAccountBlocked || demoRecordingBusy}
                     className="flex shrink-0 justify-center items-center w-11 h-11 bg-[#5C9DFF] rounded-full text-white hover:bg-[#4A8BEB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Send className="w-5 h-5" />
@@ -728,7 +752,7 @@ export default function RolePlayModeTopics({avatar, demo}:{
                   <button 
                     onClick={() => {if(avatar || demo){stopRoleplayMedia();avatarVideo.videoRef.current?.pause();}startRecording();}}
                     aria-label={demo ? 'Record roleplay response' : undefined}
-                    disabled={cooldown || isTyping || isAccountBlocked || demoRecordingBusy}
+                    disabled={cooldown || isTyping || hasPendingAudio || isAccountBlocked || demoRecordingBusy}
                     className="flex shrink-0 justify-center items-center w-11 h-11 bg-white border border-[#5C9DFF] rounded-full text-[#5C9DFF] hover:bg-[#EFF6FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Mic className="w-5 h-5" />
