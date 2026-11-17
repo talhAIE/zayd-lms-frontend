@@ -2,7 +2,10 @@ import { test, expect, type Page } from "@playwright/test";
 import type { StepPracticeView } from "../../src/types/step-practice.contract";
 const uid = (n: number) =>
   `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
-async function fixture(page: Page, kind: "grammar" | "reading" = "grammar") {
+async function fixture(
+  page: Page,
+  kind: "grammar" | "reading" | "listening" = "grammar",
+) {
   const user = {
     id: uid(1),
     username: "step.synthetic",
@@ -140,6 +143,14 @@ async function fixture(page: Page, kind: "grammar" | "reading" = "grammar") {
             isCorrect: body.optionId === q.options[0].id,
             responseId: body.requestId,
             revision: view.attempt.revision,
+            ...(kind !== "listening"
+              ? {
+                  explanation:
+                    kind === "grammar"
+                      ? "Explanation (EN): This is the supplied noun explanation.\n\nالشرح (AR): هذا شرح المصدر.\n\nHint: Identify a noun."
+                      : "استراتيجية استخراج الإجابة\nUse the quoted passage evidence.",
+                }
+              : {}),
           },
         ];
         for (const group of view.groups) {
@@ -385,4 +396,55 @@ test("account changes remove the player and suppress a late checked response", a
     page.getByRole("button", { name: "Check Answer", exact: true }),
   ).toHaveCount(0);
   await expect(page.locator('[data-answer-result="true"]')).toHaveCount(0);
+});
+
+test("source explanation appears only after checking and remains static after refresh", async ({
+  page,
+}) => {
+  const f = await fixture(page);
+  await page.goto(f.topic);
+  await enter(page);
+  const explanation = page.getByRole("region", {
+    name: "Content explanation",
+    exact: true,
+  });
+  await expect(explanation).toHaveCount(0);
+  await check(page, "B. Choice B");
+  await expect(explanation).toContainText(
+    "This is the supplied noun explanation.",
+  );
+  await expect(explanation).toContainText("هذا شرح المصدر.");
+  await expect(explanation).toContainText("Hint: Identify a noun.");
+  await expect(explanation).not.toHaveClass(/answer-feedback|animate/);
+  await page.getByRole("radio", { name: "A. Choice A", exact: true }).check();
+  await expect(explanation).toHaveCount(0);
+  await page.getByRole("button", { name: "Check Answer", exact: true }).click();
+  await expect(explanation).toBeVisible();
+  await page.reload();
+  await expect(explanation).toContainText(
+    "This is the supplied noun explanation.",
+  );
+  await expect(page.locator('[data-answer-result="true"]')).not.toHaveClass(
+    /answer-feedback-pop/,
+  );
+});
+
+test("Reading shows its supplied strategy; Listening without authored explanation shows none", async ({
+  page,
+}) => {
+  const reading = await fixture(page, "reading");
+  await page.goto(reading.topic);
+  await enter(page);
+  await check(page, "A. Choice A");
+  await expect(
+    page.getByRole("region", { name: "Content explanation", exact: true }),
+  ).toContainText("Use the quoted passage evidence.");
+  const listening = await fixture(page, "listening");
+  await page.goto(listening.topic);
+  await enter(page);
+  await check(page, "A. Choice A");
+  await expect(page.getByText("Correct", { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("region", { name: "Content explanation", exact: true }),
+  ).toHaveCount(0);
 });
