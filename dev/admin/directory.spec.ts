@@ -52,7 +52,17 @@ async function fixture(
       totalLessonsDone: 2,
       totalLessonModesDone: 4,
     },
-    nafs: { simulatorCompleted: 1, practiceCompleted: 2 },
+    nafs: {
+      simulatorCompleted: 1,
+      practiceCompleted: 2,
+      simulatorScore: {
+        completedTests: 1,
+        earnedMarks: 4,
+        totalMarks: 5,
+        percentage: 80,
+        averagePercentage: 80,
+      },
+    },
   }));
   const state = {
     failed: false,
@@ -110,6 +120,8 @@ async function fixture(
         );
       if (status && status !== "all")
         rows = rows.filter((s) => s.status === status);
+      const subject = url.searchParams.get("subject");
+      if (subject === "science") rows = rows.filter((s) => s.grade !== "3");
       const page = Number(url.searchParams.get("page") || 1),
         limit = Number(url.searchParams.get("limit") || 20);
       return json({
@@ -119,12 +131,35 @@ async function fixture(
           activeStudents: rows.filter((s) => s.status === "active").length,
           inactiveStudents: rows.filter((s) => s.status !== "active").length,
           schools: new Set(rows.map((s) => s.schoolId)).size,
+          ...(program === "nafs"
+            ? {
+                simulator: {
+                  completedTests: rows.length,
+                  studentsWithResults: rows.length,
+                  earnedMarks: rows.length * (subject === "math" ? 3 : 4),
+                  totalMarks: rows.length * 5,
+                  percentage: subject === "math" ? 60 : 80,
+                  averagePercentage: subject === "math" ? 60 : 80,
+                },
+              }
+            : {}),
         },
         students: rows
           .slice((page - 1) * limit, page * limit)
           .map((s) =>
             program === "nafs"
-              ? { ...s, stats: undefined }
+              ? {
+                  ...s,
+                  stats: undefined,
+                  nafs: {
+                    ...s.nafs,
+                    simulatorScore: {
+                      ...s.nafs.simulatorScore,
+                      earnedMarks: subject === "math" ? 3 : 4,
+                      percentage: subject === "math" ? 60 : 80,
+                    },
+                  },
+                }
               : { ...s, nafs: undefined },
           ),
         pagination: {
@@ -283,11 +318,15 @@ test("NAFS admin sees NAFS-only metrics and separate simulator/quiz student resu
   await expect(page.getByText("4 / 5", { exact: true })).toHaveCount(2);
   await expect(page.getByText("Recorded course enrollments")).toHaveCount(0);
 });
-test("legacy admin sign-in redirects to the shared login page", async ({ page }) => {
+test("legacy admin sign-in redirects to the shared login page", async ({
+  page,
+}) => {
   await fixture(page, "zayd_super_admin", false);
   await page.goto("/admin/login");
   await expect(page).toHaveURL(/\/login$/);
-  await expect(page.getByRole("heading", { name: "Welcome Back!" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Welcome Back!" }),
+  ).toBeVisible();
 });
 test("normal login signs admins in directly using username", async ({
   page,
@@ -351,4 +390,42 @@ test("switching account removes student data and ignores a late response", async
   });
   await expect(page.getByRole("alert")).toContainText("Admin session changed");
   await expect(page.getByRole("table")).toHaveCount(0);
+});
+
+test("NAFS simulator scores and totals follow subject filters across all pages", async ({
+  page,
+}) => {
+  const f = await fixture(page, "nafs_school_admin");
+  await page.goto("/admin/dashboard");
+  const summary = page.getByRole("region", { name: "Simulator score summary" });
+  await expect(summary.getByText("52 / 65", { exact: true })).toBeVisible();
+  await expect(summary.getByText("80%", { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("columnheader", { name: "Simulator marks", exact: true }),
+  ).toBeVisible();
+  await page.getByLabel("Rows", { exact: true }).selectOption("10");
+  await page.getByRole("button", { name: "Next page", exact: true }).click();
+  await expect(summary.getByText("52 / 65", { exact: true })).toBeVisible();
+  await page.getByLabel("Subject", { exact: true }).selectOption("math");
+  await expect(page.getByText("13 students · Page 1 of 2")).toBeVisible();
+  await expect(summary.getByText("39 / 65", { exact: true })).toBeVisible();
+  await expect(summary.getByText("60%", { exact: true })).toBeVisible();
+  expect(f.requests.some((url) => url.includes("subject=math"))).toBeTruthy();
+  await page.getByLabel("Subject", { exact: true }).selectOption("science");
+  await expect(page.getByText("8 students · Page 1 of 1")).toBeVisible();
+  await page.getByRole("button", { name: "Clear filters" }).click();
+  await expect(page.getByLabel("Subject", { exact: true })).toHaveValue("");
+});
+
+test("authenticated admins entering the landing page or wrong layout reach their dashboard", async ({
+  page,
+}) => {
+  await fixture(page, "nafs_school_admin");
+  for (const url of ["/", "/student/courses", "/teacher/dashboard"]) {
+    await page.goto(url);
+    await expect(page).toHaveURL(/\/admin\/dashboard$/);
+    await expect(
+      page.getByRole("heading", { name: "NAFS Student Dashboard" }),
+    ).toBeVisible();
+  }
 });

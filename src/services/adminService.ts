@@ -18,6 +18,13 @@ export interface AdminStats {
   totalLessonsDone: number;
   totalLessonModesDone: number;
 }
+export interface SimulatorScore {
+  completedTests: number;
+  earnedMarks: number;
+  totalMarks: number;
+  percentage: number | null;
+  averagePercentage: number | null;
+}
 export interface AdminStudent {
   id: string;
   username: string;
@@ -28,7 +35,11 @@ export interface AdminStudent {
   curriculum: string;
   status: string;
   stats?: AdminStats;
-  nafs?: { simulatorCompleted: number; practiceCompleted: number };
+  nafs?: {
+    simulatorCompleted: number;
+    practiceCompleted: number;
+    simulatorScore?: SimulatorScore | null;
+  };
 }
 export interface AdminFilters {
   actor: AdminActor;
@@ -39,6 +50,7 @@ export interface AdminFilters {
 export interface AdminDashboardView {
   actor: AdminActor;
   summary: {
+    simulator?: SimulatorScore & { studentsWithResults: number };
     totalStudents: number;
     activeStudents: number;
     inactiveStudents: number;
@@ -56,6 +68,7 @@ export interface AdminDashboardView {
   };
 }
 export interface AdminQuery {
+  subject?: string;
   schoolId?: string;
   search?: string;
   grade?: string;

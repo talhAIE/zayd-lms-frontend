@@ -1,5 +1,7 @@
 # STEP frontend Phase 1 contract
 
+Current learner behavior is superseded by [STEP practice learner flow](practice-mode.md). The original assessment contract below is retained for history.
+
 This phase adds type definitions and implementation guidance only. No STEP routes, card, service, player, feature flag, or enrollment is active yet. The canonical contract is backend `docs/step/step-api.contract.ts`; `src/types/step.contract.ts` is an identical learner-safe copy. Never import backend `prisma/data/step`, authoring packages, answer keys, transcripts, or source snapshots into the frontend.
 
 ## Navigation and appearance
