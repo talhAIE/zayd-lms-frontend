@@ -6,6 +6,8 @@ export interface StepPracticeFeedback {
   isCorrect: boolean;
   revision: number;
   responseId: string;
+  /** Supplied source explanation, only for this checked choice. Absent if not authored. */
+  explanation?: string;
 }
 export interface StepPracticeGroup {
   id: string;

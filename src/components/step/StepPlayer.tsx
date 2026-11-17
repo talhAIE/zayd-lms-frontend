@@ -260,6 +260,25 @@ export function StepPlayer({
                       : "Incorrect — try again."}
                 </p>
               )}
+              {checked?.explanation && (
+                <section
+                  aria-label="Content explanation"
+                  className="rounded-xl border border-blue-100 bg-blue-50 p-4 space-y-2"
+                >
+                  <h3 className="font-semibold text-slate-900">
+                    Content explanation
+                  </h3>
+                  {checked.explanation.split(/\n\s*\n/).map((paragraph, i) => (
+                    <p
+                      key={i}
+                      dir="auto"
+                      className="whitespace-pre-wrap text-sm leading-7 text-slate-700 [overflow-wrap:anywhere]"
+                    >
+                      {paragraph}
+                    </p>
+                  ))}
+                </section>
+              )}
               {!completed && (
                 <Button
                   className={stepPrimary}

@@ -16,3 +16,6 @@ node node_modules/@playwright/test/cli.js test --config dev/step/playwright.conf
 ```
 
 These tests use synthetic API/media fixtures. They do not grade real students or call production. Before deployment, the backend requires the additive STEP receipt constraint/trigger migration described in its `docs/step/practice-mode.md`. No GitHub push, production migration, content import or hosted deployment is part of this local change.
+
+
+Checked feedback now shows the supplied Content explanation where present. Nouns provides English, Arabic and hints for all 60 questions; Ants provides a strategy for each of its four questions. Making Plans has no authored explanations and does not show an invented fallback. The source explanation is a backend-only projection of existing private review text, delivered only with the checked choice. The static panel supports mixed English/Arabic paragraphs, hides on selection changes and restores after refresh without animation. The animation remains confined to graded options. This enhancement is local only and needs compatible frontend/backend deployment, without another database migration or content upload.
