@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Mic, Square, Volume2, VolumeX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { GradedAnswerButton } from '@/components/learning/AnswerFeedback';
@@ -142,19 +142,23 @@ export function PrimaryActivity({ api, snapshot, blocked, send }: {
     if (isRecording && !preparing && recordTime >= 180) void finishRecording();
   }, [isRecording, preparing, recordTime]);
 
+  // Resume a sentence accepted before automatic progression was deployed.
+  const advancedRevision = useRef<number | null>(null);
+  useEffect(() => {
+    if (item.step !== 'learn' || blocked || !snapshot.allowedActions.includes('advance') || !feedback?.accepted || advancedRevision.current === snapshot.revision) return;
+    advancedRevision.current = snapshot.revision;
+    stop();
+    send({ action: 'advance' });
+  }, [item.step, blocked, snapshot.allowedActions, snapshot.revision, feedback?.accepted, stop, send]);
+
   let content: ReactNode;
   let readingTarget: ReactNode;
-  let nextLabel = 'Next';
   switch (item.step) {
     case 'learn': {
       const paragraph = item.paragraph;
       const showPassage = Boolean(paragraph) || item.sentenceCount > 1 || Object.keys(item.slide.vocabulary).length > 0;
       const entry = vocabularyWord ? item.vocabulary[vocabularyWord] : undefined;
       const listened = !can('confirm-listen');
-      if (paragraph) {
-        nextLabel = item.sentenceIndex + 1 < item.sentenceCount ? 'Next sentence'
-          : paragraph.index + 1 < paragraph.count ? 'Next paragraph' : 'Start Practice';
-      }
       content = (
         <>
           {showPassage && (
@@ -294,7 +298,7 @@ export function PrimaryActivity({ api, snapshot, blocked, send }: {
         {can('submit') && draftId && (
           <Button disabled={disabled} onClick={() => action('submit', draftId)}>Submit recording</Button>
         )}
-        {can('advance') && <Button disabled={disabled} onClick={() => action('advance')}>{nextLabel}</Button>}
+        {item.step !== 'learn' && can('advance') && <Button disabled={disabled} onClick={() => action('advance')}>Next</Button>}
       </div>
     </section>
   );
