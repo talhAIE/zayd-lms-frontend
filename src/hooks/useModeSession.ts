@@ -413,7 +413,7 @@ export function useModeSession({ lessonModeId, restartCompleted = false, onCompl
     newSocket.on('streaming_complete', (payload: { ai_response: string, feedback: string, ai_cefr_level: string, isCompleted: boolean, ttsAudioUrl?: string, hint?: string, readingProgress?: ReadingProgress, roleplayProgress?: RoleplayProgress, roleplayProgressEarned?: boolean, messageId?: string, readingVocabularyFeedback?: ReadingVocabularyFeedback, readingSpeechText?: string | null, readingFeedbackTarget?: ReadingFeedbackTarget }) => {
       modeRequestInFlightRef.current = false;
       setIsTyping(false);
-      const completedAudio = modeKeyRef.current === 'reading-mode' ? pendingAudioRef.current : null;
+      const completedAudio = ['reading-mode', 'roleplay-mode'].includes(modeKeyRef.current ?? '') ? pendingAudioRef.current : null;
       if (completedAudio) {
         if (pendingAudioTimeoutRef.current) clearTimeout(pendingAudioTimeoutRef.current);
         pendingAudioTimeoutRef.current = null;
@@ -500,7 +500,7 @@ export function useModeSession({ lessonModeId, restartCompleted = false, onCompl
 
     newSocket.on('speech_transcribed', (payload: { textMessage: string, assessments: any, audioUrl?: string, clientAttemptId?: string }) => {
       const pendingAudioMessageId = payload.clientAttemptId || pendingAudioMessageIdRef.current;
-      if (modeKeyRef.current !== 'reading-mode' && pendingAudioMessageId && pendingAudioMessageId === pendingAudioMessageIdRef.current) {
+      if (!['reading-mode', 'roleplay-mode'].includes(modeKeyRef.current ?? '') && pendingAudioMessageId && pendingAudioMessageId === pendingAudioMessageIdRef.current) {
         if (pendingAudioTimeoutRef.current) clearTimeout(pendingAudioTimeoutRef.current);
         pendingAudioTimeoutRef.current = null;
         pendingAudioMessageIdRef.current = null;
@@ -517,8 +517,8 @@ export function useModeSession({ lessonModeId, restartCompleted = false, onCompl
                   content: payload.textMessage,
                   assessments: payload.assessments,
                   audioUrl: payload.audioUrl || message.audioUrl,
-                  // The server has received and transcribed this recording.
-                  deliveryStatus: undefined,
+                  // Keep recovery available until the assistant response is saved.
+                  deliveryStatus: pendingAudioRef.current?.id === pendingAudioMessageId ? message.deliveryStatus : undefined,
                 }
               : message,
           );
@@ -666,13 +666,14 @@ export function useModeSession({ lessonModeId, restartCompleted = false, onCompl
 
   const dispatchAudio = useCallback((id: string, base64: string, format: string, sessionId: string) => {
     if (!socket) return;
-    if (modeKeyRef.current !== 'reading-mode') {
+    if (modeKeyRef.current !== 'reading-mode' && (modeKeyRef.current !== 'roleplay-mode' || ephemeral)) {
       socket.emit('audio', { modeSessionId: sessionId, audioBuffer: base64, format, clientAttemptId: id });
       return;
     }
     const controller = new AbortController();
     readingUploadRef.current = controller;
-    void (avatarTransport?.upload ?? uploadReadingAudio)({ sessionId, attemptId: id, base64, format, signal: controller.signal }).then(events => {
+    const upload = avatarTransport?.upload ?? ((params: Parameters<typeof uploadReadingAudio>[0]) => uploadReadingAudio({ ...params, audioRoute: modeKeyRef.current === 'roleplay-mode' ? 'roleplay-audio' : 'reading-audio' }));
+    void upload({ sessionId, attemptId: id, base64, format, signal: controller.signal }).then(events => {
       if (controller.signal.aborted || modeSessionIdRef.current !== sessionId || pendingAudioRef.current?.id !== id) return;
       // Reuse the same state handlers as socket audio, without sending the file
       // through a size-limited socket or depending on server-instance affinity.
@@ -688,14 +689,14 @@ export function useModeSession({ lessonModeId, restartCompleted = false, onCompl
     }).finally(() => {
       if (readingUploadRef.current === controller) readingUploadRef.current = null;
     });
-  }, [socket, avatarTransport]);
+  }, [socket, avatarTransport, ephemeral]);
 
   const sendAudio = useCallback(async (base64Audio: string, format: string = 'wav', localAudioUrl?: string): Promise<boolean> => {
     if (pendingAudioRef.current) {
       toast.error('Please finish or retry the previous recording first.');
       return false;
     }
-    if (!localAudioUrl && modeKeyRef.current === 'reading-mode') localAudioUrl = createPendingAudioUrl(base64Audio, format);
+    if (!localAudioUrl && ['reading-mode', 'roleplay-mode'].includes(modeKeyRef.current ?? '')) localAudioUrl = createPendingAudioUrl(base64Audio, format);
     if (ephemeral && localAudioUrl?.startsWith('blob:')) localAudioUrls.current.add(localAudioUrl);
     const id = crypto.randomUUID();
     if (localAudioUrl && modeSessionIdRef.current) {

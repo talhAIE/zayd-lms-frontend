@@ -29,7 +29,7 @@ export function createAvatarReadingTransport(userId: string, mode: AvatarMode = 
   const uploadOwner = identity();
   return {
     storagePrefix: `3d-avatar:${userId}:${mode === 'reading' ? '' : `${mode}:`}`,
-    upload: params => uploadReadingAudio({ ...params, apiPrefix: '/3d-avatar/reading', isCurrent: () => identity() === uploadOwner }),
+    upload: params => uploadReadingAudio({ ...params, apiPrefix: `/3d-avatar/${mode}`, audioRoute: mode === 'roleplay' ? 'audio' : 'reading-audio', isCurrent: () => identity() === uploadOwner }),
     connect: () => {
       const handlers = new Map<string, Listener[]>();
       const controller = new AbortController();

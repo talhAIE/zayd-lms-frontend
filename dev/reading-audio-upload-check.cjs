@@ -21,6 +21,9 @@ vm.runInNewContext(compile(fs.readFileSync(path.join(root, 'src/utils/readingAud
   assert.deepEqual(Buffer.from(await file.arrayBuffer()), bytes);
   assert.equal(calls[0][1].get('clientAttemptId'), 'same-attempt');
   assert.equal(calls[0][2].headers['Content-Type'], undefined);
+  await uploadReadingAudio({ ...params, audioRoute: 'roleplay-audio' });
+  assert.equal(calls.at(-1)[0], '/mode-sessions/session/roleplay-audio');
+  assert.deepEqual(Buffer.from(await calls.at(-1)[1].get('audio').arrayBuffer()), bytes);
   fail = true;
   await assert.rejects(uploadReadingAudio(params), /offline/);
   fail = false;
