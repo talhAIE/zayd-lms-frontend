@@ -27,11 +27,10 @@ test("unit hierarchy, conditional lesson cards, both PhET links and HTML complet
   ).toHaveCount(4);
   await page.getByRole("link", { name: /PhET Simulations/ }).click();
   await expect(
-    page.getByRole("link", { name: /Play Moving Man/ }),
-  ).toHaveAttribute("href", /simulation=moving-man/);
-  await expect(
-    page.getByRole("link", { name: /Play Ladybug/ }),
-  ).toHaveAttribute("target", "_blank");
+    page.locator("iframe"),
+  ).toHaveAttribute("src", /simulation=moving-man/);
+  await page.getByRole("button", { name: "Ladybug Motion 2D", exact: true }).click();
+  await expect(page.locator("iframe")).toHaveAttribute("src", /simulation=ladybug-motion-2d/);
   await page
     .getByRole("button", { name: "Complete and return", exact: true })
     .click();
