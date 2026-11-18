@@ -17,6 +17,7 @@ const uploads = [], errors = [], revoked = [], emitted = [];
 let history = [], draft = null, fail = true, pending = false;
 const noop = () => {}, ref = current => ({ current });
 const sandbox = {
+  isSocketAuthRecovering: () => false, newSocket: {},
   console: { log: noop, warn: noop }, ephemeral: false, avatarTransport: undefined,
   useCallback: fn => fn, lessonModeId: 'mode', recordingStorageKey: 'mode',
   isAccountBlocked: false, localAudioUrls: ref(new Set()), readingUploadRef: ref(null),

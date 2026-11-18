@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback, useContext } from 'react';
 import { AvatarReadingContext } from '@/components/avatar-reading/AvatarReadingContext';
 import { io, Socket } from 'socket.io-client';
+import { attachSocketAuthRecovery, isSocketAuthRecovering } from '@/utils/socketAuthRecovery';
 import { toast } from 'sonner';
 import { ContentFilterWarningData } from '@/components/ui/ContentPolicyWarningModal';
 import { createPendingAudioUrl, loadPendingReadingAudio, removePendingReadingAudio, savePendingReadingAudio } from '@/utils/pendingReadingAudio';
@@ -221,6 +222,7 @@ export function useModeSession({ lessonModeId, restartCompleted = false, onCompl
       reconnectionDelayMax: 5000,
     });
 
+    const disposeAuthRecovery = avatarTransport ? () => {} : attachSocketAuthRecovery(newSocket);
     setSocket(newSocket);
 
     newSocket.on('connect', () => {
@@ -243,6 +245,7 @@ export function useModeSession({ lessonModeId, restartCompleted = false, onCompl
     });
 
     newSocket.on('connect_error', (err) => {
+      if (isSocketAuthRecovering(newSocket)) return;
       setSessionLoadError('Unable to connect to this activity. Please try again.');
       setIsSessionLoading(false);
       console.error('[Socket] Connect error:', err);
@@ -582,6 +585,7 @@ export function useModeSession({ lessonModeId, restartCompleted = false, onCompl
     });
 
     newSocket.on('error', (payload: { message: string, clientAttemptId?: string, code?: string }) => {
+      if (isSocketAuthRecovering(newSocket)) return;
       if (!modeSessionIdRef.current) {
         setSessionLoadError(payload.message || 'Unable to load this activity. Please try again.');
         setIsSessionLoading(false);
@@ -622,6 +626,7 @@ export function useModeSession({ lessonModeId, restartCompleted = false, onCompl
     });
 
     return () => {
+      disposeAuthRecovery();
       readingUploadRef.current?.abort();
       if (pendingAudioTimeoutRef.current) clearTimeout(pendingAudioTimeoutRef.current);
       pendingAudioTimeoutRef.current = null;
