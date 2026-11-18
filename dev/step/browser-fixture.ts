@@ -163,6 +163,58 @@ export async function mock(page: Page) {
         topics: [overview(kind)],
       });
     }
+    if (p.startsWith("/step/practice/topics/")) {
+      const kind = p.split("/").pop() as StepSectionKind;
+      const meta = overview(kind);
+      const source = attempt(kind);
+      const groups = [
+        {
+          id: "activity",
+          title: meta.title,
+          questionIds: source.questions.map((q) => q.id),
+          checkedCount: 0,
+          state: "not_started",
+          result: null,
+        },
+      ];
+      return json({
+        topicId: kind,
+        sectionId: kind,
+        title: meta.title,
+        state: meta.state,
+        attemptId: meta.attemptId,
+        groups,
+      });
+    }
+    if (p.startsWith("/step/practice/attempts/")) {
+      const kind = p.split("/").pop() as StepSectionKind;
+      if (state.submitted)
+        return json({
+          attemptId: "reading",
+          topicId: "reading",
+          state: "submitted",
+          earnedMarks: 3,
+          totalMarks: 4,
+          completedAt: "2026-11-10T00:00:00Z",
+        });
+      const a = get(kind);
+      if (a.state === "submitted") return json(a);
+      return json({
+        attempt: a,
+        groups: [
+          {
+            id: "activity",
+            title: a.title,
+            questionIds: a.questions.map((q) => q.id),
+            checkedCount: 0,
+            state: "in_progress",
+            result: null,
+          },
+        ],
+        feedback: [],
+        result: null,
+      });
+    }
     if (p.startsWith("/step/topics/")) {
       const kind = p.split("/")[3] as StepSectionKind;
       if (method === "POST") {

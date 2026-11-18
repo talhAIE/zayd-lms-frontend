@@ -70,7 +70,7 @@ export function TeacherLayout({ children, portal = "teacher" }: TeacherLayoutPro
     if (!isAuthenticated) {
       navigate("/login");
     } else if (portal === "admin" ? !isDirectoryAdmin(user?.role) : user?.role !== "teacher") {
-      navigate("/");
+      navigate("/home", { replace: true });
     }
   }, [isAuthenticated, user, navigate, portal]);
 

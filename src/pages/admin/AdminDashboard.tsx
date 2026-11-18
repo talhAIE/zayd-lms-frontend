@@ -94,7 +94,7 @@ function Metric({
   icon: Icon,
 }: {
   label: string;
-  value: number;
+  value: number | string;
   icon: typeof Users;
 }) {
   return (
@@ -125,6 +125,7 @@ function Directory({ owner }: { owner: AdminOwner }) {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [school, setSchool] = useState("");
+  const [subject, setSubject] = useState("");
   const [grade, setGrade] = useState("");
   const [className, setClassName] = useState("");
   const [status, setStatus] = useState("all");
@@ -142,6 +143,7 @@ function Directory({ owner }: { owner: AdminOwner }) {
     () => ({
       search: debouncedSearch || undefined,
       schoolId: school || undefined,
+      subject: subject || undefined,
       grade: grade || undefined,
       class: className || undefined,
       status,
@@ -152,6 +154,7 @@ function Directory({ owner }: { owner: AdminOwner }) {
     }),
     [
       debouncedSearch,
+      subject,
       school,
       grade,
       className,
@@ -207,6 +210,7 @@ function Directory({ owner }: { owner: AdminOwner }) {
     setSearch("");
     setDebouncedSearch("");
     setSchool("");
+    setSubject("");
     setGrade("");
     setClassName("");
     setStatus("all");
@@ -265,6 +269,42 @@ function Directory({ owner }: { owner: AdminOwner }) {
           />
           <Metric label="Schools" value={view.summary.schools} icon={School} />
         </div>
+      )}
+      {nafs && view?.summary.simulator && (
+        <section className="mb-7" aria-label="Simulator score summary">
+          <h2 className="font-semibold text-lg mb-2">Simulator scores</h2>
+          <p className="text-sm text-slate-500 mb-4">
+            Completed tests only, across all students matching the filters.
+            Marks combine the selected subjects; unfinished tests are excluded.
+            Average score is the mean of completed test percentages.
+          </p>
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+            <Metric
+              label="Completed Simulator Tests"
+              value={view.summary.simulator.completedTests}
+              icon={UserCheck}
+            />
+            <Metric
+              label="Students with scores"
+              value={view.summary.simulator.studentsWithResults}
+              icon={Users}
+            />
+            <Metric
+              label="Total Simulator marks"
+              value={`${view.summary.simulator.earnedMarks} / ${view.summary.simulator.totalMarks}`}
+              icon={School}
+            />
+            <Metric
+              label="Average Simulator score"
+              value={
+                view.summary.simulator.averagePercentage === null
+                  ? "—"
+                  : `${view.summary.simulator.averagePercentage}%`
+              }
+              icon={UserCheck}
+            />
+          </div>
+        </section>
       )}
       <div className="border border-slate-100 rounded-2xl p-4 md:p-5">
         <h2 className="font-semibold text-lg mb-4">Student directory</h2>
@@ -409,6 +449,27 @@ function Directory({ owner }: { owner: AdminOwner }) {
               <option value="desc">Descending</option>
             </select>
           </div>
+          {nafs && (
+            <div>
+              <label htmlFor="admin-subject" className="block text-sm mb-2">
+                Subject
+              </label>
+              <select
+                id="admin-subject"
+                className={selectClass}
+                value={subject}
+                onChange={(e) => {
+                  setSubject(e.target.value);
+                  setPage(1);
+                }}
+              >
+                <option value="">All subjects</option>
+                <option value="english">English</option>
+                <option value="math">Mathematics</option>
+                <option value="science">Science</option>
+              </select>
+            </div>
+          )}
           <div className="flex items-end">
             <Button variant="outline" onClick={reset} className="w-full">
               Clear filters
@@ -436,6 +497,8 @@ function Directory({ owner }: { owner: AdminOwner }) {
                       {nafs ? (
                         <>
                           <TableHead>Simulator completed</TableHead>
+                          <TableHead>Simulator marks</TableHead>
+                          <TableHead>Simulator percentage</TableHead>
                           <TableHead>Quiz runs completed</TableHead>
                         </>
                       ) : (
@@ -476,6 +539,16 @@ function Directory({ owner }: { owner: AdminOwner }) {
                             <TableCell>
                               {student.nafs?.simulatorCompleted ?? 0}
                             </TableCell>
+                            <TableCell className="whitespace-nowrap">
+                              {student.nafs?.simulatorScore
+                                ? `${student.nafs.simulatorScore.earnedMarks} / ${student.nafs.simulatorScore.totalMarks}`
+                                : "No completed tests"}
+                            </TableCell>
+                            <TableCell>
+                              {student.nafs?.simulatorScore?.percentage == null
+                                ? "—"
+                                : `${student.nafs.simulatorScore.percentage}%`}
+                            </TableCell>
                             <TableCell>
                               {student.nafs?.practiceCompleted ?? 0}
                             </TableCell>
@@ -508,7 +581,7 @@ function Directory({ owner }: { owner: AdminOwner }) {
                     {!view.students.length && (
                       <TableRow>
                         <TableCell
-                          colSpan={nafs ? 9 : 10}
+                          colSpan={nafs ? 11 : 10}
                           className="text-center py-12 text-slate-500"
                         >
                           No students match these filters.

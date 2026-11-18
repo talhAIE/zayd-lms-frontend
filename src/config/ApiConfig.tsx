@@ -15,6 +15,9 @@ const apiClient = axios.create({
 // Science supplies a request-local account/lifetime guard. It shares this
 // refresh queue with ordinary courses, so simultaneous 401s rotate only once.
 const assertRequestOwner = (config: any) => {
+  if (config?.authIdentity && config.authIdentity !== sessionIdentity()) {
+    throw new axios.CanceledError('Session changed during request');
+  }
   if (config?.scienceSession && !config.scienceSession()) {
     throw new axios.CanceledError('Science session changed');
   }
@@ -26,28 +29,49 @@ const sessionIdentity = () => {
   } catch { return ''; }
 };
 
-// Flag to prevent multiple refresh attempts
-let isRefreshing = false;
-let failedQueue: Array<{
-  resolve: (value?: any) => void;
-  reject: (error?: any) => void;
-}> = [];
+let refreshing: { identity: string; refreshToken: string; promise: Promise<string> } | null = null;
 
-const processQueue = (error: any, token: string | null = null) => {
-  failedQueue.forEach(({ resolve, reject }) => {
-    if (error) {
-      reject(error);
-    } else {
-      resolve(token);
-    }
-  });
-
-  failedQueue = [];
-};
+// HTTP and authenticated sockets share token rotation. An old account's refresh
+// must never supply credentials to, overwrite, or log out a replacement account.
+export function refreshAccessToken(failedToken?: string | null): Promise<string> {
+  const identity = sessionIdentity();
+  const currentToken = localStorage.getItem('accessToken');
+  const refreshToken = localStorage.getItem('refreshToken');
+  if (failedToken && currentToken && currentToken !== failedToken) return Promise.resolve(currentToken);
+  if (refreshing?.identity === identity && refreshing.refreshToken === refreshToken) return refreshing.promise;
+  if (!refreshToken) {
+    clearAuthData();
+    window.location.href = '/login';
+    return Promise.reject(new Error('Authentication required'));
+  }
+  const operation = { identity, refreshToken, promise: null as unknown as Promise<string> };
+  operation.promise = axios.post(`${baseURL}/auth/refresh`, { refreshToken }, { timeout: 30000 })
+    .then(({ data }) => {
+      if (sessionIdentity() !== identity || localStorage.getItem('refreshToken') !== refreshToken) {
+        throw new axios.CanceledError('Session changed during refresh');
+      }
+      if (!data.accessToken || !data.refreshToken) throw new Error('Invalid refresh response');
+      localStorage.setItem('accessToken', data.accessToken);
+      localStorage.setItem('refreshToken', data.refreshToken);
+      return data.accessToken as string;
+    })
+    .catch(error => {
+      if (sessionIdentity() !== identity || localStorage.getItem('refreshToken') !== refreshToken) {
+        throw new axios.CanceledError('Session changed during refresh');
+      }
+      clearAuthData();
+      window.location.href = '/login';
+      throw error;
+    })
+    .finally(() => { if (refreshing === operation) refreshing = null; });
+  refreshing = operation;
+  return operation.promise;
+}
 
 // Add a request interceptor for authentication
 apiClient.interceptors.request.use(
   (config: any) => {
+    config.authIdentity ??= sessionIdentity();
     assertRequestOwner(config);
     const accessToken = localStorage.getItem("accessToken");
     if (accessToken) {
@@ -77,66 +101,13 @@ apiClient.interceptors.response.use(
       !originalRequest._retry
     ) {
       originalRequest._retry = true;
-      if (isRefreshing) {
-        // If already refreshing, queue this request
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        })
-          .then((token) => {
-            originalRequest.headers["Authorization"] = "Bearer " + token;
-            return apiClient(originalRequest);
-          })
-          .catch((err) => {
-            return Promise.reject(err);
-          });
-      }
-
-      isRefreshing = true;
-
-      const refreshTokenValue = localStorage.getItem("refreshToken");
-      const refreshingIdentity = sessionIdentity();
-
-      if (!refreshTokenValue) {
-        isRefreshing = false;
-        processQueue(error);
-        // No refresh token, redirect to login
-        clearAuthData();
-        window.location.href = "/login";
-        return Promise.reject(error);
-      }
-
-      try {
-        const response = await axios.post(`${baseURL}/auth/refresh`, {
-          refreshToken: refreshTokenValue,
-        }, { timeout: 30000 });
-
-        const { accessToken, refreshToken: newRefreshToken } = response.data;
-
-        if (sessionIdentity() !== refreshingIdentity || localStorage.getItem('refreshToken') !== refreshTokenValue) {
-          throw new axios.CanceledError('Session changed during refresh');
-        }
-
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", newRefreshToken);
-
-        processQueue(null, accessToken);
-
-        // Retry the original request with new token
-        originalRequest.headers["Authorization"] = "Bearer " + accessToken;
-        return apiClient(originalRequest);
-      } catch (refreshError) {
-        processQueue(refreshError, null);
-        // A late refresh must never clear the newly signed-in account.
-        if (sessionIdentity() !== refreshingIdentity || localStorage.getItem('refreshToken') !== refreshTokenValue) {
-          return Promise.reject(refreshError);
-        }
-        // Refresh failed, redirect to login
-        clearAuthData();
-        window.location.href = "/login";
-        return Promise.reject(refreshError);
-      } finally {
-        isRefreshing = false;
-      }
+      const identity = sessionIdentity();
+      const failedToken = String(originalRequest.headers?.Authorization || '').replace(/^Bearer /, '');
+      const accessToken = await refreshAccessToken(failedToken);
+      if (sessionIdentity() !== identity) throw new axios.CanceledError('Session changed during refresh');
+      assertRequestOwner(originalRequest);
+      originalRequest.headers["Authorization"] = "Bearer " + accessToken;
+      return apiClient(originalRequest);
     }
 
     // Handle 403 Forbidden errors

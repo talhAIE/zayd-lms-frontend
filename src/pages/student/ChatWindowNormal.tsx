@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { toast } from "sonner";
 import { io, Socket } from "socket.io-client";
+import { attachSocketAuthRecovery, isSocketAuthRecovering } from '@/utils/socketAuthRecovery';
 import { Howl, Howler } from "howler";
 import {
   Mic,
@@ -583,6 +584,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       },
       extraHeaders: { "ngrok-skip-browser-warning": "true" },
     });
+    const disposeAuthRecovery = attachSocketAuthRecovery(socket);
     socketRef.current = socket;
 
     socket.on("connect", () => {
@@ -668,6 +670,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     });
 
     socket.on("connect_error", (err) => {
+      if (isSocketAuthRecovering(socket)) return;
       logger.error("Socket connection error:", err);
 
       // Handle authentication errors
@@ -686,6 +689,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
     // Handle authentication errors from server
     socket.on("auth_error", (error) => {
+      if (isSocketAuthRecovering(socket)) return;
       logger.error("WebSocket authentication error:", error);
       toast.error("Authentication failed. Please log in again.");
       // Clear auth data and redirect to login
@@ -949,6 +953,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     });
 
     socket.on(ChatEvents.ERROR, (payload) => {
+      if (isSocketAuthRecovering(socket)) return;
       logger.receiving(ChatEvents.ERROR, payload);
       setIsWaitingForResponse(false);
       removeLoadingMessage();
@@ -1040,6 +1045,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
     return () => {
       logger.info("Component unmounting. Disconnecting socket.");
+      disposeAuthRecovery();
       if (activityTimerRef.current) clearTimeout(activityTimerRef.current);
       socket.disconnect();
       if (soundRef.current) {

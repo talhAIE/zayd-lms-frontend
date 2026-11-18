@@ -1,3 +1,5 @@
+import { GradedAnswerSurface } from "@/components/learning/AnswerFeedback";
+import type { StepPracticeFeedback } from "@/types/step-practice.contract";
 import { type ReactNode, useEffect, useRef } from "react";
 import { BookOpen, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,6 +19,14 @@ export interface StepPlayerProps {
   busy?: boolean;
   submitDisabled?: boolean;
   saveStatus?: ReactNode;
+  practice?: boolean;
+  feedback?: StepPracticeFeedback[];
+  feedbackKey?: string | null;
+  onCheck?: () => void;
+  checkDisabled?: boolean;
+  completed?: boolean;
+  backTo?: string;
+  backLabel?: string;
 }
 function Passage({ passage }: { passage: StepPassage }) {
   return (
@@ -54,6 +64,14 @@ export function StepPlayer({
   busy = false,
   submitDisabled = false,
   saveStatus,
+  practice = false,
+  feedback = [],
+  feedbackKey,
+  onCheck,
+  checkDisabled = false,
+  completed = false,
+  backTo,
+  backLabel,
 }: StepPlayerProps) {
   const heading = useRef<HTMLHeadingElement>(null);
   const index = Math.max(
@@ -76,14 +94,20 @@ export function StepPlayer({
     q.options.some((o) => o.id === selections[q.id]),
   ).length;
   const readOnly = !onSelect;
+  const checked = feedback.find(
+    (f) =>
+      f.questionId === question.id && f.optionId === selections[question.id],
+  );
   const go = (next: number) => {
     if (!busy)
       onNavigate(Math.max(0, Math.min(attempt.questions.length - 1, next)));
   };
   return (
     <StepFrame
-      backTo={`/student/step/topics/${encodeURIComponent(attempt.topicId)}`}
-      backLabel="Back to activity"
+      backTo={
+        backTo ?? `/student/step/topics/${encodeURIComponent(attempt.topicId)}`
+      }
+      backLabel={backLabel ?? "Back to activity"}
     >
       <div className="mb-5 mt-3 flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
@@ -98,7 +122,9 @@ export function StepPlayer({
           </h1>
         </div>
         <span className="rounded-full bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600">
-          One attempt · No time limit
+          {practice
+            ? "Practice · No time limit"
+            : "One attempt · No time limit"}
         </span>
       </div>
       <div className="mb-5">
@@ -184,33 +210,91 @@ export function StepPlayer({
             {question.options.map((option) => {
               const selected = selections[question.id] === option.id;
               return (
-                <label
+                <GradedAnswerSurface
                   key={option.id}
-                  className={`flex min-h-14 min-w-0 items-start gap-3 rounded-xl border p-4 transition-colors focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2 ${selected ? "border-[#4F8DFB] bg-[#EFF5FF]" : "border-slate-200 bg-white"} ${readOnly || busy ? "" : "cursor-pointer hover:border-blue-300"}`}
+                  result={selected && checked ? checked.isCorrect : undefined}
+                  feedbackKey={selected && checked ? feedbackKey : null}
+                  className={`min-w-0 rounded-xl border transition-colors focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2 ${selected ? "border-[#4F8DFB] bg-[#EFF5FF]" : "border-slate-200 bg-white"} ${readOnly || busy ? "" : "cursor-pointer hover:border-blue-300"}`}
                 >
-                  <input
-                    type="radio"
-                    name={`step-${question.id}`}
-                    value={option.id}
-                    aria-label={`${option.label}. ${option.text}`}
-                    checked={selected}
-                    disabled={readOnly || busy}
-                    onChange={() => onSelect?.(question.id, option.id)}
-                    className="mt-1 h-4 w-4 shrink-0 accent-[#4F8DFB]"
-                  />
-                  <span className="shrink-0 font-semibold text-slate-600">
-                    {option.label}.
-                  </span>
-                  <span
-                    dir="auto"
-                    className="min-w-0 whitespace-pre-wrap text-sm leading-6 [overflow-wrap:anywhere]"
-                  >
-                    {option.text}
-                  </span>
-                </label>
+                  <label className="flex min-h-14 w-full items-start gap-3 p-4 cursor-pointer">
+                    <input
+                      id={`step-option-${option.id}`}
+                      type="radio"
+                      name={`step-${question.id}`}
+                      value={option.id}
+                      aria-label={`${option.label}. ${option.text}`}
+                      checked={selected}
+                      disabled={readOnly || busy}
+                      onChange={() => onSelect?.(question.id, option.id)}
+                      className="mt-1 h-4 w-4 shrink-0 accent-[#4F8DFB]"
+                    />
+                    <span className="shrink-0 font-semibold text-slate-600">
+                      {option.label}.
+                    </span>
+                    <span
+                      dir="auto"
+                      className="min-w-0 whitespace-pre-wrap text-sm leading-6 [overflow-wrap:anywhere]"
+                    >
+                      {option.text}
+                    </span>
+                  </label>
+                </GradedAnswerSurface>
               );
             })}
           </fieldset>
+          {practice && (
+            <div className="mt-4 space-y-3">
+              {checked && (
+                <p
+                  role="status"
+                  className={
+                    checked.isCorrect
+                      ? "font-semibold text-emerald-700"
+                      : "font-semibold text-red-700"
+                  }
+                >
+                  {checked.isCorrect
+                    ? "Correct"
+                    : completed
+                      ? "Incorrect"
+                      : "Incorrect — try again."}
+                </p>
+              )}
+              {checked?.explanation && (
+                <section
+                  aria-label="Content explanation"
+                  className="rounded-xl border border-blue-100 bg-blue-50 p-4 space-y-2"
+                >
+                  <h3 className="font-semibold text-slate-900">
+                    Content explanation
+                  </h3>
+                  {checked.explanation.split(/\n\s*\n/).map((paragraph, i) => (
+                    <p
+                      key={i}
+                      dir="auto"
+                      className="whitespace-pre-wrap text-sm leading-7 text-slate-700 [overflow-wrap:anywhere]"
+                    >
+                      {paragraph}
+                    </p>
+                  ))}
+                </section>
+              )}
+              {!completed && (
+                <Button
+                  className={stepPrimary}
+                  disabled={
+                    busy ||
+                    readOnly ||
+                    !selections[question.id] ||
+                    checkDisabled
+                  }
+                  onClick={onCheck}
+                >
+                  Check Answer
+                </Button>
+              )}
+            </div>
+          )}
           <div className="mt-6 flex justify-between gap-3">
             <Button
               variant="outline"
@@ -258,7 +342,9 @@ export function StepPlayer({
         <p className="text-sm text-slate-500">
           {readOnly
             ? "Your saved answers are shown above."
-            : "Answer every question. Marks appear after submission."}
+            : practice
+              ? "Check every answer before completing. You can try again before completion."
+              : "Answer every question. Marks appear after submission."}
         </p>
         <Button
           className={`${stepPrimary} px-6`}
@@ -271,7 +357,7 @@ export function StepPlayer({
             answered !== attempt.questions.length
           }
         >
-          Submit activity
+          {practice ? "Complete subtopic" : "Submit activity"}
         </Button>
       </footer>
     </StepFrame>

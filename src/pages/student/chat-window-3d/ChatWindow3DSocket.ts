@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import type { Dispatch, MutableRefObject, SetStateAction } from "react";
 import { toast } from "sonner";
 import { io } from "socket.io-client";
+import { attachSocketAuthRecovery, isSocketAuthRecovering } from '@/utils/socketAuthRecovery';
 import {
   ChatEvents,
   findLastIndex,
@@ -186,6 +187,7 @@ export function useChatWindow3DSocket({
       },
       extraHeaders: { "ngrok-skip-browser-warning": "true" },
     });
+    const disposeAuthRecovery = attachSocketAuthRecovery(socket);
     socketRef.current = socket;
 
     socket.on("connect", () => {
@@ -348,6 +350,7 @@ export function useChatWindow3DSocket({
     });
 
     socket.on("connect_error", (err: any) => {
+      if (isSocketAuthRecovering(socket)) return;
       logger.error("Socket connection error:", err);
       clickLocked.current = false;
       setIsListeningLoading(false);
@@ -367,6 +370,7 @@ export function useChatWindow3DSocket({
     });
 
     socket.on("auth_error", (error: any) => {
+      if (isSocketAuthRecovering(socket)) return;
       logger.error("WebSocket authentication error:", error);
       clickLocked.current = false;
       setIsListeningLoading(false);
@@ -603,6 +607,7 @@ export function useChatWindow3DSocket({
     });
 
     socket.on(ChatEvents.ERROR, (payload: any) => {
+      if (isSocketAuthRecovering(socket)) return;
       logger.receiving(ChatEvents.ERROR, payload);
       setIsWaitingForResponse(false);
       removeLoadingMessage();
@@ -699,6 +704,7 @@ export function useChatWindow3DSocket({
 
     return () => {
       logger.info("Component unmounting. Disconnecting socket.");
+      disposeAuthRecovery();
       if (activityTimerRef.current) clearTimeout(activityTimerRef.current);
       if (listeningLoadingTimeoutRef.current) {
         clearTimeout(listeningLoadingTimeoutRef.current);
