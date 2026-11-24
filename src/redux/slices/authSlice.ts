@@ -17,6 +17,7 @@ export interface AuthResponse {
 
 export interface LoginCredentials {
   username: string;
+  password: string;
 }
 
 export interface PhoneNumberCredentials {
@@ -125,7 +126,8 @@ export const addPhoneNumber = createAsyncThunk(
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/add-phone`,
-        credentials
+        credentials,
+        { headers: { Authorization: `Bearer ${localStorage.getItem('accessToken') || ''}` } }
       );
       
       const data = response.data as Partial<AuthResponse> & { user: User };
