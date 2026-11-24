@@ -19,11 +19,16 @@ import { useEffect, useState } from "react";
 import { isDirectoryAdmin } from "@/utils/adminRoles";
 import charactersImg from "@/assets/images/characters.png";
 import zaydLogo from "@/assets/zayd-logo.png";
+import { Eye, EyeOff } from "lucide-react";
 // import { ArrowLeft } from 'lucide-react';
 
 // Username form schema
 const usernameFormSchema = z.object({
   username: z.string().min(1, { message: "Username is required" }),
+  password: z
+    .string()
+    .min(1, { message: "Password is required" })
+    .max(72, { message: "Password is too long" }),
 });
 
 // Phone number form schema
@@ -40,11 +45,12 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { error, isAuthenticated, user, isLoading } = useAppSelector(
-    (state) => state.auth
+    (state) => state.auth,
   );
 
   // State to track whether we're showing the phone number input
   const [showPhoneInput, setShowPhoneInput] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   // Store username for later use with phone number submission
   const [currentUsername, setCurrentUsername] = useState("");
   // Store whether we're currently submitting the phone number
@@ -55,6 +61,7 @@ export default function LoginPage() {
     resolver: zodResolver(usernameFormSchema),
     defaultValues: {
       username: "",
+      password: "",
     },
   });
 
@@ -67,9 +74,11 @@ export default function LoginPage() {
   });
 
   useEffect(() => {
-    console.log("Auth status:", isAuthenticated, user);
     if (isAuthenticated && user) {
-      if (isDirectoryAdmin(user.role)) { navigate("/admin/dashboard", { replace: true }); return; }
+      if (isDirectoryAdmin(user.role)) {
+        navigate("/admin/dashboard", { replace: true });
+        return;
+      }
       // Check if user has phone number
       if (user.phoneNumber) {
         navigateUser(user);
@@ -107,13 +116,19 @@ export default function LoginPage() {
       const resultAction = await dispatch(
         login({
           username: data.username,
-        })
+          password: data.password,
+        }),
       );
 
       if (login.fulfilled.match(resultAction)) {
+        setCurrentUsername(resultAction.payload.user.username);
+        usernameForm.resetField("password");
         // If user has phone number, will be redirected by useEffect
         // Otherwise, phone input will be shown
-        if (isDirectoryAdmin(resultAction.payload.user.role) || resultAction.payload.user.phoneNumber) {
+        if (
+          isDirectoryAdmin(resultAction.payload.user.role) ||
+          resultAction.payload.user.phoneNumber
+        ) {
           toast.success("Login successful");
           navigateUser(resultAction.payload.user);
         }
@@ -131,7 +146,7 @@ export default function LoginPage() {
         addPhoneNumber({
           username: currentUsername,
           phoneNumber: data.phoneNumber,
-        })
+        }),
       );
 
       if (addPhoneNumber.fulfilled.match(resultAction)) {
@@ -209,11 +224,51 @@ export default function LoginPage() {
                           </FormLabel>
                           <FormControl>
                             <Input
+                              autoComplete="username"
                               placeholder="Type your username"
                               className="h-14 rounded-2xl border border-[#dce4f3] focus-visible:ring-2 focus-visible:ring-[#3EA4F9]"
                               {...field}
                             />
                           </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={usernameForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-[#0C1B3A] font-semibold">
+                            Password
+                          </FormLabel>
+                          <div className="relative">
+                            <FormControl>
+                              <Input
+                                {...field}
+                                type={showPassword ? "text" : "password"}
+                                autoComplete="current-password"
+                                placeholder="Type your password"
+                                className="h-14 rounded-2xl border border-[#dce4f3] pr-14 focus-visible:ring-2 focus-visible:ring-[#3EA4F9]"
+                              />
+                            </FormControl>
+                            <button
+                              type="button"
+                              aria-label={
+                                showPassword ? "Hide password" : "Show password"
+                              }
+                              aria-pressed={showPassword}
+                              onClick={() => setShowPassword((v) => !v)}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 rounded p-2 text-slate-600 focus-visible:outline focus-visible:outline-2"
+                            >
+                              {showPassword ? (
+                                <EyeOff size={20} />
+                              ) : (
+                                <Eye size={20} />
+                              )}
+                            </button>
+                          </div>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -255,7 +310,7 @@ export default function LoginPage() {
                                 onChange={(e) => {
                                   const onlyNums = e.target.value.replace(
                                     /\D/g,
-                                    ""
+                                    "",
                                   );
                                   field.onChange(onlyNums);
                                 }}
