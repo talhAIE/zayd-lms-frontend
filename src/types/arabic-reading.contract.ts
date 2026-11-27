@@ -1,6 +1,12 @@
 /** Learner-safe Arabic Reading v1 contract. No authoring records or answer keys. */
 export const ARABIC_READING_API = '/api/v1/arabic-reading' as const;
 export const ARABIC_READING_ENTRY = '/student/arabic-reading' as const;
+/** Arabic pilot rejects decoded recordings over 30 seconds; transport cap remains 8 MiB / 180 seconds. */
+export const ARABIC_RECORDING_LIMITS = {maxBytes: 8 * 1024 * 1024, transportMaxSeconds: 180, maxAssessmentSeconds: 30} as const;
+/** POST /sessions/:sessionId/media with ArabicMediaRequest returns private audio/mpeg bytes.
+ * Fetch with bearer auth, then use a client-owned blob URL. No token/signed URL in routes.
+ */
+export const ARABIC_MEDIA_TRANSPORT = 'authenticated-post-mp3' as const;
 export type ArabicActivityId = 'ar-reading-01' | 'ar-reading-02' | 'ar-reading-03';
 export type ArabicRegion = 'ROW';
 export type ArabicVoice = 'ar-SA-HamedNeural' | 'ar-SA-ZariyahNeural';
@@ -67,7 +73,10 @@ export type ArabicSessionView = ArabicSessionBase & (
 export interface ArabicMutationRequest { requestId: string; expectedRevision: number }
 export interface ArabicStartRequest { requestId: string }
 export interface ArabicListenRequest extends ArabicMutationRequest { playbackEnded: true }
-/** Multipart: audio file + these fields; never put bearer tokens in URLs. */
+/** POST /sessions/:sessionId/audio. Multipart `audio` file + these fields; no token in URLs.
+ * requestId is the stable attempt ID: retain exact bytes/fields for unknown-outcome replay.
+ * Success consumes one validated attempt; silence/unclear/too-long/provider rejection consumes none.
+ */
 export interface ArabicAudioRequest extends ArabicMutationRequest { chunkId: string; format: 'webm' | 'wav' | 'mp3' | 'mp4' | 'ogg' }
 export interface ArabicCheckRequest extends ArabicMutationRequest { questionId: string; optionId: string }
 export type ArabicFinishRequest = ArabicMutationRequest;

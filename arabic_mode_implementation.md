@@ -2,7 +2,7 @@
 
 Prepared: 2026-11-27
 
-Status: Phases 0, 2 and 3 are complete locally. Phase 1 source preparation is complete; final answer-key and Arabic editorial/speech approval remain open. The isolated Phase 3 backend APIs are registered with the Arabic feature disabled by default. No frontend UI is mounted and no database operation has been applied. This plan authorizes local development and local verification only; the owner will deploy later.
+Status: Phases 0, 2, 3 and 4 are complete locally. Phase 1 source preparation is complete; final answer-key and Arabic editorial/speech approval remain open. The isolated backend session/speech/media APIs are registered with the Arabic feature and separate external speech/AI switches disabled by default. Real-speech calibration and voice acceptance remain unverified. No frontend UI is mounted and no database operation has been applied. This plan authorizes local development and local verification only; the owner will deploy later.
 
 ## 1. Agreed outcome
 
@@ -128,15 +128,17 @@ Phase 3 evidence: backend `docs/arabic-reading/PHASE3_API.md` and `PHASE3_VERIFI
 
 ### Phase 4 - Arabic speech, validation and narration
 
-- [ ] Implement explicit Arabic locale/voice/SSML handling without changing English defaults.
-- [ ] Implement Arabic normalization/alignment and protected number/word checks using reviewed fixtures.
-- [ ] Implement supported pronunciation assessment, availability flags and long-recording policy.
-- [ ] Add private Arabic narration caching and authenticated recording upload with limits and stable attempt IDs.
-- [ ] Implement Arabic deterministic feedback and constrained AI feedback with safe fallbacks.
-- [ ] Prepare opt-in real-speech calibration; run external Azure calls only when separately authorized. Document unverified real-speech quality.
-- [ ] Update evidence and make phase-local commit(s).
+- [x] Implement explicit Arabic locale/voice/SSML handling without changing English defaults.
+- [x] Implement Arabic normalization/alignment and protected number/word checks with provisional engineering fixtures. Teacher-reviewed fixtures, thresholds, case endings and pausal-reading acceptance remain explicit launch gates; no synthetic fixture is represented as academically approved.
+- [x] Implement supported pronunciation assessment, availability flags and long-recording policy.
+- [x] Add private Arabic narration caching and authenticated recording upload with limits and stable attempt IDs.
+- [x] Implement Arabic deterministic feedback and constrained AI feedback with safe fallbacks.
+- [x] Prepare opt-in real-speech calibration; run external Azure calls only when separately authorized. Document unverified real-speech quality.
+- [x] Update evidence and make phase-local commit(s), with IDs reported in the handoff.
 
 Exit: synthetic speech pipeline and verdict/retry tests pass; any real-speech/voice acceptance gate remains explicit until actually executed.
+
+Phase 4 evidence: backend `docs/arabic-reading/PHASE4_SPEECH.md`, `PHASE4_VERIFICATION.json` and offline-default `scripts/arabic-reading/calibrate-speech.ts`; frontend matching safe contract, speech handoff and verification. Arabic-only lazy Azure adapters use ar-SA, escaped SSML, candidate Arabic voices and no unsupported prosody/style. Independent full continuous transcription precedes word assessment; conservative alignment preserves distinct letters, meaningful words and numeric values. Uploaded recordings are capped at 8 MiB; decoded audio over 30 seconds is rejected without partial grading. All five allowed containers are tested with generated local audio. Recording results atomically save Arabic-only state/messages/receipts and support stable byte-bound attempt replay, two validated attempts per ordinary chunk, rejected-audio recovery and explicit unavailable/null assessment. Private authenticated MP3 narration uses a bounded isolated cache and rechecks ownership even on cache hits. Optional AI can select only a fixed Arabic phrase, never a verdict. Four hundred sixty local checks pass, including unchanged English reading/STEP/NAFS/Primary service regressions; both application type checks, source/schema seals, contract parity and symlink-aware backend emit pass. No actual Azure/AI call, teacher/voice acceptance, approved-key publication, SQL Server execution, UI mount, live DB/schema/grant/content/media upload, push or deployment occurred. No approved vocabulary mappings exist, so vocabulary/keyword practice remains disabled. Phase 5 is next.
 
 ### Phase 5 - Arabic frontend layouts and navigation
 
