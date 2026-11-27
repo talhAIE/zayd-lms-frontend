@@ -16,6 +16,7 @@ dist-ssr
 !/docs/nafs/
 !/docs/step/
 !/docs/admin/
+!/docs/arabic-reading/
 
 # Editor directories and files
 .vscode/*

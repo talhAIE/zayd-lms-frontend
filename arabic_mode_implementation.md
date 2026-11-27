@@ -2,7 +2,7 @@
 
 Prepared: 2026-11-27
 
-Status: Phase 0 complete upon the local planning commits. Implementation has not started. This plan authorizes local development and local verification only; the owner will deploy later.
+Status: Phase 0 complete. Phase 1 source preparation and local verification are complete; final answer-key and Arabic editorial/speech approval remain open. No application runtime implementation has started. This plan authorizes local development and local verification only; the owner will deploy later.
 
 ## 1. Agreed outcome
 
@@ -89,14 +89,16 @@ Exit: both new branches exist, contain the agreed plan and have no application c
 
 ### Phase 1 - Freeze source content and Arabic review package
 
-- [ ] Record source hash, physical page mapping and private extraction inventory.
-- [ ] Extract and visually verify all passages, 25 MCQs and 100 choices, including continuation pages.
-- [ ] Prepare source-to-display/speech mappings, proposed sentence boundaries and ambiguity report.
+- [x] Record source hash, physical page mapping and private extraction inventory.
+- [x] Extract and visually reconcile all passages, 25 MCQs and 100 choices, including continuation pages. Original PDF/page images preserve authoritative typography; final reconstructed Unicode diacritic review remains open.
+- [x] Prepare source-to-display/speech mappings, proposed sentence boundaries and ambiguity report.
 - [ ] Record whether keys are supplied or proposed; obtain explicit confirmation of the final answer key. Review vocabulary mappings only if that support is included.
-- [ ] Keep unapproved content draft-only; document unresolved academic gates honestly.
-- [ ] Update evidence and make phase-local commit(s).
+- [x] Keep unapproved content draft-only; document unresolved academic gates honestly.
+- [x] Update evidence and make phase-local commit(s), with IDs reported in the handoff.
 
 Exit: exact source package is reconciled; approval status is explicit. No unreviewed key is labeled authoritative. Academic approval gates publication even if synthetic engineering work continues.
+
+Phase 1 evidence: backend `content/arabic-reading/v1` and `docs/arabic-reading/PHASE1_STATUS.md`; frontend `docs/arabic-reading/PHASE1_STATUS.md`. Original PDF SHA-256: `cb15678252361fc2447a554cf894235ca0ce041dfe30556851297d3f03bb95d1`. Draft validation and twelve offline tests pass; publication preview intentionally refuses approval with exit 2. There are 14 display blocks, 26 proposed recording chunks and five proposed number expansions. The 24 candidate keys are inferred; Q6 remains unkeyed because none of its source choices matches the pillow location in the passage. The owner's response, "we have to it same like what provided in the content", is recorded as a source-preservation decision, not approval of missing/inferred keys. All original questions/options remain unchanged. Arabic editorial/diacritic/speech sign-off is pending. This phase is not labeled fully academically approved.
 
 ### Phase 2 - Contract, access and isolated storage design
 
@@ -191,7 +193,8 @@ Exit: deployment-ready local handoff is complete. Hosted release and client acce
 | Phase | Status | Evidence / commits |
 | --- | --- | --- |
 | 0 | Complete with the local planning commits | Backend baseline `f876ec6`; frontend baseline `c6b4701`; new isolated worktrees; planning commit IDs in execution handoff/Git history |
-| 1-9 | Not started | No implementation, schema apply, import, push or deployment |
+| 1 | Source preparation committed; academic gate open | Private source package, 25 MCQs / 100 choices, 12 offline tests, source-preservation decision and explicit draft/publication guard; see both repositories' docs/arabic-reading |
+| 2-9 | Not started | No runtime implementation, schema apply, import, push or deployment |
 
 ## 8. Reference material
 
