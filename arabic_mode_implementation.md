@@ -2,7 +2,7 @@
 
 Prepared: 2026-11-27
 
-Status: Phases 0, 2, 3 and 4 are complete locally. Phase 1 source preparation is complete; final answer-key and Arabic editorial/speech approval remain open. The isolated backend session/speech/media APIs are registered with the Arabic feature and separate external speech/AI switches disabled by default. Real-speech calibration and voice acceptance remain unverified. No frontend UI is mounted and no database operation has been applied. This plan authorizes local development and local verification only; the owner will deploy later.
+Status: Phases 0, 2, 3, 4 and 5 are complete locally. Phase 1 source preparation is complete; final answer-key and Arabic editorial/speech approval remain open. The isolated backend APIs and frontend route are registered with independent default-off feature/external-service switches. Arabic frontend screens are verified through a local-only synthetic preview; real session/recording integration is Phase 6 and source quiz/completion writers are Phase 7. Real-speech calibration and voice acceptance remain unverified. No database operation has been applied. This plan authorizes local development and local verification only; the owner will deploy later.
 
 ## 1. Agreed outcome
 
@@ -142,14 +142,16 @@ Phase 4 evidence: backend `docs/arabic-reading/PHASE4_SPEECH.md`, `PHASE4_VERIFI
 
 ### Phase 5 - Arabic frontend layouts and navigation
 
-- [ ] Build isolated tester chooser and player using the existing reading design and three activity steps.
-- [ ] Apply Arabic strings, RTL layout, readable diacritics, Arabic choice labels and accessible focus/audio controls.
-- [ ] Implement passage, sentence, vocabulary-if-reviewed, feedback and quiz layouts with synthetic responses.
-- [ ] Keep surrounding Zayd branding/style while localizing all mode-owned visible and accessible text.
-- [ ] Verify desktop/mobile layout, long text, mixed numerals and no engagement heartbeat.
-- [ ] Update evidence and make phase-local commit(s).
+- [x] Build isolated tester chooser and player using the existing reading design and three activity steps.
+- [x] Apply Arabic strings, RTL layout, readable diacritics, Arabic choice labels and accessible focus/audio controls.
+- [x] Implement passage, sentence, vocabulary-if-reviewed, feedback and quiz layouts with synthetic responses. No approved vocabulary mappings exist, so no definitions/cards are invented or enabled.
+- [x] Keep surrounding Zayd branding/style while localizing all mode-owned visible and accessible text.
+- [x] Verify desktop/mobile layout, long text, mixed numerals and no engagement heartbeat.
+- [x] Update evidence and make phase-local commit(s), with IDs reported in the handoff.
 
 Exit: complete Arabic screens match the reading experience and mount independently of existing modes.
+
+Phase 5 evidence: frontend `docs/arabic-reading/PHASE5_UI.md`, `PHASE5_VERIFICATION.json`, isolated Arabic components/page and local-only `dev/arabic-reading` preview; backend matching documentation/plan only. Two default-off sibling routes mount outside StudentLayout. Chooser/overview/listen/practice/feedback/quiz/completion/retake screens preserve the three-step reading design in RTL, with Arabic strings/accessibility labels, 30-second recorder views, native keyboard radios/dialog focus, exact Unicode/diacritics and isolated source numeral runs. Production imports no fixtures, source authoring package or inferred keys and performs no Arabic API/microphone/usage operation yet. Browser checks pass 422 assertions across 56 scene/viewport combinations, seven sizes and all three 10/6/9 synthetic journeys; 30 offline presentation assertions, ten existing frontend regression scripts and 22 source/schema checks also pass. Full frontend build, application/preview/contract type checks, scoped lint and unchanged contract parity pass. Six desktop/mobile screenshots are reviewed locally. Existing pdfjs-eval/large-chunk build warnings are documented; generated build caches are excluded. No original mode/layout/recorder source, backend runtime, schema or private content was changed. No live account/grant operation, speech call, content/media upload, DB apply, push or deployment occurred. Phase 6 connects the real authorized transport; the normal Arabic route remains unavailable until that integration, and academic/speech gates remain open.
 
 ### Phase 6 - Recording, recovery and session integration
 
@@ -202,7 +204,9 @@ Exit: deployment-ready local handoff is complete. Hosted release and client acce
 | 1 | Source preparation committed; academic gate open | Private source package, 25 MCQs / 100 choices, 12 offline tests, source-preservation decision and explicit draft/publication guard; see both repositories' docs/arabic-reading |
 | 2 | Complete locally: contracts/access/storage preparation | Seven isolated models; matching contracts; 43 local checks; full type checks; offline provisioning SQL previews; no DB/cloud execution |
 | 3 | Complete locally: isolated backend APIs | Seven mounted default-off endpoints; 360 checks; full type checks and symlink-aware emit; synthetic transactions/HTTP only |
-| 4-9 | Not started | No audio/media/quiz writers or frontend UI yet; no schema apply, import, push or deployment |
+| 4 | Complete locally: isolated speech/media engineering | 460 local checks; private narration, Arabic validation/attempt receipts, offline-default calibration tool; real Azure/teacher/voice acceptance pending |
+| 5 | Complete locally: isolated Arabic UI/layouts | 422 browser assertions, 56 scene/viewport combinations, three synthetic journeys; 30 presentation assertions, ten existing frontend regression scripts, full frontend build/type checks; live integration remains Phase 6 |
+| 6-9 | Not started | Real frontend session/recording integration, source quiz/completion writers, final acceptance and deployment handoff remain pending; no schema apply, import, push or deployment |
 
 ## 8. Reference material
 

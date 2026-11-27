@@ -1,0 +1,148 @@
+{
+  "phase": 5,
+  "status": "local-presentation-complete; live-integration-and-academic-acceptance-pending",
+  "date": "2026-11-27",
+  "branch": "feat/arabic_R",
+  "browser": {
+    "account": "none",
+    "screenshots": [
+      "chooser-1440.png",
+      "reading-1440.png",
+      "listen-390.png",
+      "quiz-390.png",
+      "completed-390.png",
+      "feedback-390.png"
+    ],
+    "syntheticJourneys": 3,
+    "sceneViewportCombinations": 56,
+    "command": "node dev/arabic-reading/browser-check.cjs",
+    "apiSocketHeartbeatRequests": 0,
+    "evidence": "ignored dev/arabic-reading/test-results/phase5-browser.json and six screenshots; visually reviewed",
+    "externalRequests": "blocked",
+    "passed": true,
+    "browserErrors": 0,
+    "viewports": [
+      [
+        1440,
+        900
+      ],
+      [
+        1280,
+        600
+      ],
+      [
+        1024,
+        768
+      ],
+      [
+        768,
+        1024
+      ],
+      [
+        390,
+        844
+      ],
+      [
+        320,
+        568
+      ],
+      [
+        844,
+        390
+      ]
+    ],
+    "questionsPerJourney": [
+      10,
+      6,
+      9
+    ],
+    "assertions": 422,
+    "microphone": "not accessed"
+  },
+  "offlinePresentation": {
+    "command": "node dev/arabic-reading/presentation-check.cjs",
+    "assertionsPassed": 30,
+    "cases": [
+      "default-off/auth/role gates",
+      "Arabic catalog/error labels",
+      "exact source text and safe HTML rendering",
+      "numeric bidi isolation",
+      "genuine zero vs unavailable scores",
+      "no presentation network/storage/engagement imports",
+      "isolated routes and reduced motion"
+    ]
+  },
+  "contracts": {
+    "command": "node dev/arabic-reading/contract-check.cjs",
+    "fourWayParity": "passed; contracts unchanged",
+    "privateAuthoringIsolation": "passed"
+  },
+  "existingFrontendRegressions": {
+    "network": "controlled/offline",
+    "scripts": [
+      "reading-practice-presentation-check.cjs",
+      "reading-practice-audio-check.cjs",
+      "reading-vocabulary-feedback-check.cjs",
+      "reading-audio-upload-check.cjs",
+      "socket-auth-recovery-check.cjs",
+      "reading-finish-check.cjs",
+      "answer-feedback-check.cjs",
+      "component-completion-check.cjs",
+      "mcq-feedback-check.cjs",
+      "avatar-reading-check.cjs"
+    ],
+    "scriptsPassed": 10
+  },
+  "offlineSourceSchema": {
+    "command": "node --test test/arabic-reading/content-package.test.cjs test/arabic-reading/phase2.test.cjs",
+    "passed": 22,
+    "runtimeAndSourceUnchanged": true
+  },
+  "compilation": {
+    "generatedTrackedCaches": "restored to HEAD; excluded from commit",
+    "inheritedWarnings": [
+      "pdfjs eval warning",
+      "large minified chunks"
+    ],
+    "previewAndFixtureProductionExclusion": "passed: no synthetic Arabic IDs, quiz markers or banner in dist JS/CSS/HTML",
+    "previewTypecheck": "passed: tsc -p dev/arabic-reading/tsconfig.preview.json",
+    "focusedEslint": "passed; zero errors/warnings",
+    "finalAppTypecheck": "passed: tsc -p tsconfig.app.json --noEmit --incremental false",
+    "backend": "documentation only; no runtime/build/schema changes in Phase 5",
+    "fullFrontendBuild": "passed: node node_modules/typescript/bin/tsc -b; node node_modules/vite/bin/vite.js build",
+    "contractTypecheck": "passed: tsc -p dev/arabic-reading/tsconfig.json"
+  },
+  "route": {
+    "mountedOutsideStudentLayout": true,
+    "entry": "/student/arabic-reading",
+    "default": "false",
+    "enabledStudentUntilPhase6": "localized unavailable state; never a synthetic grant/session",
+    "activity": "/student/arabic-reading/:activityId",
+    "liveServerAdapterConnected": false,
+    "frontendFlag": "VITE_LMS_ENABLE_ARABIC_READING"
+  },
+  "isolation": {
+    "schemaChanged": false,
+    "actualGrantAccountOperations": 0,
+    "sourcePackageChanged": false,
+    "actualDatabaseCalls": 0,
+    "normalLmsProgressUsageReportWrites": 0,
+    "sharedClientsRegenerated": false,
+    "pushed": false,
+    "actualAzureAiCalls": 0,
+    "deployed": false,
+    "backendRuntimeChanged": false,
+    "changedOriginalModesOrLayouts": false,
+    "actualContentMediaUploads": 0,
+    "actualMicrophoneCalls": 0
+  },
+  "sourceSha256": "cb15678252361fc2447a554cf894235ca0ce041dfe30556851297d3f03bb95d1",
+  "pending": [
+    "Phase 1 final keys including Q6 and Arabic editorial/diacritic/speech approval",
+    "Real Azure/teacher/device/narrator acceptance",
+    "Phase 6 real authorized session/audio/recovery integration",
+    "Phase 7 source quiz/completion writers",
+    "Phase 8 final isolation/regression acceptance",
+    "Phase 9 owner deployment handoff"
+  ]
+}
