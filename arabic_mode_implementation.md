@@ -2,7 +2,7 @@
 
 Prepared: 2026-11-27
 
-Status: Phase 0 complete. Phase 1 source preparation is complete; final answer-key and Arabic editorial/speech approval remain open. Phase 2 contracts, isolated access policy, additive storage/migration preparation and offline verification are complete locally. No Arabic learner API or UI is mounted and no database operation has been applied. This plan authorizes local development and local verification only; the owner will deploy later.
+Status: Phases 0, 2 and 3 are complete locally. Phase 1 source preparation is complete; final answer-key and Arabic editorial/speech approval remain open. The isolated Phase 3 backend APIs are registered with the Arabic feature disabled by default. No frontend UI is mounted and no database operation has been applied. This plan authorizes local development and local verification only; the owner will deploy later.
 
 ## 1. Agreed outcome
 
@@ -115,14 +115,16 @@ Phase 2 evidence: backend `docs/arabic-reading/PHASE2_CONTRACT.md`, `PHASE2_STAT
 
 ### Phase 3 - Arabic backend session and content APIs
 
-- [ ] Implement isolated module, chooser, overview, start/resume, owned session/history and reset/retake endpoints.
-- [ ] Return only approved learner-safe content; keep answer keys/private review metadata server-side.
-- [ ] Enforce current tester/account/region/flag authorization on every operation.
-- [ ] Implement frozen session versioning, request idempotency and atomic state transitions with isolated repositories.
-- [ ] Verify ownership, revoked access, concurrency, disabled mode and no existing-LMS writes.
-- [ ] Update evidence and make phase-local commit(s).
+- [x] Implement isolated module, chooser, overview, start/resume, owned session/history, listen acknowledgement and completed-run retake endpoints. No destructive unfinished-run reset is exposed, as frozen in Phase 2.
+- [x] Return only approved learner-safe content; keep answer keys/private review metadata server-side.
+- [x] Enforce current tester/account/region/flag authorization on every operation.
+- [x] Implement frozen session versioning, request idempotency and atomic state transitions with isolated repositories.
+- [x] Verify ownership, revoked access, synthetic concurrency, disabled mode and no existing-LMS writes.
+- [x] Update evidence and make phase-local commit(s), with IDs reported in the handoff.
 
 Exit: synthetic Arabic sessions run through the isolated API without normal LMS side effects.
+
+Phase 3 evidence: backend `docs/arabic-reading/PHASE3_API.md` and `PHASE3_VERIFICATION.json`; frontend matching API reference, `PHASE3_HANDOFF.md` and verification. Seven isolated endpoints run through real local JWT/role/DTO boundaries against synthetic transactions. The SQL adapter uses parameterized Arabic-only writes, explicit indexed identifier types, schema-receipt verification, Serializable transactions, bounded retries, CAS revisions and frozen safe-response receipts. An Arabic-only verified-claim guard denies missing regions before shared legacy defaults can grant ROW access. Ninety-two focused checks, 22 source/schema checks and 246 existing English reading/STEP/NAFS/Primary service regressions pass (360 total). Both full type checks and unchanged contract parity pass. Backend JS/declarations emit with `--preserveSymlinks true`; the default Nest build has the pre-existing linked-dependency TS2742 declaration limitation in unchanged lesson-progress-select.util.ts, documented rather than hidden by unrelated source/config edits. No SQL Server guard/live-lock execution, live account access, real speech/cloud call, database/schema/grant/content write, push or deployment occurred. No shared Prisma clients were regenerated. Actual audio/media is Phase 4, frontend UI Phase 5, quiz writers Phase 7. Phase 1 academic gates remain open.
 
 ### Phase 4 - Arabic speech, validation and narration
 
@@ -197,7 +199,8 @@ Exit: deployment-ready local handoff is complete. Hosted release and client acce
 | 0 | Complete with the local planning commits | Backend baseline `f876ec6`; frontend baseline `c6b4701`; new isolated worktrees; planning commit IDs in execution handoff/Git history |
 | 1 | Source preparation committed; academic gate open | Private source package, 25 MCQs / 100 choices, 12 offline tests, source-preservation decision and explicit draft/publication guard; see both repositories' docs/arabic-reading |
 | 2 | Complete locally: contracts/access/storage preparation | Seven isolated models; matching contracts; 43 local checks; full type checks; offline provisioning SQL previews; no DB/cloud execution |
-| 3-9 | Not started | No learner API/UI mounted, schema apply, import, push or deployment |
+| 3 | Complete locally: isolated backend APIs | Seven mounted default-off endpoints; 360 checks; full type checks and symlink-aware emit; synthetic transactions/HTTP only |
+| 4-9 | Not started | No audio/media/quiz writers or frontend UI yet; no schema apply, import, push or deployment |
 
 ## 8. Reference material
 
