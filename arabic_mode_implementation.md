@@ -2,7 +2,7 @@
 
 Prepared: 2026-11-27
 
-Status: Phase 0 complete. Phase 1 source preparation and local verification are complete; final answer-key and Arabic editorial/speech approval remain open. No application runtime implementation has started. This plan authorizes local development and local verification only; the owner will deploy later.
+Status: Phase 0 complete. Phase 1 source preparation is complete; final answer-key and Arabic editorial/speech approval remain open. Phase 2 contracts, isolated access policy, additive storage/migration preparation and offline verification are complete locally. No Arabic learner API or UI is mounted and no database operation has been applied. This plan authorizes local development and local verification only; the owner will deploy later.
 
 ## 1. Agreed outcome
 
@@ -102,14 +102,16 @@ Phase 1 evidence: backend `content/arabic-reading/v1` and `docs/arabic-reading/P
 
 ### Phase 2 - Contract, access and isolated storage design
 
-- [ ] Freeze language profile, learner-safe contracts, errors, lifecycle and direct testing entry.
-- [ ] Define Arabic-only persistence, ownership, unique active session, version binding, request receipts and retake history.
-- [ ] Prepare additive schema/migration files and explicit provisioning tools, offline by default. No database-writing startup hooks.
-- [ ] Add default-off feature gate and explicit tester authorization design; define supported region behavior.
-- [ ] Define forbidden write targets and regression checks for all existing modes/engagement.
-- [ ] Validate schema/contracts offline; update evidence and make phase-local commit(s).
+- [x] Freeze language profile, learner-safe contracts, errors, lifecycle and direct testing entry.
+- [x] Define Arabic-only persistence, ownership, unique active session, version binding, request receipts and retake history.
+- [x] Prepare additive schema/migration files and explicit provisioning tools, offline by default. No database-writing startup hooks.
+- [x] Add default-off feature gate and explicit tester authorization design; define supported region behavior.
+- [x] Define forbidden write targets and regression checks for all existing modes/engagement.
+- [x] Validate schema/contracts offline; update evidence and make phase-local commit(s), with IDs reported in the handoff.
 
 Exit: compatible contracts and storage/access design are reviewable without any production mutation.
+
+Phase 2 evidence: backend `docs/arabic-reading/PHASE2_CONTRACT.md`, `PHASE2_STATUS.md`, `PHASE2_VERIFICATION.json`, and `prisma/arabic-reading/phase2`; frontend matching contracts, `PHASE2_HANDOFF.md`, `PHASE2_VERIFICATION.json`, and compile-time privacy/state examples. Seven Arabic-only models validate in both standalone and full regional Prisma schemas; all pre-existing model definitions retain their pinned hashes. Twenty-two offline content/schema/provisioning checks and 21 authorization/feature-flag checks pass; backend/frontend type checks and cross-repository contract parity pass. Tools default to offline previews and can only emit explicitly target/digest-pinned SQL into ignored scratch files, never execute it. No schema apply, tester grant, import, publication, cloud call, API registration, UI mount, push or deployment occurred. Actual SQL Server guard/concurrency execution remains a later owned-target acceptance gate. Phase 1 content approval remains pending.
 
 ### Phase 3 - Arabic backend session and content APIs
 
@@ -194,7 +196,8 @@ Exit: deployment-ready local handoff is complete. Hosted release and client acce
 | --- | --- | --- |
 | 0 | Complete with the local planning commits | Backend baseline `f876ec6`; frontend baseline `c6b4701`; new isolated worktrees; planning commit IDs in execution handoff/Git history |
 | 1 | Source preparation committed; academic gate open | Private source package, 25 MCQs / 100 choices, 12 offline tests, source-preservation decision and explicit draft/publication guard; see both repositories' docs/arabic-reading |
-| 2-9 | Not started | No runtime implementation, schema apply, import, push or deployment |
+| 2 | Complete locally: contracts/access/storage preparation | Seven isolated models; matching contracts; 43 local checks; full type checks; offline provisioning SQL previews; no DB/cloud execution |
+| 3-9 | Not started | No learner API/UI mounted, schema apply, import, push or deployment |
 
 ## 8. Reference material
 
