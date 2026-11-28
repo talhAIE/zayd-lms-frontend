@@ -1,0 +1,132 @@
+{
+  "phase": 6,
+  "date": "2026-11-28",
+  "branch": "feat/arabic_R",
+  "status": "local-engineering-complete; actual-device/cloud/academic-acceptance-pending",
+  "backend": {
+    "existingReadingStepNafsPrimaryRegressions": 246,
+    "sourceSchemaChecksPassed": 22,
+    "command": "node node_modules/jest/bin/jest.js --runInBand --silent --testPathPattern=\"modules/arabic-reading|lms-feature-flags|modules/step/step.service.spec|modules/nafs/nafs.service.spec|modules/primary/primary.reading.spec|modules/mode-sessions/services/reading-session.service.spec\" --cacheDirectory tmp/arabic-reading/jest --json --outputFile=tmp/arabic-reading/phase6-jest.json",
+    "jestChecksPassed": 453,
+    "suites": 15,
+    "totalChecks": 475,
+    "sourceCommand": "node --test test/arabic-reading/content-package.test.cjs test/arabic-reading/phase2.test.cjs",
+    "focusedArabicAccessAndFlags": 207
+  },
+  "integration": {
+    "forbiddenLmsApiSocketRequests": 0,
+    "timeout": "configured 180000ms upload timeout verified; XHR timeout accelerated to 350ms for acceptance",
+    "scenarios": [
+      "owned chooser/listen/recording and server sentence/feedback resume",
+      "refresh recovers exact pending bytes and deliberate resend",
+      "lost upload response reconciles receipt without a second grade",
+      "discard after reload cancels an upload still in flight",
+      "silence permits a fresh recording without a validated attempt",
+      "unclear permits a fresh recording without a validated attempt",
+      "speech unavailable retains pending; reconnect never auto-resends",
+      "accelerated upload timeout retains the exact attempt until atomic discard",
+      "storage failure prevents upload and reports Arabic fallback",
+      "offline pending recording survives reconnect without auto-upload",
+      "narration errors remain Arabic and retry uses authenticated binary media",
+      "browser playback rejection can retry without losing the owned session",
+      "two tabs share one exact pending attempt without duplicate grading",
+      "a different server revision never receives an old pending recording",
+      "pending cleanup remains available after another client reaches quiz",
+      "permission denial and cancelled late stream are localized and released",
+      "30-second client limit auto-stops and releases the synthetic microphone",
+      "corrupted local bytes are never uploaded and can be safely discarded",
+      "account replacement cannot recover or send the previous account recording",
+      "late old-account response cannot update or replay as the replacement account",
+      "revoked access hides session and keeps private pending unsent"
+    ],
+    "recordingStore": "actual local browser IndexedDB",
+    "command": "node dev/arabic-reading/integration-check.cjs",
+    "assertionsPassed": 68,
+    "localTools": [
+      "test/arabic-reading/phase6-local-server.ts --synthetic-local-only",
+      "dev/arabic-reading/vite.integration.config.ts"
+    ],
+    "noWholeAppBackendStartup": true,
+    "externalRequests": "blocked",
+    "ports": [
+      5026,
+      5196
+    ],
+    "sqlSpeechAndDevice": "synthetic adapters; no real SQL, Azure or microphone",
+    "browserErrors": 0,
+    "frontendAndJwtControllers": "real local code"
+  },
+  "frontend": {
+    "viewports": 7,
+    "syntheticTestInputExclusionFromDist": "passed",
+    "existingRegressionScriptsPassed": 10,
+    "syntheticUiJourneys": 3,
+    "layoutAssertionsPassed": 422,
+    "sceneViewportCombinations": 56,
+    "focusedLint": "passed; zero errors/warnings",
+    "presentationAssertionsPassed": 30,
+    "fourWayContractPrivacyParity": "passed",
+    "regressionScripts": [
+      "reading-practice-presentation-check.cjs",
+      "reading-practice-audio-check.cjs",
+      "reading-vocabulary-feedback-check.cjs",
+      "reading-audio-upload-check.cjs",
+      "socket-auth-recovery-check.cjs",
+      "reading-finish-check.cjs",
+      "answer-feedback-check.cjs",
+      "component-completion-check.cjs",
+      "mcq-feedback-check.cjs",
+      "avatar-reading-check.cjs"
+    ]
+  },
+  "builds": {
+    "backendTypecheck": "passed",
+    "backendEmit": "passed: tsc -p tsconfig.build.json --preserveSymlinks true --incremental false",
+    "existingFrontendWarnings": [
+      "pdfjs eval",
+      "large minified chunks"
+    ],
+    "defaultNestLimitation": "pre-existing linked-dependency TS2742 remains documented",
+    "previewAndContractTypes": "passed",
+    "trackedCompilerCaches": "restored; excluded from commits",
+    "frontendBuild": "passed: tsc -b and vite build"
+  },
+  "recovery": {
+    "resourceCleanup": "requests, streams, late permissions, timers and narration blobs",
+    "newEndpoints": [
+      "POST /sessions/:sessionId/audio/status",
+      "POST /sessions/:sessionId/audio/discard"
+    ],
+    "crossAccount": "old work cannot apply/replay as a replacement identity; original-owner pending preserved",
+    "hash": "identical request metadata/session/bytes digest for upload, status and discard",
+    "pending": "dedicated owner/activity IndexedDB; original Blob/UUID/session/version/chunk/revision/digest",
+    "status": "current safe session; unconfirmed is not proof of no in-flight work",
+    "discard": "existing audio receipt + reserved discarded marker; immutable replay strips metadata; no schema change",
+    "dispatch": "only after durable save and status reconciliation; never automatic on refresh/reconnect"
+  },
+  "isolation": {
+    "liveAccountGrantOperations": 0,
+    "featureFlagsDefaultOff": true,
+    "originalRecorderAndOtherModeRuntimeChanged": false,
+    "liveDatabaseCalls": 0,
+    "sourcePublished": false,
+    "actualMicrophoneCalls": 0,
+    "sourceContentChanged": false,
+    "schemasChanged": false,
+    "deployed": false,
+    "pushed": false,
+    "cloudMediaUploads": 0,
+    "sharedClientsRegenerated": false,
+    "actualAzureAiCalls": 0,
+    "normalLmsProgressUsageReportWrites": 0
+  },
+  "sourceSha256": "cb15678252361fc2447a554cf894235ca0ce041dfe30556851297d3f03bb95d1",
+  "pending": [
+    "Phase 1 source/key/editorial/diacritic/speech approval including unchanged Q6",
+    "Actual teacher/voice/device/Azure/resource acceptance",
+    "Actual SQL Server guards/locks/seek-plan execution",
+    "Phase 7 reviewed quiz/check/finish/completion/retake integration",
+    "Phase 8 final acceptance",
+    "Phase 9 owner deployment handoff"
+  ]
+}

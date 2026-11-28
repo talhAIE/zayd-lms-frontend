@@ -78,6 +78,13 @@ export interface ArabicListenRequest extends ArabicMutationRequest { playbackEnd
  * Success consumes one validated attempt; silence/unclear/too-long/provider rejection consumes none.
  */
 export interface ArabicAudioRequest extends ArabicMutationRequest { chunkId: string; format: 'webm' | 'wav' | 'mp3' | 'mp4' | 'ogg' }
+/** Digest-only reconciliation/cancellation of the exact multipart attempt; never a fresh grade. */
+export interface ArabicAudioRecoveryRequest extends ArabicAudioRequest { audioSha256: string }
+export interface ArabicAudioRecovery {
+  disposition: 'unconfirmed' | 'committed' | 'discarded';
+  /** Current owned session, not an old receipt snapshot. */
+  session: ArabicSessionView;
+}
 export interface ArabicCheckRequest extends ArabicMutationRequest { questionId: string; optionId: string }
 export type ArabicFinishRequest = ArabicMutationRequest;
 export type ArabicRetakeRequest = ArabicMutationRequest;

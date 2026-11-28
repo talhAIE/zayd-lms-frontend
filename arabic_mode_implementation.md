@@ -2,7 +2,7 @@
 
 Prepared: 2026-11-27
 
-Status: Phases 0, 2, 3, 4 and 5 are complete locally. Phase 1 source preparation is complete; final answer-key and Arabic editorial/speech approval remain open. The isolated backend APIs and frontend route are registered with independent default-off feature/external-service switches. Arabic frontend screens are verified through a local-only synthetic preview; real session/recording integration is Phase 6 and source quiz/completion writers are Phase 7. Real-speech calibration and voice acceptance remain unverified. No database operation has been applied. This plan authorizes local development and local verification only; the owner will deploy later.
+Status: Phases 0, 2, 3, 4, 5 and 6 are complete locally (Phase 6 completed 2026-11-28). Phase 1 source preparation is complete; final answer-key and Arabic editorial/speech approval remain open. The isolated backend APIs and frontend route are registered with independent default-off feature/external-service switches. The real owned-session, narration, recording and recovery transport is connected and verified against synthetic local HTTP/JWT/storage/speech/device adapters. Source quiz/check/completion writers are Phase 7. Real-speech calibration and voice acceptance remain unverified. No live database operation has been applied. This plan authorizes local development and local verification only; the owner will deploy later.
 
 ## 1. Agreed outcome
 
@@ -155,14 +155,16 @@ Phase 5 evidence: frontend `docs/arabic-reading/PHASE5_UI.md`, `PHASE5_VERIFICAT
 
 ### Phase 6 - Recording, recovery and session integration
 
-- [ ] Connect real Arabic APIs, narrator playback, full-listen acknowledgement and sentence practice.
-- [ ] Implement owner/region/session/version-bound pending recording recovery, resend and discard.
-- [ ] Handle permission denial, silence, unclear speech, upload timeout, unavailable assessment/audio and interrupted responses in Arabic.
-- [ ] Reconcile unknown outcomes before retry; prevent duplicate grading or cross-account replay.
-- [ ] Restore sentence and feedback state; handle refresh, reconnect and account replacement.
-- [ ] Update evidence and make phase-local commit(s).
+- [x] Connect real Arabic APIs, narrator playback, full-listen acknowledgement and sentence practice.
+- [x] Implement owner/region/session/version-bound pending recording recovery, resend and discard.
+- [x] Handle permission denial, silence, unclear speech, upload timeout, unavailable assessment/audio and interrupted responses in Arabic.
+- [x] Reconcile unknown outcomes before retry; prevent duplicate grading or cross-account replay.
+- [x] Restore sentence and feedback state; handle refresh, reconnect and account replacement.
+- [x] Update evidence and make phase-local commit(s), with IDs reported in the handoff.
 
 Exit: synthetic end-to-end reading/resume/recovery paths work without changing normal reading transport behavior.
+
+Phase 6 evidence: both repositories' `docs/arabic-reading/PHASE6_INTEGRATION.md` and `PHASE6_VERIFICATION.json`; frontend owned HTTP/controller, Arabic device adapter and isolated IndexedDB pending store; backend exact-attempt status/discard APIs and synthetic local server tool. Uploaded bytes and UUIDs stay bound to owner/explicit ROW region/activity/session/frozen version/chunk/revision; every resend reconciles receipts first. Atomic discard uses existing Arabic receipt storage and prevents a late in-flight grade when cancellation wins, preserving a grade that committed first. Narration uses authenticated blobs, cleanup and a real media-ended acknowledgement. Refresh/reconnect restore authoritative sentence/feedback without auto-grading; stale/foreign owner responses cannot rebind recordings. Backend 453 Jest checks plus 22 source/schema checks pass; frontend 21 real-local-HTTP integration scenarios/68 assertions, 422 layout assertions, 30 presentation checks and ten existing frontend regression scripts pass. Both type checks, frontend build, backend symlink-aware emit, focused lint, contract parity and fixture exclusion pass. Original recorder/layout/mode source, sealed schemas and private source content remain unchanged. All accounts, speech results and SQL storage in integration tests are synthetic; actual microphone/Azure/teacher/SQL Server acceptance remains open. No live grant/content/database/media operation, cloud call, push or deployment occurred. Quiz/check/finish/retake UI actions remain Phase 7, and both feature flags remain default-off.
 
 ### Phase 7 - Source quizzes, completion and retakes
 
@@ -206,7 +208,8 @@ Exit: deployment-ready local handoff is complete. Hosted release and client acce
 | 3 | Complete locally: isolated backend APIs | Seven mounted default-off endpoints; 360 checks; full type checks and symlink-aware emit; synthetic transactions/HTTP only |
 | 4 | Complete locally: isolated speech/media engineering | 460 local checks; private narration, Arabic validation/attempt receipts, offline-default calibration tool; real Azure/teacher/voice acceptance pending |
 | 5 | Complete locally: isolated Arabic UI/layouts | 422 browser assertions, 56 scene/viewport combinations, three synthetic journeys; 30 presentation assertions, ten existing frontend regression scripts, full frontend build/type checks; live integration remains Phase 6 |
-| 6-9 | Not started | Real frontend session/recording integration, source quiz/completion writers, final acceptance and deployment handoff remain pending; no schema apply, import, push or deployment |
+| 6 | Complete locally: owned session/audio/recovery integration | 475 backend checks; 21 synthetic HTTP/JWT integration scenarios/68 assertions; layout/frontend regressions/builds pass; real external/academic acceptance remains open |
+| 7-9 | Not started | Source quiz/completion/retake integration, final acceptance and deployment handoff remain pending; no schema apply, import, push or deployment |
 
 ## 8. Reference material
 
