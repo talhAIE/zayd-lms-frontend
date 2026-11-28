@@ -38,8 +38,8 @@ const base={id:uuid,activityId,title:text.max(256),versionId:uuid,runNumber:coun
 const sessionSchema=z.discriminatedUnion('phase',[
   z.object({...base,phase:z.literal('listen'),currentChunk:z.null(),feedback:z.null()}),
   z.object({...base,phase:z.literal('reading'),currentChunk:z.object({id,text}),feedback:feedback.nullable(),attemptedCount:count,acceptedCount:count,failedCount:count,totalChunks:count}),
-  z.object({...base,phase:z.literal('quiz'),questions:z.array(z.object({id,number:count,prompt:text,options:z.array(z.object({id,label:z.enum(['أ','ب','ج','د']),text})).length(4)})).min(1).max(25),
-    checkedAnswers:z.array(z.object({questionId:id,selectedOptionId:id,isCorrect:z.boolean(),responseId:id})).max(25)}),
+  z.object({...base,phase:z.literal('quiz'),questions:z.array(z.object({id,number:count,prompt:text,ungraded:z.literal(true).optional(),options:z.array(z.object({id,label:z.enum(['أ','ب','ج','د']),text})).length(4)})).min(1).max(25),
+    checkedAnswers:z.array(z.object({questionId:id,selectedOptionId:id,isCorrect:z.boolean().nullable(),responseId:id})).max(25)}),
   z.object({...base,phase:z.literal('completed'),completedAt:z.string().datetime(),result:z.object({correctCount:count,totalQuestions:count})}),
 ]);
 export const parseArabicSession=(value:unknown):ArabicSessionView=>sessionSchema.parse(value);

@@ -226,7 +226,15 @@ Real SQL execution exposed incorrectly escaped SHA2_256 literals in the prepared
 
 This does not complete Phase 9 or activate client testing. All uploaded versions remain drafts with false review flags, 24 candidate keys only and Q6 null. Original-source approval/publication, compatible backend/frontend deployment, hosted flags and real device/Azure/full SQL-session acceptance remain pending. No branch was pushed or application deployed by this upload operation.
 
-## 9. Reference material
+## 9. Owner-authorized tester publication and three Courses topics
+
+On 2026-11-28 the owner explicitly requested publication for the Arabic test accounts and three passage topics on Courses, each opening the ordinary reading flow. This supersedes the original draft-only restriction for a scoped client-test release; it is not teacher/academic/speech approval. Three new immutable tester versions are now published in production ROW. The runtime restricts their provisional policy to the three exact existing Arabic tester identities and still requires live ROW/student/account/grant authorization. Formal review flags remain false and the 24 proposed keys are labeled provisional in private approval evidence. All 25 source questions/100 choices and original drafts remain unchanged; Q6 stays visible with its original choices, a null verdict and no contribution to the score. Graded totals are 9/9, 6/6 and 9/9.
+
+The frontend now renders three separate passage cards on Courses and opens each passage's own overview/listen/recording-feedback/quiz/completion/retake flow. Matching `docs/arabic-reading/TESTER_PUBLICATION.md` and verification JSON document actual production read-back, the Arabic-only publication constraint migration `arabic-reading-pilot-001`, unchanged normal LMS scope and the remaining live acceptance limits. All 509 backend Jest checks, 34 offline checks, 36 integrated synthetic browser scenarios/118 assertions, six Courses scenarios/22 assertions, 60 existing frontend STEP/NAFS tests, type/build/lint/contract/isolation checks pass. The Phase 2 base schema/receipt remain unchanged; the additional tester migration digest is `b20c890a7173478b93f32dfa055085fc319d20ac825d1ccbae22abcff80dfb32`.
+
+The owner must deploy the latest backend and frontend `feat/arabic_R` commits together; no hosted application deployment was performed here, following the earlier owner-managed deployment instruction. Older backends reject tester publication and older frontends do not support the ungraded result/three-card layout. Formal source/key/editorial/speech reviews and real microphone/Azure/full SQL-session concurrency acceptance remain open; no academic approval was fabricated. Phase 9 handoff is not marked complete by this scoped publication.
+
+## 10. Reference material
 
 - Current English player: frontend `src/pages/student/topics/ReadingModeTopics.tsx`.
 - Current recorder/session utilities: frontend `src/hooks/useAudioRecorder.ts`, `src/hooks/useModeSession.ts`, `src/utils/pendingReadingAudio.ts`, `src/utils/readingAudioUpload.ts`.

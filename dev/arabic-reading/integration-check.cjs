@@ -3,15 +3,15 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
 const base=process.env.ARABIC_INTEGRATION_QA_URL||'http://127.0.0.1:5196';assert(['127.0.0.1','localhost'].includes(new URL(base).hostname));
 const report={checks:0,scenarios:[],errors:[],forbidden:[]},check=(v,m)=>{assert(v,m);report.checks++;};
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const phase=process.argv.includes('--phase8')?8:process.argv.includes('--phase7')?7:6;
+const phase=process.argv.includes('--pilot')?9:process.argv.includes('--phase8')?8:process.argv.includes('--phase7')?7:6;
 (async()=>{
   const browser=await chromium.launch({channel:'chrome',headless:true});
-  async function scenario(name,work){
-    const viewport=phase===8&&report.scenarios.length%2?{width:1280,height:800}:{width:390,height:844};
+  async function scenario(name,work,pilot=false){
+    const viewport=phase>=8&&report.scenarios.length%2?{width:1280,height:800}:{width:390,height:844};
     const context=await browser.newContext({locale:'ar-SA',viewport});
-    if(phase===8)(report.viewportRuns??=[]).push({name,...viewport});
+    if(phase>=8)(report.viewportRuns??=[]).push({name,...viewport});
     await context.route('**/*',route=>route.request().url().startsWith(base+'/')?route.continue():route.abort());
-    await context.request.post(base+'/__arabic-test/reset');const bootstrap=await(await context.request.get(base+'/__arabic-test/bootstrap')).json();
+    await context.request.post(base+'/__arabic-test/reset',{data:{pilot}});const bootstrap=await(await context.request.get(base+'/__arabic-test/bootstrap')).json();
     await context.addInitScript(data=>{
       if(!localStorage.getItem('accessToken')){localStorage.setItem('AiTutorUser',JSON.stringify(data.user));localStorage.setItem('accessToken',data.accessToken);localStorage.setItem('refreshToken',data.refreshToken);}
       window.__micMode='ok';window.__tracksStopped=0;window.__micCalls=0;
@@ -228,6 +228,20 @@ const phase=process.argv.includes('--phase8')?8:process.argv.includes('--phase7'
         await t.page.getByRole('button',{name:'الاستماع إلى النص',exact:true}).waitFor();check(await t.page.getByRole('button',{name:'إعادة إرسال الطلب السابق'}).count()===0,'Other owner cannot access pending finish');check((await t.state()).sessions[0].phase==='quiz','Old finish was not replayed by replacement owner');
       });
     }
+    if(phase===9)for(const [activity,total]of [[0,10],[1,6],[2,9]])await scenario('tester pilot passage '+(activity+1)+' reading, quiz, completion and retake',async t=>{
+      await t.quiz(activity);
+      for(let i=0;i<total;i++){
+        await t.page.getByRole('radio').first().check();await t.page.getByRole('button',{name:'تحقّق من الإجابة'}).click();
+        if(activity===0&&i===5){await t.page.getByRole('status').filter({hasText:'هذا السؤال للمراجعة فقط ولا يُحتسب في النتيجة.'}).waitFor();check(await t.page.locator('.ar-option-correct,.ar-option-wrong').count()===0,'Q6 has no false verdict styling');}
+        else await t.page.getByText('إجابة صحيحة. يمكنك المتابعة.',{exact:true}).waitFor();
+        if(i<total-1)await t.page.getByRole('button',{name:'السؤال التالي'}).click();
+      }
+      await t.page.getByRole('button',{name:'إنهاء النشاط'}).click();await t.page.getByText('أحسنت! أكملت نشاط القراءة.',{exact:true}).waitFor();
+      const current=(await t.state()).sessions[0];check(current.state.result.totalQuestions===(activity===0?9:total),'Only graded questions count');
+      if(activity===0)check(current.state.checkedAnswers.find(a=>a.isCorrect===null)!==undefined,'Q6 is stored as ungraded');
+      await t.page.getByRole('button',{name:'إعادة النشاط',exact:true}).click();await t.page.getByRole('button',{name:'بدء محاولة جديدة'}).click();await t.page.getByRole('button',{name:'تشغيل الاستماع إلى النص',exact:true}).waitFor();
+      check((await t.state()).sessions.length===2,'Pilot retake preserves original run');
+    },true);
     check(report.errors.length===0,'No browser exceptions');check(report.forbidden.length===0,'No normal LMS endpoints/heartbeat/socket');
     await fs.mkdir(path.join(__dirname,'test-results'),{recursive:true});await fs.writeFile(path.join(__dirname,`test-results/phase${phase}-integration.json`),JSON.stringify(report,null,2)+'\n');
     console.log(JSON.stringify({passed:true,checks:report.checks,scenarios:report.scenarios.length}));

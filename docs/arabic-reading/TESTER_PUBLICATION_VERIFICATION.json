@@ -1,0 +1,79 @@
+{
+  "database": "zayd_lms_prod",
+  "publication": "owner-authorized tester pilot",
+  "migrationId": "arabic-reading-pilot-001",
+  "migrationSha256": "b20c890a7173478b93f32dfa055085fc319d20ac825d1ccbae22abcff80dfb32",
+  "published": [
+    {
+      "id": "d01a22d4-c838-476a-919b-a3f60362aedf",
+      "activityId": "ar-reading-01",
+      "questionCount": 10,
+      "gradedQuestionCount": 9,
+      "contentDigest": "945242986b042ce61b4f1981ce1f3f0d09ed8c1dd2d4c592f79f6a3e410b9276"
+    },
+    {
+      "id": "b5d8c22f-c5b5-4b09-88a2-680cadd0e2f4",
+      "activityId": "ar-reading-02",
+      "questionCount": 6,
+      "gradedQuestionCount": 6,
+      "contentDigest": "839baf433880fe12cb6231becbb8a250c31569b8aa72b39205f9af8b7a68b88c"
+    },
+    {
+      "id": "df338203-36e0-4107-b77c-5b856d338243",
+      "activityId": "ar-reading-03",
+      "questionCount": 9,
+      "gradedQuestionCount": 9,
+      "contentDigest": "2cd1d4be6f43b7ab09a55020874677f6d627185196291bd10567c632bbd6b644"
+    }
+  ],
+  "q6": "visible and ungraded",
+  "formalApprovals": false,
+  "usernames": [
+    "qa.arabic.reading.01",
+    "qa.arabic.reading.02",
+    "qa.arabic.reading.03"
+  ],
+  "verifiedAt": "2026-11-28T07:37:47.972Z",
+  "originalDraftsUnchanged": true,
+  "nonArabicColumnCatalogUnchanged": true,
+  "publicationConstraintTrusted": true,
+  "codeDeploymentStillRequired": true,
+  "sourcePdfSha256": "cb15678252361fc2447a554cf894235ca0ce041dfe30556851297d3f03bb95d1",
+  "sourceChoicesPreserved": 100,
+  "sourceQuestionsPreserved": 25,
+  "privatePlanSha256": "03362e7a7dcdbd103ea01d30ec834f74937afb44bbe252430fc5ab4b5df62deb",
+  "tests": {
+    "backendJestPassed": 509,
+    "backendSuites": 17,
+    "offlinePassed": 34,
+    "actualProductionReadinessChecks": 9,
+    "integrationScenarios": 36,
+    "integrationAssertions": 118,
+    "coursesBrowserScenarios": 6,
+    "coursesBrowserAssertions": 22,
+    "frontendStepNafsTests": 60,
+    "presentationAssertions": 32,
+    "fullFrontendBuild": "passed",
+    "fullBackendTypes": "passed",
+    "backendJsDeclarations": "passed with preserveSymlinks",
+    "scopedUiLint": "passed",
+    "contractParityPrivacy": "passed",
+    "isolation": "passed"
+  },
+  "integrationServices": "Synthetic local SQL/speech/keys/devices; real frontend/JWT/Nest/DTO/session code. Production SQL publication/read-back is real and separately recorded.",
+  "formalReviewClaims": false,
+  "provisionalKeyCount": 24,
+  "pilotAudience": "three exact Arabic tester IDs, plus live account and Arabic grant checks",
+  "noExistingLmsWriters": true,
+  "normalCourseEnrollmentProgressUsageWrites": 0,
+  "sharedClientsRegenerated": false,
+  "azureAiCalls": 0,
+  "actualMicrophoneUsed": false,
+  "hosting": "Owner-managed deployment pending. Must deploy compatible backend and frontend commits; older code rejects tester publication.",
+  "entryPaths": [
+    "/student/courses",
+    "/student/arabic-reading/ar-reading-01",
+    "/student/arabic-reading/ar-reading-02",
+    "/student/arabic-reading/ar-reading-03"
+  ]
+}

@@ -37,6 +37,7 @@ export interface ArabicActivityOverview {
 }
 export interface ArabicQuestion {
   id: string; number: number; prompt: string;
+  ungraded?: true;
   options: Array<{ id: string; label: 'أ' | 'ب' | 'ج' | 'د'; text: string }>;
 }
 export type ArabicAssessment =
@@ -54,7 +55,7 @@ export interface ArabicMessage {
   feedback: ArabicReadingFeedback | null;
 }
 export interface ArabicCheckedAnswer {
-  questionId: string; selectedOptionId: string; isCorrect: boolean; responseId: string;
+  questionId: string; selectedOptionId: string; isCorrect: boolean | null; responseId: string;
 }
 export interface ArabicSessionBase {
   id: string; activityId: ArabicActivityId; title: string; versionId: string;
