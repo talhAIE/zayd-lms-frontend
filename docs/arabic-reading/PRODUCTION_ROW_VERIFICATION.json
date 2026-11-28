@@ -1,0 +1,124 @@
+{
+  "operation": "owner-requested production ROW private content and three tester accounts",
+  "date": "2026-11-28",
+  "database": "zayd_lms_prod",
+  "server": "tutor-lms-prod-sql.database.windows.net",
+  "appliedAt": "2026-11-28T06:09:22.626Z",
+  "verifiedAt": "2026-11-28T06:10:42.221Z",
+  "tables": [
+    "ArabicReadingActiveSession",
+    "ArabicReadingGrant",
+    "ArabicReadingMessage",
+    "ArabicReadingMutation",
+    "ArabicReadingSchemaMigration",
+    "ArabicReadingSession",
+    "ArabicReadingVersion"
+  ],
+  "triggers": {
+    "count": 6,
+    "enabled": true,
+    "definitionsMatch": true
+  },
+  "checkConstraints": {
+    "count": 8,
+    "enabledAndTrusted": true
+  },
+  "versions": [
+    {
+      "id": "b312b8de-2869-5295-a6ad-1606a4b68aff",
+      "activityId": "ar-reading-01",
+      "status": "draft",
+      "questionCount": 10,
+      "keyCount": 9,
+      "contentDigest": "3fe4dd8e172bd6f6e0daf2a85c1d74c906ca9943f287e01c8d8484695f7c98a5"
+    },
+    {
+      "id": "b0c40b49-6290-5f8e-aed9-7220dbbdd5be",
+      "activityId": "ar-reading-02",
+      "status": "draft",
+      "questionCount": 6,
+      "keyCount": 6,
+      "contentDigest": "bbf9db3303b1ca8c908289b1e6e82cdae966c617a9d06c34cbc9555f4338d052"
+    },
+    {
+      "id": "8fb5a65b-4532-555b-afa3-9f3ebfb0cc9b",
+      "activityId": "ar-reading-03",
+      "status": "draft",
+      "questionCount": 9,
+      "keyCount": 9,
+      "contentDigest": "0afefbdaafb7de8145658a357bfdbb7adf36f54029bc46f6f2e79bc7ccde757a"
+    }
+  ],
+  "accounts": [
+    {
+      "id": "8a2a897c-0647-457d-b287-3adbf508c60e",
+      "username": "qa.arabic.reading.01",
+      "role": "STUDENT",
+      "region": "ROW"
+    },
+    {
+      "id": "6c676694-30f6-4ecc-a85a-0454c02da351",
+      "username": "qa.arabic.reading.02",
+      "role": "STUDENT",
+      "region": "ROW"
+    },
+    {
+      "id": "d07244cf-b843-4f08-a0d7-c44889df02b9",
+      "username": "qa.arabic.reading.03",
+      "role": "STUDENT",
+      "region": "ROW"
+    }
+  ],
+  "grants": 3,
+  "migration": {
+    "id": "arabic-reading-phase2-001",
+    "migrationDigest": "8ad2944fba3190922a573bbe0c5ea6932bd6d23ebcbf5dc92af522f4e1f20b77",
+    "baselineDigest": "0615b5929388ffe0e41d209feb6429f97e2d7f19a093ad81eae0805fbad82411",
+    "region": "ROW"
+  },
+  "existingColumnCatalogUnchanged": true,
+  "normalEnrollmentProgressSessionStatsForNewAccounts": 0,
+  "publication": false,
+  "applicationDeployed": false,
+  "flagsEnabled": false,
+  "reviewedPlanSha256": "c62e307a1afbaeb41136bb36a872de9a7bbf0d754651b6563d103161b2c9b453",
+  "sourcePdfSha256": "cb15678252361fc2447a554cf894235ca0ce041dfe30556851297d3f03bb95d1",
+  "sourcePages": [
+    5,
+    7,
+    8
+  ],
+  "sourceChoices": 100,
+  "sourceReviewApproved": false,
+  "answerKeyApproved": false,
+  "speechReviewApproved": false,
+  "q6": "preserved with null key",
+  "candidateKeysOnly": 24,
+  "privateCredentials": "ignored tmp/arabic-reading/production/test-accounts.private.json and .md; not versioned",
+  "tests": {
+    "offline": 31,
+    "arabicAccessFlagJest": 258,
+    "jestSuites": 12,
+    "nonlocalTestTcpAttempts": 0
+  },
+  "correction": {
+    "error": "SQL Server 102: incorrectly escaped hash literals in prepared dynamic triggers",
+    "failedAttemptsRolledBack": 2,
+    "correctedHashLiterals": 6,
+    "oldUnappliedSqlSha256": "c91dbd593d2e8aa8ec52d2753ad8657840266a4eea7e05fdfdf63af055d84a09",
+    "newAppliedSqlSha256": "8ad2944fba3190922a573bbe0c5ea6932bd6d23ebcbf5dc92af522f4e1f20b77"
+  },
+  "noExistingAccountUpdates": true,
+  "noOtherModeGrants": true,
+  "actualHostedLoginTested": false,
+  "actualAzureAiCalls": 0,
+  "sharedClientsRegenerated": false,
+  "pushed": false,
+  "deployed": false,
+  "remaining": [
+    "Final reviewed key including Q6 and Arabic editorial/speech approval",
+    "Approved version publication",
+    "Compatible backend/frontend deployment including corrected manifest",
+    "Flags and actual device/Azure/concurrency acceptance"
+  ]
+}

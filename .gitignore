@@ -16,6 +16,7 @@ dist-ssr
 !/docs/nafs/
 !/docs/step/
 !/docs/admin/
+!/docs/arabic-reading/
 
 # Editor directories and files
 .vscode/*
@@ -46,3 +47,6 @@ dist-ssr
 # Local landing-page implementation plan.
 /LANDING_PAGE_IMPLEMENTATION_PLAN.md
 /LANDING_PAGE_IMPLEMENTATION_PAN.md
+
+# Arabic synthetic browser evidence only; never source content or deployed assets.
+/dev/arabic-reading/test-results/

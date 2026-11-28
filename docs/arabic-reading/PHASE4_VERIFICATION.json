@@ -1,0 +1,83 @@
+{
+  "phase": 4,
+  "status": "local-engineering-complete; external-and-academic-acceptance-pending",
+  "branch": "feat/arabic_R",
+  "date": "2026-11-27",
+  "jest": {
+    "focusedArabicAccessAndFlags": 192,
+    "failed": 0,
+    "existingReadingStepNafsPrimaryRegressions": 246,
+    "command": "node node_modules/jest/bin/jest.js --runInBand --silent --testPathPattern=\"modules/arabic-reading|lms-feature-flags|modules/step/step.service.spec|modules/nafs/nafs.service.spec|modules/primary/primary.reading.spec|modules/mode-sessions/services/reading-session.service.spec\" --cacheDirectory tmp/arabic-reading/jest --json --outputFile=tmp/arabic-reading/phase4-jest.json",
+    "passed": 438,
+    "suites": 14
+  },
+  "offlineSourceSchemaChecks": {
+    "command": "node --test test/arabic-reading/content-package.test.cjs test/arabic-reading/phase2.test.cjs",
+    "passed": 22
+  },
+  "totalChecksPassed": 460,
+  "actualLocalDecoder": {
+    "samples": "generated tones and silence only",
+    "formats": [
+      "wav",
+      "webm",
+      "mp3",
+      "mp4",
+      "ogg"
+    ],
+    "passed": 11,
+    "subprocessApproval": "scoped local test execution; initial sandbox EPERM resolved by escalation",
+    "acceptedSeconds": 30,
+    "rejectedSeconds": [
+      30.01,
+      31,
+      180
+    ]
+  },
+  "compilation": {
+    "fourWayContractParity": "passed",
+    "backendTypecheck": "passed: node node_modules/typescript/bin/tsc --noEmit --incremental false",
+    "defaultNestBuild": "Phase 3 pre-existing linked-dependency TS2742 limitation unchanged; no unrelated source/config/dependency edits",
+    "frontendContractCompile": "passed",
+    "backendEmit": "passed: node node_modules/typescript/bin/tsc -p tsconfig.build.json --preserveSymlinks true --incremental false",
+    "frontendFullTypecheck": "passed"
+  },
+  "calibration": {
+    "thresholdsCalibrated": false,
+    "voiceSelected": null,
+    "transcriptOnlyPolicy": "content-match only; unavailable/null pronunciation with explicit Arabic disclosure",
+    "teacherFixturesReviewed": false,
+    "defaultResult": "offline; no sample/credential/database/cloud access",
+    "incompleteOptIn": "offline with --execute alone",
+    "externalExecuted": false,
+    "defaultCommand": "node -r ts-node/register scripts/arabic-reading/calibrate-speech.ts"
+  },
+  "isolation": {
+    "schemaModified": false,
+    "frontendUiMounted": false,
+    "sharedClientsRegenerated": false,
+    "databaseCalls": 0,
+    "pushed": false,
+    "externalMediaUploads": 0,
+    "azureCalls": 0,
+    "aiCalls": 0,
+    "existingModeSourceModified": false,
+    "normalProgressOrUsageWrites": 0,
+    "sourcePackageModified": false,
+    "deployed": false
+  },
+  "sourceSha256": "cb15678252361fc2447a554cf894235ca0ce041dfe30556851297d3f03bb95d1",
+  "sealedSqlServerMigrationSha256": "c91dbd593d2e8aa8ec52d2753ad8657840266a4eea7e05fdfdf63af055d84a09",
+  "pending": [
+    "Phase 1 final keys including Q6 and Arabic editorial/diacritic/speech review",
+    "Separately authorized real Azure/AI/resource validation",
+    "Teacher-approved comparison fixtures, thresholds, case endings and pausal readings",
+    "Actual chosen narrator and voice listening acceptance",
+    "Actual SQL Server guards/locks/seek-plan execution",
+    "Phase 5 frontend UI",
+    "Phase 6 recording and recovery integration",
+    "Phase 7 quiz/completion writers",
+    "Phases 8-9 final acceptance and deployment handoff"
+  ],
+  "frontendScope": "Safe recording limits, authenticated binary transport contract and handoff only; no runtime UI, network call, engagement or progress integration"
+}

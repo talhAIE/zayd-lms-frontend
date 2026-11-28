@@ -1,0 +1,79 @@
+{
+  "date": "2026-11-27",
+  "phase": 2,
+  "status": "complete-locally-unapplied",
+  "branch": "feat/arabic_R",
+  "schema": {
+    "tables": [
+      "ArabicReadingGrant",
+      "ArabicReadingVersion",
+      "ArabicReadingSession",
+      "ArabicReadingActiveSession",
+      "ArabicReadingMessage",
+      "ArabicReadingMutation",
+      "ArabicReadingSchemaMigration"
+    ],
+    "baselineSchemaSha256": {
+      "schema-azure.prisma": "e6a233cdf8e22051cc41c6b4c1c89446cd9be70fa1ee21a8471a8b94b37ef828",
+      "schema-saudi.prisma": "9d2a79e749aa037ed41ad20f4bb6f53fe3a85242fb57afe3a3428f43216b3124"
+    },
+    "artifacts": {
+      "models.prisma": "de3ffc8cc6581a1481ae570fdd9db0d695df83cdc7d226099596857283a4a61b",
+      "sqlserver.prisma": "a63143a9929f805de1aec51519b1271799bd031bf793cbba4a2ce817ca2a5a6f",
+      "postgresql.prisma": "bfaa62d22781e51be98a22ae4c937a798b2d286b8fe2c54d12cab7e4fc253c45",
+      "sqlserver-guards.sql": "566bb38b378e6e01a0babf45efd6e6f03af41d0ea876291b1f890d06138c1c3b",
+      "001_sqlserver.sql": "c91dbd593d2e8aa8ec52d2753ad8657840266a4eea7e05fdfdf63af055d84a09",
+      "001_postgresql.sql": "5a94df60785ee1e2d2944616c86638cb69651ca48294be204719043fbdeb85d4"
+    },
+    "standaloneAndFullValidation": [
+      "sqlserver",
+      "postgresql"
+    ],
+    "installedPrismaCli": "6.19.3",
+    "databaseApplied": false,
+    "provisionedRegions": []
+  },
+  "checks": {
+    "offlineNodeTests": {
+      "passed": 22,
+      "failed": 0,
+      "includesPhase1": 12
+    },
+    "jest": {
+      "suites": 2,
+      "passed": 21,
+      "failed": 0
+    },
+    "backendTypecheck": "passed",
+    "frontendContractTypecheck": "passed",
+    "frontendApplicationTypecheck": "passed",
+    "contractCopies": 4,
+    "contractParity": "passed",
+    "privateAuthoringIsolation": "passed",
+    "planCopiesMatch": true,
+    "planSha256": "1a18a1488e1cd5484fee25ee3f6ff0cf97ea1ebef4b9e27d01d60e07a734b7a2",
+    "sourcePackageUnchanged": "c8c7887d42376cfb2858d4974358d0b50f7440598620ec436e70063678051d17",
+    "sqlEmission": {
+      "schema": "synthetic offline file only",
+      "grants": "one synthetic tester; offline file only",
+      "sqlExecuted": false
+    }
+  },
+  "effects": {
+    "schemaConnections": 0,
+    "cloudCalls": 0,
+    "contentImports": 0,
+    "grantsCreated": 0,
+    "normalProgressWrites": 0,
+    "learnerApiMounted": false,
+    "frontendRouteMounted": false,
+    "pushes": false,
+    "deployments": false
+  },
+  "limitations": [
+    "SQL Server constraints/triggers and real concurrency are not executed or accepted by static checks.",
+    "Phase 1 final key including Q6 and Arabic editorial/speech approvals remain pending.",
+    "PostgreSQL migration is a design reference; Saudi runtime/provisioning is denied."
+  ],
+  "frontendScope": "contract types, compile-only fixtures, parity checker and documentation; no UI/route/service"
+}

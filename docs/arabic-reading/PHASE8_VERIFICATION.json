@@ -1,0 +1,350 @@
+{
+  "phase": 8,
+  "date": "2026-11-28",
+  "branch": "feat/arabic_R",
+  "engineeringStatus": "complete locally with explicitly recorded inherited limitations",
+  "changes": "Acceptance tests, test-only compatibility tools, isolation audits and documentation only. No production runtime change in this phase.",
+  "backend": {
+    "rawBroadRegression": {
+      "passed": 759,
+      "failed": 17,
+      "skipped": 25,
+      "total": 801,
+      "passedSuites": 46,
+      "failedSuites": 2,
+      "skippedSuites": 1,
+      "arabicAccessAndFlagsPassed": 258,
+      "otherRegressionsPassed": 501,
+      "failedFixtures": [
+        {
+          "file": "step.http.spec.ts",
+          "failures": 9
+        },
+        {
+          "file": "nafs.http.spec.ts",
+          "failures": 8
+        }
+      ],
+      "cause": "Inherited STEP/NAFS HTTP test JWTs omit authVersion: password-v1, so unchanged production auth returns 401. Raw run is NOT green.",
+      "optionalActualDatabaseTests": "24 NAFS practice and one Primary SQL test deliberately skipped; no database acceptance claimed",
+      "nonlocalTcpAttempts": 0
+    },
+    "supplementalCurrentClaimFixtures": {
+      "passed": 17,
+      "suites": 2,
+      "nonlocalTcpAttempts": 0,
+      "scope": "Only two original test signing expressions transformed in test memory after baseline verification. No production guard/auth or original test file modification; no tests skipped in this run."
+    },
+    "offlineSourceSchemaIsolationTestsPassed": 26,
+    "phase8NewGuardMatrix": {
+      "cases": 26,
+      "routes": 13,
+      "boundaries": [
+        "flag disabled",
+        "region not provisioned"
+      ],
+      "storageTransactions": 0,
+      "speechOrCodecCalls": 0
+    },
+    "isolation": {
+      "passed": true,
+      "baseline": "f876ec6",
+      "runtimeFiles": 16,
+      "writeTargets": [
+        "ArabicReadingActiveSession",
+        "ArabicReadingMessage",
+        "ArabicReadingMutation",
+        "ArabicReadingSession"
+      ],
+      "sharedChanges": "Arabic module registration and two independent flag entries only",
+      "existingModeSourceUnchanged": true,
+      "defaultOff": true,
+      "baselineEvidence": [
+        {
+          "file": "src/modules/nafs/nafs.http.spec.ts",
+          "unchangedFromStepBaseline": true,
+          "sha256": "558b8392137912bc83d098586cb5c3a9e2d9493a6026ee7982d28eae85a6a119"
+        },
+        {
+          "file": "src/modules/step/step.http.spec.ts",
+          "unchangedFromStepBaseline": true,
+          "sha256": "fa763c1e0cdc8f7b6f3751993f0837022b02d469d380b10c13199920443eda60"
+        },
+        {
+          "file": "src/modules/auth/strategies/jwt-access.strategy.ts",
+          "unchangedFromStepBaseline": true,
+          "sha256": "10013ede33b2049349380e56af33fa0846e1b287f2eced88c9115fabfa48025a"
+        },
+        {
+          "file": "src/modules/auth/config/password-policy.ts",
+          "unchangedFromStepBaseline": true,
+          "sha256": "7efcb859444528e0966bb0c5c0e022336f61d4d64e0d0c40bb2a68db31bac2dd"
+        }
+      ],
+      "liveOperations": 0
+    }
+  },
+  "frontend": {
+    "existingStepNafsTransportSessionTestsPassed": 60,
+    "existingRegressionScriptsPassed": 14,
+    "existingRegressionScripts": [
+      "reading-practice-presentation-check",
+      "reading-practice-audio-check",
+      "reading-vocabulary-feedback-check",
+      "reading-audio-upload-check",
+      "socket-auth-recovery-check",
+      "reading-finish-check",
+      "answer-feedback-check",
+      "component-completion-check",
+      "mcq-feedback-check",
+      "avatar-reading-check",
+      "avatar-listening-check",
+      "avatar-roleplay-check",
+      "avatar-refresh-check",
+      "avatar-narration-check"
+    ],
+    "presentationAssertionsPassed": 30,
+    "contractParityPrivacy": "four copies identical; private source absent from learner inputs",
+    "isolation": {
+      "passed": true,
+      "baseline": "c6b4701",
+      "runtimeFiles": 14,
+      "existingModeRecorderAuthLayoutSourceUnchanged": true,
+      "routeChanges": "two separate Arabic sibling routes only",
+      "defaultOff": true,
+      "separateStores": true,
+      "privateRuntimeImportAbsent": true,
+      "liveOperations": 0
+    },
+    "ordinaryRecorder": {
+      "viewports": [
+        390,
+        1280
+      ],
+      "result": "passed startup, rapid taps, timer/stop, cancel, denied permission, assessment, retry, timeout and late-stream/unmount cleanup",
+      "device": "actual browser MediaRecorder with generated oscillator stream and deferred fake permission; no real microphone"
+    },
+    "layout": {
+      "assertionsPassed": 422,
+      "sceneViewportCombinations": 56,
+      "syntheticJourneys": 3,
+      "viewports": [
+        [
+          1440,
+          900
+        ],
+        [
+          1280,
+          600
+        ],
+        [
+          1024,
+          768
+        ],
+        [
+          768,
+          1024
+        ],
+        [
+          390,
+          844
+        ],
+        [
+          320,
+          568
+        ],
+        [
+          844,
+          390
+        ]
+      ],
+      "screenshots": [
+        "chooser-1440.png",
+        "reading-1440.png",
+        "listen-390.png",
+        "quiz-390.png",
+        "completed-390.png",
+        "feedback-390.png"
+      ],
+      "visualInspection": [
+        "reading-1440.png",
+        "quiz-390.png",
+        "feedback-390.png"
+      ],
+      "checks": [
+        "RTL",
+        "native keyboard radio order",
+        "dialog focus",
+        "exact diacritics",
+        "choice order",
+        "mixed numerals",
+        "default-off route",
+        "no usage/socket/API side effects"
+      ]
+    }
+  },
+  "integration": {
+    "command": "node dev/arabic-reading/integration-check.cjs --phase8",
+    "scenarios": [
+      "owned chooser/listen/recording and server sentence/feedback resume",
+      "refresh recovers exact pending bytes and deliberate resend",
+      "lost upload response reconciles receipt without a second grade",
+      "discard after reload cancels an upload still in flight",
+      "silence permits a fresh recording without a validated attempt",
+      "unclear permits a fresh recording without a validated attempt",
+      "speech unavailable retains pending; reconnect never auto-resends",
+      "accelerated upload timeout retains the exact attempt until atomic discard",
+      "storage failure prevents upload and reports Arabic fallback",
+      "offline pending recording survives reconnect without auto-upload",
+      "narration errors remain Arabic and retry uses authenticated binary media",
+      "browser playback rejection can retry without losing the owned session",
+      "two tabs share one exact pending attempt without duplicate grading",
+      "a different server revision never receives an old pending recording",
+      "pending cleanup remains available after another client reaches quiz",
+      "permission denial and cancelled late stream are localized and released",
+      "30-second client limit auto-stops and releases the synthetic microphone",
+      "corrupted local bytes are never uploaded and can be safely discarded",
+      "account replacement cannot recover or send the previous account recording",
+      "late old-account response cannot update or replay as the replacement account",
+      "revoked access hides session and keeps private pending unsent",
+      "full 10-question server quiz, completion and immutable retake",
+      "full 6-question server quiz, completion and immutable retake",
+      "full 9-question server quiz, completion and immutable retake",
+      "checked quiz state resumes on the next unchecked question",
+      "lost check response reconciles without duplicate mutation",
+      "unconfirmed check survives refresh and uses its original request on deliberate retry",
+      "lost finish response reconciles without duplicate mutation",
+      "unconfirmed finish survives refresh and uses its original request on deliberate retry",
+      "lost retake response reconciles without duplicate mutation",
+      "unconfirmed retake survives refresh and uses its original request on deliberate retry",
+      "mutation storage failure cannot send a check",
+      "replacement identity cannot resume another owner finish intent"
+    ],
+    "assertionsPassed": 110,
+    "mobileScenarios": 17,
+    "desktopScenarios": 16,
+    "viewports": [
+      {
+        "width": 390,
+        "height": 844
+      },
+      {
+        "width": 1280,
+        "height": 800
+      }
+    ],
+    "browserErrors": 0,
+    "forbiddenLmsRequests": 0,
+    "actualCode": "frontend controller/IndexedDB/transport, Arabic Nest module, real local JWT/roles/DTOs/session logic",
+    "synthetic": "Accounts, grants, approved fixture keys, SQL store, speech/AI/codec results, device bytes and generated narration. These are not source approval or real speech/SQL/device acceptance."
+  },
+  "builds": {
+    "frontend": "full tsc -b and Vite production build passed",
+    "backendTypes": "full tsc --noEmit passed",
+    "backendEmit": "full JS/declarations passed: tsc -p tsconfig.build.json --preserveSymlinks true --outDir tmp/arabic-reading/phase8-build",
+    "defaultNestBuild": "Fails with inherited TS2742 in unchanged src/modules/learning/utils/lesson-progress-select.util.ts:4, due to linked Prisma dependency. Not fixed or hidden by shared source/config changes.",
+    "frontendWarnings": [
+      "inherited pdfjs eval warning",
+      "inherited large minified chunks"
+    ],
+    "previewTypes": "passed",
+    "lint": "Frontend changed TypeScript QA configs pass. Backend HTTP fixture passes with existing mock unsafe/require-await/unbound and formatting rules disabled explicitly; no claim of whole-repository lint. New CJS files syntax checked.",
+    "trackedBuildCaches": "restored; not committed"
+  },
+  "source": {
+    "pdfSha256": "cb15678252361fc2447a554cf894235ca0ce041dfe30556851297d3f03bb95d1",
+    "passages": 3,
+    "sourcePages": [
+      5,
+      7,
+      8
+    ],
+    "questions": [
+      10,
+      6,
+      9
+    ],
+    "choices": 100,
+    "sealedSourceAndSchemasUnchanged": true,
+    "approvedKeys": false,
+    "candidateKeys": 24,
+    "q6": "preserved with null key; source passage and choices conflict",
+    "editorialSpeechApproved": false,
+    "originalActivation": "blocked; publication remains refused"
+  },
+  "operations": {
+    "actualDatabaseCalls": 0,
+    "actualAzureAiCalls": 0,
+    "actualMicrophoneCalls": 0,
+    "liveGrantOrAccountChanges": 0,
+    "cloudMediaContentUploads": 0,
+    "normalLmsProgressUsageGradeRewardReportWrites": 0,
+    "sharedPrismaClientsRegenerated": false,
+    "pushed": false,
+    "deployed": false,
+    "featureFlagsDefaultOff": true
+  },
+  "pending": [
+    "Final approved source key including Q6",
+    "Arabic editorial/diacritic and teacher approval",
+    "Real device, narrator and Azure calibration",
+    "Actual owned SQL Server guard/concurrency acceptance",
+    "Phase 9 deployment handoff; actual deployment remains owner-controlled"
+  ],
+  "localReportDigests": [
+    {
+      "repository": "backend",
+      "file": "tmp/arabic-reading/phase8-jest.json",
+      "sha256": "4b8f40cba94235581f1519eab2712a285e01446420a6bf719c0e5586d9e1b900",
+      "versioned": false
+    },
+    {
+      "repository": "backend",
+      "file": "tmp/arabic-reading/phase8-current-jwt-fixtures.json",
+      "sha256": "a08ba56de4e9df3654a851dc1bcc31ca2375896c4e1f444dd135dedb1c4f484b",
+      "versioned": false
+    },
+    {
+      "repository": "backend",
+      "file": "tmp/arabic-reading/phase8-node.log",
+      "sha256": "e1265effb119ec6cbf18e15b525da97d5097d034aa6f1f08d1e6b10e37cc26ae",
+      "versioned": false
+    },
+    {
+      "repository": "backend",
+      "file": "tmp/arabic-reading/phase8-default-build.log",
+      "sha256": "2c89a89cf3fb8eb30fc1b1c0b4662cd2217f7cd4d455bd8193a1ca1e185bee9c",
+      "versioned": false
+    },
+    {
+      "repository": "frontend",
+      "file": "dev/arabic-reading/test-results/phase8-integration.json",
+      "sha256": "a95ca39a9c65a2e325538d03f58ea4d448a4d912e7c839650aa26ffaea0a490f",
+      "versioned": false
+    },
+    {
+      "repository": "frontend",
+      "file": "dev/arabic-reading/test-results/phase5-browser.json",
+      "sha256": "47610d9a4a17bb0ef59ef35c13c093b49a0637649ef1aa1a74466fbd64f2d69f",
+      "versioned": false
+    },
+    {
+      "repository": "frontend",
+      "file": "dev/arabic-reading/test-results/phase8-existing-modes.json",
+      "sha256": "e8f20a18469e7a3ffc70b9aabcf75948d767b2a4b4b4256201f1e13b0c534946",
+      "versioned": false
+    },
+    {
+      "repository": "frontend",
+      "file": "dev/arabic-reading/test-results/phase8-build.log",
+      "sha256": "555bbbf1d13a22208366d4bd9d616e6279e85d207c196a0a70c649984725f015",
+      "versioned": false
+    },
+    {
+      "repository": "frontend",
+      "file": "dev/arabic-reading/test-results/phase8-offline-regressions.log",
+      "sha256": "e52e0acc60c80b0fec555f5a80a1b5ff235bbc5d92e6e3502ab8d839e0b5b059",
+      "versioned": false
+    }
+  ]
+}

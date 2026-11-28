@@ -1,0 +1,62 @@
+{
+  "date": "2026-11-27",
+  "branch": "feat/arabic_R",
+  "phase": 1,
+  "engineeringPreparation": "complete",
+  "academicApproval": "pending",
+  "status": "draft-valid",
+  "passages": 3,
+  "questions": 25,
+  "choices": 100,
+  "blocks": 14,
+  "proposedChunks": 26,
+  "proposedKeys": 24,
+  "unresolvedKeys": 1,
+  "blockingIssues": 7,
+  "sealedFiles": 29,
+  "publicationReady": false,
+  "contentOwnerApproval": "pending",
+  "liveAcceptance": false,
+  "sourceSha256": "cb15678252361fc2447a554cf894235ca0ce041dfe30556851297d3f03bb95d1",
+  "packageDigest": "c8c7887d42376cfb2858d4974358d0b50f7440598620ec436e70063678051d17",
+  "tests": {
+    "command": "node --test test/arabic-reading/content-package.test.cjs",
+    "passed": 12,
+    "failed": 0,
+    "networkCalls": 0,
+    "databaseCalls": 0
+  },
+  "checks": {
+    "draftValidation": "passed",
+    "rebuildByteDeterminism": "passed",
+    "publicationPreview": {
+      "expectedExit": 2,
+      "observedExit": 2,
+      "code": "ARABIC_CONTENT_NOT_APPROVED"
+    },
+    "planCopiesIdentical": true,
+    "planSha256": "1edac656aa1d5e6e5457db541704c69b705eb8db8ec783cfaa9adb868a312b83",
+    "sourcePagesVisuallyReconciled": [
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "arabicTeacherSignoff": false,
+    "sealedGitAttributes": "exact bytes, no checkout newline conversion"
+  },
+  "ownerDecision": "Preserve supplied source unchanged; not approval of inferred keys.",
+  "effects": {
+    "runtimeChanges": false,
+    "schemaChanges": false,
+    "imports": false,
+    "progressWrites": false,
+    "azureSpeechCalls": false,
+    "uploads": false,
+    "pushes": false,
+    "deployments": false
+  },
+  "frontendRuntimeChanges": false,
+  "privateContentCopiedToFrontend": false
+}

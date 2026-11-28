@@ -35,6 +35,7 @@ import { AvatarModePage, AvatarTopicsPage, AvatarReadingPage, AvatarListeningPag
 import StudentDashboard from "@/pages/student/dashboard";
 import DebateModeTopics from "@/pages/student/topics/DebateModeTopics";
 import ReadingModeTopics from "@/pages/student/topics/ReadingModeTopics";
+import ArabicReadingPage from '@/pages/student/arabic-reading/ArabicReadingPage';
 import RolePlayModeTopics from "@/pages/student/topics/RolePlayModeTopics";
 import ListeningModeTopics from "@/pages/student/topics/ListeningModeTopics";
 import Chat from "@/pages/student/ChatPage";
@@ -135,6 +136,9 @@ const AppRoutes = () => {
       /> */}
 
       {/* Student Routes */}
+      {/* Isolated Arabic shell: never wrap in StudentLayout's engagement effects. */}
+      <Route path="/student/arabic-reading" element={<ArabicReadingPage />} />
+      <Route path="/student/arabic-reading/:activityId" element={<ArabicReadingPage />} />
       <Route path="/student/3d-avatar" element={<StudentLayout><AvatarModePage /></StudentLayout>} />
       <Route path="/student/3d-avatar/reading" element={<StudentLayout><AvatarTopicsPage /></StudentLayout>} />
       <Route path="/student/3d-avatar/reading/:topicId" element={<StudentLayout><AvatarReadingPage /></StudentLayout>} />

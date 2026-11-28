@@ -1,0 +1,77 @@
+{
+  "date": "2026-11-27",
+  "phase": 3,
+  "status": "complete-locally-default-off",
+  "branch": "feat/arabic_R",
+  "apiPrefix": "/api/v1/arabic-reading",
+  "implementedRoutes": [
+    "GET /activities",
+    "GET /activities/:activityId",
+    "POST /activities/:activityId/sessions",
+    "GET /sessions/:sessionId",
+    "GET /sessions/:sessionId/messages",
+    "POST /sessions/:sessionId/listen",
+    "POST /sessions/:sessionId/retake"
+  ],
+  "checks": {
+    "jest": {
+      "suites": 10,
+      "passed": 338,
+      "failed": 0,
+      "arabicAndSharedFlagChecks": 92,
+      "existingModeServiceRegressions": 246
+    },
+    "offlineNode": {
+      "passed": 22,
+      "failed": 0
+    },
+    "totalPassed": 360,
+    "backendFullTypecheck": "passed",
+    "frontendFullTypecheck": "passed",
+    "frontendContractTypecheck": "passed",
+    "contractParity": "passed",
+    "backendEmit": {
+      "status": "passed",
+      "command": "node node_modules/typescript/bin/tsc -p tsconfig.build.json --preserveSymlinks true --incremental false",
+      "modulePresent": true,
+      "manifestPresent": true
+    },
+    "defaultNestBuild": {
+      "status": "blocked-by-local-linked-dependency-declaration",
+      "code": "TS2742",
+      "unchangedFile": "src/modules/learning/utils/lesson-progress-select.util.ts"
+    },
+    "planCopiesIdentical": true,
+    "planSha256": "47a824be504085da3f77438b231721c85aa475f8ecc62b366dc4362e5ff06644",
+    "sourcePackageDigest": "c8c7887d42376cfb2858d4974358d0b50f7440598620ec436e70063678051d17",
+    "schemaSqlSha256": "c91dbd593d2e8aa8ec52d2753ad8657840266a4eea7e05fdfdf63af055d84a09"
+  },
+  "boundaries": {
+    "http": "real local Nest module with signed JWT and DTO validation",
+    "storage": "synthetic serializable/rollback fixture; parameterized SQL driver mocks",
+    "actualSqlServerExecuted": false,
+    "independentLiveSeekPlansVerified": false,
+    "liveDataConnections": 0,
+    "cloudCalls": 0,
+    "sourcePublished": false,
+    "schemaApplied": false,
+    "testersGranted": false,
+    "linkedPrismaClientsRegenerated": false,
+    "normalLmsWritersUsed": false,
+    "frontendRuntimeChanged": false,
+    "pushed": false,
+    "deployed": false
+  },
+  "pending": [
+    "Phase 1 final key/Q6 and Arabic editorial/speech approval",
+    "Phase 4 audio/media and speech calibration",
+    "Phase 5 frontend UI",
+    "Phase 7 quiz writers",
+    "Owned SQL Server/hosted/device acceptance"
+  ],
+  "priorCommits": {
+    "backendPhase2": "72936a4",
+    "frontendPhase2": "be61481"
+  },
+  "frontendScope": "handoff/reference and plan only; Phase 2 learner contract unchanged"
+}
