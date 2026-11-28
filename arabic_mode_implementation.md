@@ -2,7 +2,7 @@
 
 Prepared: 2026-11-27
 
-Status: Phases 0, 2, 3, 4, 5 and 6 are complete locally (Phase 6 completed 2026-11-28). Phase 1 source preparation is complete; final answer-key and Arabic editorial/speech approval remain open. The isolated backend APIs and frontend route are registered with independent default-off feature/external-service switches. The real owned-session, narration, recording and recovery transport is connected and verified against synthetic local HTTP/JWT/storage/speech/device adapters. Source quiz/check/completion writers are Phase 7. Real-speech calibration and voice acceptance remain unverified. No live database operation has been applied. This plan authorizes local development and local verification only; the owner will deploy later.
+Status: Phases 0, 2, 3, 4, 5 and 6 are complete locally. Phase 7 engineering is complete locally (2026-11-28); original-source key approval remains an open dependency, so original-content activation is not complete. Phase 1 source preparation is complete; final answer-key and Arabic editorial/speech approval remain open. The isolated backend APIs and frontend route are registered with independent default-off feature/external-service switches. Owned sessions, narration, recording/recovery, quiz checks, completion and retakes are connected and verified against synthetic local HTTP/JWT/storage/speech/device adapters. Real-speech calibration and voice acceptance remain unverified. No live database operation has been applied. This plan authorizes local development and local verification only; the owner will deploy later.
 
 ## 1. Agreed outcome
 
@@ -168,14 +168,17 @@ Phase 6 evidence: both repositories' `docs/arabic-reading/PHASE6_INTEGRATION.md`
 
 ### Phase 7 - Source quizzes, completion and retakes
 
-- [ ] Integrate each activity's exact 10/6/9 questions and reviewed keys.
-- [ ] Implement server-confirmed Arabic check feedback, navigation and all-correct final completion.
-- [ ] Reject quiz-before-reading, stale/changed answers, foreign choices and duplicate/uncertain finishes.
-- [ ] Restore checked quiz state and preserve previous run history on explicit retake.
-- [ ] Verify completion remains exclusively within Arabic session storage.
-- [ ] Update evidence and make phase-local commit(s).
+- [x] Map each activity's exact 10/6/9 source questions and all 100 original choices into a private runtime draft; use only approved private version keys in the learner runtime.
+- [ ] Obtain the final reviewed source key, including Q6, and Arabic editorial/speech approval before activating original content. This dependency remains open from Phase 1; candidate keys are not promoted or invented.
+- [x] Implement server-confirmed Arabic check feedback, navigation and all-correct final completion.
+- [x] Reject quiz-before-reading, stale/changed answers, foreign choices and duplicate/uncertain finishes.
+- [x] Restore checked quiz state and preserve previous run history on explicit retake.
+- [x] Verify completion remains exclusively within Arabic session storage.
+- [x] Update evidence and make phase-local commit(s), with IDs reported in the handoff.
 
 Exit: all three complete synthetic journeys and retakes pass; no client-side key leaks or LMS progress writes.
+
+Phase 7 engineering evidence: both repositories' `docs/arabic-reading/PHASE7_QUIZ.md` and `PHASE7_VERIFICATION.json`; backend source-draft bridge and quiz/check/finish handlers; frontend check/finish/retake transport and owner/version-bound durable intent journal. All three 10/6/9 synthetic full journeys and immutable retakes pass. Finish independently revalidates every current checked selection against frozen private keys; wrong/foreign/stale/changed/missing proofs and competing finishes cannot bypass completion. Unknown replies reconcile current state first, retain original UUID/payload for deliberate retry and never auto-finish/retake on refresh. Backend 478 Jest checks plus 24 source/schema checks pass (502); frontend 33 integrated scenarios/110 assertions, 422 layout assertions, 30 presentation checks and ten existing regression scripts pass. Both full type checks, frontend build, backend symlink-aware emit, scoped lint, contract privacy/parity and fixture exclusion pass. A private preview concretely preserves all 25 source questions/100 choices with false approval flags and Q6 null; publication remains refused. No original source/schema or existing-mode/recorder/layout source changed, and no live DB/grant/content/media/cloud operation, push or deployment occurred. Academic key/editorial/speech and real device/Azure/SQL acceptance remain explicitly pending; Phase 8 engineering work may proceed without claiming source activation.
 
 ### Phase 8 - Isolation, regression and local acceptance
 
@@ -209,7 +212,8 @@ Exit: deployment-ready local handoff is complete. Hosted release and client acce
 | 4 | Complete locally: isolated speech/media engineering | 460 local checks; private narration, Arabic validation/attempt receipts, offline-default calibration tool; real Azure/teacher/voice acceptance pending |
 | 5 | Complete locally: isolated Arabic UI/layouts | 422 browser assertions, 56 scene/viewport combinations, three synthetic journeys; 30 presentation assertions, ten existing frontend regression scripts, full frontend build/type checks; live integration remains Phase 6 |
 | 6 | Complete locally: owned session/audio/recovery integration | 475 backend checks; 21 synthetic HTTP/JWT integration scenarios/68 assertions; layout/frontend regressions/builds pass; real external/academic acceptance remains open |
-| 7-9 | Not started | Source quiz/completion/retake integration, final acceptance and deployment handoff remain pending; no schema apply, import, push or deployment |
+| 7 | Engineering complete locally; source approval dependency open | 502 backend checks; 33 synthetic HTTP/JWT scenarios/110 assertions; exact private source draft; all source reviews/key including Q6 remain pending before activation |
+| 8-9 | Not started | Final engineering acceptance and owner deployment handoff remain pending; no schema apply, publication, push or deployment |
 
 ## 8. Reference material
 

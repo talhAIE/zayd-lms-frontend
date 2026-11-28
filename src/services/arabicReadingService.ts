@@ -3,15 +3,17 @@ import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { z } from 'zod';
 import { ARABIC_READING_API, ARABIC_RECORDING_LIMITS } from '../types/arabic-reading.contract';
 import type { ArabicActivityId, ArabicAudioRecovery, ArabicAudioRecoveryRequest, ArabicAudioRequest, ArabicDiscovery, ArabicActivityOverview,
-  ArabicErrorCode, ArabicHistory, ArabicMediaRequest, ArabicSessionView } from '../types/arabic-reading.contract';
+  ArabicCheckRequest, ArabicFinishRequest, ArabicRetakeRequest, ArabicErrorCode, ArabicHistory, ArabicMediaRequest, ArabicSessionView } from '../types/arabic-reading.contract';
 import { ARABIC_ERROR_TEXT } from '../components/arabic-reading/presentation';
 
-export type ArabicClientCode = ArabicErrorCode | 'AR_LOCAL_STORAGE' | 'AR_SESSION_CHANGED' | 'AR_PENDING_RECORDING' | 'AR_OFFLINE';
+export type ArabicClientCode = ArabicErrorCode | 'AR_LOCAL_STORAGE' | 'AR_SESSION_CHANGED' | 'AR_PENDING_RECORDING' | 'AR_OFFLINE' | 'AR_MUTATION_STORAGE' | 'AR_PENDING_MUTATION';
 export const ARABIC_CLIENT_TEXT = {...ARABIC_ERROR_TEXT,
   AR_LOCAL_STORAGE:'تعذر حفظ التسجيل على هذا الجهاز. لن يُرسل قبل حفظه. تحقق من مساحة التخزين ثم حاول مجدداً.',
   AR_SESSION_CHANGED:'تغيّرت الجلسة. لا يمكن إرسال التسجيل إلى جملة أو محاولة مختلفة. يمكنك حذف التسجيل المحفوظ.',
   AR_PENDING_RECORDING:'يوجد تسجيل محفوظ لهذا النص. أعد تحميل المحفوظ قبل إنشاء تسجيل آخر.',
   AR_OFFLINE:'انقطع الاتصال. احتفظ بتسجيلك وأعد المحاولة عند عودة الشبكة.',
+  AR_MUTATION_STORAGE:'تعذر حفظ الطلب على هذا الجهاز. لم يُرسل الطلب؛ تحقق من التخزين ثم حاول مجدداً.',
+  AR_PENDING_MUTATION:'لم نتأكد من نتيجة الطلب السابق. أعد إرساله للتحقّق قبل المتابعة.',
 } as const;
 export class ArabicClientError extends Error {
   constructor(readonly code: ArabicClientCode) { super(ARABIC_CLIENT_TEXT[code]); }
@@ -77,6 +79,9 @@ export class ArabicReadingApi {
   async start(id:ArabicActivityId,requestId:string,signal:AbortSignal){return parseArabicSession(await this.request('POST',`/activities/${id}/sessions`,{requestId},signal));}
   async session(id:string,signal:AbortSignal){return parseArabicSession(await this.request('GET',`/sessions/${encodeURIComponent(id)}`,undefined,signal));}
   async listen(id:string,requestId:string,expectedRevision:number,signal:AbortSignal){return parseArabicSession(await this.request('POST',`/sessions/${id}/listen`,{requestId,expectedRevision,playbackEnded:true},signal));}
+  async check(id:string,r:ArabicCheckRequest,signal:AbortSignal){return parseArabicSession(await this.request('POST',`/sessions/${id}/quiz/check`,r,signal));}
+  async finish(id:string,r:ArabicFinishRequest,signal:AbortSignal){return parseArabicSession(await this.request('POST',`/sessions/${id}/finish`,r,signal));}
+  async retake(id:string,r:ArabicRetakeRequest,signal:AbortSignal){return parseArabicSession(await this.request('POST',`/sessions/${id}/retake`,r,signal));}
   async upload(id:string,r:ArabicAudioRequest,blob:Blob,signal:AbortSignal){
     if(blob.size>ARABIC_RECORDING_LIMITS.maxBytes)throw new ArabicClientError('AR_RECORDING_TOO_LARGE');
     const form=new FormData();form.append('audio',blob,`reading.${r.format}`);

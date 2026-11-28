@@ -29,13 +29,14 @@ function ArabicPassage({blocks, expanded, playback, actions, busy}: {blocks: Ara
 }
 function ArabicQuiz({session, actions, busy}: {session: Extract<ArabicSessionView, {phase:'quiz'}>; actions: ArabicReadingActions; busy?: boolean}) {
   const firstUnchecked = session.questions.findIndex(q => !session.checkedAnswers.some(a => a.questionId === q.id && a.isCorrect));
-  const [index, setIndex] = useState(Math.max(0, firstUnchecked)), question = session.questions[index];
+  const [index, setIndex] = useState(firstUnchecked<0?Math.max(0,session.questions.length-1):firstUnchecked), question = session.questions[index];
   // Local selection is never a verdict. Only a matching server-checked answer unlocks navigation.
   const [draft, setDraft] = useState<{questionId:string; optionId:string} | null>(null);
   const title = useRef<HTMLHeadingElement>(null);
   useEffect(() => { title.current?.focus(); }, [index]);
+  const checked = question ? session.checkedAnswers.find(a => a.questionId === question.id) : undefined;
+  useEffect(()=>{setDraft(null);},[checked?.responseId,question?.id]);
   if (!question) return <p role="alert">تعذر تحميل السؤال. أعد تحميل النشاط.</p>;
-  const checked = session.checkedAnswers.find(a => a.questionId === question.id);
   const selected = draft?.questionId === question.id ? draft.optionId : checked?.selectedOptionId ?? null;
   const result = checked?.selectedOptionId === selected ? checked : undefined;
   const allCorrect = session.questions.every(q => session.checkedAnswers.some(a => a.questionId === q.id && a.isCorrect));

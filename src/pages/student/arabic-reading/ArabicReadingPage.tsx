@@ -11,12 +11,12 @@ import { ARABIC_CLIENT_TEXT } from '../../../services/arabicReadingService';
 import { ArabicRecorder } from '../../../components/arabic-reading/ArabicReadingControls';
 
 function ArabicLive({owner,activityId}:{owner:ArabicOwner;activityId:ArabicActivityId|undefined}){
-  const {screen,playback,recorder,busy,notice,actions}=useArabicReading(owner,activityId);
+  const {screen,playback,recorder,busy,mutationPending,notice,actions}=useArabicReading(owner,activityId);
   return <>{notice&&<p className="ar-notice ar-live-notice" role="alert">{ARABIC_CLIENT_TEXT[notice]}</p>}
-    <ArabicReadingView screen={screen} actions={actions} playback={playback} recorder={recorder} busy={busy}/>
+    {mutationPending&&<button type="button" className="ar-secondary" disabled={busy} onClick={actions.retryMutation}>إعادة إرسال الطلب السابق</button>}
+    <ArabicReadingView screen={screen} actions={actions} playback={playback} recorder={recorder} busy={busy||mutationPending}/>
     {screen.kind==='session'&&screen.session.phase!=='reading'&&['saved','reconciling'].includes(recorder.state)&&
       <ArabicRecorder recorder={recorder} actions={{discard:actions.discard}} busy={busy}/>}
-    {screen.kind==='session'&&screen.session.phase==='quiz'&&<p className="ar-notice">التحقّق من الإجابات غير متاح حالياً.</p>}
   </>;
 }
 /** Default-off owned-server entry. No dev fixture or inferred grant/content approval. */

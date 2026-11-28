@@ -33,6 +33,7 @@ export interface ArabicReadingActions {
   check?: (questionId: string, optionId: string) => void;
   finish?: () => void;
   retake?: () => void;
+  retryMutation?:()=>void;
 }
 export const ARABIC_ACTIVITY_TITLES = {
   'ar-reading-01': 'حنكة طفل', 'ar-reading-02': 'من نعم الله', 'ar-reading-03': 'السُّكَّري',

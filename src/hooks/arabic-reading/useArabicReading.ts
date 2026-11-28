@@ -17,6 +17,7 @@ export function useArabicReading(owner:ArabicOwner,activityId:ArabicActivityId|u
   const actions:ArabicReadingActions={choose:id=>ref.current?.choose(id),start:()=>{void ref.current?.start();},back:()=>ref.current?.back(),retry:()=>{void ref.current?.load();},
     play:target=>{void ref.current?.play(target);},seek:position=>ref.current?.seek(position),listen:()=>{void ref.current?.listen();},
     record:()=>{void ref.current?.record();},stop:()=>ref.current?.stop(),cancel:()=>ref.current?.cancel(),
-    send:()=>{void ref.current?.send();},resend:()=>{void ref.current?.send();},discard:()=>{void ref.current?.discard();}};
+    send:()=>{void ref.current?.send();},resend:()=>{void ref.current?.send();},discard:()=>{void ref.current?.discard();},
+    check:(questionId,optionId)=>{void ref.current?.check(questionId,optionId);},finish:()=>{void ref.current?.finish();},retake:()=>{void ref.current?.retake();},retryMutation:()=>{void ref.current?.retryMutation();}};
   return {...state,actions};
 }

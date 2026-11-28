@@ -86,7 +86,10 @@ export interface ArabicAudioRecovery {
   session: ArabicSessionView;
 }
 export interface ArabicCheckRequest extends ArabicMutationRequest { questionId: string; optionId: string }
-export type ArabicFinishRequest = ArabicMutationRequest;
+export interface ArabicFinishRequest extends ArabicMutationRequest {
+  /** Exact currently checked selections; never a client-provided correctness claim. */
+  answers: Array<{questionId:string; optionId:string; responseId:string}>;
+}
 export type ArabicRetakeRequest = ArabicMutationRequest;
 export interface ArabicMediaAccess { url: string; expiresAt: string }
 export type ArabicMediaRequest = { kind: 'passage' } | { kind: 'chunk'; chunkId: string } | { kind: 'message'; messageId: string };

@@ -3,6 +3,7 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
 const base=process.env.ARABIC_INTEGRATION_QA_URL||'http://127.0.0.1:5196';assert(['127.0.0.1','localhost'].includes(new URL(base).hostname));
 const report={checks:0,scenarios:[],errors:[],forbidden:[]},check=(v,m)=>{assert(v,m);report.checks++;};
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const phase=process.argv.includes('--phase7')?7:6;
 (async()=>{
   const browser=await chromium.launch({channel:'chrome',headless:true});
   async function scenario(name,work){
@@ -28,11 +29,14 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     const control=async data=>context.request.post(base+'/__arabic-test/configure',{data});
     const state=async()=> (await context.request.get(base+'/__arabic-test/state')).json();
     const pending=()=>page.evaluate(()=>new Promise((resolve,reject)=>{const r=indexedDB.open('zayd-arabic-reading-recordings',1);r.onsuccess=()=>{const db=r.result;if(!db.objectStoreNames.contains('pending')){db.close();resolve([]);return;}const tx=db.transaction('pending'),get=tx.objectStore('pending').getAll();get.onsuccess=()=>{const values=get.result.map(p=>({ownerKey:p.ownerKey,requestId:p.requestId,sessionId:p.sessionId,versionId:p.versionId,chunkId:p.chunkId,digest:p.audioSha256,size:p.blob.size}));tx.oncomplete=()=>{db.close();resolve(values);};};r.onerror=reject;};}));
-    const open=async()=>{await page.goto(base+'/student/arabic-reading');await page.locator('.ar-topic').first().getByRole('button',{name:'ابدأ القراءة'}).click();await page.getByRole('button',{name:'الاستماع إلى النص',exact:true}).click();};
+    const open=async(activity=0)=>{await page.goto(base+'/student/arabic-reading');await page.locator('.ar-topic').nth(activity).getByRole('button',{name:'ابدأ القراءة'}).click();await page.getByRole('button',{name:'الاستماع إلى النص',exact:true}).click();};
     const listen=async()=>{await page.getByRole('button',{name:'تشغيل الاستماع إلى النص',exact:true}).click();await page.getByRole('button',{name:'التالي: القراءة بصوت عالٍ'}).click();await page.getByRole('button',{name:'تسجيل قراءة الجملة',exact:true}).waitFor();};
     const capture=async()=>{await page.getByRole('button',{name:'تسجيل قراءة الجملة',exact:true}).click();await page.getByRole('button',{name:'إيقاف التسجيل',exact:true}).click();await page.getByRole('button',{name:'إرسال التسجيل',exact:true}).waitFor();};
     const send=async()=>{await page.getByRole('button',{name:'إرسال التسجيل',exact:true}).click();await page.waitForFunction(()=>!document.querySelector('.ar-view')?.getAttribute('aria-busy')?.includes('true'));};
-    try{await work({page,context,control,state,pending,open,listen,capture,send,bootstrap});report.scenarios.push(name);console.log('PASS '+name);}finally{await context.close();}
+    const quiz=async(activity=0)=>{await open(activity);await listen();for(let i=0;i<3;i++){await capture();await send();if(i===0)await page.getByText('بلغت النسبة ١٢٪.',{exact:true}).waitFor();if(i===1)await page.getByText('قرأ الطفل النص بوضوح.',{exact:true}).waitFor();}await page.locator('.ar-quiz').waitFor();};
+    const correctAll=async(total)=>{for(let i=0;i<total;i++){await page.getByRole('radio').first().check();await page.getByRole('button',{name:'تحقّق من الإجابة',exact:true}).click();await page.getByText('إجابة صحيحة. يمكنك المتابعة.',{exact:true}).waitFor();if(i<total-1)await page.getByRole('button',{name:'السؤال التالي',exact:true}).click();}};
+    const journal=()=>page.evaluate(()=>new Promise(resolve=>{const r=indexedDB.open('zayd-arabic-reading-mutations',1);r.onsuccess=()=>{const db=r.result;if(!db.objectStoreNames.contains('pending')){db.close();resolve([]);return;}const tx=db.transaction('pending'),get=tx.objectStore('pending').getAll();get.onsuccess=()=>{const result=get.result;tx.oncomplete=()=>{db.close();resolve(result);};};};}));
+    try{await work({page,context,control,state,pending,open,listen,capture,send,bootstrap,quiz,correctAll,journal});report.scenarios.push(name);console.log('PASS '+name);}finally{await context.close();}
   }
   try{
     await scenario('owned chooser/listen/recording and server sentence/feedback resume',async t=>{
@@ -42,7 +46,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
       check((await t.state()).evaluations===1,'One validated upload');await t.page.reload();await t.page.getByText('بلغت النسبة ١٢٪.',{exact:true}).waitFor();
       check(await t.page.getByRole('button',{name:'عرض الملاحظات'}).count()===1,'Feedback restored');
       await t.capture();await t.send();await t.page.getByText('قرأ الطفل النص بوضوح.',{exact:true}).waitFor();await t.capture();await t.send();await t.page.locator('.ar-quiz').waitFor();
-      check((await t.state()).evaluations===3,'Three chunks graded exactly once');check(await t.page.getByRole('button',{name:'تحقّق من الإجابة'}).isDisabled(),'Quiz writer left to Phase 7');
+      check((await t.state()).evaluations===3,'Three chunks graded exactly once');check(await t.page.getByRole('button',{name:'تحقّق من الإجابة'}).isDisabled(),'Unchecked quiz selection cannot submit');
       check(JSON.stringify((await t.state()).legacy)===JSON.stringify({progress:117,usage:31,nafs:53,step:29}),'No LMS effects');
     });
     await scenario('refresh recovers exact pending bytes and deliberate resend',async t=>{
@@ -175,8 +179,55 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
       await t.open();await t.listen();await t.capture();await t.control({revoked:true});await t.send();await t.page.getByText('هذا النشاط غير متاح لهذا الحساب.',{exact:true}).waitFor();
       check((await t.state()).evaluations===0,'Revoked grant rejected before cloud');check((await t.pending()).length===1,'Revoked pending not erased/rebound');check(await t.page.locator('.ar-current-sentence').count()===0,'Revoked content hidden');
     });
+    if(phase===7){
+      for(const [activity,total]of [[0,10],[1,6],[2,9]])await scenario(`full ${total}-question server quiz, completion and immutable retake`,async t=>{
+        await t.quiz(activity);await t.page.getByRole('radio').nth(1).check();await t.page.getByRole('button',{name:'تحقّق من الإجابة',exact:true}).click();await t.page.getByText(/الإجابة غير صحيحة/).waitFor();
+        check(await t.page.getByRole('button',{name:'السؤال التالي',exact:true}).count()===0,'Wrong answer cannot advance');await t.correctAll(total);
+        await t.page.getByRole('button',{name:'إنهاء النشاط',exact:true}).click();await t.page.getByText('أحسنت! أكملت نشاط القراءة.',{exact:true}).waitFor();
+        const completed=(await t.state()).sessions[0];check(completed.state.result.correctCount===total,'Server all-correct completion count');
+        check((await t.journal()).length===0,'Completed request journal reconciled');await t.page.reload();await t.page.getByText('أحسنت! أكملت نشاط القراءة.',{exact:true}).waitFor();
+        await t.page.getByRole('button',{name:'إعادة النشاط',exact:true}).click();await t.page.getByRole('button',{name:'إلغاء',exact:true}).click();check((await t.state()).sessions.length===1,'Retake cancellation has no mutation');
+        await t.page.getByRole('button',{name:'إعادة النشاط',exact:true}).click();await t.page.getByRole('button',{name:'بدء محاولة جديدة',exact:true}).click();await t.page.getByRole('button',{name:'استمع إلى النص للمتابعة'}).waitFor();
+        const after=await t.state();check(after.sessions.length===2&&after.sessions[1].revision===0,'Fresh isolated run');check(JSON.stringify(after.sessions[0])===JSON.stringify(completed),'Previous run retained unchanged');
+        check(JSON.stringify(after.legacy)===JSON.stringify({progress:117,usage:31,nafs:53,step:29}),'Completion has no LMS progress/usage effects');
+      });
+      await scenario('checked quiz state resumes on the next unchecked question',async t=>{
+        await t.quiz(1);await t.page.getByRole('radio').first().check();await t.page.getByRole('button',{name:'تحقّق من الإجابة'}).click();await t.page.getByText('إجابة صحيحة. يمكنك المتابعة.',{exact:true}).waitFor();await t.page.reload();
+        await t.page.getByRole('heading',{name:/السؤال ١٢:/}).waitFor();check((await t.state()).sessions[0].state.checkedAnswers.length===1,'Checked state restored from server');
+        await t.page.getByRole('button',{name:'السابق',exact:true}).click();check(await t.page.getByRole('radio').first().isChecked(),'Accepted choice preserved');check(await t.page.getByRole('radio').first().isDisabled(),'Accepted choice locked');
+      });
+      for(const operation of ['check','finish','retake']){
+        await scenario(`lost ${operation} response reconciles without duplicate mutation`,async t=>{
+          await t.quiz(1);if(operation!=='check'){await t.correctAll(6);if(operation==='retake'){await t.page.getByRole('button',{name:'إنهاء النشاط'}).click();await t.page.getByText('أحسنت! أكملت نشاط القراءة.',{exact:true}).waitFor();}}
+          await t.control({dropMutation:operation});
+          if(operation==='check'){await t.page.getByRole('radio').first().check();await t.page.getByRole('button',{name:'تحقّق من الإجابة'}).click();await t.page.getByText('إجابة صحيحة. يمكنك المتابعة.',{exact:true}).waitFor();}
+          else if(operation==='finish'){await t.page.getByRole('button',{name:'إنهاء النشاط'}).click();await t.page.getByText('أحسنت! أكملت نشاط القراءة.',{exact:true}).waitFor();}
+          else{await t.page.getByRole('button',{name:'إعادة النشاط',exact:true}).click();await t.page.getByRole('button',{name:'بدء محاولة جديدة'}).click();await t.page.getByRole('button',{name:'استمع إلى النص للمتابعة'}).waitFor();}
+          const op=operation==='check'?'quiz-check':operation;check((await t.state()).receipts.filter(r=>r.operation===op).length===(operation==='check'?1:1),'Single durable mutation receipt');check((await t.journal()).length===0,'Unknown outcome cleared after authoritative read');
+        });
+        await scenario(`unconfirmed ${operation} survives refresh and uses its original request on deliberate retry`,async t=>{
+          await t.quiz(1);if(operation!=='check'){await t.correctAll(6);if(operation==='retake'){await t.page.getByRole('button',{name:'إنهاء النشاط'}).click();await t.page.getByText('أحسنت! أكملت نشاط القراءة.',{exact:true}).waitFor();}}
+          const pattern=operation==='check'?'**/sessions/*/quiz/check':`**/sessions/*/${operation}`;await t.page.route(pattern,route=>route.abort('failed'));
+          if(operation==='check'){await t.page.getByRole('radio').first().check();await t.page.getByRole('button',{name:'تحقّق من الإجابة'}).click();}
+          else if(operation==='finish')await t.page.getByRole('button',{name:'إنهاء النشاط'}).click();else{await t.page.getByRole('button',{name:'إعادة النشاط',exact:true}).click();await t.page.getByRole('button',{name:'بدء محاولة جديدة'}).click();}
+          const retry=t.page.getByRole('button',{name:'إعادة إرسال الطلب السابق',exact:true});await retry.waitFor();await t.page.waitForFunction(()=>Array.from(document.querySelectorAll('button')).some(b=>b.textContent==='إعادة إرسال الطلب السابق'&&!b.disabled));
+          const original=(await t.journal())[0];await t.page.unroute(pattern);await t.page.reload();await retry.waitFor();check((await t.journal())[0].request.requestId===original.request.requestId,'Stable mutation UUID after refresh');
+          const before=(await t.state()).receipts.length;await retry.click();await t.page.waitForFunction(()=>!Array.from(document.querySelectorAll('button')).some(b=>b.textContent==='إعادة إرسال الطلب السابق'));
+          check((await t.state()).receipts.length===before+1,'No automatic mutation on refresh; one explicit replay');check((await t.journal()).length===0,'Journal cleared after confirmed outcome');
+        });
+      }
+      await scenario('mutation storage failure cannot send a check',async t=>{
+        await t.quiz();await t.page.evaluate(()=>{const add=IDBObjectStore.prototype.add;IDBObjectStore.prototype.add=function(value){if(this.transaction.db.name==='zayd-arabic-reading-mutations')throw new DOMException('synthetic','QuotaExceededError');return add.call(this,value);};});
+        await t.page.getByRole('radio').first().check();await t.page.getByRole('button',{name:'تحقّق من الإجابة'}).click();await t.page.getByText(/تعذر حفظ الطلب على هذا الجهاز/).waitFor();check((await t.state()).receipts.filter(r=>r.operation==='quiz-check').length===0,'No dispatch before durable metadata save');
+      });
+      await scenario('replacement identity cannot resume another owner finish intent',async t=>{
+        await t.quiz(1);await t.correctAll(6);await t.page.route('**/sessions/*/finish',route=>route.abort('failed'));await t.page.getByRole('button',{name:'إنهاء النشاط'}).click();await t.page.getByRole('button',{name:'إعادة إرسال الطلب السابق'}).waitFor();
+        const second=await(await t.context.request.get(base+'/__arabic-test/bootstrap?user=2')).json();await t.page.evaluate(data=>{localStorage.setItem('AiTutorUser',JSON.stringify(data.user));localStorage.setItem('accessToken',data.accessToken);window.dispatchEvent(new StorageEvent('storage',{key:'accessToken',newValue:data.accessToken}));},second);
+        await t.page.getByRole('button',{name:'الاستماع إلى النص',exact:true}).waitFor();check(await t.page.getByRole('button',{name:'إعادة إرسال الطلب السابق'}).count()===0,'Other owner cannot access pending finish');check((await t.state()).sessions[0].phase==='quiz','Old finish was not replayed by replacement owner');
+      });
+    }
     check(report.errors.length===0,'No browser exceptions');check(report.forbidden.length===0,'No normal LMS endpoints/heartbeat/socket');
-    await fs.mkdir(path.join(__dirname,'test-results'),{recursive:true});await fs.writeFile(path.join(__dirname,'test-results/phase6-integration.json'),JSON.stringify(report,null,2)+'\n');
+    await fs.mkdir(path.join(__dirname,'test-results'),{recursive:true});await fs.writeFile(path.join(__dirname,`test-results/phase${phase}-integration.json`),JSON.stringify(report,null,2)+'\n');
     console.log(JSON.stringify({passed:true,checks:report.checks,scenarios:report.scenarios.length}));
   }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

@@ -4,16 +4,18 @@ import { ArabicReadingApi, ArabicClientError, arabicClientError, type ArabicClie
 import { ArabicIndexedPending, arabicBlobDigest, arabicPendingKey, type ArabicPending, type ArabicPendingStore } from '../../utils/arabicReadingPending';
 import { ArabicBrowserRecorder } from '../../utils/arabicReadingRecorder';
 import type { ArabicOwner } from '../../utils/arabicReadingIdentity';
+import { ArabicMutationStore, arabicMutationKey, type ArabicQuizMutation } from '../../utils/arabicReadingMutations';
 
-export interface ArabicLiveState {screen:ArabicReadingScreen;playback:ArabicPlayback;recorder:ArabicRecorderView;busy:boolean;notice:ArabicClientCode|null}
-export const arabicInitialState=():ArabicLiveState=>({screen:{kind:'loading'},playback:{target:null,state:'idle',position:0,duration:0,passageEnded:false},recorder:{state:'idle',seconds:0},busy:false,notice:null});
-export type ArabicApiPort=Pick<ArabicReadingApi,'discovery'|'overview'|'start'|'session'|'listen'|'upload'|'recover'|'media'|'history'>;
+export interface ArabicLiveState {screen:ArabicReadingScreen;playback:ArabicPlayback;recorder:ArabicRecorderView;busy:boolean;mutationPending:boolean;notice:ArabicClientCode|null}
+export const arabicInitialState=():ArabicLiveState=>({screen:{kind:'loading'},playback:{target:null,state:'idle',position:0,duration:0,passageEnded:false},recorder:{state:'idle',seconds:0},busy:false,mutationPending:false,notice:null});
+export type ArabicApiPort=Pick<ArabicReadingApi,'discovery'|'overview'|'start'|'session'|'listen'|'upload'|'recover'|'media'|'history'|'check'|'finish'|'retake'>;
 export class ArabicReadingController {
   state=arabicInitialState();private listeners=new Set<()=>void>();private disposed=false;private requests=new Set<AbortController>();
   private pending:ArabicPending|null=null;private session:ArabicSessionView|null=null;private listenRequest:{requestId:string;expectedRevision:number}|null=null;
   private media:HTMLAudioElement|null=null;private mediaUrl:string|null=null;private mediaEpoch=0;
   private device:ArabicBrowserRecorder;private recordTarget:ArabicSessionView|null=null;private watching:ReturnType<typeof setInterval>|null=null;
   readonly api:ArabicApiPort;
+  private mutation:ArabicQuizMutation|null=null;private readonly mutations=new ArabicMutationStore();
   constructor(readonly owner:ArabicOwner,readonly activityId:ArabicActivityId|undefined,private readonly ownerCurrent:()=>boolean,
     private readonly navigate:(url:string)=>void,private readonly store:ArabicPendingStore=new ArabicIndexedPending(),
     api?:(current:()=>boolean)=>ArabicApiPort,private readonly audioFactory:()=>HTMLAudioElement=()=>new Audio()){
@@ -67,11 +69,11 @@ export class ArabicReadingController {
     if(!this.activityId){const data=await this.request(s=>this.api.discovery(s));this.patch({screen:{kind:'chooser',activities:data.activities}});return;}
     const result=await this.request(s=>this.api.overview(this.activityId!,s));
     if(result.activity.id!==this.activityId)throw new ArabicClientError('AR_SESSION_CHANGED');
-    if(result.activity.sessionId){this.adopt(await this.request(s=>this.api.session(result.activity.sessionId!,s)));await this.recoverLocal();}
+    if(result.activity.sessionId){this.adopt(await this.request(s=>this.api.session(result.activity.sessionId!,s)));await this.recoverLocal();await this.recoverMutation(false);}
     else this.patch({screen:{kind:'overview',overview:result}});
   });
   start=()=>this.job(async()=>{
-    if(!this.activityId)return;const row=await this.request(s=>this.api.start(this.activityId!,crypto.randomUUID(),s));this.adopt(row);await this.recoverLocal();
+    if(!this.activityId)return;const row=await this.request(s=>this.api.start(this.activityId!,crypto.randomUUID(),s));this.adopt(row);await this.recoverLocal();await this.recoverMutation(false);
   });
   choose=(id:ArabicActivityId)=>this.navigate(`/student/arabic-reading/${id}`);
   back=()=>this.navigate('/student/arabic-reading');
@@ -81,7 +83,7 @@ export class ArabicReadingController {
     void this.job(async()=>{
       const active=await this.request(s=>this.api.overview(this.activityId!,s));
       if(active.activity.sessionId)this.adopt(await this.request(s=>this.api.session(active.activity.sessionId!,s)));
-      if(this.pending)await this.reconcile(false,false);else await this.recoverLocal();
+      if(this.pending)await this.reconcile(false,false);else await this.recoverLocal();await this.recoverMutation(false);
     });
   };
   listen=()=>this.job(async()=>{
@@ -177,6 +179,64 @@ export class ArabicReadingController {
     else await work();
   });}
   send=()=>this.recoveryJob(true,false);discard=()=>this.recoveryJob(false,true);
+  private async closeMutation(m:ArabicQuizMutation){
+    await this.mutations.remove(m);if(!this.current())return;
+    this.mutation=await this.mutations.load(this.owner.key,m.activityId);this.patch({mutationPending:!!this.mutation});
+  }
+  private async mutationState(m:ArabicQuizMutation){
+    const overview=await this.request(s=>this.api.overview(m.activityId,s)),old=await this.request(s=>this.api.session(m.sessionId,s));
+    if(old.id!==m.sessionId||old.versionId!==m.versionId)throw new ArabicClientError('AR_SESSION_CHANGED');
+    const active=overview.activity.sessionId&&overview.activity.sessionId!==old.id?await this.request(s=>this.api.session(overview.activity.sessionId!,s)):old;
+    this.adopt(active);
+    const committed=m.operation==='check'?old.phase==='quiz'&&old.checkedAnswers.some(a=>a.questionId===m.request.questionId&&a.selectedOptionId===m.request.optionId&&(a.responseId===m.request.requestId||a.isCorrect))
+      :m.operation==='finish'?old.phase==='completed':active.id!==old.id;
+    const stale=m.operation==='retake'?(old.phase!=='completed'||old.revision!==m.request.expectedRevision)
+      :(old.phase!=='quiz'||old.revision!==m.request.expectedRevision);
+    if(committed||stale){await this.closeMutation(m);if(stale&&!committed)this.patch({notice:'AR_REVISION_CONFLICT'});return true;}
+    return false;
+  }
+  private async recoverMutation(send:boolean):Promise<void>{
+    if(!this.activityId)return;
+    this.mutation??=await this.mutations.load(this.owner.key,this.activityId);const m=this.mutation;
+    if(!m){this.patch({mutationPending:false});return;}
+    if(m.ownerKey!==this.owner.key||m.activityId!==this.activityId)throw new ArabicClientError('AR_UNAUTHORIZED');
+    this.patch({mutationPending:true});if(await this.mutationState(m))return;
+    if(!send){this.patch({notice:'AR_PENDING_MUTATION'});return;}
+    try{
+      if(m.operation==='check')await this.request(s=>this.api.check(m.sessionId,m.request,s));
+      else if(m.operation==='finish')await this.request(s=>this.api.finish(m.sessionId,m.request,s));
+      else await this.request(s=>this.api.retake(m.sessionId,m.request,s));
+    }catch(error){
+      if(await this.mutationState(m))return;
+      const e=arabicClientError(error);
+      if(['AR_INVALID_REQUEST','AR_PHASE_CONFLICT','AR_REQUEST_CONFLICT'].includes(e.code))await this.closeMutation(m);
+      throw error;
+    }
+    await this.mutationState(m);
+    if(this.mutation)this.patch({notice:'AR_PENDING_MUTATION'});
+  }
+  retryMutation=()=>this.job(()=>this.recoverMutation(true));
+  private quizMutation(operation:'check'|'finish'|'retake',questionId?:string,optionId?:string){return this.job(async()=>{
+    if(!this.session||!this.activityId)return;
+    this.mutation=await this.mutations.load(this.owner.key,this.activityId);
+    if(this.mutation){await this.recoverMutation(false);return;}
+    const previous=this.session,row=await this.request(s=>this.api.session(previous.id,s));this.adopt(row);
+    if(row.id!==previous.id||row.versionId!==previous.versionId||row.revision!==previous.revision)throw new ArabicClientError('AR_REVISION_CONFLICT');
+    const base={key:arabicMutationKey(this.owner.key,this.activityId),ownerKey:this.owner.key,activityId:this.activityId,sessionId:row.id,versionId:row.versionId,createdAt:new Date().toISOString()};
+    const request={requestId:crypto.randomUUID(),expectedRevision:row.revision};let m:ArabicQuizMutation;
+    if(operation==='check'){
+      if(row.phase!=='quiz'||!questionId||!optionId)throw new ArabicClientError('AR_PHASE_CONFLICT');
+      m={...base,operation,request:{...request,questionId,optionId}};
+    }else if(operation==='finish'){
+      if(row.phase!=='quiz'||!row.questions.every(q=>row.checkedAnswers.some(a=>a.questionId===q.id&&a.isCorrect)))throw new ArabicClientError('AR_PHASE_CONFLICT');
+      m={...base,operation,request:{...request,answers:row.questions.map(q=>{const a=row.checkedAnswers.find(a=>a.questionId===q.id)!;return {questionId:q.id,optionId:a.selectedOptionId,responseId:a.responseId};})}};
+    }else{
+      if(row.phase!=='completed')throw new ArabicClientError('AR_PHASE_CONFLICT');m={...base,operation,request};
+    }
+    await this.mutations.save(m);if(!this.current())return;this.mutation=m;this.patch({mutationPending:true});await this.recoverMutation(true);
+  });}
+  check=(questionId:string,optionId:string)=>this.quizMutation('check',questionId,optionId);
+  finish=()=>this.quizMutation('finish');retake=()=>this.quizMutation('retake');
   dispose(){this.disposed=true;this.device.dispose();this.stopAudio();this.requests.forEach(r=>r.abort());this.requests.clear();
     if(this.watching)clearInterval(this.watching);window.removeEventListener('online',this.refresh);window.removeEventListener('focus',this.refresh);
     window.removeEventListener('offline',this.offline);document.removeEventListener('visibilitychange',this.visibility);this.listeners.clear();}
