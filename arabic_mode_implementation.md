@@ -218,7 +218,15 @@ Exit: deployment-ready local handoff is complete. Hosted release and client acce
 | 8 | Complete locally with inherited limitations recorded | 759 broad backend passes; 17 inherited fixture failures separately pass with current test-only claim; 26 offline checks, 60 existing frontend tests, 14 regression scripts, recorder/browser/build/isolation evidence; no live acceptance claim |
 | 9 | Not started | Owner deployment handoff remains pending; no schema apply, publication, push or deployment |
 
-## 8. Reference material
+## 8. Current production preparation — 2026-11-28 owner request
+
+After Phase 8 the owner explicitly requested production ROW content upload and three tester accounts. That separate operation is now applied in Azure `zayd_lms_prod`: seven isolated Arabic tables, three exact private draft passages (25 questions/100 choices), and three new active ROW student accounts with separate password credentials and explicit Arabic grants. The usernames are `qa.arabic.reading.01`, `.02` and `.03`; private passwords remain in ignored local handoff files. No existing account was changed and no other mode/course/progress grant was added. Existing non-Arabic column catalog remains unchanged. See matching `docs/arabic-reading/PRODUCTION_ROW_PROVISIONING.md` and `PRODUCTION_ROW_VERIFICATION.json` in both branches.
+
+Real SQL execution exposed incorrectly escaped SHA2_256 literals in the prepared dynamic triggers; failed attempts rolled back. Only those literals and their guard/migration manifest pins were corrected. Applied SQL digest is now `8ad2944fba3190922a573bbe0c5ea6932bd6d23ebcbf5dc92af522f4e1f20b77`; future backend deployment must include the updated manifest. All six enabled trigger definitions/eight trusted check constraints and exact uploaded content/password hashes/grants were read back. Thirty-one offline checks and 258 Arabic/access/flag tests pass after this correction. Prior phase evidence remains historical, including the prior unapplied migration hash.
+
+This does not complete Phase 9 or activate client testing. All uploaded versions remain drafts with false review flags, 24 candidate keys only and Q6 null. Original-source approval/publication, compatible backend/frontend deployment, hosted flags and real device/Azure/full SQL-session acceptance remain pending. No branch was pushed or application deployed by this upload operation.
+
+## 9. Reference material
 
 - Current English player: frontend `src/pages/student/topics/ReadingModeTopics.tsx`.
 - Current recorder/session utilities: frontend `src/hooks/useAudioRecorder.ts`, `src/hooks/useModeSession.ts`, `src/utils/pendingReadingAudio.ts`, `src/utils/readingAudioUpload.ts`.
