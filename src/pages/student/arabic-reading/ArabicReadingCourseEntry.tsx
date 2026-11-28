@@ -3,6 +3,7 @@ import { useAppSelector } from '../../../redux/hooks';
 import { ArabicCourseCard } from '../../../components/arabic-reading/ArabicCourseCard';
 import { ArabicReadingApi } from '../../../services/arabicReadingService';
 import { arabicBrowserOwner } from '../../../utils/arabicReadingIdentity';
+import type { ArabicActivitySummary } from '../../../types/arabic-reading.contract';
 
 export type ArabicCourseStatus = 'loading' | 'hidden' | 'visible';
 
@@ -17,7 +18,7 @@ export function ArabicReadingCourseEntry({ onStatusChange }: { onStatusChange: (
   const owner = import.meta.env.VITE_LMS_ENABLE_ARABIC_READING === 'true' && user?.role?.toLowerCase() === 'student'
     ? arabicBrowserOwner() : null;
   const ownerKey = owner?.id === user?.id ? owner?.key : undefined;
-  const [discovery, setDiscovery] = useState<{ ownerKey: string; ready: boolean }>();
+  const [discovery, setDiscovery] = useState<{ ownerKey: string; activities: ArabicActivitySummary[] }>();
 
   useEffect(() => {
     if (!ownerKey) { onStatusChange('hidden'); return; }
@@ -27,7 +28,7 @@ export function ArabicReadingCourseEntry({ onStatusChange }: { onStatusChange: (
     onStatusChange('loading');
     void service.discovery(abort.signal).then(value => {
       if (!current()) return;
-      setDiscovery({ ownerKey, ready: value.activities.some(activity => activity.available) });
+      setDiscovery({ ownerKey, activities: value.activities });
       onStatusChange('visible');
     }).catch(() => {
       if (!current()) return;
@@ -37,5 +38,5 @@ export function ArabicReadingCourseEntry({ onStatusChange }: { onStatusChange: (
     return () => abort.abort();
   }, [ownerKey, onStatusChange]);
 
-  return ownerKey && discovery?.ownerKey === ownerKey ? <ArabicCourseCard ready={discovery.ready} /> : null;
+  return ownerKey && discovery?.ownerKey === ownerKey ? <>{discovery.activities.map(activity => <ArabicCourseCard key={activity.id} activity={activity} />)}</> : null;
 }

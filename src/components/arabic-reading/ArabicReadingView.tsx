@@ -28,7 +28,7 @@ function ArabicPassage({blocks, expanded, playback, actions, busy}: {blocks: Ara
   </section>;
 }
 function ArabicQuiz({session, actions, busy}: {session: Extract<ArabicSessionView, {phase:'quiz'}>; actions: ArabicReadingActions; busy?: boolean}) {
-  const firstUnchecked = session.questions.findIndex(q => !session.checkedAnswers.some(a => a.questionId === q.id && a.isCorrect));
+  const firstUnchecked = session.questions.findIndex(q => !session.checkedAnswers.some(a => a.questionId === q.id && (a.isCorrect === true || (q.ungraded && a.isCorrect === null))));
   const [index, setIndex] = useState(firstUnchecked<0?Math.max(0,session.questions.length-1):firstUnchecked), question = session.questions[index];
   // Local selection is never a verdict. Only a matching server-checked answer unlocks navigation.
   const [draft, setDraft] = useState<{questionId:string; optionId:string} | null>(null);
@@ -39,20 +39,21 @@ function ArabicQuiz({session, actions, busy}: {session: Extract<ArabicSessionVie
   if (!question) return <p role="alert">تعذر تحميل السؤال. أعد تحميل النشاط.</p>;
   const selected = draft?.questionId === question.id ? draft.optionId : checked?.selectedOptionId ?? null;
   const result = checked?.selectedOptionId === selected ? checked : undefined;
-  const allCorrect = session.questions.every(q => session.checkedAnswers.some(a => a.questionId === q.id && a.isCorrect));
+  const allCorrect = session.questions.every(q => session.checkedAnswers.some(a => a.questionId === q.id && (a.isCorrect === true || (q.ungraded && a.isCorrect === null))));
   const go = (next: number) => {setDraft(null); setIndex(next);};
   return <section className="ar-card ar-quiz" aria-label="اختبار الفهم" aria-busy={busy}>
     <header className="ar-section-heading"><h2><Check aria-hidden="true" /> اختبار الفهم</h2><span className="ar-badge">السؤال {arabicNumber(index + 1)} من {arabicNumber(session.questions.length)}</span></header>
     <h3 ref={title} tabIndex={-1}>السؤال {arabicNumber(question.number)}: <ArabicSourceText text={question.prompt} /></h3>
-    <fieldset className="ar-options" disabled={busy || result?.isCorrect}><legend className="ar-sr-only">اختر إجابة للسؤال {arabicNumber(question.number)}</legend>
-      {question.options.map(option => <label key={option.id} className={`ar-option ${selected === option.id ? 'ar-option-selected' : ''} ${selected === option.id && result ? result.isCorrect ? 'ar-option-correct' : 'ar-option-wrong' : ''}`}>
+    {question.ungraded && <p className="ar-muted">هذا السؤال للمراجعة فقط ولا يُحتسب في النتيجة.</p>}
+    <fieldset className="ar-options" disabled={busy || result?.isCorrect === true || result?.isCorrect === null}><legend className="ar-sr-only">اختر إجابة للسؤال {arabicNumber(question.number)}</legend>
+      {question.options.map(option => <label key={option.id} className={`ar-option ${selected === option.id ? 'ar-option-selected' : ''} ${selected === option.id && result && result.isCorrect !== null ? result.isCorrect ? 'ar-option-correct' : 'ar-option-wrong' : ''}`}>
         <input type="radio" name={`arabic-question-${question.id}`} value={option.id} checked={selected === option.id} onChange={() => setDraft({questionId:question.id, optionId:option.id})} />
         <span className="ar-option-letter" aria-hidden="true">{option.label}</span><span><ArabicSourceText text={option.text} /></span>
       </label>)}
     </fieldset>
-    {result && <p className={`ar-answer-feedback ${result.isCorrect ? 'ar-success' : 'ar-error-text'}`} role="status">{result.isCorrect ? 'إجابة صحيحة. يمكنك المتابعة.' : 'الإجابة غير صحيحة. اختر إجابة أخرى ثم تحقّق منها.'}</p>}
+    {result && <p className={`ar-answer-feedback ${result.isCorrect === null ? 'ar-muted' : result.isCorrect ? 'ar-success' : 'ar-error-text'}`} role="status">{result.isCorrect === null ? 'هذا السؤال للمراجعة فقط ولا يُحتسب في النتيجة. يمكنك المتابعة.' : result.isCorrect ? 'إجابة صحيحة. يمكنك المتابعة.' : 'الإجابة غير صحيحة. اختر إجابة أخرى ثم تحقّق منها.'}</p>}
     <div className="ar-quiz-footer"><button type="button" className="ar-secondary" disabled={index === 0 || busy} onClick={() => go(index - 1)}>السابق</button>
-      {!result?.isCorrect ? <button type="button" className="ar-primary" disabled={!selected || busy || !actions.check} onClick={() => selected && actions.check?.(question.id, selected)}>تحقّق من الإجابة</button>
+      {!result || result.isCorrect === false ? <button type="button" className="ar-primary" disabled={!selected || busy || !actions.check} onClick={() => selected && actions.check?.(question.id, selected)}>تحقّق من الإجابة</button>
         : index < session.questions.length - 1 ? <button type="button" className="ar-primary" disabled={busy} onClick={() => go(index + 1)}>السؤال التالي <ArrowLeft aria-hidden="true" /></button>
         : <button type="button" className="ar-primary" disabled={busy || !allCorrect || !actions.finish} onClick={actions.finish}>إنهاء النشاط <Check aria-hidden="true" /></button>}
     </div>

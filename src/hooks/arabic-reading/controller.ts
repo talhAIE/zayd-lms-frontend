@@ -228,7 +228,7 @@ export class ArabicReadingController {
       if(row.phase!=='quiz'||!questionId||!optionId)throw new ArabicClientError('AR_PHASE_CONFLICT');
       m={...base,operation,request:{...request,questionId,optionId}};
     }else if(operation==='finish'){
-      if(row.phase!=='quiz'||!row.questions.every(q=>row.checkedAnswers.some(a=>a.questionId===q.id&&a.isCorrect)))throw new ArabicClientError('AR_PHASE_CONFLICT');
+      if(row.phase!=='quiz'||!row.questions.every(q=>row.checkedAnswers.some(a=>a.questionId===q.id&&(a.isCorrect===true||(q.ungraded&&a.isCorrect===null)))))throw new ArabicClientError('AR_PHASE_CONFLICT');
       m={...base,operation,request:{...request,answers:row.questions.map(q=>{const a=row.checkedAnswers.find(a=>a.questionId===q.id)!;return {questionId:q.id,optionId:a.selectedOptionId,responseId:a.responseId};})}};
     }else{
       if(row.phase!=='completed')throw new ArabicClientError('AR_PHASE_CONFLICT');m={...base,operation,request};
