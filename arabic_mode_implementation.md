@@ -182,14 +182,16 @@ Phase 7 engineering evidence: both repositories' `docs/arabic-reading/PHASE7_QUI
 
 ### Phase 8 - Isolation, regression and local acceptance
 
-- [ ] Run appropriate backend/frontend type checks, builds, focused tests and cross-repository contract checks.
-- [ ] Run relevant English reading, recorder, socket authentication, avatar, Primary, NAFS, STEP and shared-UI regressions.
-- [ ] Audit database/media write scope, route guards, feature-off behavior and absent progress/usage/reporting side effects.
-- [ ] Browser-check Arabic desktop/mobile, keyboard access, option order, diacritics and all recovery states.
-- [ ] Label synthetic results accurately; record real microphone, Arabic-teacher and actual Azure checks only if executed.
-- [ ] Resolve new regressions; record pre-existing limitations; update evidence and make phase-local commit(s).
+- [x] Run appropriate backend/frontend type checks, builds, focused tests and cross-repository contract checks.
+- [x] Run relevant English reading, recorder, socket authentication, avatar, Primary, NAFS, STEP and shared-UI regressions.
+- [x] Audit database/media write scope, route guards, feature-off behavior and absent progress/usage/reporting side effects.
+- [x] Browser-check Arabic desktop/mobile, keyboard access, option order, diacritics and all recovery states.
+- [x] Label synthetic results accurately; record real microphone, Arabic-teacher and actual Azure checks only if executed.
+- [x] Resolve new regressions; record pre-existing limitations; update evidence and make phase-local commit(s).
 
 Exit: local engineering acceptance passes with a clear list of remaining content/speech/device gates. No live acceptance claim.
+
+Phase 8 evidence: matching `docs/arabic-reading/PHASE8_ACCEPTANCE.md` and `PHASE8_VERIFICATION.json` in both repositories. Broad backend regression records 759 passes (258 Arabic/access/flags plus 501 other regressions), 17 inherited STEP/NAFS HTTP fixture failures and 25 deliberately skipped optional DB tests. The original JWT fixtures/auth match the STEP baseline; a separate test-memory-only current-claim run passes all 17 without editing original tests or weakening auth. Raw failures remain explicit. Twenty-six offline source/schema/isolation tests, 60 existing frontend STEP/NAFS transport/session tests, 14 existing reading/socket/avatar regression scripts and English recorder browser checks at two widths pass. All 33 Arabic HTTP/JWT scenarios/110 assertions pass across 17 mobile and 16 desktop cases; 422 layout assertions, seven viewports, 56 scene combinations, 30 presentation checks and contract/privacy checks pass. Full frontend build/types and backend types/symlink-aware JS/declaration emit pass. Default Nest TS2742 and inherited frontend build warnings remain documented. Repeatable baseline audits confirm only isolated Arabic write targets/routes/stores, default-off gates and unchanged existing-mode/recorder/auth/layout source. This phase changes tests/dev tools/docs only, with no production runtime or sealed schema/source changes. Actual teacher/source-key including Q6, microphone/Azure and owned SQL Server acceptance remain open. No live account/grant/DB/content/media/cloud operation, push or deployment occurred. Local commit IDs are reported in the execution handoff/Git history; Phase 9 remains pending.
 
 ### Phase 9 - Owner deployment and client-testing handoff
 
@@ -213,7 +215,8 @@ Exit: deployment-ready local handoff is complete. Hosted release and client acce
 | 5 | Complete locally: isolated Arabic UI/layouts | 422 browser assertions, 56 scene/viewport combinations, three synthetic journeys; 30 presentation assertions, ten existing frontend regression scripts, full frontend build/type checks; live integration remains Phase 6 |
 | 6 | Complete locally: owned session/audio/recovery integration | 475 backend checks; 21 synthetic HTTP/JWT integration scenarios/68 assertions; layout/frontend regressions/builds pass; real external/academic acceptance remains open |
 | 7 | Engineering complete locally; source approval dependency open | 502 backend checks; 33 synthetic HTTP/JWT scenarios/110 assertions; exact private source draft; all source reviews/key including Q6 remain pending before activation |
-| 8-9 | Not started | Final engineering acceptance and owner deployment handoff remain pending; no schema apply, publication, push or deployment |
+| 8 | Complete locally with inherited limitations recorded | 759 broad backend passes; 17 inherited fixture failures separately pass with current test-only claim; 26 offline checks, 60 existing frontend tests, 14 regression scripts, recorder/browser/build/isolation evidence; no live acceptance claim |
+| 9 | Not started | Owner deployment handoff remains pending; no schema apply, publication, push or deployment |
 
 ## 8. Reference material
 

@@ -1,5 +1,5 @@
 {
   "extends":"../../tsconfig.app.json",
   "compilerOptions":{"types":["vite/client"],"noEmit":true,"incremental":false},
-  "include":["harness.tsx","fixtures.ts","vite.config.ts","vite.integration.config.ts"]
+  "include":["harness.tsx","fixtures.ts","vite.config.ts","vite.integration.config.ts","existing-modes.config.ts"]
 }

@@ -3,11 +3,13 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
 const base=process.env.ARABIC_INTEGRATION_QA_URL||'http://127.0.0.1:5196';assert(['127.0.0.1','localhost'].includes(new URL(base).hostname));
 const report={checks:0,scenarios:[],errors:[],forbidden:[]},check=(v,m)=>{assert(v,m);report.checks++;};
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const phase=process.argv.includes('--phase7')?7:6;
+const phase=process.argv.includes('--phase8')?8:process.argv.includes('--phase7')?7:6;
 (async()=>{
   const browser=await chromium.launch({channel:'chrome',headless:true});
   async function scenario(name,work){
-    const context=await browser.newContext({locale:'ar-SA',viewport:{width:390,height:844}});
+    const viewport=phase===8&&report.scenarios.length%2?{width:1280,height:800}:{width:390,height:844};
+    const context=await browser.newContext({locale:'ar-SA',viewport});
+    if(phase===8)(report.viewportRuns??=[]).push({name,...viewport});
     await context.route('**/*',route=>route.request().url().startsWith(base+'/')?route.continue():route.abort());
     await context.request.post(base+'/__arabic-test/reset');const bootstrap=await(await context.request.get(base+'/__arabic-test/bootstrap')).json();
     await context.addInitScript(data=>{
@@ -179,7 +181,7 @@ const phase=process.argv.includes('--phase7')?7:6;
       await t.open();await t.listen();await t.capture();await t.control({revoked:true});await t.send();await t.page.getByText('هذا النشاط غير متاح لهذا الحساب.',{exact:true}).waitFor();
       check((await t.state()).evaluations===0,'Revoked grant rejected before cloud');check((await t.pending()).length===1,'Revoked pending not erased/rebound');check(await t.page.locator('.ar-current-sentence').count()===0,'Revoked content hidden');
     });
-    if(phase===7){
+    if(phase>=7){
       for(const [activity,total]of [[0,10],[1,6],[2,9]])await scenario(`full ${total}-question server quiz, completion and immutable retake`,async t=>{
         await t.quiz(activity);await t.page.getByRole('radio').nth(1).check();await t.page.getByRole('button',{name:'تحقّق من الإجابة',exact:true}).click();await t.page.getByText(/الإجابة غير صحيحة/).waitFor();
         check(await t.page.getByRole('button',{name:'السؤال التالي',exact:true}).count()===0,'Wrong answer cannot advance');await t.correctAll(total);
