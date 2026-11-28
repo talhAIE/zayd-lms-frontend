@@ -3,12 +3,16 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const root=path.resolve(__dirname,'../..'),baseline='c6b4701',norm=s=>s.replace(/\r\n/g,'\n');
 const git=(...args)=>norm(execFileSync('git',args,{cwd:root,encoding:'utf8',windowsHide:true}));
 const changed=git('diff','--name-only',baseline,'--','src').trim().split('\n').filter(Boolean);
-const allowed=p=>p==='src/routes/index.tsx'||p==='src/types/arabic-reading.contract.ts'||p==='src/services/arabicReadingService.ts'||
+const allowed=p=>p==='src/routes/index.tsx'||p==='src/pages/student/courses.tsx'||p==='src/types/arabic-reading.contract.ts'||p==='src/services/arabicReadingService.ts'||
   p.startsWith('src/components/arabic-reading/')||p.startsWith('src/pages/student/arabic-reading/')||p.startsWith('src/hooks/arabic-reading/')||/^src\/utils\/arabicReading(?:Identity|Pending|Recorder|Mutations)\.ts$/.test(p);
 assert(changed.every(allowed),'Unrelated frontend source changed');
 const read=p=>norm(fs.readFileSync(path.join(root,p),'utf8'));
 const routes=read('src/routes/index.tsx'),stripped=routes.split('\n').filter(l=>!l.includes('ArabicReadingPage')&&!l.includes('Isolated Arabic shell')).join('\n');
 assert.equal(stripped,git('show',baseline+':src/routes/index.tsx'),'Existing routes/layout changed');
+// Owner explicitly requested discovery on Courses after Phase 8. Pin every other line.
+const courses=read('src/pages/student/courses.tsx').split('\n').filter(l=>!l.includes('ArabicReadingCourseEntry')&&!l.includes('const [arabicStatus,')).join('\n')
+  .replace(" || arabicStatus === 'loading'",'').replace(" && arabicStatus === 'hidden'",'');
+assert.equal(courses,git('show',baseline+':src/pages/student/courses.tsx'),'Unrelated Courses behavior changed');
 const walk=directory=>fs.readdirSync(path.join(root,directory),{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(directory+'/'+e.name):[directory+'/'+e.name]);
 const files=[...walk('src/components/arabic-reading'),...walk('src/pages/student/arabic-reading'),...walk('src/hooks/arabic-reading'),
   'src/services/arabicReadingService.ts','src/utils/arabicReadingIdentity.ts','src/utils/arabicReadingPending.ts','src/utils/arabicReadingRecorder.ts','src/utils/arabicReadingMutations.ts'];
